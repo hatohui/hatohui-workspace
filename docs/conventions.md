@@ -76,6 +76,17 @@ Conventions the template expects from `src/pages/`:
 - Orval's `schemas` output must **not** be named `models` (it collides with the package's own name, producing a confusing `models/src/generated/models` path) — it's `src/generated/schemas`.
 - Consumers configure the base URL once via `setApiBaseUrl(url)` before rendering; `customFetch` throws if it's never called, instead of silently defaulting to `localhost`.
 
+## MCP servers (`.mcp.json`)
+
+| Server                 | Type           | Use for                                                                                                                                                                                                                                                       |
+| ---------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `postgres-mcp-hatohui` | Docker (stdio) | Inspecting/querying the local workspace Postgres (`docker-compose.yml`, `localhost:5437`, db `hatohui`) directly — schema exploration, ad-hoc queries, EXPLAIN/performance analysis. Prefer this over `psql`/raw `docker exec` for anything beyond a one-off. |
+| `doppler`              | `bunx` (stdio) | Reading/managing secrets if this workspace's env vars move to Doppler. Not currently wired into any app's `.env` flow — apps still use `.env.example` → `.env` (see Tooling above).                                                                           |
+| `aws-knowledge`        | Remote HTTP    | Looking up current AWS service/API documentation. No auth, rate-limited. Use instead of guessing AWS behavior from training data.                                                                                                                             |
+| `shadcn`               | `bunx` (stdio) | Pulling shadcn/ui component source when `packages/ui` (or an app) adopts shadcn. Not wired into any package yet.                                                                                                                                              |
+
+Adding a new MCP server: register it in `.mcp.json`, then add a row here explaining what it's for and when to reach for it — an entry in `.mcp.json` with no explanation here is as good as undocumented.
+
 ## Taskfile
 
 - `task setup` — installs deps, copies every app's `.env.example` → `.env`, generates the Prisma client. Safe to re-run.
