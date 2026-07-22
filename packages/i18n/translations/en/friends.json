@@ -1,0 +1,38 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "addFriend": "Add friend"
+  },
+  "dashboard": {
+    "title": "Upcoming birthdays",
+    "empty": "No upcoming birthdays yet. Add a friend to get started.",
+    "turningAge": "Turning {{age}}"
+  },
+  "friendForm": {
+    "createTitle": "Add friend",
+    "editTitle": "Edit friend",
+    "nameLabel": "Name",
+    "namePlaceholder": "Friend's name",
+    "birthYearLabel": "Birth year (optional)",
+    "birthMonthLabel": "Birth month",
+    "birthDayLabel": "Birth day",
+    "preferAnonymousLabel": "Prefer anonymous",
+    "socialMediaLabel": "Social media",
+    "socialMediaAdd": "Add social handle",
+    "socialMediaPlatformPlaceholder": "Platform (e.g. Twitter)",
+    "socialMediaHandlePlaceholder": "Handle (e.g. @username)",
+    "socialMediaRemove": "Remove",
+    "submitCreate": "Add friend",
+    "submitEdit": "Save changes"
+  },
+  "friendDetail": {
+    "editAction": "Edit",
+    "deleteAction": "Delete",
+    "deleteConfirm": "Delete this friend? This cannot be undone.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "backToDashboard": "Back to dashboard"
+  }
+}

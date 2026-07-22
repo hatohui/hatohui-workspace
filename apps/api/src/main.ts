@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { AppModule } from '@/app.module';
 import { buildOpenApiDocument } from '@/libs/openapi';
@@ -10,6 +11,13 @@ async function bootstrap() {
   const config = app.get(ConfigService<Env, true>);
 
   app.enableCors({ origin: config.get('CORS_ORIGIN', { infer: true }) });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   const document = buildOpenApiDocument(app);
   app.use(

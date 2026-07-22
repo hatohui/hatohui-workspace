@@ -25,11 +25,9 @@ export const customFetch = async <T>(
     );
   }
 
-  if (response.status === 204) {
-    return undefined as T;
-  }
+  const data = response.status === 204 ? undefined : await response.json();
 
-  return (await response.json()) as T;
+  return { data, status: response.status, headers: response.headers } as T;
 };
 
 export default customFetch;

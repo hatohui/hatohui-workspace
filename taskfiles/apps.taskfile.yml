@@ -11,6 +11,11 @@ tasks:
     dir: apps/www
     cmd: bun run dev
 
+  friends:
+    desc: 'Run the friends app dev server'
+    dir: apps/friends
+    cmd: bun run dev
+
   openapi:export:
     desc: 'Export the NestJS OpenAPI spec to packages/models/openapi.json'
     cmd: bun run scripts/export-openapi.ts

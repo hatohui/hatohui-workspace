@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  DIRS_TO_INIT: ['apps/api', 'apps/www']
+  DIRS_TO_INIT: ['apps/api', 'apps/www', 'apps/friends']
 
 tasks:
   install:
