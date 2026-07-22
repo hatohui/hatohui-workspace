@@ -1,0 +1,23 @@
+version: '3'
+
+vars:
+
+includes:
+  task:
+    taskfile: taskfiles/task.taskfile.yml
+  deps:
+    taskfile: taskfiles/deps.taskfile.yml
+  app:
+    taskfile: taskfiles/apps.taskfile.yml
+
+tasks:
+  default:
+    cmds:
+      - task: task:list
+
+  setup:
+    desc: 'Setup the project'
+    cmds:
+      - task: deps:install
+      - task: deps:env
+      - task: app:db:generate

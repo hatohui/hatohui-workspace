@@ -1,0 +1,42 @@
+version: '3'
+
+tasks:
+  api:
+    desc: 'Run the NestJS API in watch mode'
+    dir: apps/api
+    cmd: bun run start:dev
+
+  www:
+    desc: 'Run the React app dev server'
+    dir: apps/www
+    cmd: bun run dev
+
+  openapi:export:
+    desc: 'Export the NestJS OpenAPI spec to packages/models/openapi.json'
+    cmd: bun run scripts/export-openapi.ts
+
+  models:generate:
+    desc: 'Regenerate the Orval-generated OpenAPI client in packages/models'
+    dir: packages/models
+    cmd: bun run generate
+
+  openapi:generate:
+    desc: 'Export the OpenAPI spec and regenerate the typed client with Orval'
+    cmds:
+      - task: openapi:export
+      - task: models:generate
+
+  db:migrate:
+    desc: 'Apply Prisma migrations to the local database (prompts for a migration name if the schema changed)'
+    dir: apps/api
+    cmd: bunx prisma migrate dev
+
+  db:generate:
+    desc: 'Regenerate the Prisma client from schema.prisma'
+    dir: apps/api
+    cmd: bunx prisma generate
+
+  db:studio:
+    desc: 'Open Prisma Studio against the local database'
+    dir: apps/api
+    cmd: bunx prisma studio

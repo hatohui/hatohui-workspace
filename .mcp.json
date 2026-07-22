@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "shadcn": {
+      "command": "bunx",
+      "args": ["shadcn@latest", "mcp"]
+    },
+    "doppler": {
+      "command": "bunx",
+      "args": ["@dopplerhq/mcp-server"]
+    },
+    "aws-knowledge": {
+      "type": "http",
+      "url": "https://knowledge-mcp.global.api.aws"
+    },
+    "postgres-mcp-hatohui": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "DATABASE_URI",
+        "crystaldba/postgres-mcp",
+        "--access-mode=unrestricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgresql://root:root@host.docker.internal:5437/hatohui"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# env
+.env
+.env.*
+!.env.example
+
+# build output
+dist/
+build/
+coverage/
+
+# logs
+*.log
+
+# editor/os
+.DS_Store
+Thumbs.db
+
+# generated OpenAPI client
+packages/models/openapi.json
+packages/models/src/generated/

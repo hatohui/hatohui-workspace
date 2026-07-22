@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+packages/models/openapi.json linguist-generated=true
+packages/models/src/generated/** linguist-generated=true

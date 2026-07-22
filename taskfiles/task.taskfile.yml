@@ -1,0 +1,9 @@
+version: '3'
+
+tasks:
+  list:
+    desc: 'List all tasks'
+    silent: true
+    internal: true
+    cmds:
+      - task --list

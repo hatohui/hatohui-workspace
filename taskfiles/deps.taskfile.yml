@@ -1,0 +1,17 @@
+version: '3'
+
+vars:
+  DIRS_TO_INIT: ['apps/api', 'apps/www']
+
+tasks:
+  install:
+    desc: 'Install all workspace dependencies'
+    cmds:
+      - bun install
+
+  env:
+    desc: 'Copy .env.example to .env for every app (skips files that already exist)'
+    cmds:
+      - for: { var: DIRS_TO_INIT }
+        cmd: |
+          if [ ! -f "{{.ITEM}}/.env" ]; then cp "{{.ITEM}}/.env.example" "{{.ITEM}}/.env"; fi
