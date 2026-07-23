@@ -21,3 +21,4 @@ Thumbs.db
 # generated OpenAPI client
 packages/models/openapi.json
 packages/models/src/generated/
+.terraform
