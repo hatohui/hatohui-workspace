@@ -9,6 +9,8 @@ includes:
     taskfile: taskfiles/deps.taskfile.yml
   app:
     taskfile: taskfiles/apps.taskfile.yml
+  infra:
+    taskfile: taskfiles/infra.taskfile.yml
 
 tasks:
   default:

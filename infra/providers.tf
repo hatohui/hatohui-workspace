@@ -1,19 +1,27 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.22.0"
-    }
-
-    aws = {
-      source  = "hashicorp/aws"
-      version = "6.56.0"
-    }
-  }
-}
-
 provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
 
 provider "aws" {
+  region = var.aws_region
+}
+
+provider "neon" {
+}
+
+provider "upstash" {
+  api_key = var.upstash_api_key
+  email   = var.personal_email
+}
+
+provider "google" {
+}
+
+provider "doppler" {
+  doppler_token = var.doppler_token
+}
+
+provider "github" {
+  token = var.github_token
+  owner = split("/", var.github_repository)[0]
 }

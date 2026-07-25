@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(doppler --version)",
+      "Bash(doppler configure *)",
+      "Bash(task infra:plan)",
+      "Bash(terraform force-unlock *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "mcp__doppler__secrets_names"
+    ]
+  }
+}

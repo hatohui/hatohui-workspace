@@ -1,0 +1,14 @@
+version: '3'
+
+tasks:
+  plan:
+    desc: 'Run terraform plan'
+    dir: infra
+    cmds:
+      - doppler run --name-transformer tf-var -- terraform plan
+
+  apply:
+    desc: 'Run terraform apply'
+    dir: infra
+    cmds:
+      - doppler run --name-transformer tf-var -- terraform apply -auto-approve

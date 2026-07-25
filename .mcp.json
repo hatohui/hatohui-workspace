@@ -26,6 +26,9 @@
       "env": {
         "DATABASE_URI": "postgresql://root:root@host.docker.internal:5437/hatohui"
       }
+    },
+    "cloudflare-api": {
+      "url": "https://mcp.cloudflare.com/mcp"
     }
   }
 }
