@@ -20,6 +20,7 @@ async function bootstrap() {
   );
 
   const document = buildOpenApiDocument(app);
+
   app.use(
     '/docs',
     apiReference({ content: document, pageTitle: 'Hatohui API Reference' }),
