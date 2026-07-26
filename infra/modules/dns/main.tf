@@ -8,7 +8,7 @@ resource "cloudflare_dns_record" "this" {
   for_each = var.records
 
   zone_id = data.cloudflare_zone.this.id
-  name    = each.key
+  name    = each.value.name
   type    = each.value.type
   content = each.value.content
   ttl     = each.value.ttl

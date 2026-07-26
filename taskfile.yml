@@ -23,3 +23,4 @@ tasks:
       - task: deps:install
       - task: deps:env
       - task: app:db:generate
+      - task: deps:terraform

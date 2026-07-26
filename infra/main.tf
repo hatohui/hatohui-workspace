@@ -1,8 +1,38 @@
 module "secrets" {
   source = "./modules/secrets"
 
-  target_doppler_project = var.target_doppler_project
-  target_doppler_config  = var.target_doppler_config
+  doppler_project = var.doppler_project
+  doppler_config  = var.doppler_config
+}
+
+module "google_oauth" {
+  source = "./modules/google_oauth"
+
+  gcp_project   = var.gcp_project
+  api_domain    = module.secrets.api_domain
+  client_id     = var.google_oauth_client_id
+  client_secret = var.google_oauth_client_secret
+
+  web_origins = concat(
+    ["https://${var.cloudflare_zone_name}"],
+    [for app in local.frontend_apps : "https://${app}.${var.cloudflare_zone_name}"],
+    [for app in local.frontend_apps : local.frontend_dev_origin[app]]
+  )
+
+  additional_redirect_uris = ["http://localhost:3000/auth/google/callback"]
+}
+
+module "app_secrets_api" {
+  source = "./modules/app_secrets"
+
+  doppler_project = var.doppler_project
+  doppler_config  = var.api_doppler_config
+
+  secrets = {
+    GOOGLE_OAUTH_CLIENT_ID     = module.google_oauth.client_id
+    GOOGLE_OAUTH_CLIENT_SECRET = module.google_oauth.client_secret
+    GOOGLE_OAUTH_REDIRECT_URI  = module.google_oauth.redirect_uri
+  }
 }
 
 module "cache" {
@@ -43,7 +73,20 @@ module "lambda" {
 
   environment_variables = {
     DATABASE_URL = module.database.database_url
+    REDIS_URL    = module.cache.database_uri
     CORS_ORIGIN  = "https://${module.secrets.api_domain}"
+
+    GOOGLE_OAUTH_CLIENT_ID     = module.google_oauth.client_id
+    GOOGLE_OAUTH_CLIENT_SECRET = module.google_oauth.client_secret
+    GOOGLE_OAUTH_REDIRECT_URI  = module.google_oauth.redirect_uri
+
+    R2_BUCKET_NAME       = module.assets_r2.bucket_name
+    R2_ENDPOINT          = module.assets_r2.endpoint
+    R2_PUBLIC_URL        = module.assets_r2.public_url
+    R2_ACCESS_KEY_ID     = module.secrets.r2_access_key_id
+    R2_SECRET_ACCESS_KEY = module.secrets.r2_secret_access_key
+
+    EMAIL_API_KEY = module.secrets.email_api_key
   }
 }
 
@@ -60,6 +103,7 @@ module "dns_cert_validation" {
   zone_name = var.cloudflare_zone_name
   records = {
     for dvo in module.certificate.domain_validation_options : dvo.domain_name => {
+      name    = dvo.resource_record_name
       type    = dvo.resource_record_type
       content = dvo.resource_record_value
     }
@@ -83,6 +127,7 @@ module "dns_api_record" {
   zone_name = var.cloudflare_zone_name
   records = {
     (module.secrets.api_domain) = {
+      name    = module.secrets.api_domain
       type    = "CNAME"
       content = module.api_gateway.target_domain_name
     }
@@ -111,11 +156,13 @@ module "dns_pages" {
   zone_name = var.cloudflare_zone_name
   records = {
     "friends.${var.cloudflare_zone_name}" = {
+      name    = "friends.${var.cloudflare_zone_name}"
       type    = "CNAME"
       content = module.pages_friends.pages_dev_domain
       proxied = true
     }
     "www.${var.cloudflare_zone_name}" = {
+      name    = "www.${var.cloudflare_zone_name}"
       type    = "CNAME"
       content = module.pages_www.pages_dev_domain
       proxied = true
@@ -123,12 +170,19 @@ module "dns_pages" {
   }
 }
 
+module "dns_zone_records" {
+  source = "./modules/dns"
+
+  zone_name = var.cloudflare_zone_name
+  records   = local.dns_zone_records
+}
+
 module "assets_r2" {
   source = "./modules/r2"
 
   cloudflare_account_id = var.cloudflare_account_id
   zone_id               = module.dns_api_record.zone_id
-  bucket_name           = "${var.project_name}-assets"
+  bucket_name           = "hatohui"
   domain_name           = "assets.${var.cloudflare_zone_name}"
 }
 
@@ -142,6 +196,11 @@ module "github_ci" {
     ECR_REPOSITORY_URL    = module.ecr.repository_url
     LAMBDA_FUNCTION_NAME  = module.lambda.function_name
     CLOUDFLARE_ACCOUNT_ID = var.cloudflare_account_id
+    API_URL               = module.api_gateway.custom_domain_url
+    # OAuth client IDs are meant to be public (they're visible in the browser's
+    # own auth redirect URL) -- only client_secret is confidential, and that
+    # never leaves apps/api's Lambda environment.
+    GOOGLE_OAUTH_CLIENT_ID = module.google_oauth.client_id
   }
 
   secrets = {

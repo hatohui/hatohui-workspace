@@ -15,3 +15,10 @@ tasks:
       - for: { var: DIRS_TO_INIT }
         cmd: |
           if [ ! -f "{{.ITEM}}/.env" ]; then cp "{{.ITEM}}/.env.example" "{{.ITEM}}/.env"; fi
+
+  terraform:
+    internal: true
+    desc: 'init terraform'
+    dir: infra
+    cmds:
+      - terraform init

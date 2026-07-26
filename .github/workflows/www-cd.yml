@@ -1,4 +1,4 @@
-name: Deploy www
+name: www-cd
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
     paths:
       - 'apps/www/**'
       - 'packages/**'
-      - '.github/workflows/www-deploy.yml'
+      - '.github/workflows/www-cd.yml'
 
 jobs:
   deploy:
@@ -23,6 +23,9 @@ jobs:
 
       - name: Build
         run: bun run --cwd apps/www build
+        env:
+          VITE_API_URL: ${{ vars.API_URL }}
+          VITE_GOOGLE_OAUTH_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_CLIENT_ID }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4

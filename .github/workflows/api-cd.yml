@@ -1,11 +1,11 @@
-name: Deploy API
+name: api-cd
 
 on:
   push:
     branches: [master]
     paths:
-      - 'apps/api/**'
-      - '.github/workflows/api-deploy.yml'
+      - "apps/api/**"
+      - ".github/workflows/api-cd.yml"
 
 permissions:
   id-token: write

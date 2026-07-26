@@ -6,7 +6,6 @@ export function buildOpenApiDocument(app: INestApplication) {
     .setTitle('Hatohui API')
     .setDescription('OpenAPI specification for the Hatohui workspace API')
     .setVersion('0.1.0')
-    .addTag('messages')
     .addTag('friends')
     .build();
 

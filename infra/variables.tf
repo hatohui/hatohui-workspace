@@ -38,14 +38,22 @@ variable "doppler_token" {
   sensitive   = true
 }
 
-variable "target_doppler_project" {
-  description = "The Doppler project to read secrets/outputs from, separate from the local project used to inject the Doppler token"
+variable "api_doppler_config" {
+  description = "The Doppler config Terraform writes apps/api's secrets into, i.e. the config the API reads at runtime. Scoped per app (prod_api, prod_friends, prod_www, ...) as branch configs under the prod environment."
+  type        = string
+  default     = "prod_api"
+}
+
+// === ** Google OAuth Variables **/ ===
+variable "google_oauth_client_id" {
+  description = "The OAuth 2.0 Web client ID from the Google Cloud console; Google has no API to create one, so it is created by hand and adopted here"
   type        = string
 }
 
-variable "target_doppler_config" {
-  description = "The Doppler config to read secrets/outputs from, separate from the local config used to inject the Doppler token"
+variable "google_oauth_client_secret" {
+  description = "The OAuth 2.0 Web client secret matching google_oauth_client_id"
   type        = string
+  sensitive   = true
 }
 
 // === ** Personal Variables **/ ===
@@ -89,7 +97,7 @@ variable "github_repository" {
 }
 
 variable "github_token" {
-  description = "A GitHub personal access token (repo + actions:write scope) used to publish CI variables"
+  description = "A GitHub token used to publish CI variables/secrets. Fine-grained: scoped to github_repository, with Secrets (read/write) and Variables (read/write) permissions. Classic: repo scope."
   type        = string
   sensitive   = true
 }

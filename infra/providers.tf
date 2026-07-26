@@ -3,10 +3,13 @@ provider "cloudflare" {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region     = var.aws_region
+  access_key = module.secrets.aws_access_key_id
+  secret_key = module.secrets.aws_secret_access_key
 }
 
 provider "neon" {
+  api_key = module.secrets.neon_token
 }
 
 provider "upstash" {
@@ -15,6 +18,9 @@ provider "upstash" {
 }
 
 provider "google" {
+  project     = var.gcp_project
+  region      = var.gcp_region
+  credentials = module.secrets.gcp_credentials_json
 }
 
 provider "doppler" {

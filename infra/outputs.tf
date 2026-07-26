@@ -18,6 +18,26 @@ output "github_deploy_role_arn" {
   value       = module.iam.github_deploy_role_arn
 }
 
+output "google_oauth_redirect_uri" {
+  description = "The production redirect URI, used as GOOGLE_OAUTH_REDIRECT_URI at runtime"
+  value       = module.google_oauth.redirect_uri
+}
+
+output "google_oauth_all_redirect_uris" {
+  description = "Every redirect URI (production + local dev) to paste into the Google OAuth client's Authorized redirect URIs"
+  value       = module.google_oauth.all_redirect_uris
+}
+
+output "google_oauth_javascript_origins" {
+  description = "The JavaScript origins that must be registered on the Google OAuth client"
+  value       = module.google_oauth.javascript_origins
+}
+
+output "api_managed_secret_names" {
+  description = "The secrets Terraform writes into apps/api's runtime Doppler config (prod_api)"
+  value       = module.app_secrets_api.managed_secret_names
+}
+
 output "aws_region" {
   description = "The AWS region resources are deployed in"
   value       = var.aws_region

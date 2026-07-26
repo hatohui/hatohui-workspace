@@ -1,9 +1,9 @@
-variable "target_doppler_project" {
-  description = "The Doppler project for which to manage secrets"
+variable "doppler_project" {
+  description = "The Doppler project to read secrets/outputs from"
   type        = string
 }
 
-variable "target_doppler_config" {
-  description = "The Doppler config for which to manage secrets"
+variable "doppler_config" {
+  description = "The Doppler config to read secrets/outputs from"
   type        = string
 }

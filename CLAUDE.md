@@ -10,4 +10,4 @@ Read `docs/conventions.md` in full first. It covers Nest app layout, Prisma setu
 
 - **Package manager: Bun.** Do not use npm/pnpm/yarn commands or lockfiles in this repo — use `bun install`, `bun add`, `bun run`, etc.
 - **Task runner:** [Task](https://taskfile.dev) (`taskfile.yml` + `taskfiles/*.taskfile.yml`) wraps common commands at the repo root.
-- Local infra (Postgres, MinIO, Mailpit) runs via `docker-compose.yml`.
+- Local infra (Postgres, MinIO, Mailpit, Redis) runs via `docker-compose.yml`.
