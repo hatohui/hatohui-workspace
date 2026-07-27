@@ -4,6 +4,7 @@ import { validateEnv } from '@/config/env';
 import { DatabaseModule } from '@/libs/db';
 import { MessagesModule } from '@/modules/messages/messages.module';
 import { FriendsModule } from '@/modules/friends/friends.module';
+import { AuthModule } from '@/modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { FriendsModule } from '@/modules/friends/friends.module';
       validate: validateEnv,
     }),
     DatabaseModule,
+    AuthModule,
     MessagesModule,
     FriendsModule,
   ],

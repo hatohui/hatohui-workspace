@@ -10,8 +10,8 @@ const envSchema = z.object({
   REDIS_URL: z.url(),
 
   GOOGLE_OAUTH_CLIENT_ID: z.string(),
-  GOOGLE_OAUTH_CLIENT_SECRET: z.string(),
-  GOOGLE_OAUTH_REDIRECT_URI: z.url(),
+  SESSION_JWT_SECRET: z.string(),
+  SESSION_COOKIE_DOMAIN: z.string().optional(),
 
   R2_BUCKET_NAME: z.string(),
   R2_ENDPOINT: z.url(),

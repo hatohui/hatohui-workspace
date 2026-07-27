@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hatohui/i18n": "workspace:*",
+    "@hatohui/libs": "workspace:*",
     "@hatohui/models": "workspace:*",
     "@hatohui/ui": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",

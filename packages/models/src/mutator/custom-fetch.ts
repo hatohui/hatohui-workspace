@@ -4,6 +4,10 @@ export function setApiBaseUrl(url: string) {
   baseUrl = url;
 }
 
+export function getApiBaseUrl(): string {
+  return getBaseUrl();
+}
+
 function getBaseUrl(): string {
   if (!baseUrl) {
     throw new Error(
@@ -17,7 +21,10 @@ export const customFetch = async <T>(
   url: string,
   options: RequestInit,
 ): Promise<T> => {
-  const response = await fetch(`${getBaseUrl()}${url}`, options);
+  const response = await fetch(`${getBaseUrl()}${url}`, {
+    ...options,
+    credentials: 'include',
+  });
 
   if (!response.ok) {
     throw new Error(
