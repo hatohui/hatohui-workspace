@@ -11,6 +11,7 @@ infra/*.env
 dist/
 build/
 coverage/
+*.tsbuildinfo
 
 # logs
 *.log
@@ -19,7 +20,4 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# generated OpenAPI client
-packages/models/openapi.json
-packages/models/src/generated/
 .terraform

@@ -10,13 +10,14 @@ setApiBaseUrl(import.meta.env.VITE_API_URL);
 
 const queryClient = new QueryClient();
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- eslint's projectService disagrees with `tsc -b` here; the build requires this assertion.
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider googleClientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider
+        googleClientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}
+      >
         <App />
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>,
 );

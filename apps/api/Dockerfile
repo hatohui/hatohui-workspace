@@ -6,6 +6,7 @@ COPY apps/api/package.json apps/api/package.json
 COPY apps/friends/package.json apps/friends/package.json
 COPY apps/www/package.json apps/www/package.json
 COPY packages/i18n/package.json packages/i18n/package.json
+COPY packages/libs/package.json packages/libs/package.json
 COPY packages/models/package.json packages/models/package.json
 COPY packages/ui/package.json packages/ui/package.json
 RUN bun install --frozen-lockfile

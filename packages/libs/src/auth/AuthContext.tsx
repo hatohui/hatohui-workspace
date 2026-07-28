@@ -1,21 +1,9 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
-import {
-  fetchCurrentUser,
-  loginWithGoogle,
-  logout as logoutRequest,
-} from './api';
-import type { AuthUser } from './types';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { useLoginWithGoogle, useLogout, useMe } from '@hatohui/models';
+import type { UserDto } from '@hatohui/models';
 
 interface AuthContextValue {
-  user: AuthUser | null;
+  user: UserDto | null;
   isLoading: boolean;
   googleClientId: string;
   loginWithGoogle: (idToken: string) => Promise<void>;
@@ -31,28 +19,32 @@ export function AuthProvider({
   googleClientId: string;
   children: ReactNode;
 }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const meQuery = useMe({ query: { retry: false } });
+  const loginMutation = useLoginWithGoogle();
+  const logoutMutation = useLogout();
 
-  useEffect(() => {
-    void fetchCurrentUser()
-      .then(setUser)
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const login = useCallback(async (idToken: string) => {
-    const nextUser = await loginWithGoogle(idToken);
-    setUser(nextUser);
-  }, []);
-
-  const logout = useCallback(async () => {
-    await logoutRequest();
-    setUser(null);
-  }, []);
-
-  const value = useMemo(
-    () => ({ user, isLoading, googleClientId, loginWithGoogle: login, logout }),
-    [user, isLoading, googleClientId, login, logout],
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user: meQuery.data?.data ?? null,
+      isLoading: meQuery.isPending,
+      googleClientId,
+      loginWithGoogle: async (idToken: string) => {
+        await loginMutation.mutateAsync({ data: { idToken } });
+        await meQuery.refetch();
+      },
+      logout: async () => {
+        await logoutMutation.mutateAsync();
+        await meQuery.refetch();
+      },
+    }),
+    [
+      meQuery.data,
+      meQuery.isPending,
+      meQuery.refetch,
+      googleClientId,
+      loginMutation,
+      logoutMutation,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

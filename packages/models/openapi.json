@@ -1,0 +1,561 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/google": {
+      "post": {
+        "operationId": "loginWithGoogle",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Exchange a Google Identity Services ID token for a session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get the current session user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Clear the current session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/messages": {
+      "get": {
+        "operationId": "messages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all messages",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/friends": {
+      "get": {
+        "operationId": "friends",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FriendDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all friends",
+        "tags": [
+          "friends"
+        ]
+      },
+      "post": {
+        "operationId": "createFriend",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFriendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a friend",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/upcoming": {
+      "get": {
+        "operationId": "upcomingFriends",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpcomingFriendDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List friends sorted by next occurring birthday, with computed age",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/{id}": {
+      "get": {
+        "operationId": "friend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a friend by id",
+        "tags": [
+          "friends"
+        ]
+      },
+      "patch": {
+        "operationId": "updateFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFriendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a friend",
+        "tags": [
+          "friends"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a friend",
+        "tags": [
+          "friends"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Hatohui API",
+    "description": "OpenAPI specification for the Hatohui workspace API",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": ""
+    },
+    {
+      "name": "friends",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "GoogleLoginDto": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "description": "Google Identity Services ID token"
+          }
+        },
+        "required": [
+          "idToken"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "avatarUrl"
+        ]
+      },
+      "MessageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1",
+            "description": "Unique message id"
+          },
+          "text": {
+            "type": "string",
+            "example": "Hello from the API!"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "createdAt"
+        ]
+      },
+      "FriendDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890",
+            "description": "Unique friend id"
+          },
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "birthYear": {
+            "type": "number",
+            "example": 1998,
+            "nullable": true,
+            "description": "Birth year"
+          },
+          "birthMonth": {
+            "type": "number",
+            "example": 5,
+            "nullable": true,
+            "description": "Birth month (1-12)"
+          },
+          "birthDay": {
+            "type": "number",
+            "example": 14,
+            "nullable": true,
+            "description": "Birth day (1-31)"
+          },
+          "socialMedias": {
+            "type": "object",
+            "example": {
+              "Twitter": "@jane",
+              "Instagram": "@jane.doe"
+            },
+            "nullable": true
+          },
+          "preferAnonymous": {
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "birthYear",
+          "birthMonth",
+          "birthDay",
+          "socialMedias",
+          "preferAnonymous",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpcomingFriendDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890",
+            "description": "Unique friend id"
+          },
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "birthYear": {
+            "type": "number",
+            "example": 1998,
+            "nullable": true,
+            "description": "Birth year"
+          },
+          "birthMonth": {
+            "type": "number",
+            "example": 5,
+            "nullable": true,
+            "description": "Birth month (1-12)"
+          },
+          "birthDay": {
+            "type": "number",
+            "example": 14,
+            "nullable": true,
+            "description": "Birth day (1-31)"
+          },
+          "socialMedias": {
+            "type": "object",
+            "example": {
+              "Twitter": "@jane",
+              "Instagram": "@jane.doe"
+            },
+            "nullable": true
+          },
+          "preferAnonymous": {
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "turningAge": {
+            "type": "number",
+            "example": 28,
+            "nullable": true,
+            "description": "Age the friend is turning on their next birthday, null if birthYear is unknown"
+          },
+          "nextBirthdayDate": {
+            "type": "string",
+            "example": "2026-08-14",
+            "description": "The friend's next occurring birthday date (year is the anchor year, not necessarily their birth year)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "birthYear",
+          "birthMonth",
+          "birthDay",
+          "socialMedias",
+          "preferAnonymous",
+          "createdAt",
+          "updatedAt",
+          "turningAge",
+          "nextBirthdayDate"
+        ]
+      },
+      "CreateFriendDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "birthYear": {
+            "type": "number",
+            "example": 1998
+          },
+          "birthMonth": {
+            "type": "number",
+            "example": 5
+          },
+          "birthDay": {
+            "type": "number",
+            "example": 14
+          },
+          "socialMedias": {
+            "type": "object",
+            "example": {
+              "Twitter": "@jane",
+              "Instagram": "@jane.doe"
+            }
+          },
+          "preferAnonymous": {
+            "type": "boolean",
+            "example": true,
+            "default": true
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateFriendDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "birthYear": {
+            "type": "number",
+            "example": 1998
+          },
+          "birthMonth": {
+            "type": "number",
+            "example": 5
+          },
+          "birthDay": {
+            "type": "number",
+            "example": 14
+          },
+          "socialMedias": {
+            "type": "object",
+            "example": {
+              "Twitter": "@jane",
+              "Instagram": "@jane.doe"
+            }
+          },
+          "preferAnonymous": {
+            "type": "boolean",
+            "example": true,
+            "default": true
+          }
+        }
+      }
+    }
+  }
+}

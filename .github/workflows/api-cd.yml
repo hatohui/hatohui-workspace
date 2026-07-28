@@ -12,7 +12,60 @@ permissions:
   contents: read
 
 jobs:
+  verify-openapi-client:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: hatohui
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Regenerate OpenAPI client
+        run: |
+          bunx prisma generate --schema apps/api/prisma/schema.prisma
+          bun run scripts/export-openapi.ts
+          bun run --cwd packages/models generate
+        env:
+          PORT: '3000'
+          CORS_ORIGIN: http://localhost:5173
+          DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
+          REDIS_URL: redis://localhost:6379
+          GOOGLE_OAUTH_CLIENT_ID: ci-placeholder
+          SESSION_JWT_SECRET: ci-placeholder
+          R2_BUCKET_NAME: ci-placeholder
+          R2_ENDPOINT: http://localhost:9000
+          R2_PUBLIC_URL: http://localhost:9000/ci-placeholder
+          R2_ACCESS_KEY_ID: ci-placeholder
+          R2_SECRET_ACCESS_KEY: ci-placeholder
+          EMAIL_API_KEY: ci-placeholder
+
+      - name: Fail if the committed client is stale
+        run: |
+          if ! git diff --exit-code -- packages/models/openapi.json packages/models/src/generated; then
+            echo "::error::packages/models is out of date. Run 'task app:openapi:generate' and commit the diff."
+            exit 1
+          fi
+
   deploy:
+    needs: verify-openapi-client
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
