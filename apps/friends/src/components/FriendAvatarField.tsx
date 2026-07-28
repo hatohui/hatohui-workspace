@@ -1,7 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import { AvatarUpload } from '@hatohui/ui';
 import { useImageUpload } from '@hatohui/libs';
-import { SignImageDtoContentType } from '@hatohui/models';
+import { ApiError, SignImageDtoContentType } from '@hatohui/models';
 
 const AVATAR_ACCEPT = Object.values(SignImageDtoContentType).join(',');
 
@@ -19,8 +19,12 @@ function FriendAvatarField({ alt, avatarUrl, onUploaded }: Props) {
     try {
       const uploaded = await uploadImage(file);
       onUploaded(uploaded);
-    } catch {
-      window.alert(t('friendForm.avatarUploadError'));
+    } catch (error) {
+      window.alert(
+        error instanceof ApiError && error.status === 401
+          ? t('friendForm.avatarUploadAuthRequired')
+          : t('friendForm.avatarUploadError'),
+      );
     }
   };
 

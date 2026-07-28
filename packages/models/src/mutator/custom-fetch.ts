@@ -17,6 +17,16 @@ function getBaseUrl(): string {
   return baseUrl;
 }
 
+export class ApiError extends Error {
+  readonly status: number;
+
+  constructor(status: number, statusText: string) {
+    super(`Request failed: ${status} ${statusText}`);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
 export const customFetch = async <T>(
   url: string,
   options: RequestInit,
@@ -27,9 +37,7 @@ export const customFetch = async <T>(
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Request failed: ${response.status} ${response.statusText}`,
-    );
+    throw new ApiError(response.status, response.statusText);
   }
 
   const data = response.status === 204 ? undefined : await response.json();

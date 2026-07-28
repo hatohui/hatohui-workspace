@@ -21,6 +21,7 @@
     "avatarUploadLabel": "Upload photo",
     "avatarUploading": "Uploading...",
     "avatarUploadError": "Couldn't upload that photo. Please try again.",
+    "avatarUploadAuthRequired": "Sign in to upload a photo, then try again.",
     "socialMediaLabel": "Social media",
     "socialMediaAdd": "Add social handle",
     "socialMediaPlatformPlaceholder": "Platform (e.g. Twitter)",

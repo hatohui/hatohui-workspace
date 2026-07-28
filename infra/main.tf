@@ -83,6 +83,7 @@ module "lambda" {
   role_arn      = module.iam.lambda_role_arn
 
   environment_variables = {
+    NODE_ENV     = "production"
     DATABASE_URL = module.database.database_url
     REDIS_URL    = module.cache.database_uri
     CORS_ORIGIN = join(",", concat(
