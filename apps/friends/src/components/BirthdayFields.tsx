@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import {
   Button,
   Calendar,
   Checkbox,
+  formatDate,
   Label,
   Popover,
   PopoverContent,
@@ -73,7 +73,7 @@ function BirthdayFields({
           >
             <CalendarIcon className="size-4" />
             {selected
-              ? format(selected, includeYear ? 'PPP' : 'MMMM d')
+              ? formatDate(selected, includeYear ? 'PPP' : 'MMMM d')
               : t('friendForm.birthdayPlaceholder')}
           </Button>
         </PopoverTrigger>
