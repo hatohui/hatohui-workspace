@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  migrate:
+    desc: 'Apply Prisma migrations to the local database (prompts for a migration name if the schema changed)'
+    dir: apps/api
+    cmd: bunx prisma migrate dev
+
+  generate:
+    desc: 'Regenerate the Prisma client from schema.prisma'
+    dir: apps/api
+    cmd: bunx prisma generate
+
+  studio:
+    desc: 'Open Prisma Studio against the local database'
+    dir: apps/api
+    cmd: bunx prisma studio
+
+  seed:
+    desc: 'Seed the local database (e.g. known social media platforms)'
+    dir: apps/api
+    cmd: bunx prisma db seed
+
+  prod:apply:
+    desc: 'Apply pending Prisma migrations to the production database (no dev prompts), using DATABASE_URL from Doppler prod_api'
+    dir: apps/api
+    cmd: doppler run --project hatohui-workspace --config prod_api -- bunx prisma migrate deploy

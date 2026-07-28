@@ -9,6 +9,8 @@ includes:
     taskfile: taskfiles/deps.taskfile.yml
   app:
     taskfile: taskfiles/apps.taskfile.yml
+  db:
+    taskfile: taskfiles/db.taskfile.yml
   infra:
     taskfile: taskfiles/infra.taskfile.yml
 
@@ -22,5 +24,5 @@ tasks:
     cmds:
       - task: deps:install
       - task: deps:env
-      - task: app:db:generate
+      - task: db:generate
       - task: deps:terraform

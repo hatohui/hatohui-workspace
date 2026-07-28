@@ -29,6 +29,11 @@ export interface UpcomingFriendDto {
   /** @nullable */
   socialMedias: UpcomingFriendDtoSocialMedias;
   preferAnonymous: boolean;
+  /**
+     * Public URL of the friend's avatar image
+     * @nullable
+     */
+  avatarUrl: string | null;
   createdAt: string;
   updatedAt: string;
   /**

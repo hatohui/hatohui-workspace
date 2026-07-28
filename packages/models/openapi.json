@@ -266,6 +266,85 @@
           "friends"
         ]
       }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Report service health",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/images/sign": {
+      "post": {
+        "operationId": "signImage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignImageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedImageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a presigned URL to upload an image directly to storage",
+        "tags": [
+          "images"
+        ]
+      }
+    },
+    "/platforms/socials": {
+      "get": {
+        "operationId": "socialPlatforms",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SocialPlatformDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List known social media platforms and their base URLs",
+        "tags": [
+          "platforms"
+        ]
+      }
     }
   },
   "info": {
@@ -281,6 +360,18 @@
     },
     {
       "name": "friends",
+      "description": ""
+    },
+    {
+      "name": "health",
+      "description": ""
+    },
+    {
+      "name": "images",
+      "description": ""
+    },
+    {
+      "name": "platforms",
       "description": ""
     }
   ],
@@ -389,6 +480,12 @@
             "example": true,
             "default": true
           },
+          "avatarUrl": {
+            "type": "string",
+            "example": "http://localhost:9000/hatohui-dev/images/abc123.jpg",
+            "nullable": true,
+            "description": "Public URL of the friend's avatar image"
+          },
           "createdAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
@@ -406,6 +503,7 @@
           "birthDay",
           "socialMedias",
           "preferAnonymous",
+          "avatarUrl",
           "createdAt",
           "updatedAt"
         ]
@@ -453,6 +551,12 @@
             "example": true,
             "default": true
           },
+          "avatarUrl": {
+            "type": "string",
+            "example": "http://localhost:9000/hatohui-dev/images/abc123.jpg",
+            "nullable": true,
+            "description": "Public URL of the friend's avatar image"
+          },
           "createdAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
@@ -481,6 +585,7 @@
           "birthDay",
           "socialMedias",
           "preferAnonymous",
+          "avatarUrl",
           "createdAt",
           "updatedAt",
           "turningAge",
@@ -517,6 +622,11 @@
             "type": "boolean",
             "example": true,
             "default": true
+          },
+          "avatarKey": {
+            "type": "string",
+            "example": "images/abc123.jpg",
+            "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
           }
         },
         "required": [
@@ -553,8 +663,125 @@
             "type": "boolean",
             "example": true,
             "default": true
+          },
+          "avatarKey": {
+            "type": "string",
+            "example": "images/abc123.jpg",
+            "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
           }
         }
+      },
+      "HealthDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "db": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "redis": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "db",
+          "redis"
+        ]
+      },
+      "SignImageDto": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "example": "profile-photo.jpg"
+          },
+          "contentType": {
+            "type": "string",
+            "example": "image/jpeg",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp",
+              "image/gif",
+              "image/avif"
+            ]
+          }
+        },
+        "required": [
+          "fileName",
+          "contentType"
+        ]
+      },
+      "SignedImageDto": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "description": "Presigned PUT URL the client uploads the file bytes to"
+          },
+          "key": {
+            "type": "string",
+            "description": "Object key the file was signed for"
+          },
+          "publicUrl": {
+            "type": "string",
+            "description": "Public URL the image is reachable at once uploaded"
+          },
+          "expiresIn": {
+            "type": "number",
+            "description": "Seconds until uploadUrl expires"
+          }
+        },
+        "required": [
+          "uploadUrl",
+          "key",
+          "publicUrl",
+          "expiresIn"
+        ]
+      },
+      "SocialPlatformDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890",
+            "description": "Unique platform id"
+          },
+          "key": {
+            "type": "string",
+            "example": "x",
+            "description": "Stable identifier for the platform"
+          },
+          "name": {
+            "type": "string",
+            "example": "X (Twitter)"
+          },
+          "baseUrl": {
+            "type": "string",
+            "example": "https://x.com/",
+            "description": "Base URL a handle is appended to"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "name",
+          "baseUrl"
+        ]
       }
     }
   }

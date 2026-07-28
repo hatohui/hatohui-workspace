@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Database } from '@/libs/db';
+import { Storage } from '@/libs/storage';
 import {
   CreateFriendDto,
   FriendDto,
@@ -14,7 +15,10 @@ import type { Friend } from '@prisma/client';
 
 @Injectable()
 export class FriendsService {
-  constructor(private readonly db: Database) {}
+  constructor(
+    private readonly db: Database,
+    private readonly storage: Storage,
+  ) {}
 
   async findAll(): Promise<FriendDto[]> {
     const friends = await this.db.friend.findMany({
@@ -77,14 +81,25 @@ export class FriendsService {
         birthDay: dto.birthDay ?? null,
         socialMedias: dto.socialMedias ?? undefined,
         preferAnonymous: dto.preferAnonymous ?? true,
+        avatarKey: dto.avatarKey ?? null,
+        avatarUrl: dto.avatarKey
+          ? this.storage.getPublicUrl(dto.avatarKey)
+          : null,
       },
     });
     return toFriendDto(friend);
   }
 
   async update(id: string, dto: UpdateFriendDto): Promise<FriendDto> {
-    await this.findOne(id);
+    const existing = await this.db.friend.findUnique({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException(`Friend ${id} not found`);
+    }
     validateBirthday(dto);
+
+    const isReplacingAvatar =
+      dto.avatarKey !== undefined && dto.avatarKey !== existing.avatarKey;
+
     const friend = await this.db.friend.update({
       where: { id },
       data: {
@@ -94,8 +109,19 @@ export class FriendsService {
         birthDay: dto.birthDay,
         socialMedias: dto.socialMedias,
         preferAnonymous: dto.preferAnonymous,
+        avatarKey: dto.avatarKey,
+        avatarUrl: dto.avatarKey
+          ? this.storage.getPublicUrl(dto.avatarKey)
+          : undefined,
       },
     });
+
+    if (isReplacingAvatar && existing.avatarKey) {
+      await this.storage.deleteObject(existing.avatarKey).catch(() => {
+        // best-effort cleanup; a stray object in storage isn't worth failing the update over
+      });
+    }
+
     return toFriendDto(friend);
   }
 
@@ -145,6 +171,7 @@ function toFriendDto(friend: Friend): FriendDto {
     socialMedias:
       (friend.socialMedias as Record<string, string> | null) ?? null,
     preferAnonymous: friend.preferAnonymous,
+    avatarUrl: friend.avatarUrl,
     createdAt: friend.createdAt.toISOString(),
     updatedAt: friend.updatedAt.toISOString(),
   };

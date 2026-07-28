@@ -8,6 +8,9 @@ export function buildOpenApiDocument(app: INestApplication) {
     .setVersion('0.1.0')
     .addTag('auth')
     .addTag('friends')
+    .addTag('health')
+    .addTag('images')
+    .addTag('platforms')
     .build();
 
   return SwaggerModule.createDocument(app, config);

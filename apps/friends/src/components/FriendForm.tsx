@@ -5,6 +5,7 @@ import type { CreateFriendDto, FriendDto } from '@hatohui/models';
 import { useSocialMediaFields } from '../hooks/useSocialMediaFields';
 import SocialMediaFieldList from './SocialMediaFieldList';
 import BirthdayFields from './BirthdayFields';
+import FriendAvatarField from './FriendAvatarField';
 
 type Props = {
   title: string;
@@ -23,6 +24,8 @@ function FriendForm({
 }: Props) {
   const { t } = useTranslation();
   const [name, setName] = useState(initialFriend?.name ?? '');
+  const [avatarUrl, setAvatarUrl] = useState(initialFriend?.avatarUrl ?? null);
+  const [avatarKey, setAvatarKey] = useState<string | undefined>(undefined);
   const [birthYear, setBirthYear] = useState(
     initialFriend?.birthYear?.toString() ?? '',
   );
@@ -48,12 +51,21 @@ function FriendForm({
       birthDay: birthDay ? Number(birthDay) : undefined,
       preferAnonymous,
       socialMedias: socialFields.toSocialMedias(),
+      avatarKey,
     });
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <h1 className="text-3xl">{title}</h1>
+      <FriendAvatarField
+        alt={name || t('friendForm.nameLabel')}
+        avatarUrl={avatarUrl}
+        onUploaded={(uploaded) => {
+          setAvatarKey(uploaded.key);
+          setAvatarUrl(uploaded.publicUrl);
+        }}
+      />
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="name">{t('friendForm.nameLabel')}</Label>
         <Input

@@ -40,6 +40,13 @@ export class FriendDto {
   @ApiProperty({ example: true, default: true })
   preferAnonymous: boolean;
 
+  @ApiProperty({
+    example: 'http://localhost:9000/hatohui-dev/images/abc123.jpg',
+    nullable: true,
+    description: "Public URL of the friend's avatar image",
+  })
+  avatarUrl: string | null;
+
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   createdAt: string;
 
@@ -102,6 +109,16 @@ export class CreateFriendDto {
   @IsOptional()
   @IsBoolean()
   preferAnonymous?: boolean;
+
+  @ApiProperty({
+    example: 'images/abc123.jpg',
+    required: false,
+    description:
+      'Object key returned by POST /images/sign, after uploading the avatar file to storage',
+  })
+  @IsOptional()
+  @IsString()
+  avatarKey?: string;
 }
 
 export class UpdateFriendDto extends PartialType(CreateFriendDto) {}

@@ -12,3 +12,9 @@ tasks:
     dir: infra
     cmds:
       - doppler run --name-transformer tf-var -- terraform apply -auto-approve
+
+  output:
+    desc: 'Run terraform output'
+    dir: infra
+    cmds:
+      - doppler run --name-transformer tf-var -- terraform output

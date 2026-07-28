@@ -1,5 +1,12 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Input, Label } from '@hatohui/ui';
+import {
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@hatohui/ui';
 
 type Props = {
   birthYear: string;
@@ -9,6 +16,28 @@ type Props = {
   onBirthMonthChange: (value: string) => void;
   onBirthDayChange: (value: string) => void;
 };
+
+const NO_YEAR = 'none';
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+
+const CURRENT_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: 120 }, (_, i) => CURRENT_YEAR - i);
 
 function BirthdayFields({
   birthYear,
@@ -24,34 +53,60 @@ function BirthdayFields({
     <div className="grid grid-cols-3 gap-3">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="birthMonth">{t('friendForm.birthMonthLabel')}</Label>
-        <Input
-          id="birthMonth"
-          type="number"
-          min={1}
-          max={12}
-          value={birthMonth}
-          onChange={(e) => onBirthMonthChange(e.target.value)}
-        />
+        <Select
+          value={birthMonth || undefined}
+          onValueChange={(value) => onBirthMonthChange(value)}
+        >
+          <SelectTrigger id="birthMonth">
+            <SelectValue placeholder={t('friendForm.birthMonthLabel')} />
+          </SelectTrigger>
+          <SelectContent>
+            {MONTHS.map((month, index) => (
+              <SelectItem key={month} value={String(index + 1)}>
+                {month}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="birthDay">{t('friendForm.birthDayLabel')}</Label>
-        <Input
-          id="birthDay"
-          type="number"
-          min={1}
-          max={31}
-          value={birthDay}
-          onChange={(e) => onBirthDayChange(e.target.value)}
-        />
+        <Select
+          value={birthDay || undefined}
+          onValueChange={(value) => onBirthDayChange(value)}
+        >
+          <SelectTrigger id="birthDay">
+            <SelectValue placeholder={t('friendForm.birthDayLabel')} />
+          </SelectTrigger>
+          <SelectContent>
+            {DAYS.map((day) => (
+              <SelectItem key={day} value={String(day)}>
+                {day}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="birthYear">{t('friendForm.birthYearLabel')}</Label>
-        <Input
-          id="birthYear"
-          type="number"
-          value={birthYear}
-          onChange={(e) => onBirthYearChange(e.target.value)}
-        />
+        <Select
+          value={birthYear || NO_YEAR}
+          onValueChange={(value) =>
+            onBirthYearChange(value === NO_YEAR ? '' : value)
+          }
+        >
+          <SelectTrigger id="birthYear">
+            <SelectValue placeholder={t('friendForm.birthYearLabel')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={NO_YEAR}>—</SelectItem>
+            {YEARS.map((year) => (
+              <SelectItem key={year} value={String(year)}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

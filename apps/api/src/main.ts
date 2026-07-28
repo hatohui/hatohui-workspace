@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import cookieParser from 'cookie-parser';
+import type { Request, Response, NextFunction } from 'express';
 import { AppModule } from '@/app.module';
 import { buildOpenApiDocument } from '@/libs/openapi';
 import type { Env } from '@/config/env';
@@ -25,6 +26,14 @@ async function bootstrap() {
   );
 
   const document = buildOpenApiDocument(app);
+
+  app.use('/', (req: Request, res: Response, next: NextFunction) => {
+    if (req.path === '/') {
+      res.redirect('/docs');
+      return;
+    }
+    next();
+  });
 
   app.use(
     '/docs',

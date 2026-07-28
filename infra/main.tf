@@ -32,6 +32,17 @@ module "app_secrets_api" {
     GOOGLE_OAUTH_CLIENT_ID     = module.google_oauth.client_id
     GOOGLE_OAUTH_CLIENT_SECRET = module.google_oauth.client_secret
     GOOGLE_OAUTH_REDIRECT_URI  = module.google_oauth.redirect_uri
+    SESSION_JWT_SECRET         = module.secrets.session_jwt_secret
+    DATABASE_URL               = module.database.database_url
+    REDIS_URL                  = module.cache.database_uri
+
+    R2_BUCKET_NAME       = module.assets_r2.bucket_name
+    R2_ENDPOINT          = module.assets_r2.endpoint
+    R2_PUBLIC_URL        = module.assets_r2.public_url
+    R2_ACCESS_KEY_ID     = module.secrets.r2_access_key_id
+    R2_SECRET_ACCESS_KEY = module.secrets.r2_secret_access_key
+
+    EMAIL_API_KEY = module.secrets.email_api_key
   }
 }
 
@@ -74,11 +85,16 @@ module "lambda" {
   environment_variables = {
     DATABASE_URL = module.database.database_url
     REDIS_URL    = module.cache.database_uri
-    CORS_ORIGIN  = "https://${module.secrets.api_domain}"
+    CORS_ORIGIN = join(",", concat(
+      ["https://${var.cloudflare_zone_name}"],
+      [for app in local.frontend_apps : "https://${app}.${var.cloudflare_zone_name}"],
+    ))
 
     GOOGLE_OAUTH_CLIENT_ID     = module.google_oauth.client_id
     GOOGLE_OAUTH_CLIENT_SECRET = module.google_oauth.client_secret
     GOOGLE_OAUTH_REDIRECT_URI  = module.google_oauth.redirect_uri
+
+    SESSION_JWT_SECRET = module.secrets.session_jwt_secret
 
     R2_BUCKET_NAME       = module.assets_r2.bucket_name
     R2_ENDPOINT          = module.assets_r2.endpoint

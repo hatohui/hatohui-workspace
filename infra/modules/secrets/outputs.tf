@@ -44,3 +44,9 @@ output "email_api_key" {
   value       = data.doppler_secrets.this.map["EMAIL_API_KEY"]
   sensitive   = true
 }
+
+output "session_jwt_secret" {
+  description = "The secret used to sign session JWTs, retrieved from Doppler secrets"
+  value       = data.doppler_secrets.this.map["SESSION_JWT_SECRET"]
+  sensitive   = true
+}

@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { Button } from '@hatohui/ui';
+import { Avatar, Button } from '@hatohui/ui';
 import type { FriendDto } from '@hatohui/models';
 import { useDeleteFriend } from '../hooks/useDeleteFriend';
 import routes from '../constants/routes';
@@ -24,6 +24,7 @@ function FriendDetail({ friend }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
+      <Avatar src={friend.avatarUrl} alt={friend.name} />
       <h1 className="text-3xl">{friend.name}</h1>
       {friend.birthMonth !== null && friend.birthDay !== null && (
         <p className="text-muted-foreground">

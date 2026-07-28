@@ -93,4 +93,5 @@ Adding a new MCP server: register it in `.mcp.json`, then add a row here explain
 
 - `task setup` — installs deps, copies every app's `.env.example` → `.env`, generates the Prisma client. Safe to re-run.
 - `task app:openapi:generate` — full chain: export spec from Nest, regenerate the Orval client.
-- `task app:db:migrate` / `task app:db:generate` / `task app:db:studio` — Prisma workflows, always run with `apps/api` as `dir`.
+- `task db:migrate` / `task db:generate` / `task db:studio` — local Prisma workflows, always run with `apps/api` as `dir`.
+- `task db:prod:apply` — applies pending migrations to the production database via `prisma migrate deploy`, sourcing `DATABASE_URL` from Doppler's `prod_api` config (no dev-mode prompts).
