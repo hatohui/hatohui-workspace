@@ -1,7 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { Card, CardContent } from '@hatohui/ui';
+import { Avatar } from '@hatohui/ui';
 import type { UpcomingFriendDto } from '@hatohui/models';
+import { formatBirthday } from '@hatohui/tools';
 import routes from '../constants/routes';
 
 type Props = {
@@ -9,28 +10,33 @@ type Props = {
 };
 
 function BirthdayCard({ friend }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const date = formatBirthday(friend.nextBirthdayDate, i18n.language);
 
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between">
-        <Link
-          to={routes.friend(friend.id)}
-          className="font-medium hover:text-primary"
-        >
+    <Link
+      to={routes.friend(friend.id)}
+      className="flex flex-col gap-6 rounded-xl border bg-card px-6 py-6 text-card-foreground no-underline transition-[background-color,box-shadow] duration-200 ease-out hover:bg-card-hover hover:shadow-[0_1px_3px_rgba(20,20,19,0.08)]"
+    >
+      <div className="flex items-center justify-between">
+        <span className="flex items-center gap-3 font-medium">
+          <Avatar
+            src={friend.avatarUrl}
+            alt={friend.name}
+            className="h-10 w-10"
+          />
           {friend.name}
-        </Link>
-        {friend.turningAge !== null ? (
-          <span className="text-sm text-muted-foreground">
-            {t('dashboard.turningAge', { age: friend.turningAge })}
-          </span>
-        ) : (
-          <time className="text-sm text-muted-foreground">
-            {friend.nextBirthdayDate}
-          </time>
-        )}
-      </CardContent>
-    </Card>
+        </span>
+        <time
+          className="text-sm text-muted-foreground"
+          dateTime={friend.nextBirthdayDate}
+        >
+          {friend.turningAge !== null
+            ? t('dashboard.turningAge', { age: friend.turningAge, date })
+            : date}
+        </time>
+      </div>
+    </Link>
   );
 }
 

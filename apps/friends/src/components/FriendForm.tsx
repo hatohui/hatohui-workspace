@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Checkbox, Input, Label } from '@hatohui/ui';
 import type { CreateFriendDto, FriendDto } from '@hatohui/models';
+import { getErrorCategory } from '@hatohui/libs';
 import { useSocialMediaFields } from '../hooks/useSocialMediaFields';
 import SocialMediaFieldList from './SocialMediaFieldList';
 import BirthdayFields from './BirthdayFields';
@@ -12,6 +13,7 @@ type Props = {
   submitLabel: string;
   initialFriend?: FriendDto;
   submitting: boolean;
+  error?: unknown;
   onSubmit: (dto: CreateFriendDto) => void;
 };
 
@@ -20,6 +22,7 @@ function FriendForm({
   submitLabel,
   initialFriend,
   submitting,
+  error,
   onSubmit,
 }: Props) {
   const { t } = useTranslation();
@@ -100,6 +103,11 @@ function FriendForm({
         onRemove={socialFields.removeRow}
         onUpdate={socialFields.updateRow}
       />
+      {error != null && (
+        <p role="alert" className="text-sm text-destructive">
+          {t(`common:errors.${getErrorCategory(error)}`)}
+        </p>
+      )}
       <Button type="submit" disabled={submitting} className="w-fit">
         {submitLabel}
       </Button>

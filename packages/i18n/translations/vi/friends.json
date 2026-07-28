@@ -1,0 +1,43 @@
+{
+  "navigation": {
+    "dashboard": "Bảng điều khiển",
+    "addFriend": "Thêm bạn bè",
+    "logout": "Đăng xuất"
+  },
+  "dashboard": {
+    "title": "Sinh nhật sắp tới",
+    "empty": "Chưa có sinh nhật sắp tới nào. Hãy thêm bạn bè để bắt đầu.",
+    "turningAge": "Tròn {{age}} tuổi - {{date}}"
+  },
+  "friendForm": {
+    "createTitle": "Thêm bạn bè",
+    "editTitle": "Chỉnh sửa bạn bè",
+    "nameLabel": "Tên",
+    "namePlaceholder": "Tên bạn bè",
+    "birthdayLabel": "Ngày sinh",
+    "birthdayPlaceholder": "Chọn ngày",
+    "birthYearLabel": "Năm sinh (tùy chọn)",
+    "preferAnonymousLabel": "Ẩn danh",
+    "avatarUploadLabel": "Tải ảnh lên",
+    "avatarUploading": "Đang tải lên...",
+    "avatarUploadError": "Không thể tải ảnh lên. Vui lòng thử lại.",
+    "avatarUploadAuthRequired": "Vui lòng đăng nhập để tải ảnh lên, sau đó thử lại.",
+    "socialMediaLabel": "Mạng xã hội",
+    "socialMediaAdd": "Thêm tài khoản mạng xã hội",
+    "socialMediaPlatformPlaceholder": "Nền tảng (vd: Twitter)",
+    "socialMediaHandlePlaceholder": "Tên tài khoản (vd: @username)",
+    "socialMediaRemove": "Xóa",
+    "submitCreate": "Thêm bạn bè",
+    "submitEdit": "Lưu thay đổi"
+  },
+  "friendDetail": {
+    "editAction": "Chỉnh sửa",
+    "deleteAction": "Xóa",
+    "deleteConfirm": "Xóa người bạn này? Hành động này không thể hoàn tác.",
+    "backToDashboard": "Quay lại bảng điều khiển"
+  },
+  "notFound": {
+    "title": "Không tìm thấy trang",
+    "backToDashboard": "Quay lại bảng điều khiển"
+  }
+}

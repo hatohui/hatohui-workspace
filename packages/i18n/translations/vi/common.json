@@ -1,0 +1,16 @@
+{
+  "loading": "Đang tải...",
+  "loadError": "Đã xảy ra lỗi. Vui lòng thử lại.",
+  "language": {
+    "label": "Đổi ngôn ngữ"
+  },
+  "errors": {
+    "unauthorized": "Bạn cần đăng nhập để thực hiện thao tác này.",
+    "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+    "notFound": "Không tìm thấy nội dung này.",
+    "network": "Không thể kết nối. Vui lòng kiểm tra kết nối mạng và thử lại.",
+    "server": "Đã xảy ra lỗi từ hệ thống. Vui lòng thử lại.",
+    "validation": "Vui lòng kiểm tra lại biểu mẫu và thử lại.",
+    "unknown": "Đã xảy ra lỗi. Vui lòng thử lại."
+  }
+}

@@ -19,6 +19,7 @@ function EditFriendPage() {
       submitLabel={t('friendForm.submitEdit')}
       initialFriend={data.data}
       submitting={updateFriend.isPending}
+      error={updateFriend.error}
       onSubmit={(dto) => updateFriend.mutate({ id, data: dto })}
     />
   );

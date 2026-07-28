@@ -1,4 +1,16 @@
 {
   "loading": "Loading...",
-  "loadError": "Something went wrong. Please try again."
+  "loadError": "Something went wrong. Please try again.",
+  "language": {
+    "label": "Change language"
+  },
+  "errors": {
+    "unauthorized": "You need to sign in to do that.",
+    "forbidden": "You don't have permission to do that.",
+    "notFound": "We couldn't find that.",
+    "network": "Couldn't connect. Check your internet connection and try again.",
+    "server": "Something went wrong on our end. Please try again.",
+    "validation": "Please check the form and try again.",
+    "unknown": "Something went wrong. Please try again."
+  }
 }

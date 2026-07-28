@@ -7,7 +7,7 @@
   "dashboard": {
     "title": "Upcoming birthdays",
     "empty": "No upcoming birthdays yet. Add a friend to get started.",
-    "turningAge": "Turning {{age}}"
+    "turningAge": "Turning {{age}} - {{date}}"
   },
   "friendForm": {
     "createTitle": "Add friend",
@@ -16,7 +16,7 @@
     "namePlaceholder": "Friend's name",
     "birthdayLabel": "Birthday",
     "birthdayPlaceholder": "Pick a date",
-    "includeYearLabel": "Include birth year",
+    "birthYearLabel": "Birth year (optional)",
     "preferAnonymousLabel": "Prefer anonymous",
     "avatarUploadLabel": "Upload photo",
     "avatarUploading": "Uploading...",

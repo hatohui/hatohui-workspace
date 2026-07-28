@@ -1,0 +1,16 @@
+{
+  "loading": "加载中...",
+  "loadError": "出现了一些问题，请重试。",
+  "language": {
+    "label": "切换语言"
+  },
+  "errors": {
+    "unauthorized": "请先登录后再进行此操作。",
+    "forbidden": "您没有权限执行此操作。",
+    "notFound": "未找到相关内容。",
+    "network": "无法连接，请检查网络连接后重试。",
+    "server": "服务器出现了问题，请重试。",
+    "validation": "请检查表单内容后重试。",
+    "unknown": "出现了一些问题，请重试。"
+  }
+}

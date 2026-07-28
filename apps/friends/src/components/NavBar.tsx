@@ -3,6 +3,7 @@ import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
 import { GoogleLoginButton, useAuth } from '@hatohui/libs';
 import routes from '../constants/routes';
+import LanguageSwitcher from './LanguageSwitcher';
 
 function NavBar() {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ function NavBar() {
           ) : (
             <GoogleLoginButton />
           ))}
+        <LanguageSwitcher />
       </div>
     </nav>
   );

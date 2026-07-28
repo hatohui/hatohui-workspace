@@ -1,0 +1,43 @@
+{
+  "navigation": {
+    "dashboard": "仪表盘",
+    "addFriend": "添加朋友",
+    "logout": "退出登录"
+  },
+  "dashboard": {
+    "title": "近期生日",
+    "empty": "暂无近期生日。添加朋友以开始使用。",
+    "turningAge": "即将 {{age}} 岁 - {{date}}"
+  },
+  "friendForm": {
+    "createTitle": "添加朋友",
+    "editTitle": "编辑朋友",
+    "nameLabel": "姓名",
+    "namePlaceholder": "朋友的姓名",
+    "birthdayLabel": "生日",
+    "birthdayPlaceholder": "选择日期",
+    "birthYearLabel": "出生年份（可选）",
+    "preferAnonymousLabel": "匿名显示",
+    "avatarUploadLabel": "上传照片",
+    "avatarUploading": "正在上传...",
+    "avatarUploadError": "照片上传失败，请重试。",
+    "avatarUploadAuthRequired": "请先登录后再上传照片，然后重试。",
+    "socialMediaLabel": "社交媒体",
+    "socialMediaAdd": "添加社交账号",
+    "socialMediaPlatformPlaceholder": "平台（例如 Twitter）",
+    "socialMediaHandlePlaceholder": "账号（例如 @username）",
+    "socialMediaRemove": "移除",
+    "submitCreate": "添加朋友",
+    "submitEdit": "保存更改"
+  },
+  "friendDetail": {
+    "editAction": "编辑",
+    "deleteAction": "删除",
+    "deleteConfirm": "删除这位朋友？此操作无法撤销。",
+    "backToDashboard": "返回仪表盘"
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "backToDashboard": "返回仪表盘"
+  }
+}

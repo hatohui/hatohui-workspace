@@ -1,0 +1,43 @@
+{
+  "navigation": {
+    "dashboard": "ダッシュボード",
+    "addFriend": "友達を追加",
+    "logout": "ログアウト"
+  },
+  "dashboard": {
+    "title": "近日中の誕生日",
+    "empty": "近日中の誕生日はまだありません。友達を追加してみましょう。",
+    "turningAge": "{{age}}歳になります - {{date}}"
+  },
+  "friendForm": {
+    "createTitle": "友達を追加",
+    "editTitle": "友達を編集",
+    "nameLabel": "名前",
+    "namePlaceholder": "友達の名前",
+    "birthdayLabel": "誕生日",
+    "birthdayPlaceholder": "日付を選択",
+    "birthYearLabel": "生まれた年（任意）",
+    "preferAnonymousLabel": "匿名にする",
+    "avatarUploadLabel": "写真をアップロード",
+    "avatarUploading": "アップロード中...",
+    "avatarUploadError": "写真をアップロードできませんでした。もう一度お試しください。",
+    "avatarUploadAuthRequired": "写真をアップロードするにはサインインしてから、もう一度お試しください。",
+    "socialMediaLabel": "SNS",
+    "socialMediaAdd": "SNSアカウントを追加",
+    "socialMediaPlatformPlaceholder": "プラットフォーム（例: Twitter）",
+    "socialMediaHandlePlaceholder": "アカウント名（例: @username）",
+    "socialMediaRemove": "削除",
+    "submitCreate": "友達を追加",
+    "submitEdit": "変更を保存"
+  },
+  "friendDetail": {
+    "editAction": "編集",
+    "deleteAction": "削除",
+    "deleteConfirm": "この友達を削除しますか？この操作は取り消せません。",
+    "backToDashboard": "ダッシュボードに戻る"
+  },
+  "notFound": {
+    "title": "ページが見つかりません",
+    "backToDashboard": "ダッシュボードに戻る"
+  }
+}

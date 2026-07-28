@@ -20,7 +20,7 @@ function Calendar({
       captionLayout={captionLayout}
       className={cn('p-3', className)}
       classNames={{
-        months: 'flex flex-col gap-4',
+        months: 'relative flex flex-col gap-4',
         month: 'flex flex-col gap-4',
         month_caption: 'flex justify-center items-center h-9 gap-1.5',
         caption_label: 'text-sm font-medium',

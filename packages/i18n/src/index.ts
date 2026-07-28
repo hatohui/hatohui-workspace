@@ -24,3 +24,30 @@ export function createI18n({
 
   return i18next;
 }
+
+const LOCALE_STORAGE_KEY = 'hatohui:locale';
+
+/**
+ * Picks the initial locale: a previously persisted choice, then the
+ * browser's language, then `fallback`. Client-only (no SSR).
+ */
+export function detectLocale(
+  supportedLocales: readonly string[],
+  fallback: string,
+): string {
+  const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
+  if (stored && supportedLocales.includes(stored)) {
+    return stored;
+  }
+
+  const browserLocale = window.navigator.language.slice(0, 2);
+  if (supportedLocales.includes(browserLocale)) {
+    return browserLocale;
+  }
+
+  return fallback;
+}
+
+export function persistLocale(locale: string): void {
+  window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+}

@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { Avatar, Button } from '@hatohui/ui';
 import type { FriendDto } from '@hatohui/models';
+import { getErrorCategory } from '@hatohui/libs';
 import { useDeleteFriend } from '../hooks/useDeleteFriend';
 import routes from '../constants/routes';
 
@@ -49,6 +50,11 @@ function FriendDetail({ friend }: Props) {
           {t('friendDetail.deleteAction')}
         </Button>
       </div>
+      {deleteFriend.error != null && (
+        <p role="alert" className="text-sm text-destructive">
+          {t(`common:errors.${getErrorCategory(deleteFriend.error)}`)}
+        </p>
+      )}
       <Link to={routes.dashboard} className="text-sm text-muted-foreground">
         {t('friendDetail.backToDashboard')}
       </Link>

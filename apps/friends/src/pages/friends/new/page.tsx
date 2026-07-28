@@ -11,6 +11,7 @@ function NewFriendPage() {
       title={t('friendForm.createTitle')}
       submitLabel={t('friendForm.submitCreate')}
       submitting={createFriend.isPending}
+      error={createFriend.error}
       onSubmit={(dto) => createFriend.mutate({ data: dto })}
     />
   );
