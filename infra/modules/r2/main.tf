@@ -4,9 +4,6 @@ resource "cloudflare_r2_bucket" "this" {
   location   = var.location
 }
 
-# cloudflare_r2_custom_domain does not support `terraform import`. The
-# pre-existing live binding for domain_name was deleted out-of-band so this
-# resource creates it fresh on first apply, instead of conflicting with it.
 resource "cloudflare_r2_custom_domain" "this" {
   account_id  = var.cloudflare_account_id
   bucket_name = cloudflare_r2_bucket.this.name
@@ -14,4 +11,20 @@ resource "cloudflare_r2_custom_domain" "this" {
   zone_id     = var.zone_id
   enabled     = true
   min_tls     = "1.2"
+}
+
+resource "cloudflare_r2_bucket_cors" "this" {
+  count = length(var.cors_allowed_origins) > 0 ? 1 : 0
+
+  account_id  = var.cloudflare_account_id
+  bucket_name = cloudflare_r2_bucket.this.name
+  rules = [{
+    id = "frontend-presigned-uploads"
+    allowed = {
+      methods = ["GET", "PUT"]
+      origins = var.cors_allowed_origins
+      headers = ["content-type"]
+    }
+    max_age_seconds = 3600
+  }]
 }

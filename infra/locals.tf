@@ -58,4 +58,10 @@ locals {
   frontend_apps       = ["www", "friends", "art", "travel", "workspace"]
   frontend_dev_ports  = range(5173, 5173 + length(local.frontend_apps))
   frontend_dev_origin = { for i, app in local.frontend_apps : app => "http://localhost:${local.frontend_dev_ports[i]}" }
+
+  frontend_origins = concat(
+    ["https://${var.cloudflare_zone_name}"],
+    [for app in local.frontend_apps : "https://${app}.${var.cloudflare_zone_name}"],
+    [for app in local.frontend_apps : local.frontend_dev_origin[app]]
+  )
 }

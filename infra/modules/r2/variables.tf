@@ -23,3 +23,9 @@ variable "location" {
   type        = string
   default     = "wnam"
 }
+
+variable "cors_allowed_origins" {
+  description = "Origins allowed to PUT/GET objects directly against this bucket via presigned URLs"
+  type        = list(string)
+  default     = []
+}

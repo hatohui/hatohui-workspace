@@ -201,6 +201,7 @@ module "assets_r2" {
   zone_id               = module.dns_api_record.zone_id
   bucket_name           = "hatohui"
   domain_name           = "assets.${var.cloudflare_zone_name}"
+  cors_allowed_origins  = local.frontend_origins
 }
 
 module "github_ci" {
