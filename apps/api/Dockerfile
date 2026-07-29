@@ -9,6 +9,7 @@ COPY packages/i18n/package.json packages/i18n/package.json
 COPY packages/libs/package.json packages/libs/package.json
 COPY packages/models/package.json packages/models/package.json
 COPY packages/ui/package.json packages/ui/package.json
+COPY packages/tools/package.json packages/tools/package.json
 RUN bun install --frozen-lockfile
 
 COPY apps/api apps/api
