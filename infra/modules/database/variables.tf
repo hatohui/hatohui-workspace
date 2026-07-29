@@ -8,3 +8,9 @@ variable "branch" {
   type        = string
   default     = "main"
 }
+
+variable "region_id" {
+  description = "The Neon region ID to provision the project in (e.g. aws-ap-southeast-1)"
+  type        = string
+  default     = "aws-ap-southeast-1"
+}
