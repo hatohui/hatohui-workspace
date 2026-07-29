@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { UpcomingFriendDtoSocialMedias } from './upcomingFriendDtoSocialMedias';
+import type { UpcomingFriendDtoVisibility } from './upcomingFriendDtoVisibility';
 
 export interface UpcomingFriendDto {
   /** Unique friend id */
@@ -29,11 +30,21 @@ export interface UpcomingFriendDto {
   /** @nullable */
   socialMedias: UpcomingFriendDtoSocialMedias;
   preferAnonymous: boolean;
+  visibility: UpcomingFriendDtoVisibility;
   /**
      * Public URL of the friend's avatar image
      * @nullable
      */
   avatarUrl: string | null;
+  /**
+     * Id of the account that added this entry, if any
+     * @nullable
+     */
+  addedById: string | null;
+  /** Whether this entry is already claimed by an account */
+  isAssociated: boolean;
+  /** Whether the requesting viewer is allowed to edit/delete this entry */
+  canEdit: boolean;
   createdAt: string;
   updatedAt: string;
   /**

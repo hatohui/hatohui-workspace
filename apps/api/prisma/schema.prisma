@@ -13,14 +13,49 @@ model Message {
   createdAt DateTime @default(now())
 }
 
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum OnboardingStatus {
+  PENDING
+  COMPLETED
+  SKIPPED
+}
+
 model User {
-  id        String   @id @default(cuid())
-  googleId  String   @unique
-  email     String   @unique
-  name      String
-  avatarUrl String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String             @id @default(cuid())
+  googleId          String             @unique
+  email             String             @unique
+  name              String
+  avatarUrl         String?
+  role              Role               @default(MEMBER)
+  onboardingStatus  OnboardingStatus   @default(PENDING)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  association       Association?
+  addedEntries      BirthdayDetails[]  @relation("AddedBy")
+  connections       Connection[]
+}
+
+model AppConfig {
+  id         String @id @default("singleton")
+  adminEmail String
+}
+
+/// One-to-one link between a logged-in Account and the BirthdayDetails entry
+/// that represents them. Once created, it is permanent — see BirthdayDetails
+/// service logic: "deleting" an associated entry only clears its fields, it
+/// never removes the row or the association, so the slot can't be re-claimed.
+model Association {
+  id                String          @id @default(cuid())
+  userId            String          @unique
+  user              User            @relation(fields: [userId], references: [id])
+  birthdayDetailsId String          @unique
+  birthdayDetails   BirthdayDetails @relation(fields: [birthdayDetailsId], references: [id])
+  createdAt         DateTime        @default(now())
 }
 
 model SocialPlatform {
@@ -32,17 +67,49 @@ model SocialPlatform {
   updatedAt DateTime @updatedAt
 }
 
-model Friend {
-  id              String   @id @default(cuid())
+enum FriendVisibility {
+  PUBLIC
+  FRIENDS_ONLY
+  NONE
+}
+
+/// A birthday/profile entry. May or may not be linked to a logged-in Account
+/// (via Association) — most entries are added by someone about a third party
+/// and stay unassociated forever; only entries created via onboarding (or
+/// later claimed) end up associated.
+model BirthdayDetails {
+  id              String           @id @default(cuid())
   name            String
   birthYear       Int?
   birthMonth      Int?
   birthDay        Int?
   socialMedias    Json?
-  preferAnonymous Boolean  @default(true)
+  preferAnonymous Boolean          @default(true)
+  visibility      FriendVisibility @default(PUBLIC)
   avatarUrl       String?
   avatarKey       String?
   gcalEventId     String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  addedById       String?
+  addedBy         User?            @relation("AddedBy", fields: [addedById], references: [id])
+
+  association     Association?
+  connections     Connection[]
+}
+
+/// Many-to-many "I know this entry" link recorded during onboarding's
+/// add-friends step. Links an Account to an existing BirthdayDetails entry
+/// (not another Account) since most entries in the directory don't have an
+/// Account of their own.
+model Connection {
+  id                String          @id @default(cuid())
+  userId            String
+  user              User            @relation(fields: [userId], references: [id])
+  birthdayDetailsId String
+  birthdayDetails   BirthdayDetails @relation(fields: [birthdayDetailsId], references: [id])
+  createdAt         DateTime        @default(now())
+
+  @@unique([userId, birthdayDetailsId])
 }

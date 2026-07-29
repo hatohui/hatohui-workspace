@@ -1,13 +1,49 @@
 {
   "navigation": {
-    "dashboard": "仪表盘",
+    "dashboard": "生日",
     "addFriend": "添加朋友",
-    "logout": "退出登录"
+    "logout": "退出登录",
+    "settings": "设置",
+    "expandNav": "展开侧边栏",
+    "collapseNav": "收起侧边栏"
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "profile": {
+      "title": "个人资料",
+      "stub": "个人资料设置即将推出。"
+    },
+    "general": {
+      "title": "通用",
+      "stub": "更多设置即将推出。"
+    }
+  },
+  "welcome": {
+    "title": "朋友的温馨小巢",
+    "subtitle": "记住你在乎的每一个人，一次一份温暖的提醒。"
   },
   "dashboard": {
     "title": "近期生日",
     "empty": "暂无近期生日。添加朋友以开始使用。",
-    "turningAge": "即将 {{age}} 岁 - {{date}}"
+    "turningAge": "即将 {{age}} 岁 - {{date}}",
+    "viewToggle": {
+      "calendar": "日历",
+      "timeline": "时间线"
+    },
+    "search": {
+      "placeholder": "按姓名或日期搜索"
+    },
+    "groupBy": {
+      "label": "分组方式",
+      "month": "月份",
+      "age": "年龄",
+      "year": "出生年份",
+      "none": "不分组"
+    },
+    "calendar": {
+      "more": "还有 {{count}} 项"
+    }
   },
   "friendForm": {
     "createTitle": "添加朋友",
@@ -18,6 +54,12 @@
     "birthdayPlaceholder": "选择日期",
     "birthYearLabel": "出生年份（可选）",
     "preferAnonymousLabel": "匿名显示",
+    "visibilityLabel": "可见范围",
+    "visibilityOptions": {
+      "PUBLIC": "公开",
+      "FRIENDS_ONLY": "仅朋友可见",
+      "NONE": "不公开"
+    },
     "avatarUploadLabel": "上传照片",
     "avatarUploading": "正在上传...",
     "avatarUploadError": "照片上传失败，请重试。",
@@ -28,13 +70,45 @@
     "socialMediaHandlePlaceholder": "账号（例如 @username）",
     "socialMediaRemove": "移除",
     "submitCreate": "添加朋友",
-    "submitEdit": "保存更改"
+    "submitEdit": "保存更改",
+    "addMyself": "这是我 — 添加我自己"
   },
   "friendDetail": {
     "editAction": "编辑",
     "deleteAction": "删除",
     "deleteConfirm": "删除这位朋友？此操作无法撤销。",
     "backToDashboard": "返回仪表盘"
+  },
+  "onboarding": {
+    "title": "欢迎",
+    "skip": "跳过",
+    "next": "下一步",
+    "back": "上一步",
+    "optIn": {
+      "question": "您想加入这个列表吗？",
+      "note": "您可以选择谁能看到您的生日。",
+      "yes": "是",
+      "no": "否"
+    },
+    "visibility": {
+      "title": "谁可以看到您的生日？"
+    },
+    "birthday": {
+      "title": "这是您的生日吗？",
+      "confirmedFromGoogle": "这是从您的 Google 账户获取的。",
+      "confirm": "是的，没错",
+      "enterManually": "手动输入"
+    },
+    "connections": {
+      "title": "您已经认识这里的人了吗？",
+      "searchPlaceholder": "搜索人员...",
+      "empty": "未找到匹配项。",
+      "selectedCount": "已选择 {{count}} 人"
+    },
+    "complete": {
+      "title": "设置完成！",
+      "cta": "前往仪表盘"
+    }
   },
   "notFound": {
     "title": "页面未找到",

@@ -4,6 +4,9 @@
   "language": {
     "label": "言語を切り替える"
   },
+  "auth": {
+    "login": "ログイン"
+  },
   "errors": {
     "unauthorized": "この操作を行うにはサインインが必要です。",
     "forbidden": "この操作を行う権限がありません。",

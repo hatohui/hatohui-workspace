@@ -1,13 +1,49 @@
 {
   "navigation": {
-    "dashboard": "Bảng điều khiển",
+    "dashboard": "Sinh nhật",
     "addFriend": "Thêm bạn bè",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "settings": "Cài đặt",
+    "expandNav": "Mở rộng thanh bên",
+    "collapseNav": "Thu gọn thanh bên"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "profile": {
+      "title": "Hồ sơ",
+      "stub": "Cài đặt hồ sơ sẽ sớm ra mắt."
+    },
+    "general": {
+      "title": "Chung",
+      "stub": "Thêm cài đặt sẽ sớm ra mắt."
+    }
+  },
+  "welcome": {
+    "title": "Một tổ ấm nhỏ cho những người bạn",
+    "subtitle": "Luôn nhớ đến những người bạn quan tâm, từng lời nhắc nhở ấm áp một."
   },
   "dashboard": {
     "title": "Sinh nhật sắp tới",
     "empty": "Chưa có sinh nhật sắp tới nào. Hãy thêm bạn bè để bắt đầu.",
-    "turningAge": "Tròn {{age}} tuổi - {{date}}"
+    "turningAge": "Tròn {{age}} tuổi - {{date}}",
+    "viewToggle": {
+      "calendar": "Lịch",
+      "timeline": "Dòng thời gian"
+    },
+    "search": {
+      "placeholder": "Tìm theo tên hoặc ngày"
+    },
+    "groupBy": {
+      "label": "Nhóm theo",
+      "month": "Tháng",
+      "age": "Tuổi",
+      "year": "Năm sinh",
+      "none": "Không nhóm"
+    },
+    "calendar": {
+      "more": "+{{count}} nữa"
+    }
   },
   "friendForm": {
     "createTitle": "Thêm bạn bè",
@@ -18,6 +54,12 @@
     "birthdayPlaceholder": "Chọn ngày",
     "birthYearLabel": "Năm sinh (tùy chọn)",
     "preferAnonymousLabel": "Ẩn danh",
+    "visibilityLabel": "Ai có thể xem",
+    "visibilityOptions": {
+      "PUBLIC": "Công khai",
+      "FRIENDS_ONLY": "Chỉ bạn bè",
+      "NONE": "Riêng tư"
+    },
     "avatarUploadLabel": "Tải ảnh lên",
     "avatarUploading": "Đang tải lên...",
     "avatarUploadError": "Không thể tải ảnh lên. Vui lòng thử lại.",
@@ -28,13 +70,45 @@
     "socialMediaHandlePlaceholder": "Tên tài khoản (vd: @username)",
     "socialMediaRemove": "Xóa",
     "submitCreate": "Thêm bạn bè",
-    "submitEdit": "Lưu thay đổi"
+    "submitEdit": "Lưu thay đổi",
+    "addMyself": "Đây là tôi — thêm chính mình"
   },
   "friendDetail": {
     "editAction": "Chỉnh sửa",
     "deleteAction": "Xóa",
     "deleteConfirm": "Xóa người bạn này? Hành động này không thể hoàn tác.",
     "backToDashboard": "Quay lại bảng điều khiển"
+  },
+  "onboarding": {
+    "title": "Chào mừng",
+    "skip": "Bỏ qua",
+    "next": "Tiếp theo",
+    "back": "Quay lại",
+    "optIn": {
+      "question": "Bạn có muốn tham gia danh sách không?",
+      "note": "Bạn có thể chọn ai được xem sinh nhật của mình.",
+      "yes": "Có",
+      "no": "Không"
+    },
+    "visibility": {
+      "title": "Ai có thể xem sinh nhật của bạn?"
+    },
+    "birthday": {
+      "title": "Đây có phải sinh nhật của bạn không?",
+      "confirmedFromGoogle": "Chúng tôi lấy thông tin này từ tài khoản Google của bạn.",
+      "confirm": "Đúng vậy",
+      "enterManually": "Nhập thủ công"
+    },
+    "connections": {
+      "title": "Bạn đã quen ai ở đây chưa?",
+      "searchPlaceholder": "Tìm kiếm mọi người...",
+      "empty": "Không tìm thấy kết quả phù hợp.",
+      "selectedCount": "Đã chọn {{count}}"
+    },
+    "complete": {
+      "title": "Xong rồi!",
+      "cta": "Đến bảng điều khiển"
+    }
   },
   "notFound": {
     "title": "Không tìm thấy trang",

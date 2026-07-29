@@ -10,11 +10,18 @@ tasks:
       - bun install
 
   env:
-    desc: 'Copy .env.example to .env for every app (skips files that already exist)'
+    desc: 'Copy .env.example to .env for every app (skips files that already exist), then sync real API credentials into apps/api/.env from Doppler'
     cmds:
       - for: { var: DIRS_TO_INIT }
         cmd: |
           if [ ! -f "{{.ITEM}}/.env" ]; then cp "{{.ITEM}}/.env.example" "{{.ITEM}}/.env"; fi
+      - task: env-secrets
+
+  env-secrets:
+    internal: true
+    desc: 'Fetch GOOGLE_OAUTH_CLIENT_ID and EMAIL_API_KEY from Doppler (tf config) into apps/api/.env; generate a local SESSION_JWT_SECRET. Local infra vars (DATABASE_URL, REDIS_URL, R2_*) stay pointed at docker-compose.'
+    cmds:
+      - bun run scripts/sync-local-env.ts
 
   terraform:
     internal: true

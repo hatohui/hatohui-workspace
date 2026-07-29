@@ -8,4 +8,6 @@ export * from './components/ui/avatar';
 export * from './components/ui/avatar-upload';
 export * from './components/ui/popover';
 export * from './components/ui/calendar';
+export * from './components/ui/dialog';
+export * from './components/ui/tooltip';
 export * from './lib/utils';

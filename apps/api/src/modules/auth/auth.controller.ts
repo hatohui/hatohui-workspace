@@ -56,5 +56,7 @@ function toUserDto(user: User): UserDto {
     email: user.email,
     name: user.name,
     avatarUrl: user.avatarUrl,
+    role: user.role,
+    onboardingStatus: user.onboardingStatus,
   };
 }

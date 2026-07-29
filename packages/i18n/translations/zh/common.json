@@ -4,6 +4,9 @@
   "language": {
     "label": "切换语言"
   },
+  "auth": {
+    "login": "登录"
+  },
   "errors": {
     "unauthorized": "请先登录后再进行此操作。",
     "forbidden": "您没有权限执行此操作。",

@@ -4,6 +4,9 @@
   "language": {
     "label": "Đổi ngôn ngữ"
   },
+  "auth": {
+    "login": "Đăng nhập"
+  },
   "errors": {
     "unauthorized": "Bạn cần đăng nhập để thực hiện thao tác này.",
     "forbidden": "Bạn không có quyền thực hiện thao tác này.",

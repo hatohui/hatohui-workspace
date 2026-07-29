@@ -6,22 +6,37 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './addConnectionsDto';
 export * from './createFriendDto';
 export * from './createFriendDtoSocialMedias';
+export * from './createFriendDtoVisibility';
 export * from './friendDto';
 export * from './friendDtoSocialMedias';
+export * from './friendDtoVisibility';
 export * from './googleLoginDto';
 export * from './healthDto';
 export * from './healthDtoDb';
 export * from './healthDtoRedis';
 export * from './healthDtoStatus';
 export * from './messageDto';
+export * from './onboardingStateDto';
+export * from './onboardingStateDtoOnboardingStatus';
+export * from './optInDto';
+export * from './paginatedFriendsDto';
+export * from './searchFriendsParams';
+export * from './setBirthdayDto';
+export * from './setVisibilityDto';
+export * from './setVisibilityDtoVisibility';
 export * from './signedImageDto';
 export * from './signImageDto';
 export * from './signImageDtoContentType';
 export * from './socialPlatformDto';
 export * from './upcomingFriendDto';
 export * from './upcomingFriendDtoSocialMedias';
+export * from './upcomingFriendDtoVisibility';
 export * from './updateFriendDto';
 export * from './updateFriendDtoSocialMedias';
+export * from './updateFriendDtoVisibility';
 export * from './userDto';
+export * from './userDtoOnboardingStatus';
+export * from './userDtoRole';

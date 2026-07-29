@@ -10,13 +10,15 @@ import friends_ja from '@hatohui/i18n/translations/ja/friends.json';
 
 export const SUPPORTED_LOCALES = ['en', 'vi', 'zh', 'ja'] as const;
 
-export const LANGUAGE_NAMES: Record<(typeof SUPPORTED_LOCALES)[number], string> =
-  {
-    en: 'English',
-    vi: 'Tiếng Việt',
-    zh: '中文',
-    ja: '日本語',
-  };
+export const LANGUAGE_NAMES: Record<
+  (typeof SUPPORTED_LOCALES)[number],
+  string
+> = {
+  en: 'English',
+  vi: 'Tiếng Việt',
+  zh: '中文',
+  ja: '日本語',
+};
 
 createI18n({
   resources: {

@@ -11,6 +11,7 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { HealthModule } from '@/modules/health/health.module';
 import { ImagesModule } from '@/modules/images/images.module';
 import { PlatformsModule } from '@/modules/platforms/platforms.module';
+import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PlatformsModule } from '@/modules/platforms/platforms.module';
     HealthModule,
     ImagesModule,
     PlatformsModule,
+    OnboardingModule,
   ],
 })
 export class AppModule {}

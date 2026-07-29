@@ -10,6 +10,7 @@ interface GoogleAccountsId {
     callback: (response: GoogleCredentialResponse) => void;
   }): void;
   renderButton(parent: HTMLElement, options: Record<string, unknown>): void;
+  prompt(): void;
 }
 
 declare global {

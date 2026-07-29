@@ -11,6 +11,7 @@ export function buildOpenApiDocument(app: INestApplication) {
     .addTag('health')
     .addTag('images')
     .addTag('platforms')
+    .addTag('onboarding')
     .build();
 
   return SwaggerModule.createDocument(app, config);

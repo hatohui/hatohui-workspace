@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { CreateFriendDtoSocialMedias } from './createFriendDtoSocialMedias';
+import type { CreateFriendDtoVisibility } from './createFriendDtoVisibility';
 
 export interface CreateFriendDto {
   name: string;
@@ -14,6 +15,7 @@ export interface CreateFriendDto {
   birthDay?: number;
   socialMedias?: CreateFriendDtoSocialMedias;
   preferAnonymous?: boolean;
+  visibility?: CreateFriendDtoVisibility;
   /** Object key returned by POST /images/sign, after uploading the avatar file to storage */
   avatarKey?: string;
 }

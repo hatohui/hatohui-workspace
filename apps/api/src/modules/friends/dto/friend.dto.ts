@@ -1,6 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsObject,
@@ -9,6 +10,9 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import { FriendVisibility } from '@prisma/client';
+
+export { FriendVisibility };
 
 export class FriendDto {
   @ApiProperty({ example: 'clx1234567890', description: 'Unique friend id' })
@@ -40,12 +44,32 @@ export class FriendDto {
   @ApiProperty({ example: true, default: true })
   preferAnonymous: boolean;
 
+  @ApiProperty({ enum: FriendVisibility, example: FriendVisibility.PUBLIC })
+  visibility: FriendVisibility;
+
   @ApiProperty({
     example: 'http://localhost:9000/hatohui-dev/images/abc123.jpg',
     nullable: true,
     description: "Public URL of the friend's avatar image",
   })
   avatarUrl: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Id of the account that added this entry, if any',
+  })
+  addedById: string | null;
+
+  @ApiProperty({
+    description: 'Whether this entry is already claimed by an account',
+  })
+  isAssociated: boolean;
+
+  @ApiProperty({
+    description:
+      'Whether the requesting viewer is allowed to edit/delete this entry',
+  })
+  canEdit: boolean;
 
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   createdAt: string;
@@ -109,6 +133,15 @@ export class CreateFriendDto {
   @IsOptional()
   @IsBoolean()
   preferAnonymous?: boolean;
+
+  @ApiProperty({
+    enum: FriendVisibility,
+    default: FriendVisibility.PUBLIC,
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(FriendVisibility)
+  visibility?: FriendVisibility;
 
   @ApiProperty({
     example: 'images/abc123.jpg',

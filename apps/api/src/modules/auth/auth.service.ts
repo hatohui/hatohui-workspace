@@ -3,7 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { Database } from '@/libs/db';
 import type { Env } from '@/config/env';
-import type { User } from '@prisma/client';
+import { Role, type User } from '@prisma/client';
+
+const APP_CONFIG_SINGLETON_ID = 'singleton';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +33,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Google ID token');
     }
 
+    const appConfig = await this.db.appConfig.findUnique({
+      where: { id: APP_CONFIG_SINGLETON_ID },
+    });
+    const role: Role =
+      appConfig?.adminEmail === payload.email ? Role.ADMIN : Role.MEMBER;
+
     return this.db.user.upsert({
       where: { googleId: payload.sub },
       create: {
@@ -38,11 +46,13 @@ export class AuthService {
         email: payload.email,
         name: payload.name ?? payload.email,
         avatarUrl: payload.picture ?? null,
+        role,
       },
       update: {
         email: payload.email,
         name: payload.name ?? payload.email,
         avatarUrl: payload.picture ?? null,
+        role,
       },
     });
   }

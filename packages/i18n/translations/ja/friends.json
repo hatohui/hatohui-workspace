@@ -1,13 +1,49 @@
 {
   "navigation": {
-    "dashboard": "ダッシュボード",
+    "dashboard": "誕生日",
     "addFriend": "友達を追加",
-    "logout": "ログアウト"
+    "logout": "ログアウト",
+    "settings": "設定",
+    "expandNav": "サイドバーを展開",
+    "collapseNav": "サイドバーを折りたたむ"
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "profile": {
+      "title": "プロフィール",
+      "stub": "プロフィール設定は近日公開予定です。"
+    },
+    "general": {
+      "title": "一般",
+      "stub": "その他の設定は近日公開予定です。"
+    }
+  },
+  "welcome": {
+    "title": "友達のための、あたたかな巣",
+    "subtitle": "大切な人たちのことを、やさしく思い出せるように。"
   },
   "dashboard": {
     "title": "近日中の誕生日",
     "empty": "近日中の誕生日はまだありません。友達を追加してみましょう。",
-    "turningAge": "{{age}}歳になります - {{date}}"
+    "turningAge": "{{age}}歳になります - {{date}}",
+    "viewToggle": {
+      "calendar": "カレンダー",
+      "timeline": "タイムライン"
+    },
+    "search": {
+      "placeholder": "名前または日付で検索"
+    },
+    "groupBy": {
+      "label": "グループ化",
+      "month": "月",
+      "age": "年齢",
+      "year": "生まれた年",
+      "none": "なし"
+    },
+    "calendar": {
+      "more": "他{{count}}件"
+    }
   },
   "friendForm": {
     "createTitle": "友達を追加",
@@ -18,6 +54,12 @@
     "birthdayPlaceholder": "日付を選択",
     "birthYearLabel": "生まれた年（任意）",
     "preferAnonymousLabel": "匿名にする",
+    "visibilityLabel": "公開範囲",
+    "visibilityOptions": {
+      "PUBLIC": "全員に公開",
+      "FRIENDS_ONLY": "友達のみ",
+      "NONE": "非公開"
+    },
     "avatarUploadLabel": "写真をアップロード",
     "avatarUploading": "アップロード中...",
     "avatarUploadError": "写真をアップロードできませんでした。もう一度お試しください。",
@@ -28,13 +70,45 @@
     "socialMediaHandlePlaceholder": "アカウント名（例: @username）",
     "socialMediaRemove": "削除",
     "submitCreate": "友達を追加",
-    "submitEdit": "変更を保存"
+    "submitEdit": "変更を保存",
+    "addMyself": "自分のことです — 自分を追加する"
   },
   "friendDetail": {
     "editAction": "編集",
     "deleteAction": "削除",
     "deleteConfirm": "この友達を削除しますか？この操作は取り消せません。",
     "backToDashboard": "ダッシュボードに戻る"
+  },
+  "onboarding": {
+    "title": "ようこそ",
+    "skip": "スキップ",
+    "next": "次へ",
+    "back": "戻る",
+    "optIn": {
+      "question": "リストに参加しますか？",
+      "note": "誕生日を誰に見せるかは自分で選べます。",
+      "yes": "はい",
+      "no": "いいえ"
+    },
+    "visibility": {
+      "title": "誕生日を誰に見せますか？"
+    },
+    "birthday": {
+      "title": "これはあなたの誕生日ですか？",
+      "confirmedFromGoogle": "Googleアカウントから取得しました。",
+      "confirm": "はい、合っています",
+      "enterManually": "手動で入力する"
+    },
+    "connections": {
+      "title": "すでに知っている人はいますか？",
+      "searchPlaceholder": "名前で検索...",
+      "empty": "該当する人が見つかりません。",
+      "selectedCount": "{{count}}人選択中"
+    },
+    "complete": {
+      "title": "設定が完了しました！",
+      "cta": "ダッシュボードへ"
+    }
   },
   "notFound": {
     "title": "ページが見つかりません",

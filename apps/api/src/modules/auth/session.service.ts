@@ -13,7 +13,7 @@ interface SessionPayload {
 
 @Injectable()
 export class SessionService {
-  constructor(private readonly config: ConfigService<Env, true>) { }
+  constructor(private readonly config: ConfigService<Env, true>) {}
 
   sign(userId: string): string {
     const secret: string = this.config.get('SESSION_JWT_SECRET', {

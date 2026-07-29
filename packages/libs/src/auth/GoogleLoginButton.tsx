@@ -1,34 +1,21 @@
-import { useEffect, useRef } from 'react';
-import { useAuth } from './AuthContext';
-import { loadGoogleIdentityScript } from './google-identity';
+import { useTranslation } from '@hatohui/i18n';
+import { Button } from '@hatohui/ui';
+import { useGoogleIdentity } from './useGoogleIdentity';
+import GoogleIcon from './GoogleIcon';
 
 export function GoogleLoginButton() {
-  const { googleClientId, loginWithGoogle } = useAuth();
-  const buttonRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation('common');
+  const { isReady, promptLogin } = useGoogleIdentity();
 
-  useEffect(() => {
-    let cancelled = false;
-
-    void loadGoogleIdentityScript().then(() => {
-      if (cancelled || !buttonRef.current || !window.google) {
-        return;
-      }
-      window.google.accounts.id.initialize({
-        client_id: googleClientId,
-        callback: (response) => {
-          void loginWithGoogle(response.credential);
-        },
-      });
-      window.google.accounts.id.renderButton(buttonRef.current, {
-        theme: 'outline',
-        size: 'large',
-      });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [googleClientId, loginWithGoogle]);
-
-  return <div ref={buttonRef} />;
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      disabled={!isReady}
+      onClick={promptLogin}
+    >
+      <GoogleIcon />
+      {t('auth.login')}
+    </Button>
+  );
 }

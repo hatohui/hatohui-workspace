@@ -4,6 +4,9 @@
   "language": {
     "label": "Change language"
   },
+  "auth": {
+    "login": "Log in"
+  },
   "errors": {
     "unauthorized": "You need to sign in to do that.",
     "forbidden": "You don't have permission to do that.",
