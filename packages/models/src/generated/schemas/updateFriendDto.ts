@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { UpdateFriendDtoSocialMedias } from './updateFriendDtoSocialMedias';
+import type { UpdateFriendDtoVisibility } from './updateFriendDtoVisibility';
 
 export interface UpdateFriendDto {
   name?: string;
@@ -14,6 +15,7 @@ export interface UpdateFriendDto {
   birthDay?: number;
   socialMedias?: UpdateFriendDtoSocialMedias;
   preferAnonymous?: boolean;
+  visibility?: UpdateFriendDtoVisibility;
   /** Object key returned by POST /images/sign, after uploading the avatar file to storage */
   avatarKey?: string;
 }

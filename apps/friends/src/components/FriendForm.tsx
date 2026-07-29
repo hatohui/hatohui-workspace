@@ -2,11 +2,13 @@ import { useState, type FormEvent } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Checkbox, Input, Label } from '@hatohui/ui';
 import type { CreateFriendDto, FriendDto } from '@hatohui/models';
+import type { Visibility } from '../constants/visibility';
 import { getErrorCategory } from '@hatohui/libs';
 import { useSocialMediaFields } from '../hooks/useSocialMediaFields';
 import SocialMediaFieldList from './SocialMediaFieldList';
 import BirthdayFields from './BirthdayFields';
 import FriendAvatarField from './FriendAvatarField';
+import VisibilityField from './VisibilityField';
 
 type Props = {
   title: string;
@@ -41,6 +43,9 @@ function FriendForm({
   const [preferAnonymous, setPreferAnonymous] = useState(
     initialFriend?.preferAnonymous ?? true,
   );
+  const [visibility, setVisibility] = useState<Visibility>(
+    initialFriend?.visibility ?? 'PUBLIC',
+  );
   const socialFields = useSocialMediaFields(
     (initialFriend?.socialMedias as Record<string, string> | null) ?? {},
   );
@@ -53,6 +58,7 @@ function FriendForm({
       birthMonth: birthMonth ? Number(birthMonth) : undefined,
       birthDay: birthDay ? Number(birthDay) : undefined,
       preferAnonymous,
+      visibility,
       socialMedias: socialFields.toSocialMedias(),
       avatarKey,
     });
@@ -97,6 +103,7 @@ function FriendForm({
           {t('friendForm.preferAnonymousLabel')}
         </Label>
       </div>
+      <VisibilityField value={visibility} onChange={setVisibility} />
       <SocialMediaFieldList
         rows={socialFields.rows}
         onAdd={socialFields.addRow}

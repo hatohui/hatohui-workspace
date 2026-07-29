@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import type { Request, Response, NextFunction } from 'express';
 import { AppModule } from '@/app.module';
 import { buildOpenApiDocument } from '@/libs/openapi';
+import { printBanner } from '@/libs/banner';
+import { LoggingInterceptor } from '@/libs/logging-interceptor';
 import type { Env } from '@/config/env';
 
 async function bootstrap() {
@@ -17,6 +19,7 @@ async function bootstrap() {
     origin: config.get('CORS_ORIGIN', { infer: true }),
     credentials: true,
   });
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -40,6 +43,8 @@ async function bootstrap() {
     apiReference({ content: document, pageTitle: 'Hatohui API Reference' }),
   );
 
-  await app.listen(config.get('PORT', { infer: true }));
+  const port = config.get('PORT', { infer: true });
+  await app.listen(port);
+  printBanner(port);
 }
 void bootstrap();

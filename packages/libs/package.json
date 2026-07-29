@@ -9,7 +9,9 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@hatohui/models": "workspace:*"
+    "@hatohui/i18n": "workspace:*",
+    "@hatohui/models": "workspace:*",
+    "@hatohui/ui": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

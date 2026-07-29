@@ -27,6 +27,8 @@ import type {
 import type {
   CreateFriendDto,
   FriendDto,
+  PaginatedFriendsDto,
+  SearchFriendsParams,
   UpcomingFriendDto,
   UpdateFriendDto
 } from '../schemas';
@@ -359,6 +361,125 @@ export function useUpcomingFriends<TData = Awaited<ReturnType<typeof upcomingFri
 
 
 
+export type searchFriendsResponse200 = {
+  data: PaginatedFriendsDto
+  status: 200
+}
+
+export type searchFriendsResponseSuccess = (searchFriendsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type searchFriendsResponse = (searchFriendsResponseSuccess)
+
+export const getSearchFriendsUrl = (params?: SearchFriendsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/friends/search?${stringifiedParams}` : `/friends/search`
+}
+
+/**
+ * @summary Paginated, name-filtered friend search (used by the onboarding connections picker)
+ */
+export const searchFriends = async (params?: SearchFriendsParams, options?: RequestInit): Promise<searchFriendsResponse> => {
+
+  return customFetch<searchFriendsResponse>(getSearchFriendsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSearchFriendsQueryKey = (params?: SearchFriendsParams,) => {
+    return [
+    `/friends/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSearchFriendsQueryOptions = <TData = Awaited<ReturnType<typeof searchFriends>>, TError = unknown>(params?: SearchFriendsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchFriends>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSearchFriendsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchFriends>>> = ({ signal }) => searchFriends(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof searchFriends>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SearchFriendsQueryResult = NonNullable<Awaited<ReturnType<typeof searchFriends>>>
+export type SearchFriendsQueryError = unknown
+
+
+export function useSearchFriends<TData = Awaited<ReturnType<typeof searchFriends>>, TError = unknown>(
+ params: undefined |  SearchFriendsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchFriends>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchFriends>>,
+          TError,
+          Awaited<ReturnType<typeof searchFriends>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSearchFriends<TData = Awaited<ReturnType<typeof searchFriends>>, TError = unknown>(
+ params?: SearchFriendsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchFriends>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchFriends>>,
+          TError,
+          Awaited<ReturnType<typeof searchFriends>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSearchFriends<TData = Awaited<ReturnType<typeof searchFriends>>, TError = unknown>(
+ params?: SearchFriendsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchFriends>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Paginated, name-filtered friend search (used by the onboarding connections picker)
+ */
+
+export function useSearchFriends<TData = Awaited<ReturnType<typeof searchFriends>>, TError = unknown>(
+ params?: SearchFriendsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchFriends>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSearchFriendsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export type friendResponse200 = {
   data: FriendDto
   status: 200
@@ -635,4 +756,86 @@ export const useDeleteFriend = <TError = unknown,
         TContext
       > => {
       return useMutation(getDeleteFriendMutationOptions(options), queryClient);
+    }
+    export type claimFriendResponse200 = {
+  data: FriendDto
+  status: 200
+}
+
+export type claimFriendResponseSuccess = (claimFriendResponse200) & {
+  headers: Headers;
+};
+;
+
+export type claimFriendResponse = (claimFriendResponseSuccess)
+
+export const getClaimFriendUrl = (id: string,) => {
+
+
+
+
+  return `/friends/${id}/claim`
+}
+
+/**
+ * @summary Claim an unassociated friend entry as your own account
+ */
+export const claimFriend = async (id: string, options?: RequestInit): Promise<claimFriendResponse> => {
+
+  return customFetch<claimFriendResponse>(getClaimFriendUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getClaimFriendMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof claimFriend>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof claimFriend>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['claimFriend'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof claimFriend>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  claimFriend(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ClaimFriendMutationResult = NonNullable<Awaited<ReturnType<typeof claimFriend>>>
+
+    export type ClaimFriendMutationError = unknown
+
+    /**
+ * @summary Claim an unassociated friend entry as your own account
+ */
+export const useClaimFriend = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof claimFriend>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof claimFriend>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getClaimFriendMutationOptions(options), queryClient);
     }

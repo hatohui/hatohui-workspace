@@ -1,13 +1,49 @@
 {
   "navigation": {
-    "dashboard": "Dashboard",
+    "dashboard": "Birthdays",
     "addFriend": "Add friend",
-    "logout": "Log out"
+    "logout": "Log out",
+    "settings": "Settings",
+    "expandNav": "Expand sidebar",
+    "collapseNav": "Collapse sidebar"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "profile": {
+      "title": "Profile",
+      "stub": "Profile settings are coming soon."
+    },
+    "general": {
+      "title": "General",
+      "stub": "More settings are coming soon."
+    }
+  },
+  "welcome": {
+    "title": "A cozy little nest for friends",
+    "subtitle": "Keep track of the people you care about, one warm reminder at a time."
   },
   "dashboard": {
     "title": "Upcoming birthdays",
     "empty": "No upcoming birthdays yet. Add a friend to get started.",
-    "turningAge": "Turning {{age}} - {{date}}"
+    "turningAge": "Turning {{age}} - {{date}}",
+    "viewToggle": {
+      "calendar": "Calendar",
+      "timeline": "Timeline"
+    },
+    "search": {
+      "placeholder": "Search by name or date"
+    },
+    "groupBy": {
+      "label": "Group by",
+      "month": "Month",
+      "age": "Age",
+      "year": "Birth year",
+      "none": "None"
+    },
+    "calendar": {
+      "more": "+{{count}} more"
+    }
   },
   "friendForm": {
     "createTitle": "Add friend",
@@ -18,6 +54,12 @@
     "birthdayPlaceholder": "Pick a date",
     "birthYearLabel": "Birth year (optional)",
     "preferAnonymousLabel": "Prefer anonymous",
+    "visibilityLabel": "Who can see this",
+    "visibilityOptions": {
+      "PUBLIC": "Public",
+      "FRIENDS_ONLY": "Friends only",
+      "NONE": "None"
+    },
     "avatarUploadLabel": "Upload photo",
     "avatarUploading": "Uploading...",
     "avatarUploadError": "Couldn't upload that photo. Please try again.",
@@ -28,13 +70,45 @@
     "socialMediaHandlePlaceholder": "Handle (e.g. @username)",
     "socialMediaRemove": "Remove",
     "submitCreate": "Add friend",
-    "submitEdit": "Save changes"
+    "submitEdit": "Save changes",
+    "addMyself": "This is me — add myself instead"
   },
   "friendDetail": {
     "editAction": "Edit",
     "deleteAction": "Delete",
     "deleteConfirm": "Delete this friend? This cannot be undone.",
     "backToDashboard": "Back to dashboard"
+  },
+  "onboarding": {
+    "title": "Welcome",
+    "skip": "Skip",
+    "next": "Next",
+    "back": "Back",
+    "optIn": {
+      "question": "Do you want to be part of the list?",
+      "note": "You can choose who can see your birthday.",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "visibility": {
+      "title": "Who can see your birthday?"
+    },
+    "birthday": {
+      "title": "Is this your birthday?",
+      "confirmedFromGoogle": "We got this from your Google account.",
+      "confirm": "Yes, that's right",
+      "enterManually": "Enter it manually"
+    },
+    "connections": {
+      "title": "Do you already know anyone here?",
+      "searchPlaceholder": "Search people...",
+      "empty": "No matches.",
+      "selectedCount": "{{count}} selected"
+    },
+    "complete": {
+      "title": "You're all set!",
+      "cta": "Go to dashboard"
+    }
   },
   "notFound": {
     "title": "Page not found",

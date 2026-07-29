@@ -40,16 +40,18 @@ function FriendDetail({ friend }: Props) {
           </li>
         ))}
       </ul>
-      <div className="flex gap-2">
-        <Button asChild variant="outline">
-          <Link to={routes.editFriend(friend.id)}>
-            {t('friendDetail.editAction')}
-          </Link>
-        </Button>
-        <Button variant="destructive" onClick={handleDelete}>
-          {t('friendDetail.deleteAction')}
-        </Button>
-      </div>
+      {friend.canEdit && (
+        <div className="flex gap-2">
+          <Button asChild variant="outline">
+            <Link to={routes.editFriend(friend.id)}>
+              {t('friendDetail.editAction')}
+            </Link>
+          </Button>
+          <Button variant="destructive" onClick={handleDelete}>
+            {t('friendDetail.deleteAction')}
+          </Button>
+        </div>
+      )}
       {deleteFriend.error != null && (
         <p role="alert" className="text-sm text-destructive">
           {t(`common:errors.${getErrorCategory(deleteFriend.error)}`)}

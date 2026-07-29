@@ -5,6 +5,8 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { UserDtoOnboardingStatus } from './userDtoOnboardingStatus';
+import type { UserDtoRole } from './userDtoRole';
 
 export interface UserDto {
   id: string;
@@ -12,4 +14,6 @@ export interface UserDto {
   name: string;
   /** @nullable */
   avatarUrl: string | null;
+  role: UserDtoRole;
+  onboardingStatus: UserDtoOnboardingStatus;
 }

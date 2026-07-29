@@ -175,6 +175,56 @@
         ]
       }
     },
+    "/friends/search": {
+      "get": {
+        "operationId": "searchFriends",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against friend name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFriendsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Paginated, name-filtered friend search (used by the onboarding connections picker)",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
     "/friends/{id}": {
       "get": {
         "operationId": "friend",
@@ -267,6 +317,37 @@
         ]
       }
     },
+    "/friends/{id}/claim": {
+      "post": {
+        "operationId": "claimFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Claim an unassociated friend entry as your own account",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
     "/health": {
       "get": {
         "operationId": "health",
@@ -345,6 +426,193 @@
           "platforms"
         ]
       }
+    },
+    "/onboarding/me": {
+      "get": {
+        "operationId": "onboardingState",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStateDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Current onboarding status and in-progress entry, if any",
+        "tags": [
+          "onboarding"
+        ]
+      }
+    },
+    "/onboarding/opt-in": {
+      "post": {
+        "operationId": "onboardingOptIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OptInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStateDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Step 1: opt in (or decline) to join the list",
+        "tags": [
+          "onboarding"
+        ]
+      }
+    },
+    "/onboarding/visibility": {
+      "patch": {
+        "operationId": "onboardingSetVisibility",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetVisibilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStateDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Step 2: set visibility mode for your entry",
+        "tags": [
+          "onboarding"
+        ]
+      }
+    },
+    "/onboarding/birthday": {
+      "patch": {
+        "operationId": "onboardingSetBirthday",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetBirthdayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStateDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Step 3: confirm or enter your birthday (skipped if visibility is None)",
+        "tags": [
+          "onboarding"
+        ]
+      }
+    },
+    "/onboarding/connections": {
+      "post": {
+        "operationId": "onboardingAddConnections",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddConnectionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Step 4: record which existing entries you already know",
+        "tags": [
+          "onboarding"
+        ]
+      }
+    },
+    "/onboarding/complete": {
+      "post": {
+        "operationId": "onboardingComplete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStateDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Step 5: mark onboarding as complete",
+        "tags": [
+          "onboarding"
+        ]
+      }
+    },
+    "/onboarding/skip": {
+      "post": {
+        "operationId": "onboardingSkip",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStateDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Abandon onboarding at any step; never re-prompted automatically",
+        "tags": [
+          "onboarding"
+        ]
+      }
     }
   },
   "info": {
@@ -372,6 +640,10 @@
     },
     {
       "name": "platforms",
+      "description": ""
+    },
+    {
+      "name": "onboarding",
       "description": ""
     }
   ],
@@ -405,13 +677,30 @@
           "avatarUrl": {
             "type": "string",
             "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MEMBER"
+            ]
+          },
+          "onboardingStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "SKIPPED"
+            ]
           }
         },
         "required": [
           "id",
           "email",
           "name",
-          "avatarUrl"
+          "avatarUrl",
+          "role",
+          "onboardingStatus"
         ]
       },
       "MessageDto": {
@@ -480,11 +769,33 @@
             "example": true,
             "default": true
           },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ],
+            "example": "PUBLIC"
+          },
           "avatarUrl": {
             "type": "string",
             "example": "http://localhost:9000/hatohui-dev/images/abc123.jpg",
             "nullable": true,
             "description": "Public URL of the friend's avatar image"
+          },
+          "addedById": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the account that added this entry, if any"
+          },
+          "isAssociated": {
+            "type": "boolean",
+            "description": "Whether this entry is already claimed by an account"
+          },
+          "canEdit": {
+            "type": "boolean",
+            "description": "Whether the requesting viewer is allowed to edit/delete this entry"
           },
           "createdAt": {
             "type": "string",
@@ -503,7 +814,11 @@
           "birthDay",
           "socialMedias",
           "preferAnonymous",
+          "visibility",
           "avatarUrl",
+          "addedById",
+          "isAssociated",
+          "canEdit",
           "createdAt",
           "updatedAt"
         ]
@@ -551,11 +866,33 @@
             "example": true,
             "default": true
           },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ],
+            "example": "PUBLIC"
+          },
           "avatarUrl": {
             "type": "string",
             "example": "http://localhost:9000/hatohui-dev/images/abc123.jpg",
             "nullable": true,
             "description": "Public URL of the friend's avatar image"
+          },
+          "addedById": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the account that added this entry, if any"
+          },
+          "isAssociated": {
+            "type": "boolean",
+            "description": "Whether this entry is already claimed by an account"
+          },
+          "canEdit": {
+            "type": "boolean",
+            "description": "Whether the requesting viewer is allowed to edit/delete this entry"
           },
           "createdAt": {
             "type": "string",
@@ -585,11 +922,41 @@
           "birthDay",
           "socialMedias",
           "preferAnonymous",
+          "visibility",
           "avatarUrl",
+          "addedById",
+          "isAssociated",
+          "canEdit",
           "createdAt",
           "updatedAt",
           "turningAge",
           "nextBirthdayDate"
+        ]
+      },
+      "PaginatedFriendsDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
         ]
       },
       "CreateFriendDto": {
@@ -622,6 +989,15 @@
             "type": "boolean",
             "example": true,
             "default": true
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ],
+            "default": "PUBLIC"
           },
           "avatarKey": {
             "type": "string",
@@ -663,6 +1039,15 @@
             "type": "boolean",
             "example": true,
             "default": true
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ],
+            "default": "PUBLIC"
           },
           "avatarKey": {
             "type": "string",
@@ -781,6 +1166,92 @@
           "key",
           "name",
           "baseUrl"
+        ]
+      },
+      "OnboardingStateDto": {
+        "type": "object",
+        "properties": {
+          "onboardingStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "SKIPPED"
+            ]
+          },
+          "entry": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FriendDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "onboardingStatus",
+          "entry"
+        ]
+      },
+      "OptInDto": {
+        "type": "object",
+        "properties": {
+          "join": {
+            "type": "boolean",
+            "description": "Whether the user wants to join the list"
+          }
+        },
+        "required": [
+          "join"
+        ]
+      },
+      "SetVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ]
+          }
+        },
+        "required": [
+          "visibility"
+        ]
+      },
+      "SetBirthdayDto": {
+        "type": "object",
+        "properties": {
+          "birthYear": {
+            "type": "number"
+          },
+          "birthMonth": {
+            "type": "number"
+          },
+          "birthDay": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "birthMonth",
+          "birthDay"
+        ]
+      },
+      "AddConnectionsDto": {
+        "type": "object",
+        "properties": {
+          "birthdayDetailsIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "birthdayDetailsIds"
         ]
       }
     }

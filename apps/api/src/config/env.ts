@@ -11,7 +11,10 @@ const envSchema = z.object({
 
   GOOGLE_OAUTH_CLIENT_ID: z.string(),
   SESSION_JWT_SECRET: z.string(),
-  SESSION_COOKIE_DOMAIN: z.string().optional(),
+  SESSION_COOKIE_DOMAIN: z
+    .string()
+    .optional()
+    .transform((value) => (value ? value : undefined)),
 
   R2_BUCKET_NAME: z.string(),
   R2_ENDPOINT: z.url(),
