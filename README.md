@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/assets/banner.svg" alt="hatohui-workspace" width="100%" />
+</p>
+
 # hatohui-workspace
 
 A management ecosystem/platform for hatohui and friends. A single monorepo holding frontend, backend, and infra together.
