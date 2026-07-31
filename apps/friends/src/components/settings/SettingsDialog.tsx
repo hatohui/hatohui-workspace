@@ -16,7 +16,9 @@ function SettingsDialog({ open, onOpenChange }: Props) {
         <DialogTitle>{t('settings.title')}</DialogTitle>
         <div className="flex flex-col gap-5">
           <section className="flex flex-col gap-1.5">
-            <h3 className="text-sm font-medium">{t('settings.language')}</h3>
+            <h3 className="font-sans text-sm font-medium">
+              {t('settings.language')}
+            </h3>
             <LanguageOptionsList />
           </section>
           <section className="flex flex-col gap-1.5 border-t border-border pt-4">

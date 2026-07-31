@@ -1,17 +1,7 @@
-import { useTranslation } from '@hatohui/i18n';
-import { GoogleIcon, useAuth, useGoogleIdentity } from '@hatohui/libs';
 import { useNavItems } from '../../hooks/useNavItems';
 import MobileNavItem from './MobileNavItem';
-import NavSlotPlaceholder from './NavSlotPlaceholder';
 
-interface Props {
-  onSettingsClick: () => void;
-}
-
-function MobileTabBar({ onSettingsClick }: Props) {
-  const { t } = useTranslation();
-  const { user, isLoading, logout } = useAuth();
-  const { isReady, promptLogin } = useGoogleIdentity();
+function MobileTabBar() {
   const navItems = useNavItems();
 
   return (
@@ -22,30 +12,6 @@ function MobileTabBar({ onSettingsClick }: Props) {
       {navItems.map((item) => (
         <MobileNavItem key={item.to} {...item} />
       ))}
-      <MobileNavItem
-        label={t('navigation.settings')}
-        icon="settings"
-        onClick={onSettingsClick}
-      />
-      {isLoading ? (
-        <NavSlotPlaceholder className="size-10" />
-      ) : user ? (
-        <MobileNavItem
-          label={t('navigation.logout')}
-          icon="logout"
-          onClick={() => void logout()}
-        />
-      ) : (
-        <button
-          type="button"
-          aria-label={t('common:auth.login')}
-          disabled={!isReady}
-          onClick={promptLogin}
-          className="flex size-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
-        >
-          <GoogleIcon />
-        </button>
-      )}
     </nav>
   );
 }

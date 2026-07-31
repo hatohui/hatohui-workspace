@@ -1,6 +1,8 @@
 {
   "loading": "Loading...",
   "loadError": "Something went wrong. Please try again.",
+  "retry": "Retry",
+  "back": "Back",
   "language": {
     "label": "Change language"
   },

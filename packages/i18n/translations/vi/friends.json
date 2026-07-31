@@ -20,13 +20,14 @@
   },
   "profile": {
     "title": "Hồ sơ",
-    "stub": "Cài đặt hồ sơ sẽ sớm ra mắt."
+    "stub": "Cài đặt hồ sơ sẽ sớm ra mắt.",
+    "adminTag": "Quản trị viên"
   },
   "social": {
     "title": "Vòng kết nối của bạn",
     "you": "Bạn",
     "empty": "Thêm bạn bè để xem cây kết nối xã hội của bạn.",
-    "friendOfLabel": "{{name}} — bạn của {{via}}"
+    "friendOfLabel": "Bạn của {{via}}"
   },
   "welcome": {
     "title": "Một tổ ấm nhỏ cho những người bạn",
@@ -56,7 +57,8 @@
     },
     "calendar": {
       "more": "+{{count}} nữa"
-    }
+    },
+    "loadingMore": "Đang tải thêm..."
   },
   "friendForm": {
     "createTitle": "Thêm bạn bè",
@@ -90,7 +92,10 @@
     "editAction": "Chỉnh sửa",
     "deleteAction": "Xóa",
     "deleteConfirm": "Xóa người bạn này? Hành động này không thể hoàn tác.",
-    "backToDashboard": "Quay lại bảng điều khiển"
+    "addAsFriendAction": "Thêm làm bạn bè",
+    "connectedLabel": "Đã thêm",
+    "viewProfile": "Xem hồ sơ",
+    "back": "Quay lại"
   },
   "onboarding": {
     "title": "Chào mừng",
@@ -102,6 +107,10 @@
       "note": "Bạn có thể chọn ai được xem sinh nhật của mình.",
       "yes": "Có",
       "no": "Không"
+    },
+    "profile": {
+      "title": "Bạn muốn hiển thị như thế này chứ?",
+      "nameLabel": "Tên hiển thị"
     },
     "visibility": {
       "title": "Ai có thể xem sinh nhật của bạn?"
@@ -125,6 +134,7 @@
   },
   "notFound": {
     "title": "Không tìm thấy trang",
+    "subtitle": "Trang bạn đang tìm không tồn tại hoặc có thể đã được di chuyển.",
     "backToDashboard": "Quay lại bảng điều khiển"
   }
 }

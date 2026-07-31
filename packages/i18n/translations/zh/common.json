@@ -1,6 +1,8 @@
 {
   "loading": "加载中...",
   "loadError": "出现了一些问题，请重试。",
+  "retry": "重试",
+  "back": "返回",
   "language": {
     "label": "切换语言"
   },

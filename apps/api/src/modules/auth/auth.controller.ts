@@ -19,14 +19,14 @@ export class AuthController {
   @Post('google')
   @ApiOperation({
     operationId: 'loginWithGoogle',
-    summary: 'Exchange a Google Identity Services ID token for a session',
+    summary: 'Exchange a Google OAuth 2.0 authorization code for a session',
   })
   @ApiOkResponse({ type: UserDto })
   async loginWithGoogle(
     @Body() dto: GoogleLoginDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<UserDto> {
-    const user = await this.authService.loginWithGoogle(dto.idToken);
+    const user = await this.authService.loginWithGoogle(dto.code);
     response.cookie(
       SESSION_COOKIE_NAME,
       this.session.sign(user.id),

@@ -10,6 +10,7 @@ const envSchema = z.object({
   REDIS_URL: z.url(),
 
   GOOGLE_OAUTH_CLIENT_ID: z.string(),
+  GOOGLE_OAUTH_CLIENT_SECRET: z.string(),
   SESSION_JWT_SECRET: z.string(),
   SESSION_COOKIE_DOMAIN: z
     .string()

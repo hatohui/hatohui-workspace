@@ -8,19 +8,17 @@ import {
 } from '@hatohui/ui';
 import { navIcons } from '../../constants/navIcons';
 import { useNavItems } from '../../hooks/useNavItems';
+import { useSettingsModal } from '../../hooks/useSettingsModal';
 import useSidebarExpanded from '../../hooks/useSidebarExpanded';
 import NavItem from './NavItem';
 import SidebarAccount from './SidebarAccount';
 import SidebarCollapseToggle from './SidebarCollapseToggle';
 
-interface Props {
-  onSettingsClick: () => void;
-}
-
-function DesktopSidebar({ onSettingsClick }: Props) {
+function DesktopSidebar() {
   const { t } = useTranslation();
   const { expanded, toggle } = useSidebarExpanded();
   const navItems = useNavItems();
+  const { open: openSettings } = useSettingsModal();
   const SettingsIcon = navIcons.settings;
 
   return (
@@ -47,7 +45,7 @@ function DesktopSidebar({ onSettingsClick }: Props) {
                 size={expanded ? 'sm' : 'icon'}
                 className={`rounded-full ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
                 aria-label={t('navigation.settings')}
-                onClick={onSettingsClick}
+                onClick={openSettings}
               >
                 <SettingsIcon className="size-4 shrink-0" />
                 {expanded && (

@@ -7,6 +7,6 @@
  */
 
 export interface GoogleLoginDto {
-  /** Google Identity Services ID token */
-  idToken: string;
+  /** Google OAuth 2.0 authorization code (auth-code popup flow) */
+  code: string;
 }

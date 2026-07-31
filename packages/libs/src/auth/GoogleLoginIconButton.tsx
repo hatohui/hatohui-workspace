@@ -1,11 +1,13 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button } from '@hatohui/ui';
-import { useGoogleIdentity } from './useGoogleIdentity';
+import { Button, Spinner } from '@hatohui/ui';
+import { useAuth } from './AuthContext';
+import { useGoogleAuth } from './useGoogleAuth';
 import GoogleIcon from './GoogleIcon';
 
 export function GoogleLoginIconButton() {
   const { t } = useTranslation('common');
-  const { isReady, promptLogin } = useGoogleIdentity();
+  const { isLoggingIn } = useAuth();
+  const login = useGoogleAuth();
 
   return (
     <Button
@@ -13,11 +15,11 @@ export function GoogleLoginIconButton() {
       variant="outline"
       size="icon"
       className="rounded-full"
-      disabled={!isReady}
-      onClick={promptLogin}
+      disabled={isLoggingIn}
+      onClick={() => login()}
       aria-label={t('auth.login')}
     >
-      <GoogleIcon />
+      {isLoggingIn ? <Spinner /> : <GoogleIcon />}
     </Button>
   );
 }

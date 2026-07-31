@@ -1,6 +1,8 @@
 {
   "loading": "Đang tải...",
   "loadError": "Đã xảy ra lỗi. Vui lòng thử lại.",
+  "retry": "Thử lại",
+  "back": "Quay lại",
   "language": {
     "label": "Đổi ngôn ngữ"
   },

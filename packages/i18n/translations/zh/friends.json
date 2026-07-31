@@ -20,13 +20,14 @@
   },
   "profile": {
     "title": "个人资料",
-    "stub": "个人资料设置即将推出。"
+    "stub": "个人资料设置即将推出。",
+    "adminTag": "管理员"
   },
   "social": {
     "title": "你的社交圈",
     "you": "你",
     "empty": "添加朋友即可查看你的社交关系树。",
-    "friendOfLabel": "{{name}} — {{via}} 的朋友"
+    "friendOfLabel": "{{via}} 的朋友"
   },
   "welcome": {
     "title": "朋友的温馨小巢",
@@ -56,7 +57,8 @@
     },
     "calendar": {
       "more": "还有 {{count}} 项"
-    }
+    },
+    "loadingMore": "加载中..."
   },
   "friendForm": {
     "createTitle": "添加朋友",
@@ -90,7 +92,10 @@
     "editAction": "编辑",
     "deleteAction": "删除",
     "deleteConfirm": "删除这位朋友？此操作无法撤销。",
-    "backToDashboard": "返回仪表盘"
+    "addAsFriendAction": "添加为朋友",
+    "connectedLabel": "已添加",
+    "viewProfile": "查看资料",
+    "back": "返回"
   },
   "onboarding": {
     "title": "欢迎",
@@ -102,6 +107,10 @@
       "note": "您可以选择谁能看到您的生日。",
       "yes": "是",
       "no": "否"
+    },
+    "profile": {
+      "title": "您想以此形象展示吗？",
+      "nameLabel": "显示名称"
     },
     "visibility": {
       "title": "谁可以看到您的生日？"
@@ -125,6 +134,7 @@
   },
   "notFound": {
     "title": "页面未找到",
+    "subtitle": "您要查找的页面不存在，或者可能已被移动。",
     "backToDashboard": "返回仪表盘"
   }
 }

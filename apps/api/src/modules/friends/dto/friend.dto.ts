@@ -66,6 +66,16 @@ export class FriendDto {
   isAssociated: boolean;
 
   @ApiProperty({
+    description: "Whether this entry is the requesting viewer's own entry",
+  })
+  isViewerEntry: boolean;
+
+  @ApiProperty({
+    description: 'Whether the requesting viewer already knows this entry',
+  })
+  isConnected: boolean;
+
+  @ApiProperty({
     description:
       'Whether the requesting viewer is allowed to edit/delete this entry',
   })

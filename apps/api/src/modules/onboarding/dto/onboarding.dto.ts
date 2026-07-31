@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsEnum,
   IsInt,
+  IsNotEmpty,
   IsOptional,
   IsString,
   Max,
@@ -25,6 +26,23 @@ export class OptInDto {
   @ApiProperty({ description: 'Whether the user wants to join the list' })
   @IsBoolean()
   join: boolean;
+}
+
+export class SetProfileDto {
+  @ApiProperty({ example: 'Jane Doe' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({
+    example: 'images/abc123.jpg',
+    required: false,
+    description:
+      'Object key returned by POST /images/sign, after uploading the avatar file to storage',
+  })
+  @IsOptional()
+  @IsString()
+  avatarKey?: string;
 }
 
 export class SetVisibilityDto {

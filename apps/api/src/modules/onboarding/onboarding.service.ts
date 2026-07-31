@@ -7,6 +7,7 @@ import {
   OnboardingStateDto,
   OptInDto,
   SetBirthdayDto,
+  SetProfileDto,
   SetVisibilityDto,
 } from './dto/onboarding.dto';
 
@@ -43,6 +44,16 @@ export class OnboardingService {
       existing?.birthdayDetailsId ?? (await this.createOwnEntry(viewer)).id;
 
     const entry = await this.friendsService.findOne(birthdayDetailsId, viewer);
+    return { onboardingStatus: viewer.onboardingStatus, entry };
+  }
+
+  async setProfile(dto: SetProfileDto, viewer: User): Promise<OnboardingStateDto> {
+    const id = await this.getOwnEntryIdOrThrow(viewer);
+    const entry = await this.friendsService.update(
+      id,
+      { name: dto.name, avatarKey: dto.avatarKey },
+      viewer,
+    );
     return { onboardingStatus: viewer.onboardingStatus, entry };
   }
 
@@ -115,6 +126,7 @@ export class OnboardingService {
     const entry = await this.db.birthdayDetails.create({
       data: {
         name: viewer.name,
+        avatarUrl: viewer.avatarUrl,
         addedById: viewer.id,
         visibility: FriendVisibility.PUBLIC,
         preferAnonymous: true,

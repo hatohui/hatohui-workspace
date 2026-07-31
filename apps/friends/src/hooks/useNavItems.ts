@@ -37,12 +37,6 @@ export function useNavItems(): NavLinkItem[] {
 
   if (user) {
     items.push({
-      to: routes.newFriend,
-      label: t('navigation.addFriend'),
-      icon: 'userPlus',
-      active: isActive(routes.newFriend),
-    });
-    items.push({
       to: routes.social,
       label: t('navigation.social'),
       icon: 'social',

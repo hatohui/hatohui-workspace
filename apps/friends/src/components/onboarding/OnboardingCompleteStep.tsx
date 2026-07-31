@@ -11,7 +11,7 @@ function OnboardingCompleteStep({ onFinish, submitting }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-medium">{t('onboarding.complete.title')}</h2>
+      <h2 className="text-xl">{t('onboarding.complete.title')}</h2>
       <Button disabled={submitting} className="w-fit" onClick={onFinish}>
         {t('onboarding.complete.cta')}
       </Button>

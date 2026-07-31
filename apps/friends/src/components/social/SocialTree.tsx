@@ -1,65 +1,91 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Avatar, TooltipProvider } from '@hatohui/ui';
+import { Avatar, ErrorState, LoadingDots } from '@hatohui/ui';
 import { useAuth } from '@hatohui/libs';
 import { useSocialGraph } from '../../hooks/useSocialGraph';
-import SocialAvatarNode from './SocialAvatarNode';
+import {
+  SOCIAL_TREE_SIZE,
+  useSocialTreeLayout,
+} from '../../hooks/useSocialTreeLayout';
+import SocialTreeNode from './SocialTreeNode';
 
 function SocialTree() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { data, isLoading, isError } = useSocialGraph();
-  const nodes = data?.data.friends ?? [];
+  const { data, isLoading, isError, refetch } = useSocialGraph();
+  const graphNodes = data?.data.friends ?? [];
+  const { nodes, edges } = useSocialTreeLayout(graphNodes);
 
   if (isLoading) {
-    return <p className="text-muted-foreground">{t('common:loading')}</p>;
+    return (
+      <div className="flex justify-center py-8">
+        <LoadingDots label={t('common:loading')} />
+      </div>
+    );
   }
 
   if (isError) {
-    return <p className="text-destructive">{t('common:loadError')}</p>;
+    return (
+      <ErrorState
+        message={t('common:loadError')}
+        retry={{ label: t('common:retry'), onClick: () => void refetch() }}
+      />
+    );
   }
 
-  if (nodes.length === 0) {
+  if (graphNodes.length === 0) {
     return <p className="text-muted-foreground">{t('social.empty')}</p>;
   }
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <div className="flex items-start gap-10">
-        <div className="flex flex-col items-center gap-1">
-          <Avatar
-            src={user?.avatarUrl}
-            alt={user?.name ?? ''}
-            className="h-12 w-12 ring-2 ring-primary ring-offset-2 ring-offset-background"
+    <div className="relative mx-auto aspect-square w-full max-w-md">
+      <svg
+        viewBox={`0 0 ${SOCIAL_TREE_SIZE.toString()} ${SOCIAL_TREE_SIZE.toString()}`}
+        className="absolute inset-0 h-full w-full"
+        aria-hidden="true"
+      >
+        {edges.map((edge) => (
+          <line
+            key={edge.key}
+            x1={edge.x1}
+            y1={edge.y1}
+            x2={edge.x2}
+            y2={edge.y2}
+            stroke="currentColor"
+            strokeWidth={1.5}
+            className="text-border"
+            style={{ opacity: edge.opacity }}
           />
-          <span className="text-xs text-muted-foreground">
-            {t('social.you')}
-          </span>
-        </div>
+        ))}
+      </svg>
 
-        <div className="flex flex-col gap-6 border-l border-border pl-8">
-          {nodes.map(({ friend, friendsOfFriend }) => (
-            <div key={friend.id} className="flex items-center gap-8">
-              <SocialAvatarNode friend={friend} label={friend.name} />
-              {friendsOfFriend.length > 0 && (
-                <div className="flex gap-4 border-l border-border pl-8">
-                  {friendsOfFriend.map((fof) => (
-                    <SocialAvatarNode
-                      key={fof.id}
-                      friend={fof}
-                      size="sm"
-                      label={t('social.friendOfLabel', {
-                        name: fof.name,
-                        via: friend.name,
-                      })}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+      <div
+        className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1"
+        style={{ left: '50%', top: '50%' }}
+      >
+        <Avatar
+          src={user?.avatarUrl}
+          alt={user?.name ?? ''}
+          className="size-14 ring-2 ring-primary ring-offset-2 ring-offset-background"
+        />
+        <span className="text-xs text-muted-foreground">
+          {t('social.you')}
+        </span>
       </div>
-    </TooltipProvider>
+
+      {nodes.map((node) => (
+        <SocialTreeNode
+          key={node.key}
+          friend={node.friend}
+          parentName={node.parentName}
+          size={node.depth === 1 ? 'md' : 'sm'}
+          className={node.depth === 1 ? 'opacity-90' : 'opacity-55'}
+          style={{
+            left: `${((node.x / SOCIAL_TREE_SIZE) * 100).toString()}%`,
+            top: `${((node.y / SOCIAL_TREE_SIZE) * 100).toString()}%`,
+          }}
+        />
+      ))}
+    </div>
   );
 }
 

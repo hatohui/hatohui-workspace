@@ -1,15 +1,11 @@
 import { useMemo } from 'react';
-import type { UpcomingFriendDto } from '@hatohui/models';
+import type { FriendDto } from '@hatohui/models';
 
-/// Keyed by "month-day" (birthdays recur every year regardless of which
-/// year a calendar cell belongs to), not by the friend's next-occurrence
-/// date — that's what lets the grid show correct birthdays for any month
-/// the user navigates to, not just the ones coming up next.
 export function useBirthdaysByMonthDay(
-  friends: UpcomingFriendDto[],
-): Map<string, UpcomingFriendDto[]> {
+  friends: FriendDto[],
+): Map<string, FriendDto[]> {
   return useMemo(() => {
-    const map = new Map<string, UpcomingFriendDto[]>();
+    const map = new Map<string, FriendDto[]>();
     for (const friend of friends) {
       if (friend.birthMonth === null || friend.birthDay === null) continue;
       const key = `${friend.birthMonth}-${friend.birthDay}`;

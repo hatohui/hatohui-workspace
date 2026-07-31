@@ -22,7 +22,7 @@ function OnboardingBirthdayStep({ onSubmit, submitting }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-medium">{t('onboarding.birthday.title')}</h2>
+      <h2 className="text-xl">{t('onboarding.birthday.title')}</h2>
       <BirthdayFields
         birthYear={birthYear}
         birthMonth={birthMonth}

@@ -4,8 +4,8 @@ const routes = {
   social: '/social',
   profile: '/profile',
   newFriend: '/friends/new',
-  friend: (id: string) => `/friends/${id}`,
-  editFriend: (id: string) => `/friends/${id}/edit`,
+  friend: (id: string) => `/profile/${id}`,
+  editFriend: (id: string) => `/profile/${id}/edit`,
 };
 
 export default routes;

@@ -25,12 +25,15 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  BirthdaysByMonthDto,
+  BirthdaysByMonthParams,
   CreateFriendDto,
   FriendDto,
   PaginatedFriendsDto,
+  PaginatedUpcomingSectionsDto,
   SearchFriendsParams,
   SocialGraphDto,
-  UpcomingFriendDto,
+  UpcomingFriendSectionsParams,
   UpdateFriendDto
 } from '../schemas';
 
@@ -250,32 +253,39 @@ export const useCreateFriend = <TError = unknown,
       > => {
       return useMutation(getCreateFriendMutationOptions(options), queryClient);
     }
-    export type upcomingFriendsResponse200 = {
-  data: UpcomingFriendDto[]
+    export type upcomingFriendSectionsResponse200 = {
+  data: PaginatedUpcomingSectionsDto
   status: 200
 }
 
-export type upcomingFriendsResponseSuccess = (upcomingFriendsResponse200) & {
+export type upcomingFriendSectionsResponseSuccess = (upcomingFriendSectionsResponse200) & {
   headers: Headers;
 };
 ;
 
-export type upcomingFriendsResponse = (upcomingFriendsResponseSuccess)
+export type upcomingFriendSectionsResponse = (upcomingFriendSectionsResponseSuccess)
 
-export const getUpcomingFriendsUrl = () => {
+export const getUpcomingFriendSectionsUrl = (params?: UpcomingFriendSectionsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/friends/upcoming`
+  return stringifiedParams.length > 0 ? `/friends/upcoming/sections?${stringifiedParams}` : `/friends/upcoming/sections`
 }
 
 /**
- * @summary List friends sorted by next occurring birthday, with computed age
+ * @summary Paginated, grouped upcoming birthdays for the timeline's infinite scroll
  */
-export const upcomingFriends = async ( options?: RequestInit): Promise<upcomingFriendsResponse> => {
+export const upcomingFriendSections = async (params?: UpcomingFriendSectionsParams, options?: RequestInit): Promise<upcomingFriendSectionsResponse> => {
 
-  return customFetch<upcomingFriendsResponse>(getUpcomingFriendsUrl(),
+  return customFetch<upcomingFriendSectionsResponse>(getUpcomingFriendSectionsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -288,69 +298,188 @@ export const upcomingFriends = async ( options?: RequestInit): Promise<upcomingF
 
 
 
-export const getUpcomingFriendsQueryKey = () => {
+export const getUpcomingFriendSectionsQueryKey = (params?: UpcomingFriendSectionsParams,) => {
     return [
-    `/friends/upcoming`
+    `/friends/upcoming/sections`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getUpcomingFriendsQueryOptions = <TData = Awaited<ReturnType<typeof upcomingFriends>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriends>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getUpcomingFriendSectionsQueryOptions = <TData = Awaited<ReturnType<typeof upcomingFriendSections>>, TError = unknown>(params?: UpcomingFriendSectionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriendSections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getUpcomingFriendsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getUpcomingFriendSectionsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof upcomingFriends>>> = ({ signal }) => upcomingFriends({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof upcomingFriendSections>>> = ({ signal }) => upcomingFriendSections(params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof upcomingFriends>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof upcomingFriendSections>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type UpcomingFriendsQueryResult = NonNullable<Awaited<ReturnType<typeof upcomingFriends>>>
-export type UpcomingFriendsQueryError = unknown
+export type UpcomingFriendSectionsQueryResult = NonNullable<Awaited<ReturnType<typeof upcomingFriendSections>>>
+export type UpcomingFriendSectionsQueryError = unknown
 
 
-export function useUpcomingFriends<TData = Awaited<ReturnType<typeof upcomingFriends>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriends>>, TError, TData>> & Pick<
+export function useUpcomingFriendSections<TData = Awaited<ReturnType<typeof upcomingFriendSections>>, TError = unknown>(
+ params: undefined |  UpcomingFriendSectionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriendSections>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof upcomingFriends>>,
+          Awaited<ReturnType<typeof upcomingFriendSections>>,
           TError,
-          Awaited<ReturnType<typeof upcomingFriends>>
+          Awaited<ReturnType<typeof upcomingFriendSections>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUpcomingFriends<TData = Awaited<ReturnType<typeof upcomingFriends>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriends>>, TError, TData>> & Pick<
+export function useUpcomingFriendSections<TData = Awaited<ReturnType<typeof upcomingFriendSections>>, TError = unknown>(
+ params?: UpcomingFriendSectionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriendSections>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof upcomingFriends>>,
+          Awaited<ReturnType<typeof upcomingFriendSections>>,
           TError,
-          Awaited<ReturnType<typeof upcomingFriends>>
+          Awaited<ReturnType<typeof upcomingFriendSections>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUpcomingFriends<TData = Awaited<ReturnType<typeof upcomingFriends>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriends>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function useUpcomingFriendSections<TData = Awaited<ReturnType<typeof upcomingFriendSections>>, TError = unknown>(
+ params?: UpcomingFriendSectionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriendSections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List friends sorted by next occurring birthday, with computed age
+ * @summary Paginated, grouped upcoming birthdays for the timeline's infinite scroll
  */
 
-export function useUpcomingFriends<TData = Awaited<ReturnType<typeof upcomingFriends>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriends>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function useUpcomingFriendSections<TData = Awaited<ReturnType<typeof upcomingFriendSections>>, TError = unknown>(
+ params?: UpcomingFriendSectionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof upcomingFriendSections>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getUpcomingFriendsQueryOptions(options)
+  const queryOptions = getUpcomingFriendSectionsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type birthdaysByMonthResponse200 = {
+  data: BirthdaysByMonthDto
+  status: 200
+}
+
+export type birthdaysByMonthResponseSuccess = (birthdaysByMonthResponse200) & {
+  headers: Headers;
+};
+;
+
+export type birthdaysByMonthResponse = (birthdaysByMonthResponseSuccess)
+
+export const getBirthdaysByMonthUrl = (params: BirthdaysByMonthParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/friends/birthdays-by-month?${stringifiedParams}` : `/friends/birthdays-by-month`
+}
+
+/**
+ * @summary Friends whose birthday falls in a given calendar month
+ */
+export const birthdaysByMonth = async (params: BirthdaysByMonthParams, options?: RequestInit): Promise<birthdaysByMonthResponse> => {
+
+  return customFetch<birthdaysByMonthResponse>(getBirthdaysByMonthUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getBirthdaysByMonthQueryKey = (params?: BirthdaysByMonthParams,) => {
+    return [
+    `/friends/birthdays-by-month`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getBirthdaysByMonthQueryOptions = <TData = Awaited<ReturnType<typeof birthdaysByMonth>>, TError = unknown>(params: BirthdaysByMonthParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof birthdaysByMonth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getBirthdaysByMonthQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof birthdaysByMonth>>> = ({ signal }) => birthdaysByMonth(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof birthdaysByMonth>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type BirthdaysByMonthQueryResult = NonNullable<Awaited<ReturnType<typeof birthdaysByMonth>>>
+export type BirthdaysByMonthQueryError = unknown
+
+
+export function useBirthdaysByMonth<TData = Awaited<ReturnType<typeof birthdaysByMonth>>, TError = unknown>(
+ params: BirthdaysByMonthParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof birthdaysByMonth>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof birthdaysByMonth>>,
+          TError,
+          Awaited<ReturnType<typeof birthdaysByMonth>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useBirthdaysByMonth<TData = Awaited<ReturnType<typeof birthdaysByMonth>>, TError = unknown>(
+ params: BirthdaysByMonthParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof birthdaysByMonth>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof birthdaysByMonth>>,
+          TError,
+          Awaited<ReturnType<typeof birthdaysByMonth>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useBirthdaysByMonth<TData = Awaited<ReturnType<typeof birthdaysByMonth>>, TError = unknown>(
+ params: BirthdaysByMonthParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof birthdaysByMonth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Friends whose birthday falls in a given calendar month
+ */
+
+export function useBirthdaysByMonth<TData = Awaited<ReturnType<typeof birthdaysByMonth>>, TError = unknown>(
+ params: BirthdaysByMonthParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof birthdaysByMonth>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getBirthdaysByMonthQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -869,6 +998,88 @@ export const useDeleteFriend = <TError = unknown,
         TContext
       > => {
       return useMutation(getDeleteFriendMutationOptions(options), queryClient);
+    }
+    export type connectFriendResponse200 = {
+  data: FriendDto
+  status: 200
+}
+
+export type connectFriendResponseSuccess = (connectFriendResponse200) & {
+  headers: Headers;
+};
+;
+
+export type connectFriendResponse = (connectFriendResponseSuccess)
+
+export const getConnectFriendUrl = (id: string,) => {
+
+
+
+
+  return `/friends/${id}/connect`
+}
+
+/**
+ * @summary Add an existing entry as someone you know
+ */
+export const connectFriend = async (id: string, options?: RequestInit): Promise<connectFriendResponse> => {
+
+  return customFetch<connectFriendResponse>(getConnectFriendUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getConnectFriendMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connectFriend>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof connectFriend>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['connectFriend'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof connectFriend>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  connectFriend(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConnectFriendMutationResult = NonNullable<Awaited<ReturnType<typeof connectFriend>>>
+
+    export type ConnectFriendMutationError = unknown
+
+    /**
+ * @summary Add an existing entry as someone you know
+ */
+export const useConnectFriend = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connectFriend>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof connectFriend>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getConnectFriendMutationOptions(options), queryClient);
     }
     export type claimFriendResponse200 = {
   data: FriendDto

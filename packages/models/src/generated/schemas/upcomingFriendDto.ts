@@ -43,6 +43,10 @@ export interface UpcomingFriendDto {
   addedById: string | null;
   /** Whether this entry is already claimed by an account */
   isAssociated: boolean;
+  /** Whether this entry is the requesting viewer's own entry */
+  isViewerEntry: boolean;
+  /** Whether the requesting viewer already knows this entry */
+  isConnected: boolean;
   /** Whether the requesting viewer is allowed to edit/delete this entry */
   canEdit: boolean;
   createdAt: string;

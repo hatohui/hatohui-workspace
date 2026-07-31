@@ -1,12 +1,13 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useLoginWithGoogle, useLogout, useMe } from '@hatohui/models';
 import type { UserDto } from '@hatohui/models';
 
 interface AuthContextValue {
   user: UserDto | null;
   isLoading: boolean;
-  googleClientId: string;
-  loginWithGoogle: (idToken: string) => Promise<void>;
+  isLoggingIn: boolean;
+  loginWithGoogle: (code: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -27,9 +28,9 @@ export function AuthProvider({
     () => ({
       user: meQuery.data?.data ?? null,
       isLoading: meQuery.isPending,
-      googleClientId,
-      loginWithGoogle: async (idToken: string) => {
-        await loginMutation.mutateAsync({ data: { idToken } });
+      isLoggingIn: loginMutation.isPending,
+      loginWithGoogle: async (code: string) => {
+        await loginMutation.mutateAsync({ data: { code } });
         await meQuery.refetch();
       },
       logout: async () => {
@@ -41,13 +42,16 @@ export function AuthProvider({
       meQuery.data,
       meQuery.isPending,
       meQuery.refetch,
-      googleClientId,
       loginMutation,
       logoutMutation,
     ],
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    </GoogleOAuthProvider>
+  );
 }
 
 export function useAuth(): AuthContextValue {

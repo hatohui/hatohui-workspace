@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { Avatar } from '@hatohui/ui';
+import { Avatar, cn } from '@hatohui/ui';
 import type { UpcomingFriendDto } from '@hatohui/models';
 import { formatBirthday } from '@hatohui/tools';
 import routes from '../constants/routes';
@@ -16,7 +16,10 @@ function BirthdayCard({ friend }: Props) {
   return (
     <Link
       to={routes.friend(friend.id)}
-      className="flex flex-col gap-6 rounded-xl border bg-card px-6 py-6 text-card-foreground no-underline transition-[background-color,box-shadow] duration-200 ease-out hover:bg-card-hover hover:shadow-[0_1px_3px_rgba(20,20,19,0.08)]"
+      className={cn(
+        'flex flex-col gap-6 rounded-xl border bg-card px-6 py-6 text-card-foreground no-underline transition-[background-color,box-shadow] duration-200 ease-out hover:bg-card-hover hover:shadow-[0_1px_3px_rgba(20,20,19,0.08)]',
+        friend.isViewerEntry && 'border-primary ring-primary/15 ring-2',
+      )}
     >
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-3 font-medium">

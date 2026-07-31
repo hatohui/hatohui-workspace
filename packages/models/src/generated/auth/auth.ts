@@ -72,7 +72,7 @@ export const getLoginWithGoogleUrl = () => {
 }
 
 /**
- * @summary Exchange a Google Identity Services ID token for a session
+ * @summary Exchange a Google OAuth 2.0 authorization code for a session
  */
 export const loginWithGoogle = async (googleLoginDto: GoogleLoginDto, options?: RequestInit): Promise<loginWithGoogleResponse> => {
 
@@ -121,7 +121,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type LoginWithGoogleMutationError = unknown
 
     /**
- * @summary Exchange a Google Identity Services ID token for a session
+ * @summary Exchange a Google OAuth 2.0 authorization code for a session
  */
 export const useLoginWithGoogle = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof loginWithGoogle>>, TError,{data: GoogleLoginDto}, TContext>, request?: SecondParameter<typeof customFetch>}

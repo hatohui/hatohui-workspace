@@ -1,12 +1,11 @@
-import { Link } from 'react-router';
-import { Avatar, cn, type DayProps } from '@hatohui/ui';
+import { cn, type DayProps } from '@hatohui/ui';
 import { useTranslation } from '@hatohui/i18n';
-import type { UpcomingFriendDto } from '@hatohui/models';
-import routes from '../constants/routes';
+import type { FriendDto } from '@hatohui/models';
+import CalendarBirthdayEntry from './CalendarBirthdayEntry';
 import { CALENDAR_MAX_VISIBLE_PER_DAY } from '../constants/directoryView';
 
 type Props = DayProps & {
-  birthdaysByDay: Map<string, UpcomingFriendDto[]>;
+  birthdaysByDay: Map<string, FriendDto[]>;
 };
 
 function CalendarDayCell({
@@ -27,7 +26,7 @@ function CalendarDayCell({
       {...divProps}
       className={cn(
         className,
-        'flex h-24 flex-col gap-0.5 overflow-hidden border-r border-b border-border p-1 last:border-r-0',
+        'flex h-16 flex-col gap-px overflow-hidden border-r border-b border-border p-0.5 last:border-r-0 sm:h-24 sm:gap-0.5 sm:p-1',
         modifiers.outside && 'bg-muted/40',
       )}
     >
@@ -44,21 +43,14 @@ function CalendarDayCell({
         {day.date.getDate()}
       </span>
       {visible.map((friend) => (
-        <Link
+        <CalendarBirthdayEntry
           key={friend.id}
-          to={routes.friend(friend.id)}
-          className="flex items-center gap-1 truncate rounded bg-card px-1 py-0.5 text-xs no-underline hover:bg-card-hover"
-        >
-          <Avatar
-            src={friend.avatarUrl}
-            alt={friend.name}
-            className="h-3.5 w-3.5 shrink-0"
-          />
-          <span className="truncate">{friend.name}</span>
-        </Link>
+          friend={friend}
+          year={day.date.getFullYear()}
+        />
       ))}
       {overflow > 0 && (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-[10px] text-muted-foreground sm:text-xs">
           {t('dashboard.calendar.more', { count: overflow })}
         </span>
       )}

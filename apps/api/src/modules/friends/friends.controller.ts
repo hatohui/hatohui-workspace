@@ -19,13 +19,18 @@ import {
   CreateFriendDto,
   FriendDto,
   SocialGraphDto,
-  UpcomingFriendDto,
   UpdateFriendDto,
 } from './dto/friend.dto';
 import {
   FriendSearchQueryDto,
   PaginatedFriendsDto,
 } from './dto/friend-search.dto';
+import {
+  BirthdaysByMonthDto,
+  MonthQueryDto,
+  PaginatedUpcomingSectionsDto,
+  UpcomingSectionsQueryDto,
+} from './dto/friend-upcoming.dto';
 import { FriendsService } from './friends.service';
 import type { User } from '@prisma/client';
 
@@ -42,18 +47,44 @@ export class FriendsController {
     return this.friendsService.findAll(viewer);
   }
 
-  @Get('upcoming')
+  @Get('upcoming/sections')
   @UseGuards(OptionalAuthGuard)
   @ApiOperation({
-    operationId: 'upcomingFriends',
+    operationId: 'upcomingFriendSections',
     summary:
-      'List friends sorted by next occurring birthday, with computed age',
+      "Paginated, grouped upcoming birthdays for the timeline's infinite scroll",
   })
-  @ApiOkResponse({ type: UpcomingFriendDto, isArray: true })
-  findUpcoming(
+  @ApiOkResponse({ type: PaginatedUpcomingSectionsDto })
+  findUpcomingSections(
+    @Query() query: UpcomingSectionsQueryDto,
     @OptionalCurrentUser() viewer: User | null,
-  ): Promise<UpcomingFriendDto[]> {
-    return this.friendsService.findUpcoming(viewer);
+  ): Promise<PaginatedUpcomingSectionsDto> {
+    return this.friendsService.findUpcomingSections(
+      query.query,
+      query.group ?? 'month',
+      query.direction ?? 'asc',
+      query.page ?? 1,
+      query.pageSize ?? 30,
+      viewer,
+    );
+  }
+
+  @Get('birthdays-by-month')
+  @UseGuards(OptionalAuthGuard)
+  @ApiOperation({
+    operationId: 'birthdaysByMonth',
+    summary: 'Friends whose birthday falls in a given calendar month',
+  })
+  @ApiOkResponse({ type: BirthdaysByMonthDto })
+  findBirthdaysByMonth(
+    @Query() query: MonthQueryDto,
+    @OptionalCurrentUser() viewer: User | null,
+  ): Promise<BirthdaysByMonthDto> {
+    return this.friendsService.findBirthdaysByMonth(
+      query.month,
+      query.query,
+      viewer,
+    );
   }
 
   @Get('search')
@@ -127,6 +158,20 @@ export class FriendsController {
   @ApiOperation({ operationId: 'deleteFriend', summary: 'Delete a friend' })
   remove(@Param('id') id: string, @CurrentUser() viewer: User): Promise<void> {
     return this.friendsService.remove(id, viewer);
+  }
+
+  @Post(':id/connect')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'connectFriend',
+    summary: 'Add an existing entry as someone you know',
+  })
+  @ApiOkResponse({ type: FriendDto })
+  connect(
+    @Param('id') id: string,
+    @CurrentUser() viewer: User,
+  ): Promise<FriendDto> {
+    return this.friendsService.connect(id, viewer);
   }
 
   @Post(':id/claim')

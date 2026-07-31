@@ -111,3 +111,28 @@
     @apply font-serif font-normal tracking-tight;
   }
 }
+
+@keyframes loading-dot {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.35;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .animate-loading-dot {
+    animation: loading-dot 1.2s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-loading-dot {
+      animation: none;
+      opacity: 0.8;
+    }
+  }
+}

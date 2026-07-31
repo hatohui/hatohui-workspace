@@ -20,13 +20,14 @@
   },
   "profile": {
     "title": "プロフィール",
-    "stub": "プロフィール設定は近日公開予定です。"
+    "stub": "プロフィール設定は近日公開予定です。",
+    "adminTag": "管理者"
   },
   "social": {
     "title": "あなたのつながり",
     "you": "あなた",
     "empty": "友達を追加すると、つながりのツリーが表示されます。",
-    "friendOfLabel": "{{name}} — {{via}}の友達"
+    "friendOfLabel": "{{via}}の友達"
   },
   "welcome": {
     "title": "友達のための、あたたかな巣",
@@ -56,7 +57,8 @@
     },
     "calendar": {
       "more": "他{{count}}件"
-    }
+    },
+    "loadingMore": "読み込み中..."
   },
   "friendForm": {
     "createTitle": "友達を追加",
@@ -90,7 +92,10 @@
     "editAction": "編集",
     "deleteAction": "削除",
     "deleteConfirm": "この友達を削除しますか？この操作は取り消せません。",
-    "backToDashboard": "ダッシュボードに戻る"
+    "addAsFriendAction": "友達として追加",
+    "connectedLabel": "追加済み",
+    "viewProfile": "プロフィールを見る",
+    "back": "戻る"
   },
   "onboarding": {
     "title": "ようこそ",
@@ -102,6 +107,10 @@
       "note": "誕生日を誰に見せるかは自分で選べます。",
       "yes": "はい",
       "no": "いいえ"
+    },
+    "profile": {
+      "title": "この表示でよろしいですか？",
+      "nameLabel": "表示名"
     },
     "visibility": {
       "title": "誕生日を誰に見せますか？"
@@ -125,6 +134,7 @@
   },
   "notFound": {
     "title": "ページが見つかりません",
+    "subtitle": "お探しのページは存在しないか、移動した可能性があります。",
     "backToDashboard": "ダッシュボードに戻る"
   }
 }

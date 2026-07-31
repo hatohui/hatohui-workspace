@@ -6,7 +6,11 @@ import { spawnSync } from 'node:child_process';
 // Vars that hit a *real* external API and therefore need the actual
 // credential — everything else (DATABASE_URL, REDIS_URL, R2_*, ...) stays
 // pointed at local infra (docker-compose) via .env.example's defaults.
-const DOPPLER_SOURCED_VARS = ['GOOGLE_OAUTH_CLIENT_ID', 'EMAIL_API_KEY'];
+const DOPPLER_SOURCED_VARS = [
+  'GOOGLE_OAUTH_CLIENT_ID',
+  'GOOGLE_OAUTH_CLIENT_SECRET',
+  'EMAIL_API_KEY',
+];
 const DOPPLER_PROJECT = 'hatohui-workspace';
 const DOPPLER_CONFIG = 'tf';
 

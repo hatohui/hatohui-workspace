@@ -1,12 +1,26 @@
-import type { FriendGroup } from '../hooks/useDirectoryFriends';
+import { useIntersectionObserver } from '@hatohui/libs';
+import type { FriendGroup } from '../hooks/useUpcomingSections';
 import BirthdayCard from './BirthdayCard';
 
 type Props = {
   groups: FriendGroup[];
   emptyMessage: string;
+  hasMore: boolean;
+  isFetchingMore: boolean;
+  loadingMoreMessage: string;
+  onLoadMore: () => void;
 };
 
-function BirthdayList({ groups, emptyMessage }: Props) {
+function BirthdayList({
+  groups,
+  emptyMessage,
+  hasMore,
+  isFetchingMore,
+  loadingMoreMessage,
+  onLoadMore,
+}: Props) {
+  const sentinelRef = useIntersectionObserver(onLoadMore, hasMore);
+
   if (groups.length === 0) {
     return <p className="text-muted-foreground">{emptyMessage}</p>;
   }
@@ -30,6 +44,12 @@ function BirthdayList({ groups, emptyMessage }: Props) {
           </ul>
         </div>
       ))}
+      {hasMore && <div ref={sentinelRef} className="h-1" />}
+      {isFetchingMore && (
+        <p className="text-center text-sm text-muted-foreground">
+          {loadingMoreMessage}
+        </p>
+      )}
     </div>
   );
 }

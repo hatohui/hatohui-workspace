@@ -49,6 +49,7 @@ jobs:
           DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
           REDIS_URL: redis://localhost:6379
           GOOGLE_OAUTH_CLIENT_ID: ci-placeholder
+          GOOGLE_OAUTH_CLIENT_SECRET: ci-placeholder
           SESSION_JWT_SECRET: ci-placeholder
           R2_BUCKET_NAME: ci-placeholder
           R2_ENDPOINT: http://localhost:9000

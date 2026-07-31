@@ -4,6 +4,7 @@ import {
   useOnboardingComplete,
   useOnboardingOptIn,
   useOnboardingSetBirthday,
+  useOnboardingSetProfile,
   useOnboardingSetVisibility,
   useOnboardingSkip,
   useOnboardingState,
@@ -41,7 +42,7 @@ export function useOnboardingWizard() {
 
   const [stepOverride, setStepOverride] = useState<OnboardingStep | null>(null);
   const entry = stateQuery.data?.data.entry ?? null;
-  const defaultStep: OnboardingStep = entry ? 'visibility' : 'optIn';
+  const defaultStep: OnboardingStep = entry ? 'profile' : 'optIn';
   const step =
     stepOverride ?? (user ? readStoredStep(user.id) : null) ?? defaultStep;
 
@@ -56,6 +57,7 @@ export function useOnboardingWizard() {
   };
 
   const optIn = useOnboardingOptIn();
+  const setProfile = useOnboardingSetProfile();
   const setVisibility = useOnboardingSetVisibility();
   const setBirthday = useOnboardingSetBirthday();
   const addConnections = useOnboardingAddConnections();
@@ -73,8 +75,13 @@ export function useOnboardingWizard() {
         skip.mutate();
         return;
       }
-      setStep('visibility');
+      setStep('profile');
       optIn.mutate({ data: { join } });
+    },
+
+    submitProfile: (name: string, avatarKey?: string) => {
+      setStep('visibility');
+      setProfile.mutate({ data: { name, avatarKey } });
     },
 
     submitVisibility: (visibility: Visibility) => {

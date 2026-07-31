@@ -9,7 +9,7 @@ function WelcomeHero() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col items-center gap-8 py-12 text-center">
+    <div className="flex min-h-[70vh] flex-col items-center justify-center gap-8 text-center">
       <div className="h-64 w-64 overflow-hidden rounded-xl border border-border bg-card shadow-[0_1px_3px_rgba(20,20,19,0.08)]">
         <img
           src="/favicon.png"

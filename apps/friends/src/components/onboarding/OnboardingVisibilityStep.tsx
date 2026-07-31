@@ -20,9 +20,7 @@ function OnboardingVisibilityStep({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-medium">
-        {t('onboarding.visibility.title')}
-      </h2>
+      <h2 className="text-xl">{t('onboarding.visibility.title')}</h2>
       <VisibilityField value={visibility} onChange={setVisibility} />
       <Button
         disabled={submitting}

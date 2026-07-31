@@ -1,7 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button, DialogTitle } from '@hatohui/ui';
+import { Button, DialogTitle, LoadingDots } from '@hatohui/ui';
+import { useAuth } from '@hatohui/libs';
 import { useOnboardingWizard } from '../../hooks/useOnboardingWizard';
 import OnboardingOptInStep from './OnboardingOptInStep';
+import OnboardingProfileStep from './OnboardingProfileStep';
 import OnboardingVisibilityStep from './OnboardingVisibilityStep';
 import OnboardingBirthdayStep from './OnboardingBirthdayStep';
 import OnboardingConnectionsStep from './OnboardingConnectionsStep';
@@ -9,10 +11,15 @@ import OnboardingCompleteStep from './OnboardingCompleteStep';
 
 function OnboardingWizard() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const wizard = useOnboardingWizard();
 
   if (wizard.isLoading) {
-    return <p>{t('common:loading')}</p>;
+    return (
+      <div className="flex justify-center py-8">
+        <LoadingDots label={t('common:loading')} />
+      </div>
+    );
   }
 
   return (
@@ -28,6 +35,14 @@ function OnboardingWizard() {
 
       {wizard.step === 'optIn' && (
         <OnboardingOptInStep submitting={false} onAnswer={wizard.submitOptIn} />
+      )}
+      {wizard.step === 'profile' && user && (
+        <OnboardingProfileStep
+          initialName={wizard.entry?.name ?? user.name}
+          initialAvatarUrl={wizard.entry?.avatarUrl ?? user.avatarUrl}
+          submitting={false}
+          onSubmit={wizard.submitProfile}
+        />
       )}
       {wizard.step === 'visibility' && (
         <OnboardingVisibilityStep

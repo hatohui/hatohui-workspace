@@ -27,7 +27,7 @@
             }
           }
         },
-        "summary": "Exchange a Google Identity Services ID token for a session",
+        "summary": "Exchange a Google OAuth 2.0 authorization code for a session",
         "tags": [
           "auth"
         ]
@@ -150,26 +150,121 @@
         ]
       }
     },
-    "/friends/upcoming": {
+    "/friends/upcoming/sections": {
       "get": {
-        "operationId": "upcomingFriends",
-        "parameters": [],
+        "operationId": "upcomingFriendSections",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against friend name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "month",
+              "type": "string",
+              "enum": [
+                "month",
+                "age",
+                "year",
+                "none"
+              ]
+            }
+          },
+          {
+            "name": "direction",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "asc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 30,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UpcomingFriendDto"
-                  }
+                  "$ref": "#/components/schemas/PaginatedUpcomingSectionsDto"
                 }
               }
             }
           }
         },
-        "summary": "List friends sorted by next occurring birthday, with computed age",
+        "summary": "Paginated, grouped upcoming birthdays for the timeline's infinite scroll",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/birthdays-by-month": {
+      "get": {
+        "operationId": "birthdaysByMonth",
+        "parameters": [
+          {
+            "name": "month",
+            "required": true,
+            "in": "query",
+            "description": "Calendar month, 1-12",
+            "schema": {
+              "example": 8,
+              "type": "number"
+            }
+          },
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against friend name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BirthdaysByMonthDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Friends whose birthday falls in a given calendar month",
         "tags": [
           "friends"
         ]
@@ -339,6 +434,37 @@
         ]
       }
     },
+    "/friends/{id}/connect": {
+      "post": {
+        "operationId": "connectFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add an existing entry as someone you know",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
     "/friends/{id}/claim": {
       "post": {
         "operationId": "claimFriend",
@@ -503,6 +629,38 @@
         ]
       }
     },
+    "/onboarding/profile": {
+      "patch": {
+        "operationId": "onboardingSetProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStateDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Step 2: confirm or rewrite your display name",
+        "tags": [
+          "onboarding"
+        ]
+      }
+    },
     "/onboarding/visibility": {
       "patch": {
         "operationId": "onboardingSetVisibility",
@@ -529,7 +687,7 @@
             }
           }
         },
-        "summary": "Step 2: set visibility mode for your entry",
+        "summary": "Step 3: set visibility mode for your entry",
         "tags": [
           "onboarding"
         ]
@@ -561,7 +719,7 @@
             }
           }
         },
-        "summary": "Step 3: confirm or enter your birthday (skipped if visibility is None)",
+        "summary": "Step 4: confirm or enter your birthday (skipped if visibility is None)",
         "tags": [
           "onboarding"
         ]
@@ -586,7 +744,7 @@
             "description": ""
           }
         },
-        "summary": "Step 4: record which existing entries you already know",
+        "summary": "Step 5: record which existing entries you already know",
         "tags": [
           "onboarding"
         ]
@@ -608,7 +766,7 @@
             }
           }
         },
-        "summary": "Step 5: mark onboarding as complete",
+        "summary": "Step 6: mark onboarding as complete",
         "tags": [
           "onboarding"
         ]
@@ -675,13 +833,13 @@
       "GoogleLoginDto": {
         "type": "object",
         "properties": {
-          "idToken": {
+          "code": {
             "type": "string",
-            "description": "Google Identity Services ID token"
+            "description": "Google OAuth 2.0 authorization code (auth-code popup flow)"
           }
         },
         "required": [
-          "idToken"
+          "code"
         ]
       },
       "UserDto": {
@@ -815,6 +973,14 @@
             "type": "boolean",
             "description": "Whether this entry is already claimed by an account"
           },
+          "isViewerEntry": {
+            "type": "boolean",
+            "description": "Whether this entry is the requesting viewer's own entry"
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "Whether the requesting viewer already knows this entry"
+          },
           "canEdit": {
             "type": "boolean",
             "description": "Whether the requesting viewer is allowed to edit/delete this entry"
@@ -840,6 +1006,8 @@
           "avatarUrl",
           "addedById",
           "isAssociated",
+          "isViewerEntry",
+          "isConnected",
           "canEdit",
           "createdAt",
           "updatedAt"
@@ -912,6 +1080,14 @@
             "type": "boolean",
             "description": "Whether this entry is already claimed by an account"
           },
+          "isViewerEntry": {
+            "type": "boolean",
+            "description": "Whether this entry is the requesting viewer's own entry"
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "Whether the requesting viewer already knows this entry"
+          },
           "canEdit": {
             "type": "boolean",
             "description": "Whether the requesting viewer is allowed to edit/delete this entry"
@@ -948,11 +1124,74 @@
           "avatarUrl",
           "addedById",
           "isAssociated",
+          "isViewerEntry",
+          "isConnected",
           "canEdit",
           "createdAt",
           "updatedAt",
           "turningAge",
           "nextBirthdayDate"
+        ]
+      },
+      "UpcomingSectionDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "2026-08",
+            "description": "The section's grouping key: YYYY-MM for 'month', the age/year as a string for 'age'/'year', 'unknown' when the underlying field is unset, or 'all' for group 'none'"
+          },
+          "friends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpcomingFriendDto"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "friends"
+        ]
+      },
+      "PaginatedUpcomingSectionsDto": {
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpcomingSectionDto"
+            }
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "sections",
+          "page",
+          "pageSize",
+          "hasMore"
+        ]
+      },
+      "BirthdaysByMonthDto": {
+        "type": "object",
+        "properties": {
+          "friends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendDto"
+            }
+          }
+        },
+        "required": [
+          "friends"
         ]
       },
       "PaginatedFriendsDto": {
@@ -1260,6 +1499,23 @@
         },
         "required": [
           "join"
+        ]
+      },
+      "SetProfileDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "avatarKey": {
+            "type": "string",
+            "example": "images/abc123.jpg",
+            "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
+          }
+        },
+        "required": [
+          "name"
         ]
       },
       "SetVisibilityDto": {

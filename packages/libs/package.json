@@ -11,7 +11,8 @@
   "dependencies": {
     "@hatohui/i18n": "workspace:*",
     "@hatohui/models": "workspace:*",
-    "@hatohui/ui": "workspace:*"
+    "@hatohui/ui": "workspace:*",
+    "@react-oauth/google": "^0.13.5"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

@@ -7,6 +7,7 @@ import {
   OnboardingStateDto,
   OptInDto,
   SetBirthdayDto,
+  SetProfileDto,
   SetVisibilityDto,
 } from './dto/onboarding.dto';
 import { OnboardingService } from './onboarding.service';
@@ -41,10 +42,23 @@ export class OnboardingController {
     return this.onboardingService.optIn(dto, viewer);
   }
 
+  @Patch('profile')
+  @ApiOperation({
+    operationId: 'onboardingSetProfile',
+    summary: 'Step 2: confirm or rewrite your display name',
+  })
+  @ApiOkResponse({ type: OnboardingStateDto })
+  setProfile(
+    @Body() dto: SetProfileDto,
+    @CurrentUser() viewer: User,
+  ): Promise<OnboardingStateDto> {
+    return this.onboardingService.setProfile(dto, viewer);
+  }
+
   @Patch('visibility')
   @ApiOperation({
     operationId: 'onboardingSetVisibility',
-    summary: 'Step 2: set visibility mode for your entry',
+    summary: 'Step 3: set visibility mode for your entry',
   })
   @ApiOkResponse({ type: OnboardingStateDto })
   setVisibility(
@@ -58,7 +72,7 @@ export class OnboardingController {
   @ApiOperation({
     operationId: 'onboardingSetBirthday',
     summary:
-      'Step 3: confirm or enter your birthday (skipped if visibility is None)',
+      'Step 4: confirm or enter your birthday (skipped if visibility is None)',
   })
   @ApiOkResponse({ type: OnboardingStateDto })
   setBirthday(
@@ -71,7 +85,7 @@ export class OnboardingController {
   @Post('connections')
   @ApiOperation({
     operationId: 'onboardingAddConnections',
-    summary: 'Step 4: record which existing entries you already know',
+    summary: 'Step 5: record which existing entries you already know',
   })
   addConnections(
     @Body() dto: AddConnectionsDto,
@@ -83,7 +97,7 @@ export class OnboardingController {
   @Post('complete')
   @ApiOperation({
     operationId: 'onboardingComplete',
-    summary: 'Step 5: mark onboarding as complete',
+    summary: 'Step 6: mark onboarding as complete',
   })
   @ApiOkResponse({ type: OnboardingStateDto })
   complete(@CurrentUser() viewer: User): Promise<OnboardingStateDto> {

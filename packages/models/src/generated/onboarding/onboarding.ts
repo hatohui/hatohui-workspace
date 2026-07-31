@@ -29,6 +29,7 @@ import type {
   OnboardingStateDto,
   OptInDto,
   SetBirthdayDto,
+  SetProfileDto,
   SetVisibilityDto
 } from '../schemas';
 
@@ -248,6 +249,88 @@ export const useOnboardingOptIn = <TError = unknown,
       > => {
       return useMutation(getOnboardingOptInMutationOptions(options), queryClient);
     }
+    export type onboardingSetProfileResponse200 = {
+  data: OnboardingStateDto
+  status: 200
+}
+
+export type onboardingSetProfileResponseSuccess = (onboardingSetProfileResponse200) & {
+  headers: Headers;
+};
+;
+
+export type onboardingSetProfileResponse = (onboardingSetProfileResponseSuccess)
+
+export const getOnboardingSetProfileUrl = () => {
+
+
+
+
+  return `/onboarding/profile`
+}
+
+/**
+ * @summary Step 2: confirm or rewrite your display name
+ */
+export const onboardingSetProfile = async (setProfileDto: SetProfileDto, options?: RequestInit): Promise<onboardingSetProfileResponse> => {
+
+  return customFetch<onboardingSetProfileResponse>(getOnboardingSetProfileUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(setProfileDto)
+  }
+);}
+
+
+
+
+
+export const getOnboardingSetProfileMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof onboardingSetProfile>>, TError,{data: SetProfileDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof onboardingSetProfile>>, TError,{data: SetProfileDto}, TContext> => {
+
+const mutationKey = ['onboardingSetProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof onboardingSetProfile>>, {data: SetProfileDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  onboardingSetProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type OnboardingSetProfileMutationResult = NonNullable<Awaited<ReturnType<typeof onboardingSetProfile>>>
+    export type OnboardingSetProfileMutationBody = SetProfileDto
+    export type OnboardingSetProfileMutationError = unknown
+
+    /**
+ * @summary Step 2: confirm or rewrite your display name
+ */
+export const useOnboardingSetProfile = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof onboardingSetProfile>>, TError,{data: SetProfileDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof onboardingSetProfile>>,
+        TError,
+        {data: SetProfileDto},
+        TContext
+      > => {
+      return useMutation(getOnboardingSetProfileMutationOptions(options), queryClient);
+    }
     export type onboardingSetVisibilityResponse200 = {
   data: OnboardingStateDto
   status: 200
@@ -269,7 +352,7 @@ export const getOnboardingSetVisibilityUrl = () => {
 }
 
 /**
- * @summary Step 2: set visibility mode for your entry
+ * @summary Step 3: set visibility mode for your entry
  */
 export const onboardingSetVisibility = async (setVisibilityDto: SetVisibilityDto, options?: RequestInit): Promise<onboardingSetVisibilityResponse> => {
 
@@ -318,7 +401,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type OnboardingSetVisibilityMutationError = unknown
 
     /**
- * @summary Step 2: set visibility mode for your entry
+ * @summary Step 3: set visibility mode for your entry
  */
 export const useOnboardingSetVisibility = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof onboardingSetVisibility>>, TError,{data: SetVisibilityDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -351,7 +434,7 @@ export const getOnboardingSetBirthdayUrl = () => {
 }
 
 /**
- * @summary Step 3: confirm or enter your birthday (skipped if visibility is None)
+ * @summary Step 4: confirm or enter your birthday (skipped if visibility is None)
  */
 export const onboardingSetBirthday = async (setBirthdayDto: SetBirthdayDto, options?: RequestInit): Promise<onboardingSetBirthdayResponse> => {
 
@@ -400,7 +483,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type OnboardingSetBirthdayMutationError = unknown
 
     /**
- * @summary Step 3: confirm or enter your birthday (skipped if visibility is None)
+ * @summary Step 4: confirm or enter your birthday (skipped if visibility is None)
  */
 export const useOnboardingSetBirthday = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof onboardingSetBirthday>>, TError,{data: SetBirthdayDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -433,7 +516,7 @@ export const getOnboardingAddConnectionsUrl = () => {
 }
 
 /**
- * @summary Step 4: record which existing entries you already know
+ * @summary Step 5: record which existing entries you already know
  */
 export const onboardingAddConnections = async (addConnectionsDto: AddConnectionsDto, options?: RequestInit): Promise<onboardingAddConnectionsResponse> => {
 
@@ -482,7 +565,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type OnboardingAddConnectionsMutationError = unknown
 
     /**
- * @summary Step 4: record which existing entries you already know
+ * @summary Step 5: record which existing entries you already know
  */
 export const useOnboardingAddConnections = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof onboardingAddConnections>>, TError,{data: AddConnectionsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -515,7 +598,7 @@ export const getOnboardingCompleteUrl = () => {
 }
 
 /**
- * @summary Step 5: mark onboarding as complete
+ * @summary Step 6: mark onboarding as complete
  */
 export const onboardingComplete = async ( options?: RequestInit): Promise<onboardingCompleteResponse> => {
 
@@ -564,7 +647,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type OnboardingCompleteMutationError = unknown
 
     /**
- * @summary Step 5: mark onboarding as complete
+ * @summary Step 6: mark onboarding as complete
  */
 export const useOnboardingComplete = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof onboardingComplete>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}

@@ -1,13 +1,17 @@
+import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import {
   Avatar,
   Button,
+  cn,
+  Spinner,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@hatohui/ui';
-import { GoogleIcon, useAuth, useGoogleIdentity } from '@hatohui/libs';
+import { GoogleIcon, useAuth, useGoogleAuth } from '@hatohui/libs';
 import { navIcons } from '../../constants/navIcons';
+import routes from '../../constants/routes';
 import NavSlotPlaceholder from './NavSlotPlaceholder';
 
 interface Props {
@@ -16,8 +20,8 @@ interface Props {
 
 function SidebarAccount({ expanded }: Props) {
   const { t } = useTranslation();
-  const { user, isLoading, logout } = useAuth();
-  const { isReady, promptLogin } = useGoogleIdentity();
+  const { user, isLoading, isLoggingIn, logout } = useAuth();
+  const login = useGoogleAuth();
   const LogoutIcon = navIcons.logout;
 
   if (isLoading) {
@@ -35,11 +39,11 @@ function SidebarAccount({ expanded }: Props) {
             variant="outline"
             size={expanded ? 'sm' : 'icon'}
             className={`rounded-full ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
-            disabled={!isReady}
             aria-label={t('common:auth.login')}
-            onClick={promptLogin}
+            disabled={isLoggingIn}
+            onClick={() => login()}
           >
-            <GoogleIcon />
+            {isLoggingIn ? <Spinner /> : <GoogleIcon />}
             {expanded && (
               <span className="text-sm">{t('common:auth.login')}</span>
             )}
@@ -58,20 +62,25 @@ function SidebarAccount({ expanded }: Props) {
     <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div
-            className={`flex h-9 items-center gap-2 rounded-full px-2 ${expanded ? 'rounded-lg' : 'justify-center'}`}
+          <Link
+            to={routes.profile}
+            aria-label={t('navigation.profile')}
+            className={`flex h-9 items-center gap-2 rounded-full px-2 hover:bg-accent ${expanded ? 'rounded-lg' : 'justify-center'}`}
           >
             <Avatar
               src={user.avatarUrl}
               alt={user.name}
-              className="size-6 shrink-0"
+              className={cn(
+                'size-6 shrink-0',
+                user.role === 'ADMIN' && 'ring-primary ring-2',
+              )}
             />
             {expanded && (
               <span className="truncate text-xs text-muted-foreground">
                 {user.name}
               </span>
             )}
-          </div>
+          </Link>
         </TooltipTrigger>
         {!expanded && (
           <TooltipContent side="right">
@@ -86,7 +95,7 @@ function SidebarAccount({ expanded }: Props) {
             type="button"
             variant="ghost"
             size={expanded ? 'sm' : 'icon'}
-            className={`rounded-full text-muted-foreground ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
+            className={`rounded-full text-destructive hover:text-destructive ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
             aria-label={t('navigation.logout')}
             onClick={() => void logout()}
           >

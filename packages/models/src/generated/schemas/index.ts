@@ -7,6 +7,8 @@
  */
 
 export * from './addConnectionsDto';
+export * from './birthdaysByMonthDto';
+export * from './birthdaysByMonthParams';
 export * from './createFriendDto';
 export * from './createFriendDtoSocialMedias';
 export * from './createFriendDtoVisibility';
@@ -23,8 +25,10 @@ export * from './onboardingStateDto';
 export * from './onboardingStateDtoOnboardingStatus';
 export * from './optInDto';
 export * from './paginatedFriendsDto';
+export * from './paginatedUpcomingSectionsDto';
 export * from './searchFriendsParams';
 export * from './setBirthdayDto';
+export * from './setProfileDto';
 export * from './setVisibilityDto';
 export * from './setVisibilityDtoVisibility';
 export * from './signedImageDto';
@@ -36,6 +40,10 @@ export * from './socialPlatformDto';
 export * from './upcomingFriendDto';
 export * from './upcomingFriendDtoSocialMedias';
 export * from './upcomingFriendDtoVisibility';
+export * from './upcomingFriendSectionsDirection';
+export * from './upcomingFriendSectionsGroup';
+export * from './upcomingFriendSectionsParams';
+export * from './upcomingSectionDto';
 export * from './updateFriendDto';
 export * from './updateFriendDtoSocialMedias';
 export * from './updateFriendDtoVisibility';

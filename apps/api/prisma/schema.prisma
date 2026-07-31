@@ -40,9 +40,23 @@ model User {
   connections       Connection[]
 }
 
+enum AppScope {
+  ALL
+  WORKSHOP
+  ART
+  FRIENDS
+  WWW
+  TRAVEL
+}
+
 model AppConfig {
-  id         String @id @default("singleton")
-  adminEmail String
+  id        String   @id @default(cuid())
+  type      String
+  scope     AppScope
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@unique([type, scope])
 }
 
 /// One-to-one link between a logged-in Account and the BirthdayDetails entry

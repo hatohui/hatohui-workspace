@@ -1,6 +1,16 @@
 import { Trash2 } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Input, Label } from '@hatohui/ui';
+import {
+  Button,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@hatohui/ui';
+import { useSocialPlatforms } from '@hatohui/models';
 import type { SocialMediaRow } from '../hooks/useSocialMediaFields';
 
 type Props = {
@@ -12,17 +22,32 @@ type Props = {
 
 function SocialMediaFieldList({ rows, onAdd, onRemove, onUpdate }: Props) {
   const { t } = useTranslation();
+  const { data, isLoading } = useSocialPlatforms();
+  const platforms = data?.data ?? [];
 
   return (
     <div className="flex flex-col gap-2">
       <Label>{t('friendForm.socialMediaLabel')}</Label>
       {rows.map((row) => (
         <div key={row.key} className="flex gap-2">
-          <Input
+          <Select
             value={row.platform}
-            placeholder={t('friendForm.socialMediaPlatformPlaceholder')}
-            onChange={(e) => onUpdate(row.key, 'platform', e.target.value)}
-          />
+            disabled={isLoading}
+            onValueChange={(value) => onUpdate(row.key, 'platform', value)}
+          >
+            <SelectTrigger className="w-40 shrink-0">
+              <SelectValue
+                placeholder={t('friendForm.socialMediaPlatformPlaceholder')}
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {platforms.map((platform) => (
+                <SelectItem key={platform.id} value={platform.name}>
+                  {platform.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Input
             value={row.handle}
             placeholder={t('friendForm.socialMediaHandlePlaceholder')}

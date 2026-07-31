@@ -5,10 +5,12 @@ import { OnboardingStatus, Role } from '@prisma/client';
 export { Role, OnboardingStatus };
 
 export class GoogleLoginDto {
-  @ApiProperty({ description: 'Google Identity Services ID token' })
+  @ApiProperty({
+    description: 'Google OAuth 2.0 authorization code (auth-code popup flow)',
+  })
   @IsString()
   @MinLength(1)
-  idToken!: string;
+  code!: string;
 }
 
 export class UserDto {

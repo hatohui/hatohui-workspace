@@ -11,7 +11,7 @@ function OnboardingOptInStep({ onAnswer, submitting }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-xl font-medium">{t('onboarding.optIn.question')}</h2>
+      <h2 className="text-xl">{t('onboarding.optIn.question')}</h2>
       <p className="text-sm text-muted-foreground">
         {t('onboarding.optIn.note')}
       </p>

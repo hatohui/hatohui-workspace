@@ -1,25 +1,29 @@
 import { Cake } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
-import { useUpcomingFriends } from '../../hooks/useUpcomingFriends';
+import { ErrorState, LoadingDots } from '@hatohui/ui';
+import { useUpcomingSections } from '../../hooks/useUpcomingSections';
 import { useDirectoryControls } from '../../hooks/useDirectoryControls';
-import { useDirectoryFriends } from '../../hooks/useDirectoryFriends';
 import BirthdayList from '../../components/BirthdayList';
 import CalendarView from '../../components/CalendarView';
 import DirectoryControls from '../../components/DirectoryControls';
 
 function BirthdaysPage() {
   const { t, i18n } = useTranslation();
-  const { data, isLoading, isError } = useUpcomingFriends();
   const controls = useDirectoryControls();
-  const friends = data?.data ?? [];
-  const groups = useDirectoryFriends(
-    friends,
-    controls.debouncedSearch,
-    controls.group,
-    controls.direction,
-    i18n.language,
-  );
-  const filteredFriends = groups.flatMap((group) => group.friends);
+  const {
+    groups,
+    isLoading,
+    isError,
+    hasMore,
+    isFetchingMore,
+    loadMore,
+    refetch,
+  } = useUpcomingSections(
+      controls.debouncedSearch,
+      controls.group,
+      controls.direction,
+      i18n.language,
+    );
 
   return (
     <>
@@ -27,29 +31,41 @@ function BirthdaysPage() {
         <Cake className="size-7 shrink-0" />
         {t('dashboard.title')}
       </h1>
+      <DirectoryControls
+        view={controls.view}
+        onViewChange={controls.setView}
+        search={controls.search}
+        onSearchChange={controls.setSearch}
+        group={controls.group}
+        onGroupChange={controls.setGroup}
+        direction={controls.direction}
+        onToggleDirection={controls.toggleDirection}
+      />
       {isLoading && (
-        <p className="text-muted-foreground">{t('common:loading')}</p>
+        <div className="flex justify-center py-8">
+          <LoadingDots label={t('common:loading')} />
+        </div>
       )}
-      {isError && <p className="text-destructive">{t('common:loadError')}</p>}
-      {data && (
-        <>
-          <DirectoryControls
-            view={controls.view}
-            onViewChange={controls.setView}
-            search={controls.search}
-            onSearchChange={controls.setSearch}
-            group={controls.group}
-            onGroupChange={controls.setGroup}
-            direction={controls.direction}
-            onToggleDirection={controls.toggleDirection}
+      {isError && (
+        <ErrorState
+          message={t('common:loadError')}
+          retry={{ label: t('common:retry'), onClick: () => void refetch() }}
+        />
+      )}
+      {!isLoading &&
+        !isError &&
+        (controls.view === 'timeline' ? (
+          <BirthdayList
+            groups={groups}
+            emptyMessage={t('birthdays.empty')}
+            hasMore={hasMore}
+            isFetchingMore={isFetchingMore}
+            loadingMoreMessage={t('dashboard.loadingMore')}
+            onLoadMore={loadMore}
           />
-          {controls.view === 'timeline' ? (
-            <BirthdayList groups={groups} emptyMessage={t('birthdays.empty')} />
-          ) : (
-            <CalendarView friends={filteredFriends} />
-          )}
-        </>
-      )}
+        ) : (
+          <CalendarView search={controls.debouncedSearch} />
+        ))}
     </>
   );
 }
