@@ -223,5 +223,7 @@ module "github_ci" {
 
   secrets = {
     CLOUDFLARE_API_TOKEN = var.cloudflare_api_token
+    DOPPLER_TOKEN        = var.doppler_token
+    TF_API_TOKEN         = var.tf_api_token
   }
 }

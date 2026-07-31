@@ -101,3 +101,9 @@ variable "github_token" {
   type        = string
   sensitive   = true
 }
+
+variable "tf_api_token" {
+  description = "An HCP Terraform (app.terraform.io) API token, published to GitHub Actions so infra-cd.yml can run terraform apply against the hatohui organization's remote workspace"
+  type        = string
+  sensitive   = true
+}
