@@ -41,7 +41,7 @@ jobs:
         id: generate
         working-directory: apps/api
         run: |
-          bunx prisma migrate dev --create-only --skip-generate --name ci-auto
+          bunx prisma migrate dev --create-only --name ci-auto
           if git status --porcelain -- prisma/migrations | grep -q .; then
             echo "created=true" >> "$GITHUB_OUTPUT"
           else
