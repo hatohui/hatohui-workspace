@@ -12,14 +12,14 @@ A management ecosystem/platform for hatohui and friends. A single monorepo holdi
 
 ## Apps
 
-| App | Stack | Purpose |
-| --- | --- | --- |
-| [`apps/api`](apps/api) | NestJS, Prisma (Postgres) | Shared API service for all other apps. |
-| [`apps/friends`](apps/friends) | React, Vite | Helps you be a good friend — reminders, and finding your friends' friends. |
-| [`apps/www`](apps/www) | React, Vite | Index/portfolio site for hatohui's (personal) profile and other apps. |
-| `apps/art` | _planned_ | Hatohui's art tracker — commissions, gallery, timeline, income. |
-| `apps/travel` | _planned_ | Travel planning and management, for furries. |
-| `apps/workspace` | _planned_ | Config, monitoring, and task/deadline management across the other apps. |
+| App | Stack | Purpose | URL |
+| --- | --- | --- | --- |
+| [`apps/api`](apps/api) | NestJS, Prisma (Postgres) | Shared API service for all other apps. | [api.hatohui.com](https://api.hatohui.com) |
+| [`apps/friends`](apps/friends) | React, Vite | Helps you be a good friend — reminders, and finding your friends' friends. | [friends.hatohui.com](https://friends.hatohui.com) |
+| [`apps/www`](apps/www) | React, Vite | Index/portfolio site for hatohui's (personal) profile and other apps. | [www.hatohui.com](https://www.hatohui.com) |
+| `apps/art` | _planned_ | Hatohui's art tracker — commissions, gallery, timeline, income. | `art.hatohui.com` |
+| `apps/travel` | _planned_ | Travel planning and management, for furries. | `travel.hatohui.com` |
+| `apps/workspace` | _planned_ | Config, monitoring, and task/deadline management across the other apps. | `workspace.hatohui.com` |
 
 ## Packages
 
