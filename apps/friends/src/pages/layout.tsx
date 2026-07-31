@@ -7,7 +7,7 @@ function RootLayout({ children }: { children: ReactNode }) {
   return (
     <OnboardingModalProvider>
       <SidebarNav />
-      <div className="mx-auto max-w-2xl px-4 py-8 sm:pl-24">
+      <div className="mx-auto max-w-2xl px-4 pt-8 pb-20 sm:pl-24 sm:pb-8">
         <main>{children}</main>
       </div>
       <OnboardingModal />

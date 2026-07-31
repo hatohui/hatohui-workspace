@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "home": "ホーム",
     "dashboard": "誕生日",
     "addFriend": "友達を追加",
     "logout": "ログアウト",
@@ -21,7 +22,8 @@
   },
   "welcome": {
     "title": "友達のための、あたたかな巣",
-    "subtitle": "大切な人たちのことを、やさしく思い出せるように。"
+    "subtitle": "大切な人たちのことを、やさしく思い出せるように。",
+    "birthdaysCta": "誕生日を見る"
   },
   "dashboard": {
     "title": "近日中の誕生日",

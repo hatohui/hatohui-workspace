@@ -1,5 +1,9 @@
+import { Cake } from 'lucide-react';
+import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { GoogleLoginButton } from '@hatohui/libs';
+import { Button } from '@hatohui/ui';
+import routes from '../constants/routes';
 
 function WelcomeHero() {
   const { t } = useTranslation();
@@ -19,7 +23,15 @@ function WelcomeHero() {
           {t('welcome.subtitle')}
         </p>
       </div>
-      <GoogleLoginButton />
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <GoogleLoginButton />
+        <Button asChild variant="outline">
+          <Link to={routes.birthdays} className="flex items-center gap-2">
+            <Cake className="size-4 shrink-0" />
+            {t('welcome.birthdaysCta')}
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }

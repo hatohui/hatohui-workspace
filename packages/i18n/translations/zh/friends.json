@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "home": "首页",
     "dashboard": "生日",
     "addFriend": "添加朋友",
     "logout": "退出登录",
@@ -21,7 +22,8 @@
   },
   "welcome": {
     "title": "朋友的温馨小巢",
-    "subtitle": "记住你在乎的每一个人，一次一份温暖的提醒。"
+    "subtitle": "记住你在乎的每一个人，一次一份温暖的提醒。",
+    "birthdaysCta": "查看生日"
   },
   "dashboard": {
     "title": "近期生日",

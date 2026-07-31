@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "friends",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "--cwd", "apps/friends", "dev"],
+      "port": 5174
+    }
+  ]
+}

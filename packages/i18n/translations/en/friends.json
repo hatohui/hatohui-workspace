@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "home": "Home",
     "dashboard": "Birthdays",
     "addFriend": "Add friend",
     "logout": "Log out",
@@ -21,7 +22,8 @@
   },
   "welcome": {
     "title": "A cozy little nest for friends",
-    "subtitle": "Keep track of the people you care about, one warm reminder at a time."
+    "subtitle": "Keep track of the people you care about, one warm reminder at a time.",
+    "birthdaysCta": "Browse birthdays"
   },
   "dashboard": {
     "title": "Upcoming birthdays",

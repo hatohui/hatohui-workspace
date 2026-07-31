@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "home": "Trang chủ",
     "dashboard": "Sinh nhật",
     "addFriend": "Thêm bạn bè",
     "logout": "Đăng xuất",
@@ -21,7 +22,8 @@
   },
   "welcome": {
     "title": "Một tổ ấm nhỏ cho những người bạn",
-    "subtitle": "Luôn nhớ đến những người bạn quan tâm, từng lời nhắc nhở ấm áp một."
+    "subtitle": "Luôn nhớ đến những người bạn quan tâm, từng lời nhắc nhở ấm áp một.",
+    "birthdaysCta": "Xem sinh nhật"
   },
   "dashboard": {
     "title": "Sinh nhật sắp tới",
