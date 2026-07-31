@@ -1,6 +1,11 @@
 version: '3'
 
 tasks:
+  start:
+    desc: 'Start local infra (Postgres, MinIO, Mailpit, Redis) via docker-compose, waiting for Postgres to be ready'
+    cmds:
+      - docker compose up -d --wait
+
   plan:
     desc: 'Run terraform plan'
     dir: infra

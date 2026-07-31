@@ -6,8 +6,49 @@ vars:
 tasks:
   install:
     desc: 'Install all workspace dependencies'
+    internal: true
     cmds:
       - bun install
+
+  install-bun:
+    internal: true
+    silent: true
+    status:
+      - bun --version
+    cmds:
+      - cmd: powershell -NoProfile -ExecutionPolicy Bypass -Command "irm bun.sh/install.ps1 | iex"
+        platforms: [windows]
+      - cmd: curl -fsSL https://bun.sh/install | bash
+        platforms: [linux, darwin]
+
+  install-doppler:
+    internal: true
+    silent: true
+    status:
+      - '"{{.DOPPLER_BIN}}" --version'
+    cmds:
+      - cmd: winget install -e --id Doppler.doppler || echo "[INFO] winget reported no changes (already installed) — continuing."
+        platforms: [windows]
+      - cmd: brew install dopplerhq/cli/doppler
+        platforms: [darwin]
+      - cmd: curl -Ls https://cli.doppler.com/install.sh | sh
+        platforms: [linux]
+
+  auth-doppler:
+    internal: true
+    interactive: true
+    dir: infra
+    status:
+      - '"{{.DOPPLER_BIN}}" whoami'
+      - '[ "$("{{.DOPPLER_BIN}}" configure get project --plain)" = "hatohui-workspace" ]'
+      - '[ "$("{{.DOPPLER_BIN}}" configure get config --plain)" = "tf" ]'
+    cmds:
+      - |
+        printf "Please input your Doppler token here (ask hatohui): "
+        read -r token
+        "{{.DOPPLER_BIN}}" configure set token "$token"
+        "{{.DOPPLER_BIN}}" whoami || (echo "[ERROR] Doppler authentication failed." && exit 1)
+        "{{.DOPPLER_BIN}}" setup --project hatohui-workspace --config tf
 
   env:
     desc: 'Copy .env.example to .env for every app (skips files that already exist), then sync real API credentials into apps/api/.env from Doppler'
@@ -20,6 +61,8 @@ tasks:
   env-secrets:
     internal: true
     desc: 'Fetch GOOGLE_OAUTH_CLIENT_ID and EMAIL_API_KEY from Doppler (tf config) into apps/api/.env; generate a local SESSION_JWT_SECRET. Local infra vars (DATABASE_URL, REDIS_URL, R2_*) stay pointed at docker-compose.'
+    env:
+      DOPPLER_BIN: '{{.DOPPLER_BIN}}'
     cmds:
       - bun run scripts/sync-local-env.ts
 

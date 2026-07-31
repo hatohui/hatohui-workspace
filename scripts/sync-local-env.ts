@@ -14,7 +14,7 @@ const envPath = resolve(import.meta.dirname, '../apps/api/.env');
 
 function fetchDopplerSecrets(names: string[]): Record<string, string> {
   const result = spawnSync(
-    'doppler',
+    process.env.DOPPLER_BIN || 'doppler',
     [
       'secrets',
       'get',

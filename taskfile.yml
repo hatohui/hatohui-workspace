@@ -1,12 +1,15 @@
 version: '3'
 
 vars:
+  DOPPLER_BIN: '{{if eq OS "windows"}}{{env "LOCALAPPDATA"}}\Microsoft\WinGet\Packages\Doppler.doppler_Microsoft.Winget.Source_8wekyb3d8bbwe\doppler.exe{{else}}doppler{{end}}'
 
 includes:
   task:
     taskfile: taskfiles/task.taskfile.yml
   deps:
     taskfile: taskfiles/deps.taskfile.yml
+    vars:
+      DOPPLER_BIN: '{{.DOPPLER_BIN}}'
   app:
     taskfile: taskfiles/apps.taskfile.yml
   db:
@@ -21,8 +24,27 @@ tasks:
 
   setup:
     desc: 'Setup the project'
+    silent: true
     cmds:
+      - echo "[INFO] Checking for Bun and Doppler CLI..."
+      - task: deps:install-bun
+      - task: deps:install-doppler
+      - echo "[INFO] Authenticating with Doppler..."
+      - task: deps:auth-doppler
+      - echo "[INFO] Installing workspace dependencies..."
       - task: deps:install
+      - echo "[INFO] Syncing .env files..."
       - task: deps:env
+      - echo "[INFO] Generating the Prisma client..."
       - task: db:generate
+      - echo "[INFO] Starting local infra (Postgres, MinIO, Mailpit, Redis)..."
+      - task: infra:start
+      - echo "[INFO] Applying database migrations..."
+      - task: db:migrate
+      - echo "[INFO] Seeding the database..."
+      - task: db:seed
+      - echo "[INFO] Initializing terraform (only needed if you touch infra/)..."
       - task: deps:terraform
+        ignore_error: true
+      - echo "[COMPLETED] Setup finished!"
+      - 'echo "[INFO] Start an app with: task app:<app_name>"'

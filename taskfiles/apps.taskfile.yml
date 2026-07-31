@@ -18,10 +18,12 @@ tasks:
 
   openapi:export:
     desc: 'Export the NestJS OpenAPI spec to packages/models/openapi.json'
+    internal: true
     cmd: bun run scripts/export-openapi.ts
 
   models:generate:
     desc: 'Regenerate the Orval-generated OpenAPI client in packages/models'
+    internal: true
     dir: packages/models
     cmd: bun run generate
 
