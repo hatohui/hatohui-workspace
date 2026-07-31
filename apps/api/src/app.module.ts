@@ -5,7 +5,6 @@ import { DatabaseModule } from '@/libs/db';
 import { RedisModule } from '@/libs/redis';
 import { EmailModule } from '@/libs/email';
 import { StorageModule } from '@/libs/storage';
-import { MessagesModule } from '@/modules/messages/messages.module';
 import { FriendsModule } from '@/modules/friends/friends.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { HealthModule } from '@/modules/health/health.module';
@@ -24,7 +23,6 @@ import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
     EmailModule,
     StorageModule,
     AuthModule,
-    MessagesModule,
     FriendsModule,
     HealthModule,
     ImagesModule,
