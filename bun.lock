@@ -110,6 +110,17 @@
         "vite": "^8.1.1",
       },
     },
+    "packages/assets": {
+      "name": "@hatohui/assets",
+      "version": "0.0.0",
+    },
+    "packages/config": {
+      "name": "@hatohui/config",
+      "version": "0.0.0",
+      "devDependencies": {
+        "typescript": "^5.9.3",
+      },
+    },
     "packages/i18n": {
       "name": "@hatohui/i18n",
       "version": "0.0.0",
@@ -405,6 +416,10 @@
     "@gerrit0/mini-shiki": ["@gerrit0/mini-shiki@3.23.0", "", { "dependencies": { "@shikijs/engine-oniguruma": "^3.23.0", "@shikijs/langs": "^3.23.0", "@shikijs/themes": "^3.23.0", "@shikijs/types": "^3.23.0", "@shikijs/vscode-textmate": "^10.0.2" } }, "sha512-bEMORlG0cqdjVyCEuU0cDQbORWX+kYCeo0kV1lbxF5bt4r7SID2l9bqsxJEM0zndaxpOUT7riCyIVEuqq/Ynxg=="],
 
     "@getbrevo/brevo": ["@getbrevo/brevo@6.0.2", "", {}, "sha512-yxyacx4wkuWcCbFDdFE3RxklaHSGXEP3d0gZaxPy+9aBquvl4ksr7IQgbRCcF8crx5aRvpStVBLeh5iCbWHJrg=="],
+
+    "@hatohui/assets": ["@hatohui/assets@workspace:packages/assets"],
+
+    "@hatohui/config": ["@hatohui/config@workspace:packages/config"],
 
     "@hatohui/i18n": ["@hatohui/i18n@workspace:packages/i18n"],
 

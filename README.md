@@ -30,8 +30,8 @@ A management ecosystem/platform for hatohui and friends. A single monorepo holdi
 | [`@hatohui/libs`](packages/libs) | Shared cross-cutting frontend logic. |
 | [`@hatohui/i18n`](packages/i18n) | Shared translations and i18n setup. |
 | [`@hatohui/tools`](packages/tools) | Shared utility functions. |
-| [`packages/assets`](packages/assets) | Shared static assets. |
-| [`packages/config`](packages/config) | Shared app configuration. |
+| [`@hatohui/assets`](packages/assets) | Shared static assets. |
+| [`@hatohui/config`](packages/config) | Shared app configuration. |
 
 ## Tooling
 
