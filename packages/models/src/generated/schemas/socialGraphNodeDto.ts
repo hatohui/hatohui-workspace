@@ -9,6 +9,6 @@ import type { FriendDto } from './friendDto';
 
 export interface SocialGraphNodeDto {
   friend: FriendDto;
-  /** 1-2 of this friend's own connections, if they have a claimed profile */
+  /** The next branch out in the social tree view */
   friendsOfFriend: FriendDto[];
 }

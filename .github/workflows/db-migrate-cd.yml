@@ -41,18 +41,10 @@ jobs:
         id: generate
         working-directory: apps/api
         run: |
-          bunx prisma migrate dev --create-only --name ci-auto
-
-          # migrate dev --create-only always creates a migration folder, even
-          # an empty one when the schema already matches migration history —
-          # so a plain `git status` check isn't enough; only treat it as a
-          # real change if migration.sql actually has SQL in it.
-          new_dir=$(git status --porcelain -- prisma/migrations | awk '$1 == "??" {print $2}' | head -n1)
-
-          if [ -n "$new_dir" ] && [ -s "${new_dir}migration.sql" ] && ! grep -qx -- "-- This is an empty migration." "${new_dir}migration.sql"; then
+          bunx prisma migrate dev --name ci-auto
+          if git status --porcelain -- prisma/migrations | grep -q .; then
             echo "created=true" >> "$GITHUB_OUTPUT"
           else
-            [ -n "$new_dir" ] && rm -rf -- "$new_dir"
             echo "created=false" >> "$GITHUB_OUTPUT"
           fi
         env:

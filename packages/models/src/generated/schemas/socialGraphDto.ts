@@ -8,6 +8,6 @@
 import type { SocialGraphNodeDto } from './socialGraphNodeDto';
 
 export interface SocialGraphDto {
-  /** Up to 10 of the viewer's connections */
+  /** The viewer's connections, for the social tree view */
   friends: SocialGraphNodeDto[];
 }

@@ -102,8 +102,7 @@ export class SocialGraphNodeDto {
   @ApiProperty({
     type: FriendDto,
     isArray: true,
-    description:
-      "1-2 of this friend's own connections, if they have a claimed profile",
+    description: 'The next branch out in the social tree view',
   })
   friendsOfFriend: FriendDto[];
 }
@@ -112,7 +111,7 @@ export class SocialGraphDto {
   @ApiProperty({
     type: SocialGraphNodeDto,
     isArray: true,
-    description: "Up to 10 of the viewer's connections",
+    description: "The viewer's connections, for the social tree view",
   })
   friends: SocialGraphNodeDto[];
 }

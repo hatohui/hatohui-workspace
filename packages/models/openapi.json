@@ -241,7 +241,7 @@
             }
           }
         },
-        "summary": "The viewer's connections, and up to a couple of each connection's own connections, for the social tree view",
+        "summary": "Data for the social tree view",
         "tags": [
           "friends"
         ]
@@ -988,7 +988,7 @@
             "$ref": "#/components/schemas/FriendDto"
           },
           "friendsOfFriend": {
-            "description": "1-2 of this friend's own connections, if they have a claimed profile",
+            "description": "The next branch out in the social tree view",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FriendDto"
@@ -1004,7 +1004,7 @@
         "type": "object",
         "properties": {
           "friends": {
-            "description": "Up to 10 of the viewer's connections",
+            "description": "The viewer's connections, for the social tree view",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SocialGraphNodeDto"

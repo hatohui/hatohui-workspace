@@ -502,7 +502,7 @@ export const getFriendsSocialGraphUrl = () => {
 }
 
 /**
- * @summary The viewer's connections, and up to a couple of each connection's own connections, for the social tree view
+ * @summary Data for the social tree view
  */
 export const friendsSocialGraph = async ( options?: RequestInit): Promise<friendsSocialGraphResponse> => {
 
@@ -573,7 +573,7 @@ export function useFriendsSocialGraph<TData = Awaited<ReturnType<typeof friendsS
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary The viewer's connections, and up to a couple of each connection's own connections, for the social tree view
+ * @summary Data for the social tree view
  */
 
 export function useFriendsSocialGraph<TData = Awaited<ReturnType<typeof friendsSocialGraph>>, TError = unknown>(

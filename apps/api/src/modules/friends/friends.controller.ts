@@ -80,8 +80,7 @@ export class FriendsController {
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'friendsSocialGraph',
-    summary:
-      "The viewer's connections, and up to a couple of each connection's own connections, for the social tree view",
+    summary: 'Data for the social tree view',
   })
   @ApiOkResponse({ type: SocialGraphDto })
   getSocialGraph(@CurrentUser() viewer: User): Promise<SocialGraphDto> {
