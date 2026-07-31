@@ -18,6 +18,7 @@ import { OptionalCurrentUser } from '../auth/optional-current-user.decorator';
 import {
   CreateFriendDto,
   FriendDto,
+  SocialGraphDto,
   UpcomingFriendDto,
   UpdateFriendDto,
 } from './dto/friend.dto';
@@ -73,6 +74,18 @@ export class FriendsController {
       query.pageSize ?? 20,
       viewer,
     );
+  }
+
+  @Get('social-graph')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'friendsSocialGraph',
+    summary:
+      "The viewer's connections, and up to a couple of each connection's own connections, for the social tree view",
+  })
+  @ApiOkResponse({ type: SocialGraphDto })
+  getSocialGraph(@CurrentUser() viewer: User): Promise<SocialGraphDto> {
+    return this.friendsService.getSocialGraph(viewer);
   }
 
   @Get(':id')

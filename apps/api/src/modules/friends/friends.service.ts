@@ -9,6 +9,7 @@ import { Storage } from '@/libs/storage';
 import {
   CreateFriendDto,
   FriendDto,
+  SocialGraphDto,
   UpcomingFriendDto,
   UpdateFriendDto,
 } from './dto/friend.dto';
@@ -23,6 +24,9 @@ import {
 type BirthdayDetailsWithAssociation = BirthdayDetails & {
   association: { userId: string } | null;
 };
+
+const SOCIAL_GRAPH_FRIEND_LIMIT = 10;
+const SOCIAL_GRAPH_FRIEND_OF_FRIEND_LIMIT = 2;
 
 @Injectable()
 export class FriendsService {
@@ -222,6 +226,59 @@ export class FriendsService {
     });
 
     return this.findOne(id, viewer);
+  }
+
+  /// Renders as: you -- friend -- friend's own friend. Friends-of-friends are
+  /// only discoverable when a friend has claimed their entry (an
+  /// Association), since unclaimed entries have no Connections of their own.
+  async getSocialGraph(viewer: User): Promise<SocialGraphDto> {
+    const connections = await this.db.connection.findMany({
+      where: { userId: viewer.id },
+      take: SOCIAL_GRAPH_FRIEND_LIMIT,
+      include: {
+        birthdayDetails: {
+          include: { association: { select: { userId: true } } },
+        },
+      },
+    });
+
+    const friends = await Promise.all(
+      connections
+        .filter((connection) => canView(connection.birthdayDetails, viewer))
+        .map(async (connection) => {
+          const entry = connection.birthdayDetails;
+          const friendsOfFriend = entry.association
+            ? await this.findConnectedEntries(
+                entry.association.userId,
+                entry.id,
+                viewer,
+              )
+            : [];
+          return { friend: toFriendDto(entry, viewer), friendsOfFriend };
+        }),
+    );
+
+    return { friends };
+  }
+
+  private async findConnectedEntries(
+    userId: string,
+    excludeBirthdayDetailsId: string,
+    viewer: User,
+  ): Promise<FriendDto[]> {
+    const connections = await this.db.connection.findMany({
+      where: { userId, NOT: { birthdayDetailsId: excludeBirthdayDetailsId } },
+      take: SOCIAL_GRAPH_FRIEND_OF_FRIEND_LIMIT,
+      include: {
+        birthdayDetails: {
+          include: { association: { select: { userId: true } } },
+        },
+      },
+    });
+
+    return connections
+      .filter((connection) => canView(connection.birthdayDetails, viewer))
+      .map((connection) => toFriendDto(connection.birthdayDetails, viewer));
   }
 
   private async findVisibleOrThrow(

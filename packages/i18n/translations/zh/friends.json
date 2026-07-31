@@ -3,6 +3,8 @@
     "home": "首页",
     "dashboard": "生日",
     "addFriend": "添加朋友",
+    "social": "社交",
+    "profile": "个人资料",
     "logout": "退出登录",
     "settings": "设置",
     "expandNav": "展开侧边栏",
@@ -11,19 +13,28 @@
   "settings": {
     "title": "设置",
     "language": "语言",
-    "profile": {
-      "title": "个人资料",
-      "stub": "个人资料设置即将推出。"
-    },
     "general": {
       "title": "通用",
       "stub": "更多设置即将推出。"
     }
   },
+  "profile": {
+    "title": "个人资料",
+    "stub": "个人资料设置即将推出。"
+  },
+  "social": {
+    "title": "你的社交圈",
+    "you": "你",
+    "empty": "添加朋友即可查看你的社交关系树。",
+    "friendOfLabel": "{{name}} — {{via}} 的朋友"
+  },
   "welcome": {
     "title": "朋友的温馨小巢",
     "subtitle": "记住你在乎的每一个人，一次一份温暖的提醒。",
     "birthdaysCta": "查看生日"
+  },
+  "birthdays": {
+    "empty": "这里暂时还没有可显示的生日，稍后再来看看吧！"
   },
   "dashboard": {
     "title": "近期生日",

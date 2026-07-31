@@ -51,7 +51,7 @@ function DashboardPage() {
             onToggleDirection={controls.toggleDirection}
           />
           {controls.view === 'timeline' ? (
-            <BirthdayList groups={groups} />
+            <BirthdayList groups={groups} emptyMessage={t('dashboard.empty')} />
           ) : (
             <CalendarView friends={filteredFriends} />
           )}

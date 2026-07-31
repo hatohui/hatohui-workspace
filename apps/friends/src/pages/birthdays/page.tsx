@@ -44,7 +44,7 @@ function BirthdaysPage() {
             onToggleDirection={controls.toggleDirection}
           />
           {controls.view === 'timeline' ? (
-            <BirthdayList groups={groups} />
+            <BirthdayList groups={groups} emptyMessage={t('birthdays.empty')} />
           ) : (
             <CalendarView friends={filteredFriends} />
           )}

@@ -95,6 +95,28 @@ export class UpcomingFriendDto extends FriendDto {
   nextBirthdayDate: string;
 }
 
+export class SocialGraphNodeDto {
+  @ApiProperty({ type: FriendDto })
+  friend: FriendDto;
+
+  @ApiProperty({
+    type: FriendDto,
+    isArray: true,
+    description:
+      "1-2 of this friend's own connections, if they have a claimed profile",
+  })
+  friendsOfFriend: FriendDto[];
+}
+
+export class SocialGraphDto {
+  @ApiProperty({
+    type: SocialGraphNodeDto,
+    isArray: true,
+    description: "Up to 10 of the viewer's connections",
+  })
+  friends: SocialGraphNodeDto[];
+}
+
 export class CreateFriendDto {
   @ApiProperty({ example: 'Jane Doe' })
   @IsString()

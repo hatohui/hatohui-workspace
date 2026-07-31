@@ -3,6 +3,8 @@
     "home": "Trang chủ",
     "dashboard": "Sinh nhật",
     "addFriend": "Thêm bạn bè",
+    "social": "Kết nối",
+    "profile": "Hồ sơ",
     "logout": "Đăng xuất",
     "settings": "Cài đặt",
     "expandNav": "Mở rộng thanh bên",
@@ -11,19 +13,28 @@
   "settings": {
     "title": "Cài đặt",
     "language": "Ngôn ngữ",
-    "profile": {
-      "title": "Hồ sơ",
-      "stub": "Cài đặt hồ sơ sẽ sớm ra mắt."
-    },
     "general": {
       "title": "Chung",
       "stub": "Thêm cài đặt sẽ sớm ra mắt."
     }
   },
+  "profile": {
+    "title": "Hồ sơ",
+    "stub": "Cài đặt hồ sơ sẽ sớm ra mắt."
+  },
+  "social": {
+    "title": "Vòng kết nối của bạn",
+    "you": "Bạn",
+    "empty": "Thêm bạn bè để xem cây kết nối xã hội của bạn.",
+    "friendOfLabel": "{{name}} — bạn của {{via}}"
+  },
   "welcome": {
     "title": "Một tổ ấm nhỏ cho những người bạn",
     "subtitle": "Luôn nhớ đến những người bạn quan tâm, từng lời nhắc nhở ấm áp một.",
     "birthdaysCta": "Xem sinh nhật"
+  },
+  "birthdays": {
+    "empty": "Chưa có sinh nhật nào để hiển thị. Hãy quay lại sau nhé!"
   },
   "dashboard": {
     "title": "Sinh nhật sắp tới",

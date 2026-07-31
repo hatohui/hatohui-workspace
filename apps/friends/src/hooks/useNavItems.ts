@@ -42,6 +42,18 @@ export function useNavItems(): NavLinkItem[] {
       icon: 'userPlus',
       active: isActive(routes.newFriend),
     });
+    items.push({
+      to: routes.social,
+      label: t('navigation.social'),
+      icon: 'social',
+      active: isActive(routes.social),
+    });
+    items.push({
+      to: routes.profile,
+      label: t('navigation.profile'),
+      icon: 'user',
+      active: isActive(routes.profile),
+    });
   }
 
   return items;

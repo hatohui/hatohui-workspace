@@ -225,6 +225,28 @@
         ]
       }
     },
+    "/friends/social-graph": {
+      "get": {
+        "operationId": "friendsSocialGraph",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialGraphDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "The viewer's connections, and up to a couple of each connection's own connections, for the social tree view",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
     "/friends/{id}": {
       "get": {
         "operationId": "friend",
@@ -957,6 +979,40 @@
           "total",
           "page",
           "pageSize"
+        ]
+      },
+      "SocialGraphNodeDto": {
+        "type": "object",
+        "properties": {
+          "friend": {
+            "$ref": "#/components/schemas/FriendDto"
+          },
+          "friendsOfFriend": {
+            "description": "1-2 of this friend's own connections, if they have a claimed profile",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendDto"
+            }
+          }
+        },
+        "required": [
+          "friend",
+          "friendsOfFriend"
+        ]
+      },
+      "SocialGraphDto": {
+        "type": "object",
+        "properties": {
+          "friends": {
+            "description": "Up to 10 of the viewer's connections",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SocialGraphNodeDto"
+            }
+          }
+        },
+        "required": [
+          "friends"
         ]
       },
       "CreateFriendDto": {

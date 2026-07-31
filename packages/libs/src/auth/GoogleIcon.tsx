@@ -1,4 +1,4 @@
-function GoogleIcon() {
+export function GoogleIcon() {
   return (
     <svg viewBox="0 0 18 18" className="size-4" aria-hidden="true">
       <path

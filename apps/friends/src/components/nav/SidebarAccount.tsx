@@ -6,8 +6,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@hatohui/ui';
-import { useAuth } from '@hatohui/libs';
+import { GoogleIcon, useAuth, useGoogleIdentity } from '@hatohui/libs';
 import { navIcons } from '../../constants/navIcons';
+import NavSlotPlaceholder from './NavSlotPlaceholder';
 
 interface Props {
   expanded: boolean;
@@ -16,9 +17,42 @@ interface Props {
 function SidebarAccount({ expanded }: Props) {
   const { t } = useTranslation();
   const { user, isLoading, logout } = useAuth();
+  const { isReady, promptLogin } = useGoogleIdentity();
   const LogoutIcon = navIcons.logout;
 
-  if (isLoading || !user) return null;
+  if (isLoading) {
+    return (
+      <NavSlotPlaceholder className={expanded ? 'h-9 w-full' : 'size-9'} />
+    );
+  }
+
+  if (!user) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            size={expanded ? 'sm' : 'icon'}
+            className={`rounded-full ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
+            disabled={!isReady}
+            aria-label={t('common:auth.login')}
+            onClick={promptLogin}
+          >
+            <GoogleIcon />
+            {expanded && (
+              <span className="text-sm">{t('common:auth.login')}</span>
+            )}
+          </Button>
+        </TooltipTrigger>
+        {!expanded && (
+          <TooltipContent side="right">
+            <p>{t('common:auth.login')}</p>
+          </TooltipContent>
+        )}
+      </Tooltip>
+    );
+  }
 
   return (
     <>

@@ -30,6 +30,8 @@ export * from './setVisibilityDtoVisibility';
 export * from './signedImageDto';
 export * from './signImageDto';
 export * from './signImageDtoContentType';
+export * from './socialGraphDto';
+export * from './socialGraphNodeDto';
 export * from './socialPlatformDto';
 export * from './upcomingFriendDto';
 export * from './upcomingFriendDtoSocialMedias';

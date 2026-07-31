@@ -225,5 +225,8 @@ module "github_ci" {
     CLOUDFLARE_API_TOKEN = var.cloudflare_api_token
     DOPPLER_TOKEN        = var.doppler_token
     TF_API_TOKEN         = var.tf_api_token
+    # Unpooled Neon connection string -- Prisma's migration engine needs a
+    # direct connection and isn't compatible with the pgbouncer pooler.
+    MIGRATION_DB_URL = module.database.database_url
   }
 }

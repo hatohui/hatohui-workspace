@@ -3,6 +3,8 @@
     "home": "Home",
     "dashboard": "Birthdays",
     "addFriend": "Add friend",
+    "social": "Social",
+    "profile": "Profile",
     "logout": "Log out",
     "settings": "Settings",
     "expandNav": "Expand sidebar",
@@ -11,19 +13,28 @@
   "settings": {
     "title": "Settings",
     "language": "Language",
-    "profile": {
-      "title": "Profile",
-      "stub": "Profile settings are coming soon."
-    },
     "general": {
       "title": "General",
       "stub": "More settings are coming soon."
     }
   },
+  "profile": {
+    "title": "Profile",
+    "stub": "Profile settings are coming soon."
+  },
+  "social": {
+    "title": "Your circle",
+    "you": "You",
+    "empty": "Add some friends to see your social tree.",
+    "friendOfLabel": "{{name}} — friend of {{via}}"
+  },
   "welcome": {
     "title": "A cozy little nest for friends",
     "subtitle": "Keep track of the people you care about, one warm reminder at a time.",
     "birthdaysCta": "Browse birthdays"
+  },
+  "birthdays": {
+    "empty": "No birthdays to show here yet. Check back soon!"
   },
   "dashboard": {
     "title": "Upcoming birthdays",

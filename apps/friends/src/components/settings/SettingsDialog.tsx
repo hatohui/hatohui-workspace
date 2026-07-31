@@ -1,7 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Dialog, DialogContent, DialogTitle } from '@hatohui/ui';
 import LanguageOptionsList from './LanguageOptionsList';
-import ProfileSection from './ProfileSection';
 
 type Props = {
   open: boolean;
@@ -19,12 +18,6 @@ function SettingsDialog({ open, onOpenChange }: Props) {
           <section className="flex flex-col gap-1.5">
             <h3 className="text-sm font-medium">{t('settings.language')}</h3>
             <LanguageOptionsList />
-          </section>
-          <section className="flex flex-col gap-1.5 border-t border-border pt-4">
-            <h3 className="text-sm font-medium">
-              {t('settings.profile.title')}
-            </h3>
-            <ProfileSection />
           </section>
           <section className="flex flex-col gap-1.5 border-t border-border pt-4">
             <h3 className="text-sm font-medium">

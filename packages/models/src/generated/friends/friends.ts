@@ -29,6 +29,7 @@ import type {
   FriendDto,
   PaginatedFriendsDto,
   SearchFriendsParams,
+  SocialGraphDto,
   UpcomingFriendDto,
   UpdateFriendDto
 } from '../schemas';
@@ -469,6 +470,118 @@ export function useSearchFriends<TData = Awaited<ReturnType<typeof searchFriends
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getSearchFriendsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type friendsSocialGraphResponse200 = {
+  data: SocialGraphDto
+  status: 200
+}
+
+export type friendsSocialGraphResponseSuccess = (friendsSocialGraphResponse200) & {
+  headers: Headers;
+};
+;
+
+export type friendsSocialGraphResponse = (friendsSocialGraphResponseSuccess)
+
+export const getFriendsSocialGraphUrl = () => {
+
+
+
+
+  return `/friends/social-graph`
+}
+
+/**
+ * @summary The viewer's connections, and up to a couple of each connection's own connections, for the social tree view
+ */
+export const friendsSocialGraph = async ( options?: RequestInit): Promise<friendsSocialGraphResponse> => {
+
+  return customFetch<friendsSocialGraphResponse>(getFriendsSocialGraphUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getFriendsSocialGraphQueryKey = () => {
+    return [
+    `/friends/social-graph`
+    ] as const;
+    }
+
+
+export const getFriendsSocialGraphQueryOptions = <TData = Awaited<ReturnType<typeof friendsSocialGraph>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendsSocialGraph>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFriendsSocialGraphQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof friendsSocialGraph>>> = ({ signal }) => friendsSocialGraph({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof friendsSocialGraph>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FriendsSocialGraphQueryResult = NonNullable<Awaited<ReturnType<typeof friendsSocialGraph>>>
+export type FriendsSocialGraphQueryError = unknown
+
+
+export function useFriendsSocialGraph<TData = Awaited<ReturnType<typeof friendsSocialGraph>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendsSocialGraph>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof friendsSocialGraph>>,
+          TError,
+          Awaited<ReturnType<typeof friendsSocialGraph>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFriendsSocialGraph<TData = Awaited<ReturnType<typeof friendsSocialGraph>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendsSocialGraph>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof friendsSocialGraph>>,
+          TError,
+          Awaited<ReturnType<typeof friendsSocialGraph>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFriendsSocialGraph<TData = Awaited<ReturnType<typeof friendsSocialGraph>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendsSocialGraph>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary The viewer's connections, and up to a couple of each connection's own connections, for the social tree view
+ */
+
+export function useFriendsSocialGraph<TData = Awaited<ReturnType<typeof friendsSocialGraph>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendsSocialGraph>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getFriendsSocialGraphQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

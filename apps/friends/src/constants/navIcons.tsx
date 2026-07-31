@@ -1,7 +1,16 @@
-import { Cake, Home, LogOut, Settings, UserPlus } from 'lucide-react';
+import {
+  Cake,
+  Home,
+  LogOut,
+  Network,
+  Settings,
+  User,
+  UserPlus,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-export type NavIconKey = 'home' | 'cake' | 'userPlus' | 'settings' | 'logout';
+export type NavIconKey =
+  'home' | 'cake' | 'userPlus' | 'settings' | 'logout' | 'social' | 'user';
 
 export const navIcons: Record<NavIconKey, LucideIcon> = {
   home: Home,
@@ -9,4 +18,6 @@ export const navIcons: Record<NavIconKey, LucideIcon> = {
   userPlus: UserPlus,
   settings: Settings,
   logout: LogOut,
+  social: Network,
+  user: User,
 };

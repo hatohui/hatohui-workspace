@@ -1,16 +1,14 @@
-import { useTranslation } from '@hatohui/i18n';
 import type { FriendGroup } from '../hooks/useDirectoryFriends';
 import BirthdayCard from './BirthdayCard';
 
 type Props = {
   groups: FriendGroup[];
+  emptyMessage: string;
 };
 
-function BirthdayList({ groups }: Props) {
-  const { t } = useTranslation();
-
+function BirthdayList({ groups, emptyMessage }: Props) {
   if (groups.length === 0) {
-    return <p className="text-muted-foreground">{t('dashboard.empty')}</p>;
+    return <p className="text-muted-foreground">{emptyMessage}</p>;
   }
 
   return (
