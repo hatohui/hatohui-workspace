@@ -4,7 +4,7 @@
     "dashboard": "生日",
     "addFriend": "添加朋友",
     "social": "社交",
-    "profile": "个人资料",
+    "account": "账户",
     "logout": "退出登录",
     "settings": "设置",
     "expandNav": "展开侧边栏",
@@ -18,10 +18,13 @@
       "stub": "更多设置即将推出。"
     }
   },
-  "profile": {
-    "title": "个人资料",
+  "account": {
+    "title": "账户",
     "stub": "个人资料设置即将推出。",
     "adminTag": "管理员"
+  },
+  "profile": {
+    "notAdded": "您还没有把自己添加为朋友。"
   },
   "social": {
     "title": "你的社交圈",

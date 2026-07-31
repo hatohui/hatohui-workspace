@@ -22,7 +22,7 @@ function SettingsDialog({ open, onOpenChange }: Props) {
             <LanguageOptionsList />
           </section>
           <section className="flex flex-col gap-1.5 border-t border-border pt-4">
-            <h3 className="text-sm font-medium">
+            <h3 className="font-sans text-sm font-medium">
               {t('settings.general.title')}
             </h3>
             <p className="text-sm text-muted-foreground">

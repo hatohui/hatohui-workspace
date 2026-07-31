@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useOnboardingAddConnections,
   useOnboardingComplete,
@@ -11,6 +12,7 @@ import {
 } from '@hatohui/models';
 import { useAuth } from '@hatohui/libs';
 import { useOnboardingModal } from './useOnboardingModal';
+import { invalidateFriendQueries } from './friendQueryClient';
 import {
   ONBOARDING_STEP_STORAGE_PREFIX,
   type OnboardingStep,
@@ -30,15 +32,14 @@ function clearStoredStep(userId: string): void {
   localStorage.removeItem(ONBOARDING_STEP_STORAGE_PREFIX + userId);
 }
 
-/// Every action here is optimistic: the UI (step/modal) updates immediately
-/// and the mutation fires in the background, rather than waiting for the
-/// response. Errors are logged, not surfaced — this app has no toast system
-/// yet, so a failed background write currently fails silently. Good enough
-/// for a personal-scale app, but a real error surface is a follow-up.
 export function useOnboardingWizard() {
   const { user } = useAuth();
   const { close } = useOnboardingModal();
+  const queryClient = useQueryClient();
   const stateQuery = useOnboardingState({ query: { enabled: !!user } });
+  const onFriendsChanged = {
+    onSuccess: () => invalidateFriendQueries(queryClient),
+  };
 
   const [stepOverride, setStepOverride] = useState<OnboardingStep | null>(null);
   const entry = stateQuery.data?.data.entry ?? null;
@@ -56,13 +57,17 @@ export function useOnboardingWizard() {
     close();
   };
 
-  const optIn = useOnboardingOptIn();
-  const setProfile = useOnboardingSetProfile();
-  const setVisibility = useOnboardingSetVisibility();
-  const setBirthday = useOnboardingSetBirthday();
-  const addConnections = useOnboardingAddConnections();
-  const complete = useOnboardingComplete();
-  const skip = useOnboardingSkip();
+  const optIn = useOnboardingOptIn({ mutation: onFriendsChanged });
+  const setProfile = useOnboardingSetProfile({ mutation: onFriendsChanged });
+  const setVisibility = useOnboardingSetVisibility({
+    mutation: onFriendsChanged,
+  });
+  const setBirthday = useOnboardingSetBirthday({ mutation: onFriendsChanged });
+  const addConnections = useOnboardingAddConnections({
+    mutation: onFriendsChanged,
+  });
+  const complete = useOnboardingComplete({ mutation: onFriendsChanged });
+  const skip = useOnboardingSkip({ mutation: onFriendsChanged });
 
   return {
     entry,

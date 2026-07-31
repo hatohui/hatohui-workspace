@@ -4,7 +4,7 @@
     "dashboard": "Birthdays",
     "addFriend": "Add friend",
     "social": "Social",
-    "profile": "Profile",
+    "account": "Account",
     "logout": "Log out",
     "settings": "Settings",
     "expandNav": "Expand sidebar",
@@ -18,10 +18,13 @@
       "stub": "More settings are coming soon."
     }
   },
-  "profile": {
-    "title": "Profile",
+  "account": {
+    "title": "Account",
     "stub": "Profile settings are coming soon.",
     "adminTag": "Admin"
+  },
+  "profile": {
+    "notAdded": "You haven't added yourself as a friend yet."
   },
   "social": {
     "title": "Your circle",

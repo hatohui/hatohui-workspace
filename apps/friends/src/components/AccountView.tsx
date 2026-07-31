@@ -6,7 +6,7 @@ import { useMyEntry } from '../hooks/useMyEntry';
 import { useSettingsModal } from '../hooks/useSettingsModal';
 import ProfileEntryDetails from './ProfileEntryDetails';
 
-function ProfileView() {
+function AccountView() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { entry, isLoading } = useMyEntry();
@@ -35,7 +35,7 @@ function ProfileView() {
             {entry?.name ?? user.name}
             {user.role === 'ADMIN' && (
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-normal text-primary">
-                {t('profile.adminTag')}
+                {t('account.adminTag')}
               </span>
             )}
           </p>
@@ -48,7 +48,7 @@ function ProfileView() {
       ) : entry ? (
         <ProfileEntryDetails entry={entry} />
       ) : (
-        <p className="text-sm text-muted-foreground">{t('profile.stub')}</p>
+        <p className="text-sm text-muted-foreground">{t('account.stub')}</p>
       )}
 
       <div className="flex flex-col gap-1 border-t border-border pt-4">
@@ -73,4 +73,4 @@ function ProfileView() {
   );
 }
 
-export default ProfileView;
+export default AccountView;

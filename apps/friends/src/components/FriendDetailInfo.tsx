@@ -14,7 +14,7 @@ function FriendDetailInfo({ socialMedias }: Props) {
 
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-border bg-card px-4 py-4">
-      <h2 className="text-sm font-medium text-muted-foreground">
+      <h2 className="font-sans text-sm font-medium text-muted-foreground">
         {t('friendForm.socialMediaLabel')}
       </h2>
       <ul className="flex flex-col gap-1">

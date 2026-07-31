@@ -1,14 +1,29 @@
+import { Navigate } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
+import { LoadingDots } from '@hatohui/ui';
+import { useMyEntry } from '../../hooks/useMyEntry';
+import AddMyselfButton from '../../components/AddMyselfButton';
 import RequireAuth from '../../components/RequireAuth';
-import ProfileView from '../../components/ProfileView';
+import routes from '../../constants/routes';
 
 function ProfilePage() {
   const { t } = useTranslation();
+  const { entry, isLoading } = useMyEntry();
 
   return (
     <RequireAuth>
-      <h1 className="mb-6 text-3xl">{t('profile.title')}</h1>
-      <ProfileView />
+      {isLoading ? (
+        <div className="flex justify-center py-8">
+          <LoadingDots label={t('common:loading')} />
+        </div>
+      ) : entry ? (
+        <Navigate to={routes.friend(entry.id)} replace />
+      ) : (
+        <div className="flex flex-col gap-2">
+          <p className="text-muted-foreground">{t('profile.notAdded')}</p>
+          <AddMyselfButton />
+        </div>
+      )}
     </RequireAuth>
   );
 }

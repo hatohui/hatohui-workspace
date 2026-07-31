@@ -4,7 +4,7 @@
     "dashboard": "Sinh nhật",
     "addFriend": "Thêm bạn bè",
     "social": "Kết nối",
-    "profile": "Hồ sơ",
+    "account": "Tài khoản",
     "logout": "Đăng xuất",
     "settings": "Cài đặt",
     "expandNav": "Mở rộng thanh bên",
@@ -18,10 +18,13 @@
       "stub": "Thêm cài đặt sẽ sớm ra mắt."
     }
   },
-  "profile": {
-    "title": "Hồ sơ",
+  "account": {
+    "title": "Tài khoản",
     "stub": "Cài đặt hồ sơ sẽ sớm ra mắt.",
     "adminTag": "Quản trị viên"
+  },
+  "profile": {
+    "notAdded": "Bạn chưa thêm chính mình làm bạn bè."
   },
   "social": {
     "title": "Vòng kết nối của bạn",

@@ -43,10 +43,10 @@ export function useNavItems(): NavLinkItem[] {
       active: isActive(routes.social),
     });
     items.push({
-      to: routes.profile,
-      label: t('navigation.profile'),
+      to: routes.account,
+      label: t('navigation.account'),
       icon: 'user',
-      active: isActive(routes.profile),
+      active: isActive(routes.account),
     });
   }
 

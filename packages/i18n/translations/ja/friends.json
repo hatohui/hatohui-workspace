@@ -4,7 +4,7 @@
     "dashboard": "誕生日",
     "addFriend": "友達を追加",
     "social": "つながり",
-    "profile": "プロフィール",
+    "account": "アカウント",
     "logout": "ログアウト",
     "settings": "設定",
     "expandNav": "サイドバーを展開",
@@ -18,10 +18,13 @@
       "stub": "その他の設定は近日公開予定です。"
     }
   },
-  "profile": {
-    "title": "プロフィール",
+  "account": {
+    "title": "アカウント",
     "stub": "プロフィール設定は近日公開予定です。",
     "adminTag": "管理者"
+  },
+  "profile": {
+    "notAdded": "まだ自分自身を友達として追加していません。"
   },
   "social": {
     "title": "あなたのつながり",
