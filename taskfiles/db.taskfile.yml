@@ -22,6 +22,18 @@ tasks:
     cmd: bunx prisma db seed
 
   prod:apply:
-    desc: 'Apply pending Prisma migrations to the production database (no dev prompts), using DATABASE_URL from Doppler prod_api'
+    desc: 'Apply pending Prisma migrations and re-run the core seed against the production database, using DATABASE_URL from Doppler prod_api'
     dir: apps/api
-    cmd: doppler run --project hatohui-workspace --config prod_api -- bunx prisma migrate deploy
+    cmds:
+      - doppler run --project hatohui-workspace --config prod_api -- bunx prisma migrate deploy
+      - task: prod:seed
+
+  prod:seed:
+    desc: 'Seed the production database with core data only (social platforms, admin config, commission pricing) — safe to re-run, never touches dev-only seed data'
+    dir: apps/api
+    # NODE_ENV=production is set explicitly here (not sourced from Doppler's
+    # prod_api config, which only holds DATABASE_URL etc.) so seed.ts's dev-only
+    # branch (seedDevelopment, e.g. friends test data) never runs against prod.
+    cmd: doppler run --project hatohui-workspace --config prod_api -- bunx prisma db seed
+    env:
+      NODE_ENV: production
