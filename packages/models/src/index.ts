@@ -1,4 +1,3 @@
-export * from './generated/messages/messages';
 export * from './generated/friends/friends';
 export * from './generated/auth/auth';
 export * from './generated/images/images';

@@ -70,31 +70,6 @@
         ]
       }
     },
-    "/messages": {
-      "get": {
-        "operationId": "messages",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MessageDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List all messages",
-        "tags": [
-          "messages"
-        ]
-      }
-    },
     "/friends": {
       "get": {
         "operationId": "friends",
@@ -2354,29 +2329,6 @@
           "avatarUrl",
           "role",
           "onboardingStatus"
-        ]
-      },
-      "MessageDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "1",
-            "description": "Unique message id"
-          },
-          "text": {
-            "type": "string",
-            "example": "Hello from the API!"
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2026-07-23T00:00:00.000Z"
-          }
-        },
-        "required": [
-          "id",
-          "text",
-          "createdAt"
         ]
       },
       "FriendDto": {

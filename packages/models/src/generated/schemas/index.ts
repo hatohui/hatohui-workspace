@@ -70,7 +70,6 @@ export * from './healthDtoDb';
 export * from './healthDtoRedis';
 export * from './healthDtoStatus';
 export * from './lookupCommissionsByEmailParams';
-export * from './messageDto';
 export * from './onboardingStateDto';
 export * from './onboardingStateDtoOnboardingStatus';
 export * from './optInDto';
