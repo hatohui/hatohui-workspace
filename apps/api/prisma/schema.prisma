@@ -38,6 +38,10 @@ model User {
   association       Association?
   addedEntries      BirthdayDetails[]  @relation("AddedBy")
   connections       Connection[]
+  uploadedAssets    Asset[]
+  assignedCommissions      Commission[]              @relation("CommissionAssignee")
+  commissionNotes          CommissionNote[]           @relation("CommissionNoteAuthor")
+  commissionStatusChanges  CommissionStatusHistory[]  @relation("CommissionStatusChangedBy")
 }
 
 enum AppScope {
@@ -126,4 +130,184 @@ model Connection {
   createdAt         DateTime        @default(now())
 
   @@unique([userId, birthdayDetailsId])
+}
+
+/// A media asset (image) uploaded to storage via the images.sign presigned
+/// flow. This model is the persisted record of that upload — filename,
+/// dimensions, size and tags are captured client-side at upload time and
+/// sent along when the record is created, since the API never touches the
+/// file bytes.
+model Asset {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  publicUrl   String
+  filename    String
+  contentType String
+  size        Int
+  width       Int?
+  height      Int?
+  tags        String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  uploadedById String?
+  uploadedBy   User?   @relation(fields: [uploadedById], references: [id])
+}
+
+enum CommissionStatus {
+  NOT_YET_STARTED
+  QUEUED
+  SKETCH
+  CONFIRMED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  NOT_YET
+  REQUESTED
+  PARTIAL
+  FULL
+}
+
+enum CommissionNoteVisibility {
+  INTERNAL
+  CLIENT
+}
+
+enum CommissionType {
+  ICON
+  HALF_BODY
+  FULL_BODY
+  SKETCH_PAGE
+}
+
+enum PreferredContactMethod {
+  EMAIL
+  DISCORD
+  TELEGRAM
+  TWITTER
+  OTHER
+}
+
+/// Admin-configurable base price for a CommissionType, in USD cents.
+model CommissionTypePricing {
+  id             String         @id @default(cuid())
+  type           CommissionType @unique
+  basePriceCents Int
+  active         Boolean        @default(true)
+  updatedAt      DateTime       @updatedAt
+}
+
+/// Admin-configurable rendering option (e.g. "Sketched" at -40%), applied as
+/// a percentage modifier on top of the CommissionType base price.
+model CommissionOptionPricing {
+  id              String   @id @default(cuid())
+  key             String   @unique
+  modifierPercent Int
+  active          Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
+
+/// Admin-configurable add-on (e.g. "Background"). minPriceCents is a floor —
+/// the actual quote for an addon is set manually per-commission since these
+/// are "from $X" rather than fixed.
+model CommissionAddonPricing {
+  id            String   @id @default(cuid())
+  key           String   @unique
+  minPriceCents Int
+  active        Boolean  @default(true)
+  updatedAt     DateTime @updatedAt
+}
+
+/// Singleton row (there is always exactly one) holding the rush-fee surcharge
+/// applied when a client picks a deadline within thresholdDays.
+model CommissionRushFeeSetting {
+  id            String   @id @default(cuid())
+  thresholdDays Int      @default(10)
+  feeCents      Int      @default(2500)
+  updatedAt     DateTime @updatedAt
+}
+
+model Commission {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  deadline    DateTime?
+
+  status        CommissionStatus @default(NOT_YET_STARTED)
+  paymentStatus PaymentStatus    @default(NOT_YET)
+  isHidden      Boolean          @default(false)
+
+  commissionType CommissionType?
+  optionKey      String?
+  addonKeys      String[]        @default([])
+  quoteCents     Int?
+
+  clientName             String
+  clientEmail            String
+  preferredContactMethod PreferredContactMethod @default(EMAIL)
+  contactHandle          String?
+  accessCode             String                 @unique @default(cuid())
+
+  referenceAssets   String[] @default([])
+  deliverableAssets String[] @default([])
+  deliveredAt       DateTime?
+
+  ideaConfirmedAt   DateTime?
+  sketchConfirmedAt DateTime?
+  paymentConfirmedAt DateTime?
+  lineDoneAt        DateTime?
+  coloringDoneAt     DateTime?
+  finishedAt         DateTime?
+
+  assignedToId String?
+  assignedTo   User?   @relation("CommissionAssignee", fields: [assignedToId], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notes   CommissionNote[]
+  history CommissionStatusHistory[]
+}
+
+/// A curated group of finished commissions, shown together as a set in the
+/// public gallery (e.g. a themed batch or series). Unlike Commission,
+/// isHidden defaults to false since projects are admin-curated for display.
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  isHidden    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  commissions Commission[]
+}
+
+model CommissionNote {
+  id           String                    @id @default(cuid())
+  commissionId String
+  commission   Commission                @relation(fields: [commissionId], references: [id])
+  authorId     String?
+  author       User?                     @relation("CommissionNoteAuthor", fields: [authorId], references: [id])
+  visibility   CommissionNoteVisibility  @default(INTERNAL)
+  body         String
+  createdAt    DateTime                  @default(now())
+}
+
+model CommissionStatusHistory {
+  id           String            @id @default(cuid())
+  commissionId String
+  commission   Commission        @relation(fields: [commissionId], references: [id])
+  fromStatus   CommissionStatus?
+  toStatus     CommissionStatus
+  changedById  String
+  changedBy    User              @relation("CommissionStatusChangedBy", fields: [changedById], references: [id])
+  note         String?
+  createdAt    DateTime          @default(now())
 }

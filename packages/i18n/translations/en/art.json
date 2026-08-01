@@ -1,0 +1,212 @@
+{
+  "site": {
+    "title": "Art",
+    "nav": {
+      "gallery": "Gallery",
+      "commission": "Commission",
+      "queue": "Queue",
+      "projects": "Projects",
+      "admin": "Admin"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "empty": "No projects yet.",
+    "newTitle": "New project title",
+    "create": "Create",
+    "none": "No project"
+  },
+  "gallery": {
+    "title": "Gallery",
+    "searchPlaceholder": "Search by filename or tag",
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "size": "File size",
+      "alphabetical": "A-Z"
+    },
+    "tagAll": "All tags",
+    "empty": "No assets yet.",
+    "loadMore": "Load more",
+    "upload": {
+      "cta": "Upload",
+      "dropzone": "Drag and drop images here, or click to browse",
+      "uploading": "Uploading...",
+      "tagsLabel": "Tags (comma separated)",
+      "tagsHint": "Tag with a commission type or option key (e.g. \"full_body\", \"sketched\") to show it as an example on the commission form.",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "card": {
+      "delete": "Delete",
+      "deleteConfirm": "Delete this asset?",
+      "editTags": "Edit tags"
+    },
+    "lightbox": {
+      "close": "Close",
+      "filename": "Filename",
+      "dimensions": "Dimensions",
+      "size": "Size",
+      "uploaded": "Uploaded"
+    }
+  },
+  "queue": {
+    "title": "Queue",
+    "subtitle": "What's currently in progress, in the order it'll get done.",
+    "empty": "Nothing in the queue right now.",
+    "accessMineTitle": "Access mine"
+  },
+  "orders": {
+    "emailPlaceholder": "your@email.com",
+    "search": "Find my orders",
+    "empty": "No orders found for that email.",
+    "codeLabel": "Or, if I gave you a code",
+    "codeGo": "Go",
+    "deliverables": "Final artwork",
+    "existingReferences": "Your uploaded references"
+  },
+  "commission": {
+    "form": {
+      "title": "Request a commission",
+      "subtitle": "Tell me about what you'd like made. I'll follow up by email.",
+      "titleLabel": "Title",
+      "descriptionLabel": "Description",
+      "commissionTypeLabel": "Commission type",
+      "commissionTypePlaceholder": "Choose a type",
+      "optionLabel": "Rendering option",
+      "optionPlaceholder": "Choose an option",
+      "addonsLabel": "Add-ons",
+      "examplesLabel": "Examples",
+      "estimateLabel": "Calculated estimate",
+      "rushFeeIncluded": "includes +${{amount}} rush fee, deadline under {{days}} days",
+      "deadlineLabel": "Deadline (optional)",
+      "clientNameLabel": "Your name",
+      "clientEmailLabel": "Your email",
+      "preferredContactLabel": "Preferred contact method",
+      "contactHandleLabel": "Contact handle",
+      "attachmentsLabel": "Reference images (optional)",
+      "isPublicLabel": "Show this commission in the public queue",
+      "isPublicTooltip": "If checked, your title, type, and current status will be visible on the public /queue page. Your name, email, contact info, description, and reference images always stay private.",
+      "submit": "Submit request",
+      "submitting": "Submitting...",
+      "success": "Your request has been submitted. You'll hear back soon.",
+      "draftRestored": "We restored your unsaved draft from last time.",
+      "clear": "Clear form",
+      "clearTitle": "Clear this form?",
+      "clearDescription": "This deletes everything you've entered, including your saved draft. This can't be undone."
+    },
+    "preferredContactMethod": {
+      "EMAIL": "Email",
+      "DISCORD": "Discord",
+      "TELEGRAM": "Telegram",
+      "TWITTER": "X / Twitter",
+      "OTHER": "Other"
+    },
+    "type": {
+      "ICON": {
+        "label": "Icon",
+        "description": "A close-up headshot illustration — face and shoulders only."
+      },
+      "HALF_BODY": {
+        "label": "Half Body",
+        "description": "From the waist up, with more detail than an icon."
+      },
+      "FULL_BODY": {
+        "label": "Full Body",
+        "description": "The full character from head to toe."
+      },
+      "SKETCH_PAGE": {
+        "label": "Sketch Page",
+        "description": "A page of multiple rough sketches/poses of one subject."
+      }
+    },
+    "option": {
+      "FULLY_RENDERED": {
+        "label": "Fully rendered",
+        "description": "Full color, shading, and polish."
+      },
+      "SKETCHED": {
+        "label": "Sketched",
+        "description": "Clean line art only, no coloring or shading."
+      }
+    },
+    "addon": {
+      "COMPLEX_COSTUME": {
+        "label": "Complexity",
+        "description": "Extra detail work for intricate outfits, armor, or accessories.\n\nTicking this just makes me aware - it doesn't add to the price upfront. I personally review each piece to judge whether it's actually \"complex.\"\n\nFeel free to reach out if you're not sure!"
+      },
+      "BACKGROUND": {
+        "label": "Background",
+        "description": "Detailed backgrounds."
+      }
+    },
+    "status": {
+      "NOT_YET_STARTED": "Not yet started",
+      "QUEUED": "Queued",
+      "SKETCH": "Sketch",
+      "CONFIRMED": "Confirmed",
+      "ONGOING": "Ongoing",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "paymentStatus": {
+      "NOT_YET": "Not requested",
+      "REQUESTED": "Requested",
+      "PARTIAL": "Partially paid",
+      "FULL": "Paid in full"
+    },
+    "admin": {
+      "title": "Commissions",
+      "searchPlaceholder": "Search by client, title, or keyword",
+      "statusFilterAll": "All statuses",
+      "sort": {
+        "createdAt": "Date created",
+        "deadline": "Deadline",
+        "quote": "Budget"
+      },
+      "empty": "No commission requests yet.",
+      "detail": {
+        "back": "Back to commissions",
+        "client": "Client",
+        "quote": "Budget",
+        "quotedPriceLabel": "Quoted price (final)",
+        "calculatedLabel": "Calculated",
+        "deadline": "Deadline",
+        "status": "Status",
+        "paymentStatus": "Payment",
+        "attachments": "Attachments",
+        "notes": "Notes",
+        "addNote": "Add note",
+        "notePlaceholder": "Write a note...",
+        "noteVisibilityInternal": "Internal only",
+        "noteVisibilityClient": "Visible to client",
+        "history": "Status history",
+        "noHistory": "No status changes yet."
+      },
+      "steps": {
+        "title": "Production checklist",
+        "ideaConfirmedAt": "Idea confirmation",
+        "sketchConfirmedAt": "Sketches confirmation",
+        "paymentConfirmedAt": "Payment",
+        "lineDoneAt": "Line",
+        "coloringDoneAt": "Coloring",
+        "finishedAt": "Finish"
+      },
+      "deliver": {
+        "title": "Deliver final artwork",
+        "filesLabel": "Final artwork files",
+        "send": "Send to client"
+      },
+      "visibility": {
+        "show": "Show publicly",
+        "hide": "Hide from public"
+      },
+      "pricing": {
+        "title": "Pricing",
+        "rushFee": "Rush fee",
+        "rushFeeDays": "Threshold (days)",
+        "rushFeeAmount": "Fee ($)"
+      }
+    }
+  }
+}

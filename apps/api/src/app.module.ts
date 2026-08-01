@@ -12,6 +12,10 @@ import { HealthModule } from '@/modules/health/health.module';
 import { ImagesModule } from '@/modules/images/images.module';
 import { PlatformsModule } from '@/modules/platforms/platforms.module';
 import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
+import { AssetsModule } from '@/modules/assets/assets.module';
+import { CommissionsModule } from '@/modules/commissions/commissions.module';
+import { CommissionPricingModule } from '@/modules/commission-pricing/commission-pricing.module';
+import { ProjectsModule } from '@/modules/projects/projects.module';
 
 @Module({
   imports: [
@@ -30,6 +34,10 @@ import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
     ImagesModule,
     PlatformsModule,
     OnboardingModule,
+    AssetsModule,
+    CommissionsModule,
+    CommissionPricingModule,
+    ProjectsModule,
   ],
 })
 export class AppModule {}

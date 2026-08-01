@@ -1,0 +1,211 @@
+{
+  "site": {
+    "title": "Art",
+    "nav": {
+      "gallery": "ギャラリー",
+      "commission": "コミッション依頼",
+      "queue": "キュー",
+      "projects": "プロジェクト",
+      "admin": "管理"
+    }
+  },
+  "projects": {
+    "title": "プロジェクト",
+    "empty": "プロジェクトはまだありません。",
+    "newTitle": "新しいプロジェクト名",
+    "create": "作成",
+    "none": "プロジェクトなし"
+  },
+  "gallery": {
+    "title": "ギャラリー",
+    "subtitle": "完成作品、参考資料、納品物のコレクションです。",
+    "searchPlaceholder": "ファイル名やタグで検索",
+    "sort": {
+      "newest": "新しい順",
+      "oldest": "古い順",
+      "size": "ファイルサイズ",
+      "alphabetical": "A-Z"
+    },
+    "tagAll": "すべてのタグ",
+    "empty": "まだ何もありません。",
+    "loadMore": "もっと見る",
+    "upload": {
+      "cta": "アップロード",
+      "dropzone": "ここに画像をドラッグ&ドロップ、またはクリックして選択",
+      "uploading": "アップロード中...",
+      "tagsLabel": "タグ（カンマ区切り）",
+      "tagsHint": "コミッションタイプやオプションのキー（例: \"full_body\"、\"sketched\"）でタグ付けすると、依頼フォームの参考例として表示されます。",
+      "save": "保存",
+      "cancel": "キャンセル"
+    },
+    "card": {
+      "delete": "削除",
+      "deleteConfirm": "この画像を削除しますか？",
+      "editTags": "タグを編集"
+    },
+    "lightbox": {
+      "close": "閉じる",
+      "filename": "ファイル名",
+      "dimensions": "サイズ",
+      "size": "容量",
+      "uploaded": "アップロード日"
+    }
+  },
+  "queue": {
+    "title": "キュー",
+    "subtitle": "現在制作中の依頼を、完了予定順に表示しています。",
+    "empty": "現在キューには何もありません。",
+    "accessMineTitle": "自分の注文を確認"
+  },
+  "orders": {
+    "emailPlaceholder": "your@email.com",
+    "search": "注文を検索",
+    "empty": "そのメールアドレスの注文は見つかりませんでした。",
+    "codeLabel": "コードをお持ちの場合はこちら",
+    "codeGo": "表示",
+    "deliverables": "完成イラスト",
+    "existingReferences": "アップロード済みの参考画像"
+  },
+  "commission": {
+    "form": {
+      "title": "コミッション依頼",
+      "subtitle": "ご希望の内容を教えてください。メールでご連絡します。",
+      "titleLabel": "タイトル",
+      "descriptionLabel": "詳細",
+      "commissionTypeLabel": "コミッションタイプ",
+      "commissionTypePlaceholder": "タイプを選択",
+      "optionLabel": "描画オプション",
+      "optionPlaceholder": "オプションを選択",
+      "addonsLabel": "追加オプション",
+      "examplesLabel": "参考例",
+      "estimateLabel": "見積もり",
+      "rushFeeIncluded": "特急料金 +${{amount}} を含む（納期まで{{days}}日未満）",
+      "deadlineLabel": "希望納期（任意）",
+      "clientNameLabel": "お名前",
+      "clientEmailLabel": "メールアドレス",
+      "preferredContactLabel": "希望連絡方法",
+      "contactHandleLabel": "連絡先アカウント",
+      "attachmentsLabel": "参考画像（任意）",
+      "isPublicLabel": "この依頼を公開キューに表示する",
+      "isPublicTooltip": "チェックすると、タイトル・タイプ・現在のステータスが公開の /queue ページに表示されます。お名前・メール・連絡先・詳細・参考画像は常に非公開です。",
+      "submit": "依頼を送信",
+      "submitting": "送信中...",
+      "success": "依頼を受け付けました。追ってご連絡します。",
+      "draftRestored": "前回の未送信の下書きを復元しました。",
+      "clear": "フォームをクリア",
+      "clearTitle": "このフォームをクリアしますか？",
+      "clearDescription": "入力済みの内容と保存された下書きがすべて削除されます。この操作は元に戻せません。"
+    },
+    "preferredContactMethod": {
+      "EMAIL": "メール",
+      "DISCORD": "Discord",
+      "TELEGRAM": "Telegram",
+      "TWITTER": "X / Twitter",
+      "OTHER": "その他"
+    },
+    "type": {
+      "ICON": {
+        "label": "アイコン",
+        "description": "顔と肩だけのクローズアップイラスト。"
+      },
+      "HALF_BODY": {
+        "label": "半身",
+        "description": "腰から上、アイコンより詳細。"
+      },
+      "FULL_BODY": {
+        "label": "全身",
+        "description": "頭からつま先まで全身。"
+      },
+      "SKETCH_PAGE": {
+        "label": "ラフページ",
+        "description": "同じキャラクターの複数のラフ/ポーズをまとめたページ。"
+      }
+    },
+    "option": {
+      "FULLY_RENDERED": {
+        "label": "フルカラー",
+        "description": "フルカラー、陰影、仕上げまで。"
+      },
+      "SKETCHED": {
+        "label": "線画",
+        "description": "着色や陰影なしの線画のみ。"
+      }
+    },
+    "addon": {
+      "COMPLEX_COSTUME": {
+        "label": "複雑さ",
+        "description": "凝った衣装・鎧・装飾品などの追加ディテール。\n\nこれにチェックしても自動で加算はされません - あくまで私への申告です。実際に「複雑」かどうかは作品ごとに私が確認します。\n\n不安な場合は気軽にご連絡ください！"
+      },
+      "BACKGROUND": {
+        "label": "背景",
+        "description": "描き込んだ背景。"
+      }
+    },
+    "status": {
+      "NOT_YET_STARTED": "未着手",
+      "QUEUED": "順番待ち",
+      "SKETCH": "ラフ制作中",
+      "CONFIRMED": "確定",
+      "ONGOING": "制作中",
+      "COMPLETED": "完了",
+      "CANCELLED": "キャンセル"
+    },
+    "paymentStatus": {
+      "NOT_YET": "未請求",
+      "REQUESTED": "請求済み",
+      "PARTIAL": "一部入金済み",
+      "FULL": "支払い完了"
+    },
+    "admin": {
+      "title": "コミッション一覧",
+      "searchPlaceholder": "依頼者名・タイトル・キーワードで検索",
+      "statusFilterAll": "すべてのステータス",
+      "sort": {
+        "createdAt": "作成日",
+        "deadline": "納期",
+        "quote": "予算"
+      },
+      "empty": "コミッション依頼はまだありません。",
+      "detail": {
+        "back": "一覧に戻る",
+        "client": "依頼者",
+        "quote": "予算",
+        "deadline": "納期",
+        "status": "ステータス",
+        "paymentStatus": "支払い",
+        "attachments": "添付ファイル",
+        "notes": "メモ",
+        "addNote": "メモを追加",
+        "notePlaceholder": "メモを入力...",
+        "noteVisibilityInternal": "内部のみ",
+        "noteVisibilityClient": "依頼者に公開",
+        "history": "ステータス履歴",
+        "noHistory": "ステータスの変更履歴はまだありません。"
+      },
+      "steps": {
+        "title": "制作チェックリスト",
+        "ideaConfirmedAt": "アイデア確認",
+        "sketchConfirmedAt": "ラフ確認",
+        "paymentConfirmedAt": "入金",
+        "lineDoneAt": "線画",
+        "coloringDoneAt": "着色",
+        "finishedAt": "完成"
+      },
+      "deliver": {
+        "title": "完成イラストを送付",
+        "filesLabel": "完成イラストファイル",
+        "send": "依頼者に送付"
+      },
+      "visibility": {
+        "show": "公開する",
+        "hide": "非公開にする"
+      },
+      "pricing": {
+        "title": "料金設定",
+        "rushFee": "特急料金",
+        "rushFeeDays": "しきい値（日）",
+        "rushFeeAmount": "料金（$）"
+      }
+    }
+  }
+}

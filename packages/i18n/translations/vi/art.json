@@ -1,0 +1,212 @@
+{
+  "site": {
+    "title": "Art",
+    "nav": {
+      "gallery": "Thư viện",
+      "commission": "Đặt vẽ tranh",
+      "queue": "Hàng đợi",
+      "projects": "Dự án",
+      "admin": "Quản trị"
+    }
+  },
+  "projects": {
+    "title": "Dự án",
+    "empty": "Chưa có dự án nào.",
+    "newTitle": "Tên dự án mới",
+    "create": "Tạo",
+    "none": "Không thuộc dự án"
+  },
+  "gallery": {
+    "title": "Thư viện",
+    "searchPlaceholder": "Tìm theo tên tệp hoặc thẻ",
+    "sort": {
+      "newest": "Mới nhất",
+      "oldest": "Cũ nhất",
+      "size": "Dung lượng",
+      "alphabetical": "A-Z"
+    },
+    "tagAll": "Tất cả thẻ",
+    "empty": "Chưa có tệp nào.",
+    "loadMore": "Xem thêm",
+    "upload": {
+      "cta": "Tải lên",
+      "dropzone": "Kéo thả ảnh vào đây, hoặc bấm để chọn tệp",
+      "uploading": "Đang tải lên...",
+      "tagsLabel": "Thẻ (cách nhau bằng dấu phẩy)",
+      "tagsHint": "Gắn thẻ theo loại hoặc kiểu vẽ (vd: \"full_body\", \"sketched\") để hiển thị làm ví dụ trên form đặt vẽ.",
+      "save": "Lưu",
+      "cancel": "Hủy"
+    },
+    "card": {
+      "delete": "Xóa",
+      "deleteConfirm": "Xóa tệp này?",
+      "editTags": "Sửa thẻ"
+    },
+    "lightbox": {
+      "close": "Đóng",
+      "filename": "Tên tệp",
+      "dimensions": "Kích thước",
+      "size": "Dung lượng",
+      "uploaded": "Ngày tải lên"
+    }
+  },
+  "queue": {
+    "title": "Hàng đợi",
+    "subtitle": "Những gì đang được thực hiện, theo thứ tự sẽ hoàn thành.",
+    "empty": "Hiện chưa có gì trong hàng đợi.",
+    "accessMineTitle": "Xem đơn của tôi"
+  },
+  "orders": {
+    "emailPlaceholder": "email@cua-ban.com",
+    "search": "Tìm đơn hàng",
+    "empty": "Không tìm thấy đơn hàng nào với email đó.",
+    "codeLabel": "Hoặc nếu bạn được cấp mã",
+    "codeGo": "Xem",
+    "deliverables": "Tác phẩm hoàn thiện",
+    "existingReferences": "Ảnh tham khảo đã tải lên"
+  },
+  "commission": {
+    "form": {
+      "title": "Đặt vẽ tranh",
+      "subtitle": "Kể cho Hato nghe bạn muốn vẽ gì nhé, Hato sẽ liên hệ lại qua email.",
+      "titleLabel": "Tiêu đề",
+      "descriptionLabel": "Mô tả",
+      "commissionTypeLabel": "Loại tranh",
+      "commissionTypePlaceholder": "Chọn loại",
+      "optionLabel": "Kiểu vẽ",
+      "optionPlaceholder": "Chọn kiểu",
+      "addonsLabel": "Tùy chọn thêm",
+      "examplesLabel": "Ví dụ",
+      "estimateLabel": "Ước tính tự động",
+      "rushFeeIncluded": "đã gồm phụ phí gấp +${{amount}}, thời hạn dưới {{days}} ngày",
+      "deadlineLabel": "Thời hạn (không bắt buộc)",
+      "clientNameLabel": "Tên của bạn",
+      "clientEmailLabel": "Email của bạn",
+      "preferredContactLabel": "Phương thức liên hệ ưu tiên",
+      "contactHandleLabel": "Tên tài khoản liên hệ",
+      "attachmentsLabel": "Ảnh tham khảo (không bắt buộc)",
+      "isPublicLabel": "Hiển thị đơn này trong hàng đợi công khai",
+      "isPublicTooltip": "Nếu chọn, tiêu đề, loại tranh và trạng thái hiện tại sẽ hiển thị công khai trên trang /queue. Tên, email, thông tin liên hệ, mô tả và ảnh tham khảo của bạn luôn được giữ riêng tư.",
+      "submit": "Gửi yêu cầu",
+      "submitting": "Đang gửi...",
+      "success": "Yêu cầu của bạn đã được gửi. Bạn sẽ sớm nhận được phản hồi.",
+      "draftRestored": "Chúng tôi đã khôi phục bản nháp chưa lưu của bạn.",
+      "clear": "Xóa form",
+      "clearTitle": "Xóa toàn bộ form này?",
+      "clearDescription": "Thao tác này sẽ xóa hết những gì bạn đã nhập, kể cả bản nháp đã lưu. Không thể hoàn tác."
+    },
+    "preferredContactMethod": {
+      "EMAIL": "Email",
+      "DISCORD": "Discord",
+      "TELEGRAM": "Telegram",
+      "TWITTER": "X / Twitter",
+      "OTHER": "Khác"
+    },
+    "type": {
+      "ICON": {
+        "label": "Icon",
+        "description": "Ảnh cận mặt và vai."
+      },
+      "HALF_BODY": {
+        "label": "Nửa người",
+        "description": "Từ eo trở lên, chi tiết hơn icon."
+      },
+      "FULL_BODY": {
+        "label": "Toàn thân",
+        "description": "Toàn bộ nhân vật từ đầu đến chân."
+      },
+      "SKETCH_PAGE": {
+        "label": "Trang phác thảo",
+        "description": "Một trang gồm nhiều phác thảo/dáng của một nhân vật."
+      }
+    },
+    "option": {
+      "FULLY_RENDERED": {
+        "label": "Vẽ đầy đủ màu",
+        "description": "Đầy đủ màu sắc, đổ bóng và hoàn thiện."
+      },
+      "SKETCHED": {
+        "label": "Phác thảo",
+        "description": "Chỉ có nét vẽ sạch, không tô màu hay đổ bóng."
+      }
+    },
+    "addon": {
+      "COMPLEX_COSTUME": {
+        "label": "Độ phức tạp",
+        "description": "Chi tiết thêm cho trang phục, giáp hoặc phụ kiện cầu kỳ.\n\nTick vào đây chỉ để Hato để ý thôi nha, không tự động cộng thêm giá đâu. Hato sẽ tự xem từng tác phẩm để đánh giá xem có thật sự 'phức tạp' hay không.\n\nKhông chắc thì cứ nhắn Hato nha!"
+      },
+      "BACKGROUND": {
+        "label": "Nền",
+        "description": "Nền chi tiết."
+      }
+    },
+    "status": {
+      "NOT_YET_STARTED": "Chưa bắt đầu",
+      "QUEUED": "Đang chờ",
+      "SKETCH": "Đang phác thảo",
+      "CONFIRMED": "Đã xác nhận",
+      "ONGOING": "Đang thực hiện",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy"
+    },
+    "paymentStatus": {
+      "NOT_YET": "Chưa yêu cầu",
+      "REQUESTED": "Đã yêu cầu",
+      "PARTIAL": "Đã thanh toán một phần",
+      "FULL": "Đã thanh toán đủ"
+    },
+    "admin": {
+      "title": "Đơn đặt vẽ",
+      "searchPlaceholder": "Tìm theo khách hàng, tiêu đề hoặc từ khóa",
+      "statusFilterAll": "Tất cả trạng thái",
+      "sort": {
+        "createdAt": "Ngày tạo",
+        "deadline": "Thời hạn",
+        "quote": "Ngân sách"
+      },
+      "empty": "Chưa có đơn đặt vẽ nào.",
+      "detail": {
+        "back": "Quay lại danh sách",
+        "client": "Khách hàng",
+        "quote": "Ngân sách",
+        "quotedPriceLabel": "Giá báo (chính thức)",
+        "calculatedLabel": "Tự động tính",
+        "deadline": "Thời hạn",
+        "status": "Trạng thái",
+        "paymentStatus": "Thanh toán",
+        "attachments": "Tệp đính kèm",
+        "notes": "Ghi chú",
+        "addNote": "Thêm ghi chú",
+        "notePlaceholder": "Viết ghi chú...",
+        "noteVisibilityInternal": "Chỉ nội bộ",
+        "noteVisibilityClient": "Khách hàng xem được",
+        "history": "Lịch sử trạng thái",
+        "noHistory": "Chưa có thay đổi trạng thái nào."
+      },
+      "steps": {
+        "title": "Danh sách công việc",
+        "ideaConfirmedAt": "Xác nhận ý tưởng",
+        "sketchConfirmedAt": "Xác nhận phác thảo",
+        "paymentConfirmedAt": "Thanh toán",
+        "lineDoneAt": "Lên nét",
+        "coloringDoneAt": "Tô màu",
+        "finishedAt": "Hoàn thiện"
+      },
+      "deliver": {
+        "title": "Gửi tác phẩm hoàn thiện",
+        "filesLabel": "Tệp tác phẩm hoàn thiện",
+        "send": "Gửi cho khách hàng"
+      },
+      "visibility": {
+        "show": "Hiển thị công khai",
+        "hide": "Ẩn khỏi công khai"
+      },
+      "pricing": {
+        "title": "Bảng giá",
+        "rushFee": "Phụ phí gấp",
+        "rushFeeDays": "Ngưỡng (ngày)",
+        "rushFeeAmount": "Phí ($)"
+      }
+    }
+  }
+}

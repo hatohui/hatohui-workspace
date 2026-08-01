@@ -793,6 +793,1463 @@
           "onboarding"
         ]
       }
+    },
+    "/assets": {
+      "get": {
+        "operationId": "assets",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against filename or tags",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "required": false,
+            "in": "query",
+            "description": "Filter by exact tag",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "newest",
+              "type": "string",
+              "enum": [
+                "newest",
+                "oldest",
+                "size",
+                "alphabetical"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 24,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAssetsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List gallery assets",
+        "tags": [
+          "assets"
+        ]
+      },
+      "post": {
+        "operationId": "createAsset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Record an asset uploaded via POST /images/sign",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/assets/{id}": {
+      "patch": {
+        "operationId": "updateAsset",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update an asset's tags",
+        "tags": [
+          "assets"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteAsset",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete an asset",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/commissions": {
+      "post": {
+        "operationId": "submitCommission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitCommissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Submit a new commission request",
+        "tags": [
+          "commissions"
+        ]
+      },
+      "get": {
+        "operationId": "commissions",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against client name, title, or description",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NOT_YET_STARTED",
+                "QUEUED",
+                "SKETCH",
+                "CONFIRMED",
+                "ONGOING",
+                "COMPLETED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "createdAt",
+              "type": "string",
+              "enum": [
+                "createdAt",
+                "deadline",
+                "quote"
+              ]
+            }
+          },
+          {
+            "name": "direction",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCommissionsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List commission requests",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/queue": {
+      "get": {
+        "operationId": "commissionQueue",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionQueueDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Public timeline of non-hidden, active commissions",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/lookup": {
+      "get": {
+        "operationId": "lookupCommissionsByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "jane@example.com",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionPublicDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List a client's own commissions by the email they submitted with",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/lookup/code/{code}": {
+      "get": {
+        "operationId": "lookupCommissionByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPublicDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a client's commission by their private access code",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/lookup/code/{code}/reference-assets": {
+      "post": {
+        "operationId": "addCommissionReferenceAssets",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddReferenceAssetsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPublicDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Client adds reference images to their commission",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/lookup/code/{code}/notes": {
+      "post": {
+        "operationId": "addClientCommissionNote",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClientNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Client leaves a note (e.g. confirming a sketch)",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}": {
+      "get": {
+        "operationId": "commission",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a commission request with its notes and status history",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/status": {
+      "patch": {
+        "operationId": "updateCommissionStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Change a commission's status",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/payment-status": {
+      "patch": {
+        "operationId": "updateCommissionPaymentStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Change a commission's payment status",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/step": {
+      "patch": {
+        "operationId": "updateCommissionStep",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionStepDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Toggle one of the internal production checklist steps",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/quote": {
+      "patch": {
+        "operationId": "updateCommissionQuote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionQuoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a commission's type, option, add-ons, and final quote",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/visibility": {
+      "patch": {
+        "operationId": "updateCommissionVisibility",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionVisibilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Show or hide a commission from any public showcase",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/deliver": {
+      "post": {
+        "operationId": "deliverCommission",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliverCommissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Attach the final artwork and email it to the client",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/assign": {
+      "patch": {
+        "operationId": "assignCommission",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignCommissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Assign or unassign a team member to a commission",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/project": {
+      "patch": {
+        "operationId": "updateCommissionProject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Attach or detach a commission from a project",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/notes": {
+      "post": {
+        "operationId": "createCommissionNote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommissionNoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionNoteDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add an internal or client-facing note to a commission",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commission-pricing": {
+      "get": {
+        "operationId": "commissionPricing",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPricingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Active pricing config used by the commission request form",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/commission-pricing/rush-fee": {
+      "put": {
+        "operationId": "updateCommissionRushFee",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionRushFeeSettingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionRushFeeSettingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update the rush-fee surcharge settings",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/commission-pricing/types": {
+      "get": {
+        "operationId": "commissionTypePricings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionTypePricingDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List commission type pricing rows",
+        "tags": [
+          "commission-pricing"
+        ]
+      },
+      "post": {
+        "operationId": "createCommissionTypePricing",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionTypePricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionTypePricingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a commission type pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/commission-pricing/types/{id}": {
+      "put": {
+        "operationId": "updateCommissionTypePricing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionTypePricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionTypePricingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a commission type pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCommissionTypePricing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a commission type pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/commission-pricing/options": {
+      "get": {
+        "operationId": "commissionOptionPricings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionOptionPricingDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List commission option pricing rows",
+        "tags": [
+          "commission-pricing"
+        ]
+      },
+      "post": {
+        "operationId": "createCommissionOptionPricing",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionOptionPricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionOptionPricingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a commission option pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/commission-pricing/options/{id}": {
+      "put": {
+        "operationId": "updateCommissionOptionPricing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionOptionPricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionOptionPricingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a commission option pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCommissionOptionPricing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a commission option pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/commission-pricing/addons": {
+      "get": {
+        "operationId": "commissionAddonPricings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionAddonPricingDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List commission add-on pricing rows",
+        "tags": [
+          "commission-pricing"
+        ]
+      },
+      "post": {
+        "operationId": "createCommissionAddonPricing",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionAddonPricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionAddonPricingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a commission add-on pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/commission-pricing/addons/{id}": {
+      "put": {
+        "operationId": "updateCommissionAddonPricing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionAddonPricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionAddonPricingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a commission add-on pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCommissionAddonPricing",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a commission add-on pricing row",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
+    "/projects": {
+      "get": {
+        "operationId": "projects",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List projects (hidden ones only visible to admins)",
+        "tags": [
+          "projects"
+        ]
+      },
+      "post": {
+        "operationId": "createProject",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a project",
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "operationId": "project",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a project by id",
+        "tags": [
+          "projects"
+        ]
+      },
+      "patch": {
+        "operationId": "updateProject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a project",
+        "tags": [
+          "projects"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteProject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a project",
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/projects/{id}/visibility": {
+      "patch": {
+        "operationId": "updateProjectVisibility",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectVisibilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Show or hide a project from the public gallery",
+        "tags": [
+          "projects"
+        ]
+      }
     }
   },
   "info": {
@@ -824,6 +2281,22 @@
     },
     {
       "name": "onboarding",
+      "description": ""
+    },
+    {
+      "name": "assets",
+      "description": ""
+    },
+    {
+      "name": "commissions",
+      "description": ""
+    },
+    {
+      "name": "commission-pricing",
+      "description": ""
+    },
+    {
+      "name": "projects",
       "description": ""
     }
   ],
@@ -1564,6 +3037,1545 @@
         },
         "required": [
           "birthdayDetailsIds"
+        ]
+      },
+      "AssetDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "key": {
+            "type": "string",
+            "example": "images/abc123.jpg"
+          },
+          "publicUrl": {
+            "type": "string",
+            "example": "http://localhost:9010/hatohui-dev/images/abc123.jpg"
+          },
+          "filename": {
+            "type": "string",
+            "example": "character-sketch.png"
+          },
+          "contentType": {
+            "type": "string",
+            "example": "image/png"
+          },
+          "size": {
+            "type": "number",
+            "example": 245678,
+            "description": "File size in bytes"
+          },
+          "width": {
+            "type": "number",
+            "example": 1920,
+            "nullable": true
+          },
+          "height": {
+            "type": "number",
+            "example": 1080,
+            "nullable": true
+          },
+          "tags": {
+            "example": [
+              "references",
+              "character"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "uploadedById": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the account that uploaded this asset"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "publicUrl",
+          "filename",
+          "contentType",
+          "size",
+          "width",
+          "height",
+          "tags",
+          "uploadedById",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedAssetsDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "hasMore"
+        ]
+      },
+      "CreateAssetDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "images/abc123.jpg",
+            "description": "Object key returned by POST /images/sign"
+          },
+          "filename": {
+            "type": "string",
+            "example": "character-sketch.png"
+          },
+          "contentType": {
+            "type": "string",
+            "example": "image/png"
+          },
+          "size": {
+            "type": "number",
+            "example": 245678
+          },
+          "width": {
+            "type": "number",
+            "example": 1920
+          },
+          "height": {
+            "type": "number",
+            "example": 1080
+          },
+          "tags": {
+            "example": [
+              "references",
+              "character"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "filename",
+          "contentType",
+          "size"
+        ]
+      },
+      "UpdateAssetDto": {
+        "type": "object",
+        "properties": {
+          "tags": {
+            "example": [
+              "references",
+              "character"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "tags"
+        ]
+      },
+      "SubmitCommissionDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Full-body character commission"
+          },
+          "description": {
+            "type": "string",
+            "example": "Full color, one character, flat background."
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2026-09-01"
+          },
+          "commissionType": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ]
+          },
+          "optionKey": {
+            "type": "string",
+            "description": "Key of a CommissionOptionPricing"
+          },
+          "addonKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "clientName": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "clientEmail": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ],
+            "default": "EMAIL"
+          },
+          "contactHandle": {
+            "type": "string"
+          },
+          "referenceAssets": {
+            "description": "Object keys returned by POST /images/sign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isPublic": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this commission (title, status, type) should show in the public /queue"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "clientName",
+          "clientEmail"
+        ]
+      },
+      "CommissionStepsDto": {
+        "type": "object",
+        "properties": {
+          "ideaConfirmedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "sketchConfirmedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentConfirmedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "lineDoneAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "coloringDoneAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "finishedAt": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "ideaConfirmedAt",
+          "sketchConfirmedAt",
+          "paymentConfirmedAt",
+          "lineDoneAt",
+          "coloringDoneAt",
+          "finishedAt"
+        ]
+      },
+      "CommissionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "title": {
+            "type": "string",
+            "example": "Full-body character commission"
+          },
+          "description": {
+            "type": "string",
+            "example": "Full color, one character, flat background."
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2026-09-01T00:00:00.000Z",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "example": "NOT_YET_STARTED"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET",
+              "REQUESTED",
+              "PARTIAL",
+              "FULL"
+            ],
+            "example": "NOT_YET"
+          },
+          "isHidden": {
+            "type": "boolean",
+            "description": "Whether this commission is hidden from any public showcase"
+          },
+          "commissionType": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ],
+            "nullable": true
+          },
+          "optionKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Key of the selected CommissionOptionPricing"
+          },
+          "addonKeys": {
+            "description": "Keys of selected CommissionAddonPricing rows",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quoteCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Quote in USD cents"
+          },
+          "clientName": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "clientEmail": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ]
+          },
+          "contactHandle": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliverableAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "steps": {
+            "$ref": "#/components/schemas/CommissionStepsDto"
+          },
+          "assignedToId": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "deadline",
+          "status",
+          "paymentStatus",
+          "isHidden",
+          "commissionType",
+          "optionKey",
+          "addonKeys",
+          "quoteCents",
+          "clientName",
+          "clientEmail",
+          "preferredContactMethod",
+          "contactHandle",
+          "referenceAssets",
+          "deliverableAssets",
+          "deliveredAt",
+          "steps",
+          "assignedToId",
+          "projectId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CommissionQueueItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "title": {
+            "type": "string",
+            "example": "Full-body character commission"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "commissionType": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ],
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "commissionType",
+          "createdAt"
+        ]
+      },
+      "CommissionQueueDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionQueueItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CommissionPublicDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "accessCode": {
+            "type": "string",
+            "description": "Private code used to view/manage this commission"
+          },
+          "title": {
+            "type": "string",
+            "example": "Full-body character commission"
+          },
+          "description": {
+            "type": "string",
+            "example": "Full color, one character, flat background."
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2026-09-01T00:00:00.000Z",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "example": "NOT_YET_STARTED"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET",
+              "REQUESTED",
+              "PARTIAL",
+              "FULL"
+            ],
+            "example": "NOT_YET"
+          },
+          "commissionType": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ],
+            "nullable": true
+          },
+          "quoteCents": {
+            "type": "number",
+            "nullable": true
+          },
+          "referenceAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliverableAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "accessCode",
+          "title",
+          "description",
+          "deadline",
+          "status",
+          "paymentStatus",
+          "commissionType",
+          "quoteCents",
+          "referenceAssets",
+          "deliverableAssets",
+          "deliveredAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CommissionNoteDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "commissionId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "authorId": {
+            "type": "string",
+            "example": "clx1234567890",
+            "nullable": true,
+            "description": "Null when submitted by a client via their access link"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL",
+              "CLIENT"
+            ]
+          },
+          "body": {
+            "type": "string",
+            "example": "Client confirmed the pose reference."
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "commissionId",
+          "authorId",
+          "visibility",
+          "body",
+          "createdAt"
+        ]
+      },
+      "CommissionPublicDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "accessCode": {
+            "type": "string",
+            "description": "Private code used to view/manage this commission"
+          },
+          "title": {
+            "type": "string",
+            "example": "Full-body character commission"
+          },
+          "description": {
+            "type": "string",
+            "example": "Full color, one character, flat background."
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2026-09-01T00:00:00.000Z",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "example": "NOT_YET_STARTED"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET",
+              "REQUESTED",
+              "PARTIAL",
+              "FULL"
+            ],
+            "example": "NOT_YET"
+          },
+          "commissionType": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ],
+            "nullable": true
+          },
+          "quoteCents": {
+            "type": "number",
+            "nullable": true
+          },
+          "referenceAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliverableAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionNoteDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "accessCode",
+          "title",
+          "description",
+          "deadline",
+          "status",
+          "paymentStatus",
+          "commissionType",
+          "quoteCents",
+          "referenceAssets",
+          "deliverableAssets",
+          "deliveredAt",
+          "createdAt",
+          "updatedAt",
+          "notes"
+        ]
+      },
+      "AddReferenceAssetsDto": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "keys"
+        ]
+      },
+      "CreateClientNoteDto": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "example": "Looks great, approved!"
+          }
+        },
+        "required": [
+          "body"
+        ]
+      },
+      "PaginatedCommissionsDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "hasMore"
+        ]
+      },
+      "CommissionStatusHistoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "commissionId": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "fromStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "nullable": true
+          },
+          "toStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "changedById": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "commissionId",
+          "fromStatus",
+          "toStatus",
+          "changedById",
+          "note",
+          "createdAt"
+        ]
+      },
+      "CommissionDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "title": {
+            "type": "string",
+            "example": "Full-body character commission"
+          },
+          "description": {
+            "type": "string",
+            "example": "Full color, one character, flat background."
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2026-09-01T00:00:00.000Z",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "example": "NOT_YET_STARTED"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET",
+              "REQUESTED",
+              "PARTIAL",
+              "FULL"
+            ],
+            "example": "NOT_YET"
+          },
+          "isHidden": {
+            "type": "boolean",
+            "description": "Whether this commission is hidden from any public showcase"
+          },
+          "commissionType": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ],
+            "nullable": true
+          },
+          "optionKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Key of the selected CommissionOptionPricing"
+          },
+          "addonKeys": {
+            "description": "Keys of selected CommissionAddonPricing rows",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quoteCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Quote in USD cents"
+          },
+          "clientName": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "clientEmail": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ]
+          },
+          "contactHandle": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliverableAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "steps": {
+            "$ref": "#/components/schemas/CommissionStepsDto"
+          },
+          "assignedToId": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionNoteDto"
+            }
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionStatusHistoryDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "deadline",
+          "status",
+          "paymentStatus",
+          "isHidden",
+          "commissionType",
+          "optionKey",
+          "addonKeys",
+          "quoteCents",
+          "clientName",
+          "clientEmail",
+          "preferredContactMethod",
+          "contactHandle",
+          "referenceAssets",
+          "deliverableAssets",
+          "deliveredAt",
+          "steps",
+          "assignedToId",
+          "projectId",
+          "createdAt",
+          "updatedAt",
+          "notes",
+          "history"
+        ]
+      },
+      "UpdateCommissionStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdatePaymentStatusDto": {
+        "type": "object",
+        "properties": {
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET",
+              "REQUESTED",
+              "PARTIAL",
+              "FULL"
+            ]
+          }
+        },
+        "required": [
+          "paymentStatus"
+        ]
+      },
+      "UpdateCommissionStepDto": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "string",
+            "enum": [
+              "ideaConfirmedAt",
+              "sketchConfirmedAt",
+              "paymentConfirmedAt",
+              "lineDoneAt",
+              "coloringDoneAt",
+              "finishedAt"
+            ]
+          },
+          "done": {
+            "type": "boolean",
+            "description": "Whether the step is done (sets/clears its timestamp)"
+          }
+        },
+        "required": [
+          "step",
+          "done"
+        ]
+      },
+      "UpdateCommissionQuoteDto": {
+        "type": "object",
+        "properties": {
+          "commissionType": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ],
+            "nullable": true
+          },
+          "optionKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "addonKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quoteCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Final quote in USD cents"
+          }
+        }
+      },
+      "UpdateCommissionVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "isHidden": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isHidden"
+        ]
+      },
+      "DeliverCommissionDto": {
+        "type": "object",
+        "properties": {
+          "deliverableAssets": {
+            "description": "Object keys of the final artwork, returned by POST /images/sign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "deliverableAssets"
+        ]
+      },
+      "AssignCommissionDto": {
+        "type": "object",
+        "properties": {
+          "assignedToId": {
+            "type": "string",
+            "nullable": true,
+            "description": "User id to assign, or null to unassign"
+          }
+        }
+      },
+      "UpdateCommissionProjectDto": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Project id to attach, or null to detach"
+          }
+        },
+        "required": [
+          "projectId"
+        ]
+      },
+      "CreateCommissionNoteDto": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "example": "Client confirmed the pose reference."
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL",
+              "CLIENT"
+            ],
+            "default": "INTERNAL"
+          }
+        },
+        "required": [
+          "body",
+          "visibility"
+        ]
+      },
+      "CommissionTypePricingDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ],
+            "description": "Also the i18n key: commission.type.<type>"
+          },
+          "basePriceCents": {
+            "type": "number",
+            "example": 3000,
+            "description": "Base price in USD cents"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "basePriceCents",
+          "active",
+          "updatedAt"
+        ]
+      },
+      "CommissionOptionPricingDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "example": "SKETCHED",
+            "description": "Also the i18n key: commission.option.<key>"
+          },
+          "modifierPercent": {
+            "type": "number",
+            "example": -40,
+            "description": "Percent modifier on the base price"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "modifierPercent",
+          "active",
+          "updatedAt"
+        ]
+      },
+      "CommissionAddonPricingDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "example": "BACKGROUND",
+            "description": "Also the i18n key: commission.addon.<key>"
+          },
+          "minPriceCents": {
+            "type": "number",
+            "example": 3000,
+            "description": "Minimum price in USD cents (\"from $X\")"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "minPriceCents",
+          "active",
+          "updatedAt"
+        ]
+      },
+      "CommissionRushFeeSettingDto": {
+        "type": "object",
+        "properties": {
+          "thresholdDays": {
+            "type": "number",
+            "example": 10,
+            "description": "Deadlines within this many days trigger the rush fee"
+          },
+          "feeCents": {
+            "type": "number",
+            "example": 2500,
+            "description": "Rush fee in USD cents"
+          }
+        },
+        "required": [
+          "thresholdDays",
+          "feeCents"
+        ]
+      },
+      "CommissionPricingDto": {
+        "type": "object",
+        "properties": {
+          "types": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionTypePricingDto"
+            }
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionOptionPricingDto"
+            }
+          },
+          "addons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionAddonPricingDto"
+            }
+          },
+          "rushFee": {
+            "$ref": "#/components/schemas/CommissionRushFeeSettingDto"
+          }
+        },
+        "required": [
+          "types",
+          "options",
+          "addons",
+          "rushFee"
+        ]
+      },
+      "UpsertCommissionRushFeeSettingDto": {
+        "type": "object",
+        "properties": {
+          "thresholdDays": {
+            "type": "number",
+            "example": 10
+          },
+          "feeCents": {
+            "type": "number",
+            "example": 2500
+          }
+        },
+        "required": [
+          "thresholdDays",
+          "feeCents"
+        ]
+      },
+      "UpsertCommissionTypePricingDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ICON",
+              "HALF_BODY",
+              "FULL_BODY",
+              "SKETCH_PAGE"
+            ]
+          },
+          "basePriceCents": {
+            "type": "number",
+            "example": 3000
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "type",
+          "basePriceCents"
+        ]
+      },
+      "UpsertCommissionOptionPricingDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "SKETCHED"
+          },
+          "modifierPercent": {
+            "type": "number",
+            "example": -40
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "key",
+          "modifierPercent"
+        ]
+      },
+      "UpsertCommissionAddonPricingDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "BACKGROUND"
+          },
+          "minPriceCents": {
+            "type": "number",
+            "example": 3000
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "key",
+          "minPriceCents"
+        ]
+      },
+      "ProjectDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "title": {
+            "type": "string",
+            "example": "Genshin Impact character set"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "isHidden": {
+            "type": "boolean",
+            "description": "Whether this project is hidden from the public gallery"
+          },
+          "coverAssetUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "First deliverable asset URL from the project's commissions"
+          },
+          "commissionCount": {
+            "type": "number"
+          },
+          "deliverableAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "isHidden",
+          "coverAssetUrl",
+          "commissionCount",
+          "deliverableAssets",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateProjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Genshin Impact character set"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdateProjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Genshin Impact character set"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdateProjectVisibilityDto": {
+        "type": "object",
+        "properties": {
+          "isHidden": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isHidden"
         ]
       }
     }

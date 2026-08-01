@@ -1,0 +1,35 @@
+name: art-cd
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'apps/art/**'
+      - 'packages/**'
+      - '.github/workflows/art-cd.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build for Cloudflare Workers
+        run: bun run --cwd apps/art cf:build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.API_URL }}
+          NEXT_PUBLIC_ASSET_URL: ${{ vars.ASSET_URL }}
+          NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_CLIENT_ID }}
+
+      - name: Deploy to Cloudflare Workers
+        run: bun run --cwd apps/art cf:deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

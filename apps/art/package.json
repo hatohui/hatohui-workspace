@@ -1,0 +1,39 @@
+{
+  "name": "art",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 5175",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare preview",
+    "cf:deploy": "opennextjs-cloudflare deploy"
+  },
+  "dependencies": {
+    "@hatohui/i18n": "workspace:*",
+    "@hatohui/libs": "workspace:*",
+    "@hatohui/models": "workspace:*",
+    "@hatohui/tools": "workspace:*",
+    "@hatohui/ui": "workspace:*",
+    "@tanstack/react-query": "^5.101.4",
+    "gsap": "^3.15.0",
+    "lucide-react": "^1.25.0",
+    "next": "^16.0.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.118.0"
+  }
+}

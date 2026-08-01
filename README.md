@@ -11,6 +11,7 @@ A management ecosystem/platform for hatohui and friends. A single monorepo holdi
 [![api-cd](https://github.com/hatohui/hatohui-workspace/actions/workflows/api-cd.yml/badge.svg)](https://github.com/hatohui/hatohui-workspace/actions/workflows/api-cd.yml)
 [![friends-cd](https://github.com/hatohui/hatohui-workspace/actions/workflows/friends-cd.yml/badge.svg)](https://github.com/hatohui/hatohui-workspace/actions/workflows/friends-cd.yml)
 [![www-cd](https://github.com/hatohui/hatohui-workspace/actions/workflows/www-cd.yml/badge.svg)](https://github.com/hatohui/hatohui-workspace/actions/workflows/www-cd.yml)
+[![art-cd](https://github.com/hatohui/hatohui-workspace/actions/workflows/art-cd.yml/badge.svg)](https://github.com/hatohui/hatohui-workspace/actions/workflows/art-cd.yml)
 [![infra-cd](https://github.com/hatohui/hatohui-workspace/actions/workflows/infra-cd.yml/badge.svg)](https://github.com/hatohui/hatohui-workspace/actions/workflows/infra-cd.yml)
 [![db-migrate-cd](https://github.com/hatohui/hatohui-workspace/actions/workflows/db-migrate-cd.yml/badge.svg)](https://github.com/hatohui/hatohui-workspace/actions/workflows/db-migrate-cd.yml)
 
@@ -21,7 +22,7 @@ A management ecosystem/platform for hatohui and friends. A single monorepo holdi
 | [`apps/api`](apps/api) | NestJS, Prisma (Postgres) | Shared API service for all other apps. | [api.hatohui.com](https://api.hatohui.com) |
 | [`apps/friends`](apps/friends) | React, Vite | Helps you be a good friend — reminders, and finding your friends' friends. | [friends.hatohui.com](https://friends.hatohui.com) |
 | [`apps/www`](apps/www) | React, Vite | Index/portfolio site for hatohui's (personal) profile and other apps. | [www.hatohui.com](https://www.hatohui.com) |
-| `apps/art` | _planned_ | Hatohui's art tracker — commissions, gallery, timeline, income. | `art.hatohui.com` |
+| [`apps/art`](apps/art) | Next.js (SSR), Cloudflare Workers | Hatohui's art gallery and commission tracker — public gallery/queue, commission requests, admin kanban. | [art.hatohui.com](https://art.hatohui.com) |
 | `apps/travel` | _planned_ | Travel planning and management, for furries. | `travel.hatohui.com` |
 | `apps/workspace` | _planned_ | Config, monitoring, and task/deadline management across the other apps. | `workspace.hatohui.com` |
 

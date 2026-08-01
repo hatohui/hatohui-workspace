@@ -47,7 +47,10 @@ export class OnboardingService {
     return { onboardingStatus: viewer.onboardingStatus, entry };
   }
 
-  async setProfile(dto: SetProfileDto, viewer: User): Promise<OnboardingStateDto> {
+  async setProfile(
+    dto: SetProfileDto,
+    viewer: User,
+  ): Promise<OnboardingStateDto> {
     const id = await this.getOwnEntryIdOrThrow(viewer);
     const entry = await this.friendsService.update(
       id,

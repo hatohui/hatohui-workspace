@@ -12,6 +12,10 @@ dist/
 build/
 coverage/
 *.tsbuildinfo
+.next/
+next-env.d.ts
+.open-next/
+.wrangler/
 
 # logs
 *.log
@@ -21,3 +25,4 @@ coverage/
 Thumbs.db
 
 .terraform
+__pycache__/

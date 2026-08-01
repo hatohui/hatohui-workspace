@@ -29,12 +29,18 @@ const LOCALE_STORAGE_KEY = 'hatohui:locale';
 
 /**
  * Picks the initial locale: a previously persisted choice, then the
- * browser's language, then `fallback`. Client-only (no SSR).
+ * browser's language, then `fallback`. Returns `fallback` during SSR (no
+ * `window`) — i18next re-initializes with the real locale once this module
+ * re-evaluates on the client.
  */
 export function detectLocale(
   supportedLocales: readonly string[],
   fallback: string,
 ): string {
+  if (typeof window === 'undefined') {
+    return fallback;
+  }
+
   const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
   if (stored && supportedLocales.includes(stored)) {
     return stored;

@@ -1,0 +1,213 @@
+{
+  "site": {
+    "title": "Art",
+    "nav": {
+      "gallery": "画廊",
+      "commission": "委托绘画",
+      "queue": "队列",
+      "projects": "项目",
+      "admin": "管理"
+    }
+  },
+  "projects": {
+    "title": "项目",
+    "empty": "暂无项目。",
+    "newTitle": "新项目名称",
+    "create": "创建",
+    "none": "无项目"
+  },
+  "gallery": {
+    "title": "画廊",
+    "subtitle": "已完成作品、参考图和交付成果的合集。",
+    "searchPlaceholder": "按文件名或标签搜索",
+    "sort": {
+      "newest": "最新",
+      "oldest": "最旧",
+      "size": "文件大小",
+      "alphabetical": "A-Z"
+    },
+    "tagAll": "全部标签",
+    "empty": "暂无内容。",
+    "loadMore": "加载更多",
+    "upload": {
+      "cta": "上传",
+      "dropzone": "将图片拖放到此处，或点击选择文件",
+      "uploading": "正在上传...",
+      "tagsLabel": "标签（用逗号分隔）",
+      "tagsHint": "使用委托类型或绘制方式的键（如 \"full_body\"、\"sketched\"）打标签，即可在委托表单中作为示例展示。",
+      "save": "保存",
+      "cancel": "取消"
+    },
+    "card": {
+      "delete": "删除",
+      "deleteConfirm": "删除此文件？",
+      "editTags": "编辑标签"
+    },
+    "lightbox": {
+      "close": "关闭",
+      "filename": "文件名",
+      "dimensions": "尺寸",
+      "size": "大小",
+      "uploaded": "上传时间"
+    }
+  },
+  "queue": {
+    "title": "队列",
+    "subtitle": "当前正在进行的项目，按完成顺序排列。",
+    "empty": "队列中暂无项目。",
+    "accessMineTitle": "查看我的订单"
+  },
+  "orders": {
+    "emailPlaceholder": "your@email.com",
+    "search": "查找我的订单",
+    "empty": "未找到该邮箱对应的订单。",
+    "codeLabel": "或者，如果我给了你一个代码",
+    "codeGo": "查看",
+    "deliverables": "最终作品",
+    "existingReferences": "已上传的参考图"
+  },
+  "commission": {
+    "form": {
+      "title": "委托绘画",
+      "subtitle": "告诉我你想要什么，我会通过邮件与你联系。",
+      "titleLabel": "标题",
+      "descriptionLabel": "描述",
+      "commissionTypeLabel": "委托类型",
+      "commissionTypePlaceholder": "选择类型",
+      "optionLabel": "绘制方式",
+      "optionPlaceholder": "选择方式",
+      "addonsLabel": "附加选项",
+      "examplesLabel": "示例",
+      "estimateLabel": "自动估算",
+      "rushFeeIncluded": "已含加急费 +${{amount}}，截止日期不足 {{days}} 天",
+      "deadlineLabel": "截止日期（可选）",
+      "clientNameLabel": "你的名字",
+      "clientEmailLabel": "你的邮箱",
+      "preferredContactLabel": "首选联系方式",
+      "contactHandleLabel": "联系账号",
+      "attachmentsLabel": "参考图片（可选）",
+      "isPublicLabel": "在公开队列中显示此委托",
+      "isPublicTooltip": "勾选后，标题、类型和当前状态将在公开的 /queue 页面显示。你的姓名、邮箱、联系方式、描述和参考图片始终保密。",
+      "submit": "提交请求",
+      "submitting": "正在提交...",
+      "success": "你的请求已提交，我会尽快回复你。",
+      "draftRestored": "已为你恢复上次未提交的草稿。",
+      "clear": "清空表单",
+      "clearTitle": "清空这个表单？",
+      "clearDescription": "此操作将删除你已填写的所有内容，包括已保存的草稿，且无法撤销。"
+    },
+    "preferredContactMethod": {
+      "EMAIL": "邮箱",
+      "DISCORD": "Discord",
+      "TELEGRAM": "Telegram",
+      "TWITTER": "X / Twitter",
+      "OTHER": "其他"
+    },
+    "type": {
+      "ICON": {
+        "label": "头像",
+        "description": "特写头像，仅头部与肩部。"
+      },
+      "HALF_BODY": {
+        "label": "半身",
+        "description": "腰部以上，比头像更多细节。"
+      },
+      "FULL_BODY": {
+        "label": "全身",
+        "description": "角色全身，从头到脚。"
+      },
+      "SKETCH_PAGE": {
+        "label": "草图页",
+        "description": "同一角色的多张草图/姿势合集。"
+      }
+    },
+    "option": {
+      "FULLY_RENDERED": {
+        "label": "完整上色",
+        "description": "完整上色、阴影与精修。"
+      },
+      "SKETCHED": {
+        "label": "线稿",
+        "description": "仅线稿，不上色不加阴影。"
+      }
+    },
+    "addon": {
+      "COMPLEX_COSTUME": {
+        "label": "复杂度",
+        "description": "为精细服装、盔甲或配饰增加额外细节。\n\n勾选这项只是让我知晓，不会自动加价 - 我会亲自审核每个作品来判断是否真的“复杂”。\n\n如果不确定，欢迎随时联系我！"
+      },
+      "BACKGROUND": {
+        "label": "背景",
+        "description": "精细背景。"
+      }
+    },
+    "status": {
+      "NOT_YET_STARTED": "尚未开始",
+      "QUEUED": "排队中",
+      "SKETCH": "草图中",
+      "CONFIRMED": "已确认",
+      "ONGOING": "进行中",
+      "COMPLETED": "已完成",
+      "CANCELLED": "已取消"
+    },
+    "paymentStatus": {
+      "NOT_YET": "尚未请求",
+      "REQUESTED": "已请求",
+      "PARTIAL": "部分付款",
+      "FULL": "已付清"
+    },
+    "admin": {
+      "title": "委托订单",
+      "searchPlaceholder": "按客户、标题或关键词搜索",
+      "statusFilterAll": "所有状态",
+      "sort": {
+        "createdAt": "创建日期",
+        "deadline": "截止日期",
+        "quote": "预算"
+      },
+      "empty": "暂无委托订单。",
+      "detail": {
+        "back": "返回列表",
+        "client": "客户",
+        "quote": "预算",
+        "quotedPriceLabel": "最终报价",
+        "calculatedLabel": "自动计算",
+        "deadline": "截止日期",
+        "status": "状态",
+        "paymentStatus": "付款",
+        "attachments": "附件",
+        "notes": "备注",
+        "addNote": "添加备注",
+        "notePlaceholder": "写下备注...",
+        "noteVisibilityInternal": "仅内部可见",
+        "noteVisibilityClient": "客户可见",
+        "history": "状态历史",
+        "noHistory": "尚无状态变更。"
+      },
+      "steps": {
+        "title": "制作清单",
+        "ideaConfirmedAt": "创意确认",
+        "sketchConfirmedAt": "草图确认",
+        "paymentConfirmedAt": "付款",
+        "lineDoneAt": "线稿",
+        "coloringDoneAt": "上色",
+        "finishedAt": "完成"
+      },
+      "deliver": {
+        "title": "发送最终作品",
+        "filesLabel": "最终作品文件",
+        "send": "发送给客户"
+      },
+      "visibility": {
+        "show": "公开显示",
+        "hide": "从公开中隐藏"
+      },
+      "pricing": {
+        "title": "价格设置",
+        "rushFee": "加急费",
+        "rushFeeDays": "阈值（天）",
+        "rushFeeAmount": "费用（$）"
+      }
+    }
+  }
+}

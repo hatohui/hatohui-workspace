@@ -12,6 +12,10 @@ export function buildOpenApiDocument(app: INestApplication) {
     .addTag('images')
     .addTag('platforms')
     .addTag('onboarding')
+    .addTag('assets')
+    .addTag('commissions')
+    .addTag('commission-pricing')
+    .addTag('projects')
     .build();
 
   return SwaggerModule.createDocument(app, config);
