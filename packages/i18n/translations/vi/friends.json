@@ -128,7 +128,8 @@
       "title": "Bạn đã quen ai ở đây chưa?",
       "searchPlaceholder": "Tìm kiếm mọi người...",
       "empty": "Không tìm thấy kết quả phù hợp.",
-      "selectedCount": "Đã chọn {{count}}"
+      "selectedCount": "Đã chọn {{count}}",
+      "removeAria": "Xóa {{name}}"
     },
     "complete": {
       "title": "Xong rồi!",

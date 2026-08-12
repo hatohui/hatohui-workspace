@@ -128,7 +128,8 @@
       "title": "すでに知っている人はいますか？",
       "searchPlaceholder": "名前で検索...",
       "empty": "該当する人が見つかりません。",
-      "selectedCount": "{{count}}人選択中"
+      "selectedCount": "{{count}}人選択中",
+      "removeAria": "{{name}}を削除"
     },
     "complete": {
       "title": "設定が完了しました！",

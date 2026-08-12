@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Checkbox, Input, Label } from '@hatohui/ui';
+import { Button, Input } from '@hatohui/ui';
 import { useConnectionsSearch } from '../../hooks/useConnectionsSearch';
 
 type Props = {
@@ -11,73 +12,83 @@ type Props = {
 function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
   const { t } = useTranslation();
   const search = useConnectionsSearch();
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Map<string, string>>(new Map());
 
-  const toggle = (id: string) => {
+  const select = (id: string, name: string) => {
+    setSelected((prev) => new Map(prev).set(id, name));
+    search.setQuery('');
+  };
+
+  const remove = (id: string) => {
     setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      const next = new Map(prev);
+      next.delete(id);
       return next;
     });
   };
 
-  const totalPages = Math.max(1, Math.ceil(search.total / search.pageSize));
+  const suggestions = search.items.filter((item) => !selected.has(item.id));
+  const showSuggestions = search.query.trim().length > 0;
 
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">{t('onboarding.connections.title')}</h2>
-      <Input
-        value={search.query}
-        onChange={(e) => search.setQuery(e.target.value)}
-        placeholder={t('onboarding.connections.searchPlaceholder')}
-      />
-      <div className="flex flex-col gap-2">
-        {!search.isLoading && search.items.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            {t('onboarding.connections.empty')}
-          </p>
-        )}
-        {search.items.map((item) => (
-          <div key={item.id} className="flex items-center gap-2">
-            <Checkbox
-              id={`connection-${item.id}`}
-              checked={selected.has(item.id)}
-              onCheckedChange={() => toggle(item.id)}
-            />
-            <Label htmlFor={`connection-${item.id}`}>{item.name}</Label>
-          </div>
-        ))}
-      </div>
-      {totalPages > 1 && (
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={search.page <= 1}
-            onClick={() => search.setPage(search.page - 1)}
-          >
-            {t('onboarding.back')}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={search.page >= totalPages}
-            onClick={() => search.setPage(search.page + 1)}
-          >
-            {t('onboarding.next')}
-          </Button>
+
+      {selected.size > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {Array.from(selected, ([id, name]) => (
+            <span
+              key={id}
+              className="flex items-center gap-1 rounded-full bg-primary/10 py-0.5 pl-3 pr-1 text-sm text-primary"
+            >
+              {name}
+              <button
+                type="button"
+                onClick={() => remove(id)}
+                aria-label={t('onboarding.connections.removeAria', { name })}
+                className="rounded-full p-0.5 hover:bg-primary/20"
+              >
+                <X className="size-3.5" />
+              </button>
+            </span>
+          ))}
         </div>
       )}
+
+      <div className="relative">
+        <Input
+          value={search.query}
+          onChange={(e) => search.setQuery(e.target.value)}
+          placeholder={t('onboarding.connections.searchPlaceholder')}
+        />
+        {showSuggestions && (
+          <div className="absolute z-10 mt-1 w-full rounded-md border bg-popover shadow-md">
+            {!search.isLoading && suggestions.length === 0 && (
+              <p className="p-3 text-sm text-muted-foreground">
+                {t('onboarding.connections.empty')}
+              </p>
+            )}
+            {suggestions.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => select(item.id, item.name)}
+                className="block w-full px-3 py-2 text-left text-sm hover:bg-accent"
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <p className="text-sm text-muted-foreground">
         {t('onboarding.connections.selectedCount', { count: selected.size })}
       </p>
       <Button
         disabled={submitting}
         className="w-fit"
-        onClick={() => onSubmit(Array.from(selected))}
+        onClick={() => onSubmit(Array.from(selected.keys()))}
       >
         {t('onboarding.next')}
       </Button>

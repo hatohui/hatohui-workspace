@@ -4,6 +4,7 @@ export * from './auth/GoogleLoginIconButton';
 export * from './auth/GoogleIcon';
 export * from './auth/useGoogleAuth';
 export * from './images/useImageUpload';
+export * from './images/resizeImageToSquare';
 export * from './errors/getErrorCategory';
 export * from './hooks/useDebouncedValue';
 export * from './hooks/useIntersectionObserver';

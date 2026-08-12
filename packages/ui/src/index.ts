@@ -6,7 +6,6 @@ export * from './components/ui/card';
 export * from './components/ui/checkbox';
 export * from './components/ui/select';
 export * from './components/ui/avatar';
-export * from './components/ui/avatar-upload';
 export * from './components/ui/avatar-upload-inline';
 export * from './components/ui/popover';
 export * from './components/ui/calendar';

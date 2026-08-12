@@ -128,7 +128,8 @@
       "title": "Do you already know anyone here?",
       "searchPlaceholder": "Search people...",
       "empty": "No matches.",
-      "selectedCount": "{{count}} selected"
+      "selectedCount": "{{count}} selected",
+      "removeAria": "Remove {{name}}"
     },
     "complete": {
       "title": "You're all set!",

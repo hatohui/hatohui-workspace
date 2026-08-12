@@ -128,7 +128,8 @@
       "title": "您已经认识这里的人了吗？",
       "searchPlaceholder": "搜索人员...",
       "empty": "未找到匹配项。",
-      "selectedCount": "已选择 {{count}} 人"
+      "selectedCount": "已选择 {{count}} 人",
+      "removeAria": "移除 {{name}}"
     },
     "complete": {
       "title": "设置完成！",

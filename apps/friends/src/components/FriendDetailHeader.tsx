@@ -62,9 +62,11 @@ function FriendDetailHeader({
                   {t('friendDetail.editAction')}
                 </Link>
               </Button>
-              <Button variant="destructive" size="sm" onClick={onDelete}>
-                {t('friendDetail.deleteAction')}
-              </Button>
+              {!friend.isViewerEntry && (
+                <Button variant="destructive" size="sm" onClick={onDelete}>
+                  {t('friendDetail.deleteAction')}
+                </Button>
+              )}
             </div>
           )}
         </div>

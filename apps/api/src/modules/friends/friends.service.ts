@@ -23,6 +23,7 @@ import {
 } from './dto/friend-upcoming.dto';
 import {
   FriendVisibility,
+  Prisma,
   Role,
   type BirthdayDetails,
   type User,
@@ -47,6 +48,38 @@ function viewerIncludes(viewerId: string | null) {
   } as const;
 }
 
+function visibilityWhere(
+  viewer: User | null,
+): Prisma.BirthdayDetailsWhereInput {
+  if (viewer?.role === Role.ADMIN) {
+    return {};
+  }
+  return {
+    OR: [
+      { visibility: FriendVisibility.PUBLIC },
+      ...(viewer
+        ? [
+            { visibility: FriendVisibility.FRIENDS_ONLY },
+            { visibility: FriendVisibility.NONE, addedById: viewer.id },
+            {
+              visibility: FriendVisibility.NONE,
+              association: { userId: viewer.id },
+            },
+          ]
+        : []),
+    ],
+  };
+}
+
+function nameSearchWhere(
+  query: string | undefined,
+): Prisma.BirthdayDetailsWhereInput {
+  const needle = query?.trim();
+  return needle
+    ? { name: { contains: needle, mode: 'insensitive' as const } }
+    : {};
+}
+
 @Injectable()
 export class FriendsService {
   constructor(
@@ -56,12 +89,11 @@ export class FriendsService {
 
   async findAll(viewer: User | null): Promise<FriendDto[]> {
     const entries = await this.db.birthdayDetails.findMany({
+      where: visibilityWhere(viewer),
       orderBy: { name: 'asc' },
       include: viewerIncludes(viewer?.id ?? null),
     });
-    return entries
-      .filter((entry) => canView(entry, viewer))
-      .map((entry) => toFriendDto(entry, viewer));
+    return entries.map((entry) => toFriendDto(entry, viewer));
   }
 
   async findUpcomingSections(
@@ -109,14 +141,17 @@ export class FriendsService {
     viewer: User | null,
   ): Promise<BirthdaysByMonthDto> {
     const entries = await this.db.birthdayDetails.findMany({
-      where: { birthMonth: month, birthDay: { not: null } },
+      where: {
+        birthMonth: month,
+        birthDay: { not: null },
+        AND: visibilityWhere(viewer),
+      },
       orderBy: { birthDay: 'asc' },
       include: viewerIncludes(viewer?.id ?? null),
     });
 
     return {
       friends: entries
-        .filter((entry) => canView(entry, viewer))
         .map((entry) => toFriendDto(entry, viewer))
         .filter((friend) => matchesFriendSearch(friend, query)),
     };
@@ -126,7 +161,11 @@ export class FriendsService {
     viewer: User | null,
   ): Promise<{ upcoming: UpcomingFriendDto; sortKey: number }[]> {
     const entries = await this.db.birthdayDetails.findMany({
-      where: { birthMonth: { not: null }, birthDay: { not: null } },
+      where: {
+        birthMonth: { not: null },
+        birthDay: { not: null },
+        AND: visibilityWhere(viewer),
+      },
       include: viewerIncludes(viewer?.id ?? null),
     });
 
@@ -135,7 +174,6 @@ export class FriendsService {
     const todayDay = today.getDate();
 
     return entries
-      .filter((entry) => canView(entry, viewer))
       .map((entry) => {
         const month = entry.birthMonth as number;
         const day = entry.birthDay as number;
@@ -234,6 +272,10 @@ export class FriendsService {
     const existing = await this.findVisibleOrThrow(id, viewer);
     assertCanEdit(existing, viewer);
 
+    if (existing.association?.userId === viewer.id) {
+      throw new ForbiddenException('You cannot delete your own entry');
+    }
+
     if (existing.association) {
       await this.db.birthdayDetails.update({
         where: { id },
@@ -262,23 +304,25 @@ export class FriendsService {
     pageSize: number,
     viewer: User | null,
   ): Promise<PaginatedFriendsDto> {
-    const where = query
-      ? { name: { contains: query, mode: 'insensitive' as const } }
-      : {};
+    const where: Prisma.BirthdayDetailsWhereInput = {
+      ...nameSearchWhere(query),
+      AND: visibilityWhere(viewer),
+      ...(viewer ? { NOT: { association: { userId: viewer.id } } } : {}),
+    };
 
-    const entries = await this.db.birthdayDetails.findMany({
-      where,
-      orderBy: { name: 'asc' },
-      include: viewerIncludes(viewer?.id ?? null),
-    });
+    const [entries, total] = await Promise.all([
+      this.db.birthdayDetails.findMany({
+        where,
+        orderBy: { name: 'asc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: viewerIncludes(viewer?.id ?? null),
+      }),
+      this.db.birthdayDetails.count({ where }),
+    ]);
 
-    const visible = entries.filter((entry) => canView(entry, viewer));
-    const start = (page - 1) * pageSize;
-    const items = visible
-      .slice(start, start + pageSize)
-      .map((entry) => toFriendDto(entry, viewer));
-
-    return { items, total: visible.length, page, pageSize };
+    const items = entries.map((entry) => toFriendDto(entry, viewer));
+    return { items, total, page, pageSize };
   }
 
   /// Records that the viewer knows this entry (the same relation the

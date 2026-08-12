@@ -1,6 +1,10 @@
 import { useTranslation } from '@hatohui/i18n';
 import { AvatarUploadInline } from '@hatohui/ui';
-import { getErrorCategory, useImageUpload } from '@hatohui/libs';
+import {
+  getErrorCategory,
+  resizeImageToSquare,
+  useImageUpload,
+} from '@hatohui/libs';
 import { SignImageDtoContentType } from '@hatohui/models';
 
 const AVATAR_ACCEPT = Object.values(SignImageDtoContentType).join(',');
@@ -17,7 +21,8 @@ function OnboardingAvatarField({ alt, avatarUrl, onUploaded }: Props) {
 
   const handleFileSelected = async (file: File) => {
     try {
-      const uploaded = await uploadImage(file);
+      const squared = await resizeImageToSquare(file);
+      const uploaded = await uploadImage(squared);
       onUploaded(uploaded);
     } catch (error) {
       window.alert(
@@ -33,6 +38,11 @@ function OnboardingAvatarField({ alt, avatarUrl, onUploaded }: Props) {
       imageUrl={avatarUrl}
       alt={alt}
       accept={AVATAR_ACCEPT}
+      label={t(
+        isUploading
+          ? 'friendForm.avatarUploading'
+          : 'friendForm.avatarUploadLabel',
+      )}
       isUploading={isUploading}
       onFileSelected={(file) => void handleFileSelected(file)}
     />
