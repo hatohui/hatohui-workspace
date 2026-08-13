@@ -82,11 +82,14 @@ export function useUpcomingSections(
   const seenDataRef = useRef<UpcomingFriendSectionsQueryResult | undefined>(
     undefined,
   );
+  const fetchingRef = useRef(false);
   if (filtersChanged) {
     seenDataRef.current = undefined;
+    fetchingRef.current = false;
   }
   if (query.data && query.data !== seenDataRef.current) {
     seenDataRef.current = query.data;
+    fetchingRef.current = false;
     const incoming = query.data.data.sections.map((section) => ({
       key: section.key,
       label: sectionLabel(section.key, group, locale),
@@ -101,7 +104,11 @@ export function useUpcomingSections(
     isError: query.isError,
     isFetchingMore: query.isFetching && page > 1,
     hasMore: query.data?.data.hasMore ?? false,
-    loadMore: () => setPage((p) => p + 1),
+    loadMore: () => {
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
+      setPage((p) => p + 1);
+    },
     refetch: query.refetch,
   };
 }
