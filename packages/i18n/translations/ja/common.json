@@ -37,7 +37,8 @@
     },
     "profile": {
       "title": "この表示でよろしいですか？",
-      "nameLabel": "表示名"
+      "nameLabel": "表示名",
+      "avatarHint": "写真をタップすると変更できます"
     },
     "handle": {
       "title": "ハンドルネームを選択",

@@ -37,7 +37,8 @@
     },
     "profile": {
       "title": "Bạn muốn hiển thị như thế này chứ?",
-      "nameLabel": "Tên hiển thị"
+      "nameLabel": "Tên hiển thị",
+      "avatarHint": "Nhấn vào ảnh để đổi ảnh khác"
     },
     "handle": {
       "title": "Chọn tên định danh của bạn",

@@ -34,13 +34,18 @@ function OnboardingProfileStep({
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">{t('common:onboarding.profile.title')}</h2>
-      <FriendAvatarField
-        alt={name || t('common:onboarding.profile.nameLabel')}
-        previewUrl={avatar.previewUrl}
-        isBusy={avatar.isBusy}
-        error={avatar.error}
-        onFileSelected={(file) => void avatar.stageFile(file)}
-      />
+      <div className="flex flex-col gap-1.5">
+        <FriendAvatarField
+          alt={name || t('common:onboarding.profile.nameLabel')}
+          previewUrl={avatar.previewUrl}
+          isBusy={avatar.isBusy}
+          error={avatar.error}
+          onFileSelected={(file) => void avatar.stageFile(file)}
+        />
+        <p className="text-xs text-muted-foreground">
+          {t('common:onboarding.profile.avatarHint')}
+        </p>
+      </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="onboarding-profile-name">
           {t('common:onboarding.profile.nameLabel')}
