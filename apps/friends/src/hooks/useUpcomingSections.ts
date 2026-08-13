@@ -37,16 +37,25 @@ function mergeSections(
   if (isFirstPage) return incoming;
   if (incoming.length === 0) return prev;
 
-  const [first, ...rest] = incoming;
-  const last = prev.at(-1);
-  if (last && first.key === last.key) {
-    return [
-      ...prev.slice(0, -1),
-      { ...last, friends: [...last.friends, ...first.friends] },
-      ...rest,
-    ];
-  }
-  return [...prev, ...incoming];
+  const incomingKeys = new Set(incoming.map((s) => s.key));
+  const prevMap = new Map(prev.map((s) => [s.key, s]));
+
+  // Find where the overlap begins: the first prev section whose key
+  // also appears in incoming. Everything before it is clean.
+  const overlapStart = prev.findIndex((s) => incomingKeys.has(s.key));
+  const base = overlapStart >= 0 ? prev.slice(0, overlapStart) : prev;
+
+  // Merge each incoming section, deduplicating friends against whatever
+  // already exists in prev for that section key.
+  const merged = incoming.map((section) => {
+    const existing = prevMap.get(section.key);
+    if (!existing) return section;
+    const existingIds = new Set(existing.friends.map((f) => f.id));
+    const newFriends = section.friends.filter((f) => !existingIds.has(f.id));
+    return { ...existing, friends: [...existing.friends, ...newFriends] };
+  });
+
+  return [...base, ...merged];
 }
 
 export function useUpcomingSections(
