@@ -57,6 +57,7 @@ jobs:
           R2_ACCESS_KEY_ID: ci-placeholder
           R2_SECRET_ACCESS_KEY: ci-placeholder
           EMAIL_API_KEY: ci-placeholder
+          ADMIN_API_KEY: ci-placeholder-admin-key
 
       - name: Fail if the committed client is stale
         run: |
