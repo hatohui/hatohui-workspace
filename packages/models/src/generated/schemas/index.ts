@@ -12,6 +12,8 @@ export * from './assetDto';
 export * from './assetsParams';
 export * from './assetsSort';
 export * from './assignCommissionDto';
+export * from './avatarVersionDto';
+export * from './avatarVersionsDto';
 export * from './birthdaysByMonthDto';
 export * from './birthdaysByMonthParams';
 export * from './commissionAddonPricingDto';

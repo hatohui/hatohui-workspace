@@ -111,6 +111,22 @@ model BirthdayDetails {
   connections     Connection[]
 }
 
+/// A previously-current avatar image for whatever owns it (a User account, a
+/// friends BirthdayDetails profile, ...), kept as history when it's replaced
+/// instead of being deleted from storage outright. Deliberately not FK'd to
+/// any one table — ownerId is just that owner's id, and since every model in
+/// this schema uses globally-unique cuids, it unambiguously identifies its
+/// owner without needing a type tag. See modules/avatars.
+model AvatarVersion {
+  id        String   @id @default(cuid())
+  ownerId   String
+  key       String
+  url       String
+  createdAt DateTime @default(now())
+
+  @@index([ownerId, createdAt])
+}
+
 /// Many-to-many "I know this entry" link recorded during onboarding's
 /// add-friends step. Links an Account to an existing BirthdayDetails entry
 /// (not another Account) since most entries in the directory don't have an

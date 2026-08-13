@@ -25,6 +25,7 @@ import {
   FriendSearchQueryDto,
   PaginatedFriendsDto,
 } from './dto/friend-search.dto';
+import { AvatarVersionsDto } from '@/modules/avatars/dto/avatar-version.dto';
 import {
   BirthdaysByMonthDto,
   MonthQueryDto,
@@ -158,6 +159,35 @@ export class FriendsController {
   @ApiOperation({ operationId: 'deleteFriend', summary: 'Delete a friend' })
   remove(@Param('id') id: string, @CurrentUser() viewer: User): Promise<void> {
     return this.friendsService.remove(id, viewer);
+  }
+
+  @Get(':id/avatar/versions')
+  @UseGuards(OptionalAuthGuard)
+  @ApiOperation({
+    operationId: 'friendAvatarVersions',
+    summary: "A friend's past avatars, newest first",
+  })
+  @ApiOkResponse({ type: AvatarVersionsDto })
+  listAvatarVersions(
+    @Param('id') id: string,
+    @OptionalCurrentUser() viewer: User | null,
+  ): Promise<AvatarVersionsDto> {
+    return this.friendsService.listAvatarVersions(id, viewer);
+  }
+
+  @Post(':id/avatar/versions/:versionId/restore')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'restoreFriendAvatarVersion',
+    summary: 'Restore a past avatar as the current one',
+  })
+  @ApiOkResponse({ type: FriendDto })
+  restoreAvatarVersion(
+    @Param('id') id: string,
+    @Param('versionId') versionId: string,
+    @CurrentUser() viewer: User,
+  ): Promise<FriendDto> {
+    return this.friendsService.restoreAvatarVersion(id, versionId, viewer);
   }
 
   @Post(':id/connect')

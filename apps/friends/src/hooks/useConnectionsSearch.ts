@@ -15,7 +15,11 @@ export function useConnectionsSearch() {
   const hasQuery = debouncedQuery.trim().length > 0;
 
   const searchQuery = useSearchFriends(
-    { query: debouncedQuery || undefined, page: 1, pageSize: CONNECTIONS_PAGE_SIZE },
+    {
+      query: debouncedQuery || undefined,
+      page: 1,
+      pageSize: CONNECTIONS_PAGE_SIZE,
+    },
     { query: { enabled: hasQuery } },
   );
 

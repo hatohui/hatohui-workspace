@@ -5,9 +5,11 @@ import type { CreateFriendDto, FriendDto } from '@hatohui/models';
 import type { Visibility } from '../constants/visibility';
 import { getErrorCategory } from '@hatohui/libs';
 import { useSocialMediaFields } from '../hooks/useSocialMediaFields';
+import { useStagedAvatar } from '../hooks/useStagedAvatar';
 import SocialMediaFieldList from './SocialMediaFieldList';
 import BirthdayFields from './BirthdayFields';
 import FriendAvatarField from './FriendAvatarField';
+import AvatarHistoryGallery from './AvatarHistoryGallery';
 import VisibilityField from './VisibilityField';
 
 type Props = {
@@ -29,8 +31,7 @@ function FriendForm({
 }: Props) {
   const { t } = useTranslation();
   const [name, setName] = useState(initialFriend?.name ?? '');
-  const [avatarUrl, setAvatarUrl] = useState(initialFriend?.avatarUrl ?? null);
-  const [avatarKey, setAvatarKey] = useState<string | undefined>(undefined);
+  const avatar = useStagedAvatar(initialFriend?.avatarUrl ?? null);
   const [birthYear, setBirthYear] = useState(
     initialFriend?.birthYear?.toString() ?? '',
   );
@@ -50,8 +51,14 @@ function FriendForm({
     (initialFriend?.socialMedias as Record<string, string> | null) ?? {},
   );
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    let avatarKey: string | undefined;
+    try {
+      avatarKey = await avatar.commit();
+    } catch {
+      return;
+    }
     onSubmit({
       name,
       birthYear: birthYear ? Number(birthYear) : undefined,
@@ -65,16 +72,24 @@ function FriendForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form
+      onSubmit={(e) => void handleSubmit(e)}
+      className="flex flex-col gap-5"
+    >
       <h1 className="text-3xl">{title}</h1>
       <FriendAvatarField
         alt={name || t('friendForm.nameLabel')}
-        avatarUrl={avatarUrl}
-        onUploaded={(uploaded) => {
-          setAvatarKey(uploaded.key);
-          setAvatarUrl(uploaded.publicUrl);
-        }}
+        previewUrl={avatar.previewUrl}
+        isBusy={avatar.isBusy}
+        error={avatar.error}
+        onFileSelected={(file) => void avatar.stageFile(file)}
       />
+      {initialFriend && (
+        <AvatarHistoryGallery
+          friendId={initialFriend.id}
+          onRestored={avatar.setRestoredPreview}
+        />
+      )}
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="name">{t('friendForm.nameLabel')}</Label>
         <Input
@@ -115,7 +130,11 @@ function FriendForm({
           {t(`common:errors.${getErrorCategory(error)}`)}
         </p>
       )}
-      <Button type="submit" disabled={submitting} className="w-fit">
+      <Button
+        type="submit"
+        disabled={submitting || avatar.isBusy}
+        className="w-fit"
+      >
         {submitLabel}
       </Button>
     </form>

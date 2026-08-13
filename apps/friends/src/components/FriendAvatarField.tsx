@@ -1,51 +1,50 @@
 import { useTranslation } from '@hatohui/i18n';
 import { AvatarUploadInline } from '@hatohui/ui';
-import {
-  getErrorCategory,
-  resizeImageToSquare,
-  useImageUpload,
-} from '@hatohui/libs';
 import { SignImageDtoContentType } from '@hatohui/models';
 
 const AVATAR_ACCEPT = Object.values(SignImageDtoContentType).join(',');
 
 type Props = {
   alt: string;
-  avatarUrl: string | null;
-  onUploaded: (result: { key: string; publicUrl: string }) => void;
+  previewUrl: string | null;
+  isBusy: boolean;
+  error: 'unauthorized' | 'unknown' | null;
+  onFileSelected: (file: File) => void;
 };
 
-function FriendAvatarField({ alt, avatarUrl, onUploaded }: Props) {
+function FriendAvatarField({
+  alt,
+  previewUrl,
+  isBusy,
+  error,
+  onFileSelected,
+}: Props) {
   const { t } = useTranslation();
-  const { uploadImage, isUploading } = useImageUpload();
-
-  const handleFileSelected = async (file: File) => {
-    try {
-      const squared = await resizeImageToSquare(file);
-      const uploaded = await uploadImage(squared);
-      onUploaded(uploaded);
-    } catch (error) {
-      window.alert(
-        getErrorCategory(error) === 'unauthorized'
-          ? t('friendForm.avatarUploadAuthRequired')
-          : t('friendForm.avatarUploadError'),
-      );
-    }
-  };
 
   return (
-    <AvatarUploadInline
-      imageUrl={avatarUrl}
-      alt={alt}
-      accept={AVATAR_ACCEPT}
-      label={t(
-        isUploading
-          ? 'friendForm.avatarUploading'
-          : 'friendForm.avatarUploadLabel',
+    <div className="flex flex-col gap-1.5">
+      <AvatarUploadInline
+        imageUrl={previewUrl}
+        alt={alt}
+        accept={AVATAR_ACCEPT}
+        label={t(
+          isBusy
+            ? 'friendForm.avatarUploading'
+            : 'friendForm.avatarUploadLabel',
+        )}
+        isUploading={isBusy}
+        onFileSelected={onFileSelected}
+      />
+      {error != null && (
+        <p role="alert" className="text-sm text-destructive">
+          {t(
+            error === 'unauthorized'
+              ? 'friendForm.avatarUploadAuthRequired'
+              : 'friendForm.avatarUploadError',
+          )}
+        </p>
       )}
-      isUploading={isUploading}
-      onFileSelected={(file) => void handleFileSelected(file)}
-    />
+    </div>
   );
 }
 

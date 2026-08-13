@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { Database } from '@/libs/db';
 import { Storage } from '@/libs/storage';
+import { AvatarsService } from '@/modules/avatars/avatars.service';
+import { AvatarVersionsDto } from '@/modules/avatars/dto/avatar-version.dto';
 import {
   CreateFriendDto,
   FriendDto,
@@ -85,6 +87,7 @@ export class FriendsService {
   constructor(
     private readonly db: Database,
     private readonly storage: Storage,
+    private readonly avatars: AvatarsService,
   ) {}
 
   async findAll(viewer: User | null): Promise<FriendDto[]> {
@@ -238,29 +241,71 @@ export class FriendsService {
     const isReplacingAvatar =
       dto.avatarKey !== undefined && dto.avatarKey !== existing.avatarKey;
 
-    const entry = await this.db.birthdayDetails.update({
-      where: { id },
-      data: {
-        name: dto.name,
-        birthYear: dto.birthYear,
-        birthMonth: dto.birthMonth,
-        birthDay: dto.birthDay,
-        socialMedias: dto.socialMedias,
-        preferAnonymous: dto.preferAnonymous,
-        visibility: dto.visibility,
-        avatarKey: dto.avatarKey,
-        avatarUrl: dto.avatarKey
-          ? this.storage.getPublicUrl(dto.avatarKey)
-          : undefined,
-      },
-      include: viewerIncludes(viewer.id),
+    const entry = await this.db.$transaction(async (tx) => {
+      if (isReplacingAvatar && existing.avatarKey && existing.avatarUrl) {
+        await this.avatars.archiveCurrent(
+          tx,
+          id,
+          existing.avatarKey,
+          existing.avatarUrl,
+        );
+      }
+
+      return tx.birthdayDetails.update({
+        where: { id },
+        data: {
+          name: dto.name,
+          birthYear: dto.birthYear,
+          birthMonth: dto.birthMonth,
+          birthDay: dto.birthDay,
+          socialMedias: dto.socialMedias,
+          preferAnonymous: dto.preferAnonymous,
+          visibility: dto.visibility,
+          avatarKey: dto.avatarKey,
+          avatarUrl: dto.avatarKey
+            ? this.storage.getPublicUrl(dto.avatarKey)
+            : undefined,
+        },
+        include: viewerIncludes(viewer.id),
+      });
     });
 
-    if (isReplacingAvatar && existing.avatarKey) {
-      await this.storage.deleteObject(existing.avatarKey).catch(() => {
-        // best-effort cleanup; a stray object in storage isn't worth failing the update over
+    return toFriendDto(entry, viewer);
+  }
+
+  async listAvatarVersions(
+    id: string,
+    viewer: User | null,
+  ): Promise<AvatarVersionsDto> {
+    await this.findVisibleOrThrow(id, viewer);
+    const versions = await this.avatars.listVersions(id);
+    return { versions };
+  }
+
+  async restoreAvatarVersion(
+    id: string,
+    versionId: string,
+    viewer: User,
+  ): Promise<FriendDto> {
+    const existing = await this.findVisibleOrThrow(id, viewer);
+    assertCanEdit(existing, viewer);
+
+    const entry = await this.db.$transaction(async (tx) => {
+      if (existing.avatarKey && existing.avatarUrl) {
+        await this.avatars.archiveCurrent(
+          tx,
+          id,
+          existing.avatarKey,
+          existing.avatarUrl,
+        );
+      }
+      const restored = await this.avatars.takeVersion(tx, id, versionId);
+      return tx.birthdayDetails.update({
+        where: { id },
+        data: { avatarKey: restored.key, avatarUrl: restored.url },
+        include: viewerIncludes(viewer.id),
       });
-    }
+    });
 
     return toFriendDto(entry, viewer);
   }

@@ -25,6 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AvatarVersionsDto,
   BirthdaysByMonthDto,
   BirthdaysByMonthParams,
   CreateFriendDto,
@@ -998,6 +999,202 @@ export const useDeleteFriend = <TError = unknown,
         TContext
       > => {
       return useMutation(getDeleteFriendMutationOptions(options), queryClient);
+    }
+    export type friendAvatarVersionsResponse200 = {
+  data: AvatarVersionsDto
+  status: 200
+}
+
+export type friendAvatarVersionsResponseSuccess = (friendAvatarVersionsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type friendAvatarVersionsResponse = (friendAvatarVersionsResponseSuccess)
+
+export const getFriendAvatarVersionsUrl = (id: string,) => {
+
+
+
+
+  return `/friends/${id}/avatar/versions`
+}
+
+/**
+ * @summary A friend's past avatars, newest first
+ */
+export const friendAvatarVersions = async (id: string, options?: RequestInit): Promise<friendAvatarVersionsResponse> => {
+
+  return customFetch<friendAvatarVersionsResponse>(getFriendAvatarVersionsUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getFriendAvatarVersionsQueryKey = (id: string,) => {
+    return [
+    `/friends/${id}/avatar/versions`
+    ] as const;
+    }
+
+
+export const getFriendAvatarVersionsQueryOptions = <TData = Awaited<ReturnType<typeof friendAvatarVersions>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendAvatarVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFriendAvatarVersionsQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof friendAvatarVersions>>> = ({ signal }) => friendAvatarVersions(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof friendAvatarVersions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FriendAvatarVersionsQueryResult = NonNullable<Awaited<ReturnType<typeof friendAvatarVersions>>>
+export type FriendAvatarVersionsQueryError = unknown
+
+
+export function useFriendAvatarVersions<TData = Awaited<ReturnType<typeof friendAvatarVersions>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendAvatarVersions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof friendAvatarVersions>>,
+          TError,
+          Awaited<ReturnType<typeof friendAvatarVersions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFriendAvatarVersions<TData = Awaited<ReturnType<typeof friendAvatarVersions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendAvatarVersions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof friendAvatarVersions>>,
+          TError,
+          Awaited<ReturnType<typeof friendAvatarVersions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFriendAvatarVersions<TData = Awaited<ReturnType<typeof friendAvatarVersions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendAvatarVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary A friend's past avatars, newest first
+ */
+
+export function useFriendAvatarVersions<TData = Awaited<ReturnType<typeof friendAvatarVersions>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof friendAvatarVersions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getFriendAvatarVersionsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type restoreFriendAvatarVersionResponse200 = {
+  data: FriendDto
+  status: 200
+}
+
+export type restoreFriendAvatarVersionResponseSuccess = (restoreFriendAvatarVersionResponse200) & {
+  headers: Headers;
+};
+;
+
+export type restoreFriendAvatarVersionResponse = (restoreFriendAvatarVersionResponseSuccess)
+
+export const getRestoreFriendAvatarVersionUrl = (id: string,
+    versionId: string,) => {
+
+
+
+
+  return `/friends/${id}/avatar/versions/${versionId}/restore`
+}
+
+/**
+ * @summary Restore a past avatar as the current one
+ */
+export const restoreFriendAvatarVersion = async (id: string,
+    versionId: string, options?: RequestInit): Promise<restoreFriendAvatarVersionResponse> => {
+
+  return customFetch<restoreFriendAvatarVersionResponse>(getRestoreFriendAvatarVersionUrl(id,versionId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRestoreFriendAvatarVersionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreFriendAvatarVersion>>, TError,{id: string;versionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof restoreFriendAvatarVersion>>, TError,{id: string;versionId: string}, TContext> => {
+
+const mutationKey = ['restoreFriendAvatarVersion'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof restoreFriendAvatarVersion>>, {id: string;versionId: string}> = (props) => {
+          const {id,versionId} = props ?? {};
+
+          return  restoreFriendAvatarVersion(id,versionId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RestoreFriendAvatarVersionMutationResult = NonNullable<Awaited<ReturnType<typeof restoreFriendAvatarVersion>>>
+
+    export type RestoreFriendAvatarVersionMutationError = unknown
+
+    /**
+ * @summary Restore a past avatar as the current one
+ */
+export const useRestoreFriendAvatarVersion = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreFriendAvatarVersion>>, TError,{id: string;versionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof restoreFriendAvatarVersion>>,
+        TError,
+        {id: string;versionId: string},
+        TContext
+      > => {
+      return useMutation(getRestoreFriendAvatarVersionMutationOptions(options), queryClient);
     }
     export type connectFriendResponse200 = {
   data: FriendDto

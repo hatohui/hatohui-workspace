@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Input, Label } from '@hatohui/ui';
-import OnboardingAvatarField from './OnboardingAvatarField';
+import { useStagedAvatar } from '../../hooks/useStagedAvatar';
+import FriendAvatarField from '../FriendAvatarField';
 
 type Props = {
   initialName: string;
@@ -18,19 +19,27 @@ function OnboardingProfileStep({
 }: Props) {
   const { t } = useTranslation();
   const [name, setName] = useState(initialName);
-  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
-  const [avatarKey, setAvatarKey] = useState<string | undefined>(undefined);
+  const avatar = useStagedAvatar(initialAvatarUrl);
+
+  const handleSubmit = async () => {
+    let avatarKey: string | undefined;
+    try {
+      avatarKey = await avatar.commit();
+    } catch {
+      return;
+    }
+    onSubmit(name.trim(), avatarKey);
+  };
 
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">{t('onboarding.profile.title')}</h2>
-      <OnboardingAvatarField
-        alt={name}
-        avatarUrl={avatarUrl}
-        onUploaded={(result) => {
-          setAvatarUrl(result.publicUrl);
-          setAvatarKey(result.key);
-        }}
+      <FriendAvatarField
+        alt={name || t('onboarding.profile.nameLabel')}
+        previewUrl={avatar.previewUrl}
+        isBusy={avatar.isBusy}
+        error={avatar.error}
+        onFileSelected={(file) => void avatar.stageFile(file)}
       />
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="onboarding-profile-name">
@@ -43,8 +52,8 @@ function OnboardingProfileStep({
         />
       </div>
       <Button
-        disabled={submitting || name.trim().length === 0}
-        onClick={() => onSubmit(name.trim(), avatarKey)}
+        disabled={submitting || avatar.isBusy || name.trim().length === 0}
+        onClick={() => void handleSubmit()}
         className="w-fit"
       >
         {t('onboarding.next')}

@@ -28,6 +28,15 @@ export class Database
   }
 }
 
+/// The client type handed to a `db.$transaction(async (tx) => ...)`
+/// callback — lacks the connection-lifecycle methods since those only make
+/// sense on the top-level client. Useful for typing helpers that need to
+/// participate in a caller's transaction (e.g. AvatarsService).
+export type PrismaTransactionClient = Omit<
+  PrismaClient,
+  '$connect' | '$disconnect' | '$on' | '$use' | '$extends'
+>;
+
 @Global()
 @Module({
   providers: [Database],

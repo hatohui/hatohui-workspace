@@ -409,6 +409,76 @@
         ]
       }
     },
+    "/friends/{id}/avatar/versions": {
+      "get": {
+        "operationId": "friendAvatarVersions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvatarVersionsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A friend's past avatars, newest first",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/{id}/avatar/versions/{versionId}/restore": {
+      "post": {
+        "operationId": "restoreFriendAvatarVersion",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Restore a past avatar as the current one",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
     "/friends/{id}/connect": {
       "post": {
         "operationId": "connectFriend",
@@ -2775,6 +2845,45 @@
             "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
           }
         }
+      },
+      "AvatarVersionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890",
+            "description": "Avatar version id"
+          },
+          "url": {
+            "type": "string",
+            "example": "http://localhost:9000/hatohui-dev/images/abc123.jpg",
+            "description": "Public URL of this past avatar"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "createdAt"
+        ]
+      },
+      "AvatarVersionsDto": {
+        "type": "object",
+        "properties": {
+          "versions": {
+            "description": "Past avatars, newest first",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvatarVersionDto"
+            }
+          }
+        },
+        "required": [
+          "versions"
+        ]
       },
       "HealthDto": {
         "type": "object",
