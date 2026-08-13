@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   useUpcomingFriendSections,
   type UpcomingFriendSectionsQueryResult,
@@ -57,17 +57,14 @@ export function useUpcomingSections(
 ) {
   const [page, setPage] = useState(1);
   const [groups, setGroups] = useState<FriendGroup[]>([]);
+  const [prevFilters, setPrevFilters] = useState({ search, group, direction });
 
-  // Reset to page 1 whenever filters change — tracked via ref to avoid
-  // triggering the query before the state settles.
-  const prevFiltersRef = useRef({ search, group, direction });
   const filtersChanged =
-    prevFiltersRef.current.search !== search ||
-    prevFiltersRef.current.group !== group ||
-    prevFiltersRef.current.direction !== direction;
-
+    prevFilters.search !== search ||
+    prevFilters.group !== group ||
+    prevFilters.direction !== direction;
   if (filtersChanged) {
-    prevFiltersRef.current = { search, group, direction };
+    setPrevFilters({ search, group, direction });
     setPage(1);
     setGroups([]);
   }
@@ -82,22 +79,21 @@ export function useUpcomingSections(
     pageSize: UPCOMING_SECTIONS_PAGE_SIZE,
   });
 
-  // Accumulate pages into `groups` without touching render-phase state.
-  // Using a ref to track which response we've already merged so we don't
-  // double-apply on re-renders.
-  const lastMergedRef = useRef<UpcomingFriendSectionsQueryResult | undefined>(
+  const seenDataRef = useRef<UpcomingFriendSectionsQueryResult | undefined>(
     undefined,
   );
-  useEffect(() => {
-    if (!query.data || query.data === lastMergedRef.current) return;
-    lastMergedRef.current = query.data;
+  if (filtersChanged) {
+    seenDataRef.current = undefined;
+  }
+  if (query.data && query.data !== seenDataRef.current) {
+    seenDataRef.current = query.data;
     const incoming = query.data.data.sections.map((section) => ({
       key: section.key,
       label: sectionLabel(section.key, group, locale),
       friends: section.friends,
     }));
     setGroups((prev) => mergeSections(prev, incoming, effectivePage === 1));
-  }, [query.data, effectivePage, group, locale]);
+  }
 
   return {
     groups,
