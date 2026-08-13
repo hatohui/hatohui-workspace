@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - "apps/api/**"
+      - "packages/**"
       - ".github/workflows/api-cd.yml"
 
 permissions:
@@ -44,7 +45,7 @@ jobs:
           bun run scripts/export-openapi.ts
           bun run --cwd packages/models generate
         env:
-          PORT: '3000'
+          PORT: "3000"
           CORS_ORIGIN: http://localhost:5173
           DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
           REDIS_URL: redis://localhost:6379

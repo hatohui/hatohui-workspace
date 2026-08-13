@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Input } from '@hatohui/ui';
+import { Avatar, Button, Input } from '@hatohui/ui';
 import { useConnectionsSearch } from './useConnectionsSearch';
 
 type Props = {
@@ -16,7 +16,6 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
 
   const select = (id: string, name: string) => {
     setSelected((prev) => new Map(prev).set(id, name));
-    search.setQuery('');
   };
 
   const remove = (id: string) => {
@@ -61,27 +60,66 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
         onChange={(e) => search.setQuery(e.target.value)}
         placeholder={t('common:onboarding.connections.searchPlaceholder')}
       />
-      <div className="max-h-64 overflow-y-auto rounded-md border">
-        {!search.isLoading && suggestions.length === 0 && (
-          <p className="p-3 text-sm text-muted-foreground">
-            {t('common:onboarding.connections.empty')}
-          </p>
-        )}
-        {suggestions.map((item) => (
+
+      {/* Result list — fixed height so it never overflows the modal */}
+      <div className="flex flex-col rounded-md border">
+        <div className="divide-y overflow-hidden">
+          {!search.isLoading && suggestions.length === 0 && (
+            <p className="p-3 text-sm text-muted-foreground">
+              {t('common:onboarding.connections.empty')}
+            </p>
+          )}
+          {suggestions.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => select(item.id, item.name)}
+              className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm hover:bg-accent"
+            >
+              <Avatar
+                src={item.avatarUrl}
+                alt={item.name}
+                className="size-8 shrink-0"
+              />
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate font-medium">{item.name}</span>
+                {item.handle && (
+                  <span className="truncate text-xs text-muted-foreground">
+                    @{item.handle}
+                  </span>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Pagination row — always visible so the modal height stays stable */}
+        <div className="flex items-center justify-between border-t px-2 py-1.5">
           <button
-            key={item.id}
             type="button"
-            onClick={() => select(item.id, item.name)}
-            className="flex w-full flex-col items-start px-3 py-2 text-left text-sm hover:bg-accent"
+            disabled={search.page <= 1}
+            onClick={() => search.setPage((p) => p - 1)}
+            aria-label={t('common:onboarding.connections.prevPage')}
+            className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
           >
-            {item.name}
-            {item.handle && (
-              <span className="text-xs text-muted-foreground">
-                @{item.handle}
-              </span>
-            )}
+            <ChevronLeft className="size-4" />
           </button>
-        ))}
+          <span className="text-xs text-muted-foreground">
+            {t('common:onboarding.connections.pageIndicator', {
+              page: search.page,
+              total: search.totalPages,
+            })}
+          </span>
+          <button
+            type="button"
+            disabled={search.page >= search.totalPages}
+            onClick={() => search.setPage((p) => p + 1)}
+            aria-label={t('common:onboarding.connections.nextPage')}
+            className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+          >
+            <ChevronRight className="size-4" />
+          </button>
+        </div>
       </div>
 
       <p className="text-sm text-muted-foreground">

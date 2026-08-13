@@ -19,7 +19,10 @@ function BirthdayList({
   loadingMoreMessage,
   onLoadMore,
 }: Props) {
-  const sentinelRef = useIntersectionObserver(onLoadMore, hasMore);
+  const sentinelRef = useIntersectionObserver(
+    onLoadMore,
+    hasMore && !isFetchingMore,
+  );
 
   if (groups.length === 0) {
     return <p className="text-muted-foreground">{emptyMessage}</p>;

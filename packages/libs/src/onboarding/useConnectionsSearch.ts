@@ -8,23 +8,36 @@ import {
 
 export function useConnectionsSearch() {
   const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
   const debouncedQuery = useDebouncedValue(
     query,
     CONNECTIONS_SEARCH_DEBOUNCE_MS,
   );
+
+  // Reset to page 1 whenever the search query changes
+  const handleSetQuery = (q: string) => {
+    setQuery(q);
+    setPage(1);
+  };
 
   // Connections are between accounts, so this searches accounts — unclaimed
   // directory entries have nobody to send a request to. Empty query browses
   // everyone rather than requiring a typed guess.
   const searchQuery = useSearchUsers({
     query: debouncedQuery.trim() || undefined,
-    page: 1,
+    page,
     pageSize: CONNECTIONS_PAGE_SIZE,
   });
 
+  const total = searchQuery.data?.data.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / CONNECTIONS_PAGE_SIZE));
+
   return {
     query,
-    setQuery,
+    setQuery: handleSetQuery,
+    page,
+    setPage,
+    totalPages,
     items: searchQuery.data?.data.items ?? [],
     isLoading: searchQuery.isLoading,
   };

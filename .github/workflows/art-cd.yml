@@ -4,9 +4,9 @@ on:
   push:
     branches: [master]
     paths:
-      - 'apps/art/**'
-      - 'packages/**'
-      - '.github/workflows/art-cd.yml'
+      - "apps/art/**"
+      - "packages/**"
+      - ".github/workflows/art-cd.yml"
 
 jobs:
   deploy:

@@ -60,7 +60,10 @@
       "searchPlaceholder": "Search people...",
       "empty": "No matches.",
       "selectedCount": "{{count}} selected",
-      "removeAria": "Remove {{name}}"
+      "removeAria": "Remove {{name}}",
+      "pageIndicator": "Page {{page}} of {{total}}",
+      "prevPage": "Previous",
+      "nextPage": "Next"
     },
     "complete": {
       "title": "You're all set!",

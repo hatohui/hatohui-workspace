@@ -60,7 +60,10 @@
       "searchPlaceholder": "名前で検索...",
       "empty": "該当する人が見つかりません。",
       "selectedCount": "{{count}}人選択中",
-      "removeAria": "{{name}}を削除"
+      "removeAria": "{{name}}を削除",
+      "pageIndicator": "{{total}}ページ中{{page}}ページ目",
+      "prevPage": "前へ",
+      "nextPage": "次へ"
     },
     "complete": {
       "title": "設定が完了しました！",

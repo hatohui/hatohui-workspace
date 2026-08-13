@@ -12,9 +12,12 @@ export function useIntersectionObserver(
     const target = targetRef.current;
     if (!enabled || !target) return;
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) onIntersectRef.current();
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) onIntersectRef.current();
+      },
+      { rootMargin: '200px' },
+    );
     observer.observe(target);
     return () => observer.disconnect();
   }, [enabled]);

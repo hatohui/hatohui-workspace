@@ -60,7 +60,10 @@
       "searchPlaceholder": "搜索人员...",
       "empty": "未找到匹配项。",
       "selectedCount": "已选择 {{count}} 人",
-      "removeAria": "移除 {{name}}"
+      "removeAria": "移除 {{name}}",
+      "pageIndicator": "第 {{page}} 页，共 {{total}} 页",
+      "prevPage": "上一页",
+      "nextPage": "下一页"
     },
     "complete": {
       "title": "设置完成！",

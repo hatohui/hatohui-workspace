@@ -60,7 +60,10 @@
       "searchPlaceholder": "Tìm kiếm mọi người...",
       "empty": "Không tìm thấy kết quả phù hợp.",
       "selectedCount": "Đã chọn {{count}}",
-      "removeAria": "Xóa {{name}}"
+      "removeAria": "Xóa {{name}}",
+      "pageIndicator": "Trang {{page}} / {{total}}",
+      "prevPage": "Trước",
+      "nextPage": "Tiếp"
     },
     "complete": {
       "title": "Xong rồi!",
