@@ -76,6 +76,8 @@
     "birthdayLabel": "Ngày sinh",
     "birthdayPlaceholder": "Chọn ngày",
     "birthYearLabel": "Năm sinh (tùy chọn)",
+    "birthYearSearch": "Tìm năm…",
+    "birthYearEmpty": "Không tìm thấy năm nào.",
     "visibilityLabel": "Ai có thể xem",
     "visibilityOptions": {
       "PUBLIC": "Công khai",

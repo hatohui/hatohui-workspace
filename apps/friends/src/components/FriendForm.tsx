@@ -58,11 +58,13 @@ function FriendForm({
     } catch {
       return;
     }
+    const nullIfEditing = (val: string) =>
+      val ? Number(val) : initialFriend ? null : undefined;
     onSubmit({
       name,
-      birthYear: birthYear ? Number(birthYear) : undefined,
-      birthMonth: birthMonth ? Number(birthMonth) : undefined,
-      birthDay: birthDay ? Number(birthDay) : undefined,
+      birthYear: nullIfEditing(birthYear) as number | undefined,
+      birthMonth: nullIfEditing(birthMonth) as number | undefined,
+      birthDay: nullIfEditing(birthDay) as number | undefined,
       visibility,
       socialMedias: socialFields.toSocialMedias(),
       avatarKey,

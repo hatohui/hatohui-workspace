@@ -76,6 +76,8 @@
     "birthdayLabel": "生日",
     "birthdayPlaceholder": "选择日期",
     "birthYearLabel": "出生年份（可选）",
+    "birthYearSearch": "搜索年份…",
+    "birthYearEmpty": "未找到该年份。",
     "visibilityLabel": "可见范围",
     "visibilityOptions": {
       "PUBLIC": "公开",

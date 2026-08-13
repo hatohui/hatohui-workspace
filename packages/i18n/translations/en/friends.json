@@ -76,6 +76,8 @@
     "birthdayLabel": "Birthday",
     "birthdayPlaceholder": "Pick a date",
     "birthYearLabel": "Birth year (optional)",
+    "birthYearSearch": "Search year…",
+    "birthYearEmpty": "No year found.",
     "visibilityLabel": "Who can see this",
     "visibilityOptions": {
       "PUBLIC": "Public",

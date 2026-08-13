@@ -76,6 +76,8 @@
     "birthdayLabel": "誕生日",
     "birthdayPlaceholder": "日付を選択",
     "birthYearLabel": "生まれた年（任意）",
+    "birthYearSearch": "年を検索…",
+    "birthYearEmpty": "該当する年が見つかりません。",
     "visibilityLabel": "公開範囲",
     "visibilityOptions": {
       "PUBLIC": "全員に公開",
