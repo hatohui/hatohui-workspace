@@ -21,7 +21,10 @@ export class UserDto {
   @ApiProperty()
   id!: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description:
+      "The account's display name — its own chosen name if set, otherwise the name from Google login.",
+  })
   name!: string;
 
   @ApiProperty({

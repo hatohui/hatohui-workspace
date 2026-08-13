@@ -12,7 +12,6 @@ import {
 import { GoogleIcon, useAuth, useGoogleAuth } from '@hatohui/libs';
 import { navIcons } from '../../constants/navIcons';
 import routes from '../../constants/routes';
-import { useMyEntry } from '../../hooks/useMyEntry';
 import NavSlotPlaceholder from './NavSlotPlaceholder';
 
 interface Props {
@@ -22,7 +21,6 @@ interface Props {
 function SidebarAccount({ expanded }: Props) {
   const { t } = useTranslation();
   const { user, isLoading, isLoggingIn, logout } = useAuth();
-  const { entry } = useMyEntry();
   const login = useGoogleAuth();
   const LogoutIcon = navIcons.logout;
 
@@ -60,21 +58,18 @@ function SidebarAccount({ expanded }: Props) {
     );
   }
 
-  const displayName = entry?.name ?? user.name;
-  const displayAvatarUrl = entry?.avatarUrl ?? user.avatarUrl;
-
   return (
     <>
       <Tooltip>
         <TooltipTrigger asChild>
           <Link
-            to={routes.account}
+            to={routes.profile}
             aria-label={t('navigation.account')}
             className={`flex h-9 items-center gap-2 rounded-full px-2 hover:bg-accent ${expanded ? 'rounded-lg' : 'justify-center'}`}
           >
             <Avatar
-              src={displayAvatarUrl}
-              alt={displayName}
+              src={user.avatarUrl}
+              alt={user.name}
               className={cn(
                 'size-6 shrink-0',
                 user.isAdmin && 'ring-primary ring-2',
@@ -82,14 +77,14 @@ function SidebarAccount({ expanded }: Props) {
             />
             {expanded && (
               <span className="truncate text-xs text-muted-foreground">
-                {displayName}
+                {user.name}
               </span>
             )}
           </Link>
         </TooltipTrigger>
         {!expanded && (
           <TooltipContent side="right">
-            <p>{displayName}</p>
+            <p>{user.name}</p>
           </TooltipContent>
         )}
       </Tooltip>

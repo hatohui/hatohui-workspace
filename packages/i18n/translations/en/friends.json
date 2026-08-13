@@ -72,7 +72,6 @@
     "birthdayLabel": "Birthday",
     "birthdayPlaceholder": "Pick a date",
     "birthYearLabel": "Birth year (optional)",
-    "preferAnonymousLabel": "Prefer anonymous",
     "visibilityLabel": "Who can see this",
     "visibilityOptions": {
       "PUBLIC": "Public",

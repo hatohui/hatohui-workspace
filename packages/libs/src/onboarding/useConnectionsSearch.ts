@@ -12,23 +12,20 @@ export function useConnectionsSearch() {
     query,
     CONNECTIONS_SEARCH_DEBOUNCE_MS,
   );
-  const hasQuery = debouncedQuery.trim().length > 0;
 
   // Connections are between accounts, so this searches accounts — unclaimed
-  // directory entries have nobody to send a request to.
-  const searchQuery = useSearchUsers(
-    {
-      query: debouncedQuery || undefined,
-      page: 1,
-      pageSize: CONNECTIONS_PAGE_SIZE,
-    },
-    { query: { enabled: hasQuery } },
-  );
+  // directory entries have nobody to send a request to. Empty query browses
+  // everyone rather than requiring a typed guess.
+  const searchQuery = useSearchUsers({
+    query: debouncedQuery.trim() || undefined,
+    page: 1,
+    pageSize: CONNECTIONS_PAGE_SIZE,
+  });
 
   return {
     query,
     setQuery,
-    items: hasQuery ? (searchQuery.data?.data.items ?? []) : [],
-    isLoading: hasQuery && searchQuery.isLoading,
+    items: searchQuery.data?.data.items ?? [],
+    isLoading: searchQuery.isLoading,
   };
 }

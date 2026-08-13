@@ -96,6 +96,7 @@ export * from './publicUserDto';
 export * from './searchFriendsParams';
 export * from './searchUsersParams';
 export * from './setBirthdayDto';
+export * from './setBirthdayDtoVisibility';
 export * from './setProfileDto';
 export * from './setVisibilityDto';
 export * from './setVisibilityDtoVisibility';

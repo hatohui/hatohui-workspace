@@ -51,13 +51,6 @@ export class UsersController {
     @CurrentUser() viewer: User,
   ): Promise<UserDto> {
     const updated = await this.usersService.updateMe(dto, viewer);
-    return {
-      id: updated.id,
-      name: updated.name,
-      handle: updated.handle,
-      avatarUrl: updated.avatarUrl,
-      isAdmin: await this.auth.isAdmin(updated),
-      onboardingStatus: updated.onboardingStatus,
-    };
+    return this.auth.toUserDto(updated);
   }
 }

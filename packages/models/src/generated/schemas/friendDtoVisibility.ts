@@ -6,7 +6,11 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type FriendDtoVisibility = typeof FriendDtoVisibility[keyof typeof FriendDtoVisibility];
+/**
+ * Who can see the birthday. Null when there is no birthday to govern. The profile itself is always public.
+ * @nullable
+ */
+export type FriendDtoVisibility = typeof FriendDtoVisibility[keyof typeof FriendDtoVisibility] | null;
 
 
 export const FriendDtoVisibility = {

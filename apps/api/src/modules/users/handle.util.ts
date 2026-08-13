@@ -15,9 +15,7 @@ function slugifyBase(name: string): string {
 }
 
 /// Derives a lowercase, URL-safe handle from a display name and appends a
-/// numeric suffix on collision until a free one is found. Used both to
-/// auto-assign a handle when onboarding is skipped and, indirectly, to seed
-/// the suggested default shown in the onboarding handle step.
+/// numeric suffix on collision until a free one is found.
 export async function generateUniqueHandle(
   db: Database,
   name: string,
@@ -26,7 +24,10 @@ export async function generateUniqueHandle(
 
   for (let attempt = 0; attempt <= MAX_COLLISION_RETRIES; attempt++) {
     const candidate = attempt === 0 ? base : `${base}_${attempt + 1}`;
-    const existing = await db.user.findUnique({ where: { handle: candidate } });
+    const existing = await db.profile.findUnique({
+      where: { handle: candidate },
+      select: { id: true },
+    });
     if (!existing) return candidate;
   }
 

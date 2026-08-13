@@ -1,6 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-  IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -25,17 +24,26 @@ export class FriendDto {
   @ApiProperty({ example: 'Jane Doe' })
   name: string;
 
-  @ApiProperty({ example: 1998, nullable: true, description: 'Birth year' })
+  @ApiProperty({
+    example: 1998,
+    nullable: true,
+    description:
+      'Birth year. Null when no birthday is recorded, or the viewer is not allowed to see it.',
+  })
   birthYear: number | null;
 
   @ApiProperty({
     example: 5,
     nullable: true,
-    description: 'Birth month (1-12)',
+    description: 'Birth month (1-12), null when the birthday is not visible',
   })
   birthMonth: number | null;
 
-  @ApiProperty({ example: 14, nullable: true, description: 'Birth day (1-31)' })
+  @ApiProperty({
+    example: 14,
+    nullable: true,
+    description: 'Birth day (1-31), null when the birthday is not visible',
+  })
   birthDay: number | null;
 
   @ApiProperty({
@@ -45,14 +53,18 @@ export class FriendDto {
   })
   socialMedias: Record<string, string> | null;
 
-  @ApiProperty({ example: true, default: true })
-  preferAnonymous: boolean;
-
-  @ApiProperty({ enum: FriendVisibility, example: FriendVisibility.PUBLIC })
-  visibility: FriendVisibility;
+  @ApiProperty({
+    enum: FriendVisibility,
+    example: FriendVisibility.PUBLIC,
+    nullable: true,
+    description:
+      'Who can see the birthday. Null when there is no birthday to govern. The profile itself is always public.',
+  })
+  visibility: FriendVisibility | null;
 
   @ApiProperty({
-    example: 'http://localhost:9000/hatohui-dev/images/abc123.jpg',
+    example:
+      'http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg',
     nullable: true,
     description: "Public URL of the friend's avatar image",
   })
@@ -67,8 +79,7 @@ export class FriendDto {
   @ApiProperty({
     example: 'janedoe',
     nullable: true,
-    description:
-      "The associated account's global @handle, if this entry is linked to one",
+    description: "The profile's global @handle, if it has one",
   })
   handle: string | null;
 
@@ -118,7 +129,8 @@ export class UpcomingFriendDto {
   handle: string | null;
 
   @ApiProperty({
-    example: 'http://localhost:9000/hatohui-dev/images/abc123.jpg',
+    example:
+      'http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg',
     nullable: true,
     description: "Public URL of the friend's avatar image",
   })
@@ -200,22 +212,18 @@ export class CreateFriendDto {
   @IsObject()
   socialMedias?: Record<string, string>;
 
-  @ApiProperty({ example: true, default: true, required: false })
-  @IsOptional()
-  @IsBoolean()
-  preferAnonymous?: boolean;
-
   @ApiProperty({
     enum: FriendVisibility,
     default: FriendVisibility.PUBLIC,
     required: false,
+    description: 'Who can see the birthday. Ignored if no date is given.',
   })
   @IsOptional()
   @IsEnum(FriendVisibility)
   visibility?: FriendVisibility;
 
   @ApiProperty({
-    example: 'images/abc123.jpg',
+    example: 'uploads/clx1234567890/abc123.jpg',
     required: false,
     description:
       'Object key returned by POST /images/sign, after uploading the avatar file to storage',

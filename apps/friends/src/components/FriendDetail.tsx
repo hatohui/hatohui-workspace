@@ -30,7 +30,7 @@ function FriendDetail({ friend }: Props) {
     <div className="flex flex-col gap-4">
       <button
         type="button"
-        onClick={() => navigate(-1)}
+        onClick={() => void navigate(-1)}
         className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4 shrink-0" />

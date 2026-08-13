@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { Avatar, Button } from '@hatohui/ui';
 import type { FriendDto } from '@hatohui/models';
+import { formatBirthday } from '@hatohui/tools';
 import routes from '../constants/routes';
 import type { ConnectionAction } from '../hooks/useFriendConnection';
 
@@ -22,12 +23,13 @@ function FriendDetailHeader({
   onConnectionAction,
   onDelete,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const birthday =
     friend.birthMonth !== null && friend.birthDay !== null
-      ? `${friend.birthMonth.toString()}/${friend.birthDay.toString()}${
-          friend.birthYear !== null ? `/${friend.birthYear.toString()}` : ''
-        }`
+      ? `${formatBirthday(
+          `2000-${String(friend.birthMonth).padStart(2, '0')}-${String(friend.birthDay).padStart(2, '0')}`,
+          i18n.language,
+        )}${friend.birthYear !== null ? `/${friend.birthYear.toString()}` : ''}`
       : null;
 
   return (

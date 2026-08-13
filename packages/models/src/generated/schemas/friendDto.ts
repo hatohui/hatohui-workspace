@@ -14,23 +14,26 @@ export interface FriendDto {
   id: string;
   name: string;
   /**
-     * Birth year
+     * Birth year. Null when no birthday is recorded, or the viewer is not allowed to see it.
      * @nullable
      */
   birthYear: number | null;
   /**
-     * Birth month (1-12)
+     * Birth month (1-12), null when the birthday is not visible
      * @nullable
      */
   birthMonth: number | null;
   /**
-     * Birth day (1-31)
+     * Birth day (1-31), null when the birthday is not visible
      * @nullable
      */
   birthDay: number | null;
   /** @nullable */
   socialMedias: FriendDtoSocialMedias;
-  preferAnonymous: boolean;
+  /**
+     * Who can see the birthday. Null when there is no birthday to govern. The profile itself is always public.
+     * @nullable
+     */
   visibility: FriendDtoVisibility;
   /**
      * Public URL of the friend's avatar image
@@ -43,7 +46,7 @@ export interface FriendDto {
      */
   addedById: string | null;
   /**
-     * The associated account's global @handle, if this entry is linked to one
+     * The profile's global @handle, if it has one
      * @nullable
      */
   handle: string | null;

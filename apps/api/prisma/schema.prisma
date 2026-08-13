@@ -13,19 +13,19 @@ enum OnboardingStatus {
   SKIPPED
 }
 
+/// Login identity only — never displayed. See docs/specs/friends/profile-model.
 model User {
   id                String             @id @default(cuid())
   googleId          String             @unique
   email             String             @unique
   name              String
-  handle            String?            @unique
   avatarUrl         String?
   onboardingStatus  OnboardingStatus   @default(PENDING)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
-  association       Association?
-  addedEntries      BirthdayDetails[]  @relation("AddedBy")
+  profile           Profile?           @relation("ProfileOwner")
+  addedProfiles     Profile[]          @relation("AddedBy")
   sentConnections     Connection[]     @relation("ConnectionRequester")
   receivedConnections Connection[]     @relation("ConnectionAddressee")
   notifications       Notification[]   @relation("NotificationRecipient")
@@ -55,19 +55,6 @@ model AppConfig {
   @@unique([type, scope])
 }
 
-/// One-to-one link between a logged-in Account and the BirthdayDetails entry
-/// that represents them. Once created, it is permanent — see BirthdayDetails
-/// service logic: "deleting" an associated entry only clears its fields, it
-/// never removes the row or the association, so the slot can't be re-claimed.
-model Association {
-  id                String          @id @default(cuid())
-  userId            String          @unique
-  user              User            @relation(fields: [userId], references: [id])
-  birthdayDetailsId String          @unique
-  birthdayDetails   BirthdayDetails @relation(fields: [birthdayDetailsId], references: [id])
-  createdAt         DateTime        @default(now())
-}
-
 model SocialPlatform {
   id        String   @id @default(cuid())
   key       String   @unique
@@ -83,37 +70,46 @@ enum FriendVisibility {
   NONE
 }
 
-/// A birthday/profile entry. May or may not be linked to a logged-in Account
-/// (via Association) — most entries are added by someone about a third party
-/// and stay unassociated forever; only entries created via onboarding (or
-/// later claimed) end up associated.
-model BirthdayDetails {
-  id              String           @id @default(cuid())
-  name            String
-  birthYear       Int?
-  birthMonth      Int?
-  birthDay        Int?
-  socialMedias    Json?
-  preferAnonymous Boolean          @default(true)
-  visibility      FriendVisibility @default(PUBLIC)
-  avatarUrl       String?
-  avatarKey       String?
-  gcalEventId     String?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+/// The public half of a person. `userId` is null until claimed, and permanent
+/// once set. See docs/specs/friends/profile-model.
+model Profile {
+  id           String           @id @default(cuid())
+  displayName  String
+  handle       String?          @unique
+  avatarUrl    String?
+  avatarKey    String?
+  socialMedias Json?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 
-  addedById       String?
-  addedBy         User?            @relation("AddedBy", fields: [addedById], references: [id])
+  userId       String?          @unique
+  user         User?            @relation("ProfileOwner", fields: [userId], references: [id])
 
-  association     Association?
+  addedById    String?
+  addedBy      User?            @relation("AddedBy", fields: [addedById], references: [id])
+
+  birthday     Birthday?
 }
 
-/// A previously-current avatar image for whatever owns it (a User account, a
-/// friends BirthdayDetails profile, ...), kept as history when it's replaced
-/// instead of being deleted from storage outright. Deliberately not FK'd to
-/// any one table — ownerId is just that owner's id, and since every model in
-/// this schema uses globally-unique cuids, it unambiguously identifies its
-/// owner without needing a type tag. See modules/avatars.
+/// Absent row means no birthday known, which is why month/day are required.
+/// See docs/specs/friends/profile-model.
+model Birthday {
+  id          String           @id @default(cuid())
+  profileId   String           @unique
+  profile     Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  year        Int?
+  month       Int
+  day         Int
+  visibility  FriendVisibility @default(PUBLIC)
+  gcalEventId String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([month, day])
+}
+
+/// Replaced avatars, kept as history. `ownerId` is intentionally not a foreign
+/// key. See docs/specs/friends/profile-model.
 model AvatarVersion {
   id        String   @id @default(cuid())
   ownerId   String
@@ -129,13 +125,8 @@ enum ConnectionStatus {
   ACCEPTED
 }
 
-/// Mutual account-to-account connection, requiring the addressee's consent.
-/// Stored as one row per pair with directional columns (requester sent it,
-/// addressee answers it) but read as symmetric: any "my connections" query
-/// must match requesterId OR addresseeId. Deliberately not tied to
-/// BirthdayDetails — this is the account-level social graph every app in the
-/// workspace shares. "Who knows this birthday entry" is answered by
-/// BirthdayDetails.addedById instead.
+/// Directional columns, read symmetrically: "my connections" must match
+/// requesterId OR addresseeId. See docs/specs/friends/connections-graph.
 model Connection {
   id          String           @id @default(cuid())
   requesterId String
@@ -157,15 +148,8 @@ enum NotificationType {
   SYSTEM
 }
 
-/// Cross-app notification inbox, shared by every app in the workspace (see
-/// AppScope). `subjectId` is deliberately NOT a foreign key — same trick as
-/// AvatarVersion.ownerId: every model here uses globally-unique cuids, and
-/// `type` already says which table to resolve it from, so one column serves
-/// Connection / BirthdayDetails / Commission / ... without a nullable FK per
-/// app. Content is never denormalized — handles are mutable and "deleted"
-/// BirthdayDetails entries are field-cleared rather than removed, so names are
-/// re-resolved at read time. `data` carries only immutable point-in-time facts;
-/// if it can change, it doesn't belong there.
+/// `subjectId` is intentionally not a foreign key; `type` says which table to
+/// resolve it from. See docs/specs/friends/connections-graph.
 model Notification {
   id          String           @id @default(cuid())
   recipientId String

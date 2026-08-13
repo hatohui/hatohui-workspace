@@ -2,7 +2,6 @@ import { useTranslation } from '@hatohui/i18n';
 import { Avatar, ErrorState, LoadingDots } from '@hatohui/ui';
 import { useAuth } from '@hatohui/libs';
 import { useSocialGraph } from '../../hooks/useSocialGraph';
-import { useMyEntry } from '../../hooks/useMyEntry';
 import {
   SOCIAL_TREE_SIZE,
   useSocialTreeLayout,
@@ -12,7 +11,6 @@ import SocialTreeNode from './SocialTreeNode';
 function SocialTree() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { entry } = useMyEntry();
   const { data, isLoading, isError, refetch } = useSocialGraph();
   const graphNodes = data?.data.friends ?? [];
   const { nodes, edges } = useSocialTreeLayout(graphNodes);
@@ -65,8 +63,8 @@ function SocialTree() {
         style={{ left: '50%', top: '50%' }}
       >
         <Avatar
-          src={entry?.avatarUrl ?? user?.avatarUrl}
-          alt={entry?.name ?? user?.name ?? ''}
+          src={user?.avatarUrl}
+          alt={user?.name ?? ''}
           className="size-14 ring-2 ring-primary ring-offset-2 ring-offset-background"
         />
         <span className="text-xs text-muted-foreground">{t('social.you')}</span>

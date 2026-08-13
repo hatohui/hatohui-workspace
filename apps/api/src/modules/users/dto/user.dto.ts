@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Matches, Min } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  Min,
+} from 'class-validator';
 import { HANDLE_PATTERN } from '../handle.util';
 import { PublicUserDto } from './public-user.dto';
 
@@ -17,6 +25,18 @@ export class UpdateMeDto {
     message: 'handle must be 3-20 lowercase letters, digits, or underscores',
   })
   handle?: string;
+
+  @ApiProperty({
+    example: 'Hatohui',
+    required: false,
+    description:
+      'Display name, overriding the name from Google login. Unlike handle, any casing/spacing/accents are fine.',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(60)
+  displayName?: string;
 }
 
 export class UserSearchQueryDto {

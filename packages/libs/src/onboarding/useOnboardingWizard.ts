@@ -42,12 +42,16 @@ export function useOnboardingWizard(
   mode: OnboardingMode = 'full',
   onEntityChanged?: () => void,
 ) {
-  const { user } = useAuth();
+  const { user, refetchUser } = useAuth();
   const { close } = useOnboardingModal();
   const stateQuery = useOnboardingState({ query: { enabled: !!user } });
   const onChanged = { onSuccess: () => onEntityChanged?.() };
 
   const [stepOverride, setStepOverride] = useState<OnboardingStep | null>(null);
+  // Visibility governs the birthday, which does not exist yet when it is
+  // chosen, so it rides along to the birthday step.
+  const [birthdayVisibility, setBirthdayVisibility] =
+    useState<Visibility>('PUBLIC');
   const entry = stateQuery.data?.data.entry ?? null;
   const defaultStep: OnboardingStep = entry ? 'profile' : 'optIn';
   const step =
@@ -91,7 +95,10 @@ export function useOnboardingWizard(
 
     submitProfile: (name: string, avatarKey?: string) => {
       setStep('handle');
-      setProfile.mutate({ data: { name, avatarKey } });
+      setProfile.mutate(
+        { data: { name, avatarKey } },
+        { onSuccess: () => void refetchUser() },
+      );
     },
 
     submitHandle: (handle?: string) => {
@@ -103,11 +110,17 @@ export function useOnboardingWizard(
       }
       updateHandle.mutate(
         { data: { handle } },
-        { onSuccess: () => setStep(next) },
+        {
+          onSuccess: () => {
+            setStep(next);
+            void refetchUser();
+          },
+        },
       );
     },
 
     submitVisibility: (visibility: Visibility) => {
+      setBirthdayVisibility(visibility);
       setStep(visibility === 'NONE' ? 'connections' : 'birthday');
       setVisibility.mutate({ data: { visibility } });
     },
@@ -118,7 +131,7 @@ export function useOnboardingWizard(
       birthDay: number;
     }) => {
       setStep('connections');
-      setBirthday.mutate({ data });
+      setBirthday.mutate({ data: { ...data, visibility: birthdayVisibility } });
     },
 
     submitConnections: (userIds: string[]) => {

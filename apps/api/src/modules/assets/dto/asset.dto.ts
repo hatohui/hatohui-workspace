@@ -12,11 +12,12 @@ export class AssetDto {
   @ApiProperty({ example: 'clx1234567890' })
   id: string;
 
-  @ApiProperty({ example: 'images/abc123.jpg' })
+  @ApiProperty({ example: 'uploads/clx1234567890/abc123.jpg' })
   key: string;
 
   @ApiProperty({
-    example: 'http://localhost:9010/hatohui-dev/images/abc123.jpg',
+    example:
+      'http://localhost:9010/hatohui-dev/uploads/clx1234567890/abc123.jpg',
   })
   publicUrl: string;
 
@@ -53,7 +54,7 @@ export class AssetDto {
 
 export class CreateAssetDto {
   @ApiProperty({
-    example: 'images/abc123.jpg',
+    example: 'uploads/clx1234567890/abc123.jpg',
     description: 'Object key returned by POST /images/sign',
   })
   @IsString()

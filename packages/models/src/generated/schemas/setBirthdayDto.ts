@@ -5,8 +5,11 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { SetBirthdayDtoVisibility } from './setBirthdayDtoVisibility';
 
 export interface SetBirthdayDto {
+  /** Who can see this birthday. Sent here rather than applied by the visibility step, which runs before the birthday exists. */
+  visibility?: SetBirthdayDtoVisibility;
   birthYear?: number;
   birthMonth: number;
   birthDay: number;

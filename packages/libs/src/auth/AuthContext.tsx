@@ -9,6 +9,7 @@ interface AuthContextValue {
   isLoggingIn: boolean;
   loginWithGoogle: (code: string) => Promise<void>;
   logout: () => Promise<void>;
+  refetchUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -35,6 +36,9 @@ export function AuthProvider({
       },
       logout: async () => {
         await logoutMutation.mutateAsync();
+        await meQuery.refetch();
+      },
+      refetchUser: async () => {
         await meQuery.refetch();
       },
     }),

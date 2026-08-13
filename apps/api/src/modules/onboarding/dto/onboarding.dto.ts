@@ -35,7 +35,7 @@ export class SetProfileDto {
   name: string;
 
   @ApiProperty({
-    example: 'images/abc123.jpg',
+    example: 'uploads/clx1234567890/abc123.jpg',
     required: false,
     description:
       'Object key returned by POST /images/sign, after uploading the avatar file to storage',
@@ -52,6 +52,17 @@ export class SetVisibilityDto {
 }
 
 export class SetBirthdayDto {
+  @ApiProperty({
+    enum: FriendVisibility,
+    required: false,
+    default: FriendVisibility.PUBLIC,
+    description:
+      'Who can see this birthday. Sent here rather than applied by the visibility step, which runs before the birthday exists.',
+  })
+  @IsOptional()
+  @IsEnum(FriendVisibility)
+  visibility?: FriendVisibility;
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsInt()

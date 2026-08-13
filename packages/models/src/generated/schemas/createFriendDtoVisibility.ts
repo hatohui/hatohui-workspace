@@ -6,6 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
+/**
+ * Who can see the birthday. Ignored if no date is given.
+ */
 export type CreateFriendDtoVisibility = typeof CreateFriendDtoVisibility[keyof typeof CreateFriendDtoVisibility];
 
 

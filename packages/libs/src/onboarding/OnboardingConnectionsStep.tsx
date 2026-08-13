@@ -5,7 +5,7 @@ import { Button, Input } from '@hatohui/ui';
 import { useConnectionsSearch } from './useConnectionsSearch';
 
 type Props = {
-  onSubmit: (birthdayDetailsIds: string[]) => void;
+  onSubmit: (userIds: string[]) => void;
   submitting: boolean;
 };
 
@@ -28,7 +28,6 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
   };
 
   const suggestions = search.items.filter((item) => !selected.has(item.id));
-  const showSuggestions = search.query.trim().length > 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -57,36 +56,32 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
         </div>
       )}
 
-      <div className="relative">
-        <Input
-          value={search.query}
-          onChange={(e) => search.setQuery(e.target.value)}
-          placeholder={t('common:onboarding.connections.searchPlaceholder')}
-        />
-        {showSuggestions && (
-          <div className="absolute z-10 mt-1 w-full rounded-md border bg-popover shadow-md">
-            {!search.isLoading && suggestions.length === 0 && (
-              <p className="p-3 text-sm text-muted-foreground">
-                {t('common:onboarding.connections.empty')}
-              </p>
-            )}
-            {suggestions.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => select(item.id, item.name)}
-                className="flex w-full flex-col items-start px-3 py-2 text-left text-sm hover:bg-accent"
-              >
-                {item.name}
-                {item.handle && (
-                  <span className="text-xs text-muted-foreground">
-                    @{item.handle}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+      <Input
+        value={search.query}
+        onChange={(e) => search.setQuery(e.target.value)}
+        placeholder={t('common:onboarding.connections.searchPlaceholder')}
+      />
+      <div className="max-h-64 overflow-y-auto rounded-md border">
+        {!search.isLoading && suggestions.length === 0 && (
+          <p className="p-3 text-sm text-muted-foreground">
+            {t('common:onboarding.connections.empty')}
+          </p>
         )}
+        {suggestions.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => select(item.id, item.name)}
+            className="flex w-full flex-col items-start px-3 py-2 text-left text-sm hover:bg-accent"
+          >
+            {item.name}
+            {item.handle && (
+              <span className="text-xs text-muted-foreground">
+                @{item.handle}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
       <p className="text-sm text-muted-foreground">

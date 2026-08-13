@@ -24,25 +24,22 @@ export class PublicUserDto {
 export interface PublicUserSource {
   id: string;
   name: string;
-  handle: string | null;
   avatarUrl: string | null;
-  association: {
-    birthdayDetails: { name: string; avatarUrl: string | null };
+  profile: {
+    displayName: string;
+    handle: string | null;
+    avatarUrl: string | null;
   } | null;
 }
 
-/// Name/avatar come from the person's own directory entry when they have
-/// one, not straight off the User row — the User row is just the raw Google
-/// identity from login and never gets updated afterward, while the entry is
-/// what they've actually customized (see AccountView/SidebarAccount, which
-/// apply this same preference client-side for the viewer's own identity).
+/// Everything displayable comes from the profile; the User columns are only a
+/// fallback for an account that never finished onboarding.
 export function toPublicUserDto(user: PublicUserSource): PublicUserDto {
-  const entry = user.association?.birthdayDetails;
   return {
     id: user.id,
-    name: entry?.name ?? user.name,
-    handle: user.handle,
-    avatarUrl: entry?.avatarUrl ?? user.avatarUrl,
+    name: user.profile?.displayName ?? user.name,
+    handle: user.profile?.handle ?? null,
+    avatarUrl: user.profile?.avatarUrl ?? user.avatarUrl,
   };
 }
 
@@ -50,11 +47,8 @@ export function toPublicUserDto(user: PublicUserSource): PublicUserDto {
 export const PUBLIC_USER_SELECT = {
   id: true,
   name: true,
-  handle: true,
   avatarUrl: true,
-  association: {
-    select: {
-      birthdayDetails: { select: { name: true, avatarUrl: true } },
-    },
+  profile: {
+    select: { displayName: true, handle: true, avatarUrl: true },
   },
 } as const;

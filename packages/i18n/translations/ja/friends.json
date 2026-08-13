@@ -72,7 +72,6 @@
     "birthdayLabel": "誕生日",
     "birthdayPlaceholder": "日付を選択",
     "birthYearLabel": "生まれた年（任意）",
-    "preferAnonymousLabel": "匿名にする",
     "visibilityLabel": "公開範囲",
     "visibilityOptions": {
       "PUBLIC": "全員に公開",

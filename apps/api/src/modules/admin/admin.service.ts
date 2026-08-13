@@ -6,38 +6,33 @@ import { FriendDto } from '@/modules/friends/dto/friend.dto';
 export class AdminService {
   constructor(private readonly db: Database) {}
 
-  /// Every entry, visibility ignored. This is the one place that bypass
-  /// exists — the normal endpoints apply the same filtering to admins as to
-  /// anyone else, so an admin browsing the app sees what a member would.
+  /// Every profile, birthday visibility ignored. This is the one place that
+  /// bypass exists — the normal endpoints apply the same filtering to admins
+  /// as to anyone else, so an admin browsing the app sees what a member would.
   async listAllEntries(): Promise<FriendDto[]> {
-    const entries = await this.db.birthdayDetails.findMany({
-      orderBy: { name: 'asc' },
-      include: {
-        association: {
-          select: { userId: true, user: { select: { handle: true } } },
-        },
-      },
+    const profiles = await this.db.profile.findMany({
+      orderBy: { displayName: 'asc' },
+      include: { birthday: true },
     });
 
-    return entries.map((entry) => ({
-      id: entry.id,
-      name: entry.name,
-      birthYear: entry.birthYear,
-      birthMonth: entry.birthMonth,
-      birthDay: entry.birthDay,
+    return profiles.map((profile) => ({
+      id: profile.id,
+      name: profile.displayName,
+      handle: profile.handle,
+      avatarUrl: profile.avatarUrl,
       socialMedias:
-        (entry.socialMedias as Record<string, string> | null) ?? null,
-      preferAnonymous: entry.preferAnonymous,
-      visibility: entry.visibility,
-      avatarUrl: entry.avatarUrl,
-      addedById: entry.addedById,
-      handle: entry.association?.user.handle ?? null,
-      isAssociated: entry.association !== null,
+        (profile.socialMedias as Record<string, string> | null) ?? null,
+      birthYear: profile.birthday?.year ?? null,
+      birthMonth: profile.birthday?.month ?? null,
+      birthDay: profile.birthday?.day ?? null,
+      visibility: profile.birthday?.visibility ?? null,
+      addedById: profile.addedById,
+      isAssociated: profile.userId !== null,
       isViewerEntry: false,
       connectionStatus: 'NONE' as const,
       canEdit: true,
-      createdAt: entry.createdAt.toISOString(),
-      updatedAt: entry.updatedAt.toISOString(),
+      createdAt: profile.createdAt.toISOString(),
+      updatedAt: profile.updatedAt.toISOString(),
     }));
   }
 }

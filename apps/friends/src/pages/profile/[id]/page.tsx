@@ -25,7 +25,7 @@ function FriendDetailPage() {
         retry={{ label: t('common:retry'), onClick: () => void refetch() }}
         back={{
           label: t('common:back'),
-          onClick: () => navigate(routes.dashboard),
+          onClick: () => void navigate(routes.dashboard),
         }}
       />
     );

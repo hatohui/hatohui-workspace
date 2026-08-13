@@ -14,7 +14,7 @@ export interface CreateFriendDto {
   birthMonth?: number;
   birthDay?: number;
   socialMedias?: CreateFriendDtoSocialMedias;
-  preferAnonymous?: boolean;
+  /** Who can see the birthday. Ignored if no date is given. */
   visibility?: CreateFriendDtoVisibility;
   /** Object key returned by POST /images/sign, after uploading the avatar file to storage */
   avatarKey?: string;

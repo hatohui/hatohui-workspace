@@ -5,7 +5,8 @@ export class AvatarVersionDto {
   id: string;
 
   @ApiProperty({
-    example: 'http://localhost:9000/hatohui-dev/images/abc123.jpg',
+    example:
+      'http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg',
     description: 'Public URL of this past avatar',
   })
   url: string;

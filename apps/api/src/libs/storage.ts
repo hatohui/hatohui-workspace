@@ -1,6 +1,7 @@
 import { Global, Injectable, Module } from '@nestjs/common';
 import {
   S3Client,
+  CopyObjectCommand,
   DeleteObjectCommand,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
@@ -44,6 +45,23 @@ export class Storage {
     return this.client.send(
       new DeleteObjectCommand({ Bucket: this.bucket, Key: key }),
     );
+  }
+
+  /// Relocates an object, used to move a staged upload into its permanent
+  /// home once the record that owns it exists. Copy-then-delete, because S3
+  /// has no rename; a failed delete leaves a harmless staging orphan rather
+  /// than losing the file.
+  async moveObject(fromKey: string, toKey: string): Promise<void> {
+    if (fromKey === toKey) return;
+
+    await this.client.send(
+      new CopyObjectCommand({
+        Bucket: this.bucket,
+        CopySource: `${this.bucket}/${fromKey}`,
+        Key: toKey,
+      }),
+    );
+    await this.deleteObject(fromKey);
   }
 }
 

@@ -25,14 +25,10 @@ function AccountView() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <Avatar
-          src={entry?.avatarUrl ?? user.avatarUrl}
-          alt={user.name}
-          className="h-14 w-14"
-        />
+        <Avatar src={user.avatarUrl} alt={user.name} className="h-14 w-14" />
         <div>
           <p className="flex items-center gap-2 font-medium">
-            {entry?.name ?? user.name}
+            {user.name}
             {user.isAdmin && (
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-normal text-primary">
                 {t('account.adminTag')}

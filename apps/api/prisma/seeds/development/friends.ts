@@ -33,19 +33,22 @@ const sampleFriends = [
 
 export async function seedFriends(prisma: PrismaClient) {
   for (const friend of sampleFriends) {
-    const existing = await prisma.birthdayDetails.findFirst({
-      where: { name: friend.name },
+    const existing = await prisma.profile.findFirst({
+      where: { displayName: friend.name },
     });
     if (existing) continue;
 
-    await prisma.birthdayDetails.create({
+    await prisma.profile.create({
       data: {
-        name: friend.name,
-        birthYear: friend.birthYear,
-        birthMonth: friend.birthMonth,
-        birthDay: friend.birthDay,
-        preferAnonymous: false,
-        visibility: friend.visibility ?? 'PUBLIC',
+        displayName: friend.name,
+        birthday: {
+          create: {
+            year: friend.birthYear,
+            month: friend.birthMonth,
+            day: friend.birthDay,
+            visibility: friend.visibility ?? 'PUBLIC',
+          },
+        },
       },
     });
   }

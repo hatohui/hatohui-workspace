@@ -9,6 +9,7 @@ import type { UserDtoOnboardingStatus } from './userDtoOnboardingStatus';
 
 export interface UserDto {
   id: string;
+  /** The account's display name — its own chosen name if set, otherwise the name from Google login. */
   name: string;
   /**
      * Global unique handle (e.g. "hatohui"), without the @

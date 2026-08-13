@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { Database } from '@/libs/db';
 import { Cache, CACHE_KEYS } from '@/libs/cache';
+import { UserDto } from '@/modules/auth/dto/auth.dto';
 import type { Env } from '@/config/env';
 import { AppScope, type User } from '@prisma/client';
 
@@ -30,6 +31,24 @@ export class AuthService {
     if (!user) return false;
     const email = await this.adminEmail();
     return email !== null && email === user.email.toLowerCase();
+  }
+
+  /// Everything displayable comes from the profile, resolved here so callers
+  /// never touch the raw Google values.
+  async toUserDto(user: User): Promise<UserDto> {
+    const profile = await this.db.profile.findUnique({
+      where: { userId: user.id },
+      select: { displayName: true, handle: true, avatarUrl: true },
+    });
+
+    return {
+      id: user.id,
+      name: profile?.displayName ?? user.name,
+      handle: profile?.handle ?? null,
+      avatarUrl: profile?.avatarUrl ?? user.avatarUrl,
+      isAdmin: await this.isAdmin(user),
+      onboardingStatus: user.onboardingStatus,
+    };
   }
 
   private adminEmail(): Promise<string | null> {

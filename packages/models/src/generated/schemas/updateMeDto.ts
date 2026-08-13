@@ -9,4 +9,6 @@
 export interface UpdateMeDto {
   /** Global unique handle, lowercase letters/digits/underscore, 3-20 chars */
   handle?: string;
+  /** Display name, overriding the name from Google login. Unlike handle, any casing/spacing/accents are fine. */
+  displayName?: string;
 }

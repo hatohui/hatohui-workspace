@@ -32,20 +32,26 @@ import {
   PaginatedUpcomingSectionsDto,
   UpcomingSectionsQueryDto,
 } from './dto/friend-upcoming.dto';
-import { FriendsService } from './friends.service';
+import { ProfilesService } from './profiles.service';
+import { BirthdaysService } from './birthdays.service';
+import { SocialGraphService } from './social-graph.service';
 import type { User } from '@prisma/client';
 
 @ApiTags('friends')
 @Controller('friends')
 export class FriendsController {
-  constructor(private readonly friendsService: FriendsService) {}
+  constructor(
+    private readonly profiles: ProfilesService,
+    private readonly birthdays: BirthdaysService,
+    private readonly socialGraph: SocialGraphService,
+  ) {}
 
   @Get()
   @UseGuards(OptionalAuthGuard)
   @ApiOperation({ operationId: 'friends', summary: 'List all friends' })
   @ApiOkResponse({ type: FriendDto, isArray: true })
   findAll(@OptionalCurrentUser() viewer: User | null): Promise<FriendDto[]> {
-    return this.friendsService.findAll(viewer);
+    return this.profiles.findAll(viewer);
   }
 
   @Get('upcoming/sections')
@@ -60,7 +66,7 @@ export class FriendsController {
     @Query() query: UpcomingSectionsQueryDto,
     @OptionalCurrentUser() viewer: User | null,
   ): Promise<PaginatedUpcomingSectionsDto> {
-    return this.friendsService.findUpcomingSections(
+    return this.birthdays.findUpcomingSections(
       query.query,
       query.group ?? 'month',
       query.direction ?? 'asc',
@@ -81,7 +87,7 @@ export class FriendsController {
     @Query() query: MonthQueryDto,
     @OptionalCurrentUser() viewer: User | null,
   ): Promise<BirthdaysByMonthDto> {
-    return this.friendsService.findBirthdaysByMonth(
+    return this.birthdays.findBirthdaysByMonth(
       query.month,
       query.query,
       viewer,
@@ -100,7 +106,7 @@ export class FriendsController {
     @Query() query: FriendSearchQueryDto,
     @OptionalCurrentUser() viewer: User | null,
   ): Promise<PaginatedFriendsDto> {
-    return this.friendsService.search(
+    return this.profiles.search(
       query.query,
       query.page ?? 1,
       query.pageSize ?? 20,
@@ -116,7 +122,7 @@ export class FriendsController {
   })
   @ApiOkResponse({ type: SocialGraphDto })
   getSocialGraph(@CurrentUser() viewer: User): Promise<SocialGraphDto> {
-    return this.friendsService.getSocialGraph(viewer);
+    return this.socialGraph.getSocialGraph(viewer);
   }
 
   @Get(':id')
@@ -130,7 +136,7 @@ export class FriendsController {
     @Param('id') id: string,
     @OptionalCurrentUser() viewer: User | null,
   ): Promise<FriendDto> {
-    return this.friendsService.findOne(id, viewer);
+    return this.profiles.findOne(id, viewer);
   }
 
   @Post()
@@ -141,7 +147,7 @@ export class FriendsController {
     @Body() dto: CreateFriendDto,
     @CurrentUser() viewer: User,
   ): Promise<FriendDto> {
-    return this.friendsService.create(dto, viewer);
+    return this.profiles.create(dto, viewer);
   }
 
   @Patch(':id')
@@ -153,7 +159,7 @@ export class FriendsController {
     @Body() dto: UpdateFriendDto,
     @CurrentUser() viewer: User,
   ): Promise<FriendDto> {
-    return this.friendsService.update(id, dto, viewer);
+    return this.profiles.update(id, dto, viewer);
   }
 
   @Delete(':id')
@@ -161,7 +167,7 @@ export class FriendsController {
   @HttpCode(204)
   @ApiOperation({ operationId: 'deleteFriend', summary: 'Delete a friend' })
   remove(@Param('id') id: string, @CurrentUser() viewer: User): Promise<void> {
-    return this.friendsService.remove(id, viewer);
+    return this.profiles.remove(id, viewer);
   }
 
   @Get(':id/avatar/versions')
@@ -171,11 +177,8 @@ export class FriendsController {
     summary: "A friend's past avatars, newest first",
   })
   @ApiOkResponse({ type: AvatarVersionsDto })
-  listAvatarVersions(
-    @Param('id') id: string,
-    @OptionalCurrentUser() viewer: User | null,
-  ): Promise<AvatarVersionsDto> {
-    return this.friendsService.listAvatarVersions(id, viewer);
+  listAvatarVersions(@Param('id') id: string): Promise<AvatarVersionsDto> {
+    return this.profiles.listAvatarVersions(id);
   }
 
   @Post(':id/avatar/versions/:versionId/restore')
@@ -190,7 +193,7 @@ export class FriendsController {
     @Param('versionId') versionId: string,
     @CurrentUser() viewer: User,
   ): Promise<FriendDto> {
-    return this.friendsService.restoreAvatarVersion(id, versionId, viewer);
+    return this.profiles.restoreAvatarVersion(id, versionId, viewer);
   }
 
   @Post(':id/connect')
@@ -204,7 +207,7 @@ export class FriendsController {
     @Param('id') id: string,
     @CurrentUser() viewer: User,
   ): Promise<FriendDto> {
-    return this.friendsService.connect(id, viewer);
+    return this.profiles.connect(id, viewer);
   }
 
   @Delete(':id/connect')
@@ -218,7 +221,7 @@ export class FriendsController {
     @Param('id') id: string,
     @CurrentUser() viewer: User,
   ): Promise<FriendDto> {
-    return this.friendsService.disconnect(id, viewer);
+    return this.profiles.disconnect(id, viewer);
   }
 
   @Post(':id/claim')
@@ -232,6 +235,6 @@ export class FriendsController {
     @Param('id') id: string,
     @CurrentUser() viewer: User,
   ): Promise<FriendDto> {
-    return this.friendsService.claim(id, viewer);
+    return this.profiles.claim(id, viewer);
   }
 }

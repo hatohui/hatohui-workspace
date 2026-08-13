@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Checkbox, Input, Label } from '@hatohui/ui';
+import { Button, Input, Label } from '@hatohui/ui';
 import type { CreateFriendDto, FriendDto } from '@hatohui/models';
 import {
   getErrorCategory,
@@ -43,9 +43,6 @@ function FriendForm({
   const [birthDay, setBirthDay] = useState(
     initialFriend?.birthDay?.toString() ?? '',
   );
-  const [preferAnonymous, setPreferAnonymous] = useState(
-    initialFriend?.preferAnonymous ?? true,
-  );
   const [visibility, setVisibility] = useState<Visibility>(
     initialFriend?.visibility ?? 'PUBLIC',
   );
@@ -66,7 +63,6 @@ function FriendForm({
       birthYear: birthYear ? Number(birthYear) : undefined,
       birthMonth: birthMonth ? Number(birthMonth) : undefined,
       birthDay: birthDay ? Number(birthDay) : undefined,
-      preferAnonymous,
       visibility,
       socialMedias: socialFields.toSocialMedias(),
       avatarKey,
@@ -110,16 +106,6 @@ function FriendForm({
         onBirthMonthChange={setBirthMonth}
         onBirthDayChange={setBirthDay}
       />
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="preferAnonymous"
-          checked={preferAnonymous}
-          onCheckedChange={(checked) => setPreferAnonymous(checked === true)}
-        />
-        <Label htmlFor="preferAnonymous">
-          {t('friendForm.preferAnonymousLabel')}
-        </Label>
-      </div>
       <VisibilityField value={visibility} onChange={setVisibility} />
       <SocialMediaFieldList
         rows={socialFields.rows}
