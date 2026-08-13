@@ -14,9 +14,13 @@
   "settings": {
     "title": "Settings",
     "language": "Language",
-    "general": {
-      "title": "General",
-      "stub": "More settings are coming soon."
+    "profile": {
+      "title": "Profile",
+      "nameLabel": "Display name",
+      "handleLabel": "Handle",
+      "handlePlaceholder": "yourhandle",
+      "handleInvalid": "Handle must be 3-20 lowercase letters, digits, or underscores",
+      "save": "Save"
     }
   },
   "account": {

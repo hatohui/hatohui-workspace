@@ -14,9 +14,13 @@
   "settings": {
     "title": "Cài đặt",
     "language": "Ngôn ngữ",
-    "general": {
-      "title": "Chung",
-      "stub": "Thêm cài đặt sẽ sớm ra mắt."
+    "profile": {
+      "title": "Hồ sơ",
+      "nameLabel": "Tên hiển thị",
+      "handleLabel": "Handle",
+      "handlePlaceholder": "handlecuaban",
+      "handleInvalid": "Handle phải có 3-20 ký tự, gồm chữ thường, số hoặc dấu gạch dưới",
+      "save": "Lưu"
     }
   },
   "account": {

@@ -14,9 +14,13 @@
   "settings": {
     "title": "設定",
     "language": "言語",
-    "general": {
-      "title": "一般",
-      "stub": "その他の設定は近日公開予定です。"
+    "profile": {
+      "title": "プロフィール",
+      "nameLabel": "表示名",
+      "handleLabel": "ハンドル",
+      "handlePlaceholder": "yourhandle",
+      "handleInvalid": "ハンドルは3〜20文字の半角小文字・数字・アンダースコアで入力してください",
+      "save": "保存"
     }
   },
   "account": {

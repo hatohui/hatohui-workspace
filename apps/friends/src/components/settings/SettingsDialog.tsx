@@ -21,14 +21,6 @@ function SettingsDialog({ open, onOpenChange }: Props) {
             </h3>
             <LanguageOptionsList />
           </section>
-          <section className="flex flex-col gap-1.5 border-t border-border pt-4">
-            <h3 className="font-sans text-sm font-medium">
-              {t('settings.general.title')}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {t('settings.general.stub')}
-            </p>
-          </section>
         </div>
       </DialogContent>
     </Dialog>

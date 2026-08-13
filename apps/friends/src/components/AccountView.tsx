@@ -5,6 +5,7 @@ import { navIcons } from '../constants/navIcons';
 import { useMyEntry } from '../hooks/useMyEntry';
 import { useSettingsModal } from '../hooks/useSettingsModal';
 import ProfileEntryDetails from './ProfileEntryDetails';
+import ProfileSettingsForm from './ProfileSettingsForm';
 
 function AccountView() {
   const { t } = useTranslation();
@@ -26,20 +27,14 @@ function AccountView() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <Avatar src={user.avatarUrl} alt={user.name} className="h-14 w-14" />
-        <div>
-          <p className="flex items-center gap-2 font-medium">
-            {user.name}
-            {user.isAdmin && (
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-normal text-primary">
-                {t('account.adminTag')}
-              </span>
-            )}
-          </p>
-          {user.handle && (
-            <p className="text-sm text-muted-foreground">@{user.handle}</p>
-          )}
-        </div>
+        {user.isAdmin && (
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-normal text-primary">
+            {t('account.adminTag')}
+          </span>
+        )}
       </div>
+
+      <ProfileSettingsForm />
 
       {isLoading ? (
         <LoadingDots label={t('common:loading')} />

@@ -63,7 +63,7 @@ function SidebarAccount({ expanded }: Props) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Link
-            to={routes.profile}
+            to={routes.account}
             aria-label={t('navigation.account')}
             className={`flex h-9 items-center gap-2 rounded-full px-2 hover:bg-accent ${expanded ? 'rounded-lg' : 'justify-center'}`}
           >

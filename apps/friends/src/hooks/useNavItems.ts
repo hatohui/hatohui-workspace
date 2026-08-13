@@ -10,7 +10,6 @@ export interface NavLinkItem {
   label: string;
   icon: NavIconKey;
   active: boolean;
-  /// Unread count rendered as a pill; 0 renders nothing.
   badge?: number;
 }
 
@@ -19,7 +18,9 @@ export function useNavItems(): NavLinkItem[] {
   const { user } = useAuth();
   const location = useLocation();
   const unreadCount = useUnreadCount();
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) =>
+    (location.pathname.startsWith(path) && path !== routes.dashboard) ||
+    location.pathname === path;
 
   const items: NavLinkItem[] = [
     {
@@ -54,10 +55,10 @@ export function useNavItems(): NavLinkItem[] {
       badge: unreadCount,
     });
     items.push({
-      to: routes.account,
-      label: t('navigation.account'),
+      to: routes.profile,
+      label: t('navigation.profile'),
       icon: 'user',
-      active: isActive(routes.account),
+      active: isActive(routes.profile),
     });
   }
 

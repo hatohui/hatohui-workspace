@@ -14,9 +14,13 @@
   "settings": {
     "title": "设置",
     "language": "语言",
-    "general": {
-      "title": "通用",
-      "stub": "更多设置即将推出。"
+    "profile": {
+      "title": "个人资料",
+      "nameLabel": "显示名称",
+      "handleLabel": "账号代号",
+      "handlePlaceholder": "yourhandle",
+      "handleInvalid": "代号须为3-20位小写字母、数字或下划线",
+      "save": "保存"
     }
   },
   "account": {
