@@ -4,6 +4,7 @@ import { Cache, CACHE_KEYS } from '@/libs/cache';
 import {
   PUBLIC_USER_SELECT,
   toPublicUserDto,
+  type PublicUserSource,
 } from '@/modules/users/dto/public-user.dto';
 import {
   ConnectionStatus,
@@ -20,12 +21,7 @@ import {
 } from './dto/notification.dto';
 
 type NotificationWithActor = Notification & {
-  actor: {
-    id: string;
-    name: string;
-    handle: string | null;
-    avatarUrl: string | null;
-  } | null;
+  actor: PublicUserSource | null;
 };
 
 interface CreateNotificationInput {

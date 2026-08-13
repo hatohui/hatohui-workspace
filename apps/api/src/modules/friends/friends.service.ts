@@ -548,7 +548,15 @@ export class FriendsService {
         const friendsOfFriend =
           ownerId && ownerId !== viewer.id
             ? (await this.circleEntries(ownerId, ctx))
-                .filter((other) => !seen.has(other.id))
+                // A first-ring friend's circle legitimately includes the
+                // viewer (they're mutually connected) — exclude the viewer's
+                // own entry explicitly, not just already-seen ids, or the
+                // viewer shows up as a "friend of" themselves.
+                .filter(
+                  (other) =>
+                    !seen.has(other.id) &&
+                    other.association?.userId !== viewer.id,
+                )
                 .slice(0, SOCIAL_GRAPH_FRIEND_OF_FRIEND_LIMIT)
             : [];
         // Claim ids as we go so the same person can't appear twice in the

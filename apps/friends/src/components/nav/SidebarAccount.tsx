@@ -12,6 +12,7 @@ import {
 import { GoogleIcon, useAuth, useGoogleAuth } from '@hatohui/libs';
 import { navIcons } from '../../constants/navIcons';
 import routes from '../../constants/routes';
+import { useMyEntry } from '../../hooks/useMyEntry';
 import NavSlotPlaceholder from './NavSlotPlaceholder';
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
 function SidebarAccount({ expanded }: Props) {
   const { t } = useTranslation();
   const { user, isLoading, isLoggingIn, logout } = useAuth();
+  const { entry } = useMyEntry();
   const login = useGoogleAuth();
   const LogoutIcon = navIcons.logout;
 
@@ -58,6 +60,9 @@ function SidebarAccount({ expanded }: Props) {
     );
   }
 
+  const displayName = entry?.name ?? user.name;
+  const displayAvatarUrl = entry?.avatarUrl ?? user.avatarUrl;
+
   return (
     <>
       <Tooltip>
@@ -68,8 +73,8 @@ function SidebarAccount({ expanded }: Props) {
             className={`flex h-9 items-center gap-2 rounded-full px-2 hover:bg-accent ${expanded ? 'rounded-lg' : 'justify-center'}`}
           >
             <Avatar
-              src={user.avatarUrl}
-              alt={user.name}
+              src={displayAvatarUrl}
+              alt={displayName}
               className={cn(
                 'size-6 shrink-0',
                 user.isAdmin && 'ring-primary ring-2',
@@ -77,14 +82,14 @@ function SidebarAccount({ expanded }: Props) {
             />
             {expanded && (
               <span className="truncate text-xs text-muted-foreground">
-                {user.name}
+                {displayName}
               </span>
             )}
           </Link>
         </TooltipTrigger>
         {!expanded && (
           <TooltipContent side="right">
-            <p>{user.name}</p>
+            <p>{displayName}</p>
           </TooltipContent>
         )}
       </Tooltip>

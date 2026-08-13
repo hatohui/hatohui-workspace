@@ -10,6 +10,7 @@ import { NotificationsService } from '@/modules/notifications/notifications.serv
 import {
   PUBLIC_USER_SELECT,
   toPublicUserDto,
+  type PublicUserSource,
 } from '@/modules/users/dto/public-user.dto';
 import {
   ConnectionStatus,
@@ -25,18 +26,8 @@ import {
 } from './dto/connection.dto';
 
 type ConnectionWithUsers = Connection & {
-  requester: {
-    id: string;
-    name: string;
-    handle: string | null;
-    avatarUrl: string | null;
-  };
-  addressee: {
-    id: string;
-    name: string;
-    handle: string | null;
-    avatarUrl: string | null;
-  };
+  requester: PublicUserSource;
+  addressee: PublicUserSource;
 };
 
 const withUsers = {
