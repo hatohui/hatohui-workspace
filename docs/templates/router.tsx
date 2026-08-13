@@ -23,6 +23,29 @@ const errorLoaders = import.meta.glob(
   '../pages/**/{not-found,error}.tsx',
 ) as GlobImport;
 
+// Every route chunk gets a new content hash on each deploy, so a tab left
+// open across a deploy will 404 fetching its old chunk the next time it
+// navigates. Reload once to pick up the new build; the sessionStorage flag
+// stops a reload loop if the failure has some other cause (e.g. offline).
+const CHUNK_RELOAD_FLAG = 'router:chunk-reload-attempted';
+
+async function loadChunk<T>(loader: () => Promise<T>): Promise<T> {
+  try {
+    const mod = await loader();
+    sessionStorage.removeItem(CHUNK_RELOAD_FLAG);
+    return mod;
+  } catch (error) {
+    if (sessionStorage.getItem(CHUNK_RELOAD_FLAG)) {
+      throw error;
+    }
+    sessionStorage.setItem(CHUNK_RELOAD_FLAG, '1');
+    window.location.reload();
+    return new Promise<T>(() => {
+      // Reload is already in flight — never resolve into stale code.
+    });
+  }
+}
+
 const getRoutePath = (filename: string) => {
   let name = filename.replace(/^\.\.\/pages\//, '').replace(/\.tsx$/, '');
   name = name.replace(/\[(.+?)\]/g, ':$1');
@@ -42,7 +65,7 @@ const routes = Object.keys(pageLoaders).map((pageKey) => {
   return {
     path,
     lazy: async () => {
-      const pageMod = await pageLoaders[pageKey]();
+      const pageMod = await loadChunk(pageLoaders[pageKey]);
       let PageComponent = pageMod.default;
 
       const matches: string[] = [];
@@ -63,7 +86,7 @@ const routes = Object.keys(pageLoaders).map((pageKey) => {
       const Layouts: React.ComponentType<Record<string, unknown>>[] = [];
 
       for (const layoutKey of matches) {
-        const layoutMod = await layoutLoaders[layoutKey]();
+        const layoutMod = await loadChunk(layoutLoaders[layoutKey]);
         const Layout = layoutMod.default;
         Layouts.push(Layout);
         const Prev = PageComponent;
@@ -88,7 +111,7 @@ const routes = Object.keys(pageLoaders).map((pageKey) => {
       errorMatches.sort((a, b) => b.length - a.length);
 
       if (errorMatches.length > 0) {
-        const errorMod = await errorLoaders[errorMatches[0]]();
+        const errorMod = await loadChunk(errorLoaders[errorMatches[0]]);
         const ErrorComponent = errorMod.default;
         let ErrorElement: React.ReactNode = <ErrorComponent />;
 
@@ -114,7 +137,7 @@ if (globalNotFoundKey) {
   routes.push({
     path: '*',
     lazy: async () => {
-      const mod = await errorLoaders[globalNotFoundKey]();
+      const mod = await loadChunk(errorLoaders[globalNotFoundKey]);
       let Component = mod.default;
 
       const normalizedKey = globalNotFoundKey.replace(/\\/g, '/');
@@ -131,7 +154,7 @@ if (globalNotFoundKey) {
       matches.sort((a, b) => b.length - a.length);
 
       for (const layoutKey of matches) {
-        const layoutMod = await layoutLoaders[layoutKey]();
+        const layoutMod = await loadChunk(layoutLoaders[layoutKey]);
         const Layout = layoutMod.default;
         const Prev = Component;
         Component = () => (
