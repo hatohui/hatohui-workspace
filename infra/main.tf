@@ -43,6 +43,7 @@ module "app_secrets_api" {
     R2_SECRET_ACCESS_KEY = module.secrets.r2_secret_access_key
 
     EMAIL_API_KEY = module.secrets.email_api_key
+    ADMIN_API_KEY = module.secrets.admin_api_key
   }
 }
 
@@ -104,6 +105,7 @@ module "lambda" {
     R2_SECRET_ACCESS_KEY = module.secrets.r2_secret_access_key
 
     EMAIL_API_KEY = module.secrets.email_api_key
+    ADMIN_API_KEY = module.secrets.admin_api_key
   }
 }
 

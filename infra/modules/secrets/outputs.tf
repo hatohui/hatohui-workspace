@@ -50,3 +50,9 @@ output "session_jwt_secret" {
   value       = data.doppler_secrets.this.map["SESSION_JWT_SECRET"]
   sensitive   = true
 }
+
+output "admin_api_key" {
+  description = "Second factor required on admin-only API routes, retrieved from Doppler secrets"
+  value       = data.doppler_secrets.this.map["ADMIN_API_KEY"]
+  sensitive   = true
+}
