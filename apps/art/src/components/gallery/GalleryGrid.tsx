@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
-import { UserDtoRole, type AssetDto } from '@hatohui/models';
+import { type AssetDto } from '@hatohui/models';
 import { Button } from '@hatohui/ui';
 import {
   useGalleryAssets,
@@ -46,7 +46,7 @@ export function GalleryGrid({
             }}
           />
         </div>
-        {section === 'assets' && user?.role === UserDtoRole.ADMIN && (
+        {section === 'assets' && user?.isAdmin && (
           <Button onClick={() => setIsUploadOpen(true)}>
             {t('gallery.upload.cta')}
           </Button>
@@ -73,7 +73,7 @@ export function GalleryGrid({
               <div key={asset.id} data-reveal>
                 <GalleryCard
                   asset={asset}
-                  isAdmin={user?.role === UserDtoRole.ADMIN}
+                  isAdmin={user?.isAdmin ?? false}
                   onClick={() => setSelected(asset)}
                 />
               </div>

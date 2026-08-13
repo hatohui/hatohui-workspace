@@ -11,6 +11,10 @@ import {
   Min,
 } from 'class-validator';
 import { FriendVisibility } from '@prisma/client';
+import {
+  CONNECTION_STATES,
+  type ConnectionState,
+} from '@/modules/connections/dto/connection.dto';
 
 export { FriendVisibility };
 
@@ -61,6 +65,14 @@ export class FriendDto {
   addedById: string | null;
 
   @ApiProperty({
+    example: 'janedoe',
+    nullable: true,
+    description:
+      "The associated account's global @handle, if this entry is linked to one",
+  })
+  handle: string | null;
+
+  @ApiProperty({
     description: 'Whether this entry is already claimed by an account',
   })
   isAssociated: boolean;
@@ -71,9 +83,11 @@ export class FriendDto {
   isViewerEntry: boolean;
 
   @ApiProperty({
-    description: 'Whether the requesting viewer already knows this entry',
+    enum: CONNECTION_STATES,
+    description:
+      "How the viewer stands with the account behind this entry. Always NONE for entries nobody has claimed — there's no account to connect with.",
   })
-  isConnected: boolean;
+  connectionStatus: ConnectionState;
 
   @ApiProperty({
     description:
@@ -88,7 +102,33 @@ export class FriendDto {
   updatedAt: string;
 }
 
-export class UpcomingFriendDto extends FriendDto {
+export class UpcomingFriendDto {
+  @ApiProperty({ example: 'clx1234567890', description: 'Unique friend id' })
+  id: string;
+
+  @ApiProperty({ example: 'Jane Doe' })
+  name: string;
+
+  @ApiProperty({
+    example: 'janedoe',
+    nullable: true,
+    description:
+      "The associated account's global @handle, if this entry is linked to one",
+  })
+  handle: string | null;
+
+  @ApiProperty({
+    example: 'http://localhost:9000/hatohui-dev/images/abc123.jpg',
+    nullable: true,
+    description: "Public URL of the friend's avatar image",
+  })
+  avatarUrl: string | null;
+
+  @ApiProperty({
+    description: "Whether this entry is the requesting viewer's own entry",
+  })
+  isViewerEntry: boolean;
+
   @ApiProperty({
     example: 28,
     nullable: true,

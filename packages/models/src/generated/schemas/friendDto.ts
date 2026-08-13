@@ -5,6 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { FriendDtoConnectionStatus } from './friendDtoConnectionStatus';
 import type { FriendDtoSocialMedias } from './friendDtoSocialMedias';
 import type { FriendDtoVisibility } from './friendDtoVisibility';
 
@@ -41,12 +42,17 @@ export interface FriendDto {
      * @nullable
      */
   addedById: string | null;
+  /**
+     * The associated account's global @handle, if this entry is linked to one
+     * @nullable
+     */
+  handle: string | null;
   /** Whether this entry is already claimed by an account */
   isAssociated: boolean;
   /** Whether this entry is the requesting viewer's own entry */
   isViewerEntry: boolean;
-  /** Whether the requesting viewer already knows this entry */
-  isConnected: boolean;
+  /** How the viewer stands with the account behind this entry. Always NONE for entries nobody has claimed — there's no account to connect with. */
+  connectionStatus: FriendDtoConnectionStatus;
   /** Whether the requesting viewer is allowed to edit/delete this entry */
   canEdit: boolean;
   createdAt: string;

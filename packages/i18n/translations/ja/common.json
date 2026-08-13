@@ -17,5 +17,53 @@
     "server": "サーバー側で問題が発生しました。もう一度お試しください。",
     "validation": "入力内容をご確認の上、もう一度お試しください。",
     "unknown": "問題が発生しました。もう一度お試しください。"
+  },
+  "avatarField": {
+    "uploadLabel": "写真をアップロード",
+    "uploading": "アップロード中...",
+    "uploadError": "写真をアップロードできませんでした。もう一度お試しください。",
+    "uploadAuthRequired": "写真をアップロードするにはサインインしてから、もう一度お試しください。"
+  },
+  "onboarding": {
+    "title": "ようこそ",
+    "skip": "スキップ",
+    "next": "次へ",
+    "back": "戻る",
+    "optIn": {
+      "question": "リストに参加しますか？",
+      "note": "誕生日を誰に見せるかは自分で選べます。",
+      "yes": "はい",
+      "no": "いいえ"
+    },
+    "profile": {
+      "title": "この表示でよろしいですか？",
+      "nameLabel": "表示名"
+    },
+    "handle": {
+      "title": "ハンドルネームを選択",
+      "description": "他の人があなたを見つけるための、短くユニークな@名前です。",
+      "placeholder": "yourhandle",
+      "invalid": "3〜20文字：小文字の英数字とアンダースコアのみ使用できます"
+    },
+    "visibility": {
+      "title": "誕生日を誰に見せますか？"
+    },
+    "birthday": {
+      "title": "これはあなたの誕生日ですか？",
+      "confirmedFromGoogle": "Googleアカウントから取得しました。",
+      "confirm": "はい、合っています",
+      "enterManually": "手動で入力する"
+    },
+    "connections": {
+      "title": "すでに知っている人はいますか？",
+      "searchPlaceholder": "名前で検索...",
+      "empty": "該当する人が見つかりません。",
+      "selectedCount": "{{count}}人選択中",
+      "removeAria": "{{name}}を削除"
+    },
+    "complete": {
+      "title": "設定が完了しました！",
+      "cta": "ダッシュボードへ"
+    }
   }
 }

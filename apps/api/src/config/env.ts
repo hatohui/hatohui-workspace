@@ -24,6 +24,10 @@ const envSchema = z.object({
   R2_SECRET_ACCESS_KEY: z.string(),
 
   EMAIL_API_KEY: z.string(),
+
+  /// Second factor for admin-only routes, on top of "your email matches the
+  /// configured admin address". A stolen session alone can't reach them.
+  ADMIN_API_KEY: z.string().min(16),
 });
 
 export type Env = z.infer<typeof envSchema>;

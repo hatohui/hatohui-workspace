@@ -24,11 +24,11 @@ function DashboardPage() {
     loadMore,
     refetch,
   } = useUpcomingSections(
-      controls.debouncedSearch,
-      controls.group,
-      controls.direction,
-      i18n.language,
-    );
+    controls.debouncedSearch,
+    controls.group,
+    controls.direction,
+    i18n.language,
+  );
 
   if (isAuthLoading) {
     return null;

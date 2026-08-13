@@ -121,7 +121,10 @@ export class FriendsController {
 
   @Get(':id')
   @UseGuards(OptionalAuthGuard)
-  @ApiOperation({ operationId: 'friend', summary: 'Get a friend by id' })
+  @ApiOperation({
+    operationId: 'friend',
+    summary: 'Get a friend by id or by the @handle of its associated account',
+  })
   @ApiOkResponse({ type: FriendDto })
   findOne(
     @Param('id') id: string,
@@ -202,6 +205,20 @@ export class FriendsController {
     @CurrentUser() viewer: User,
   ): Promise<FriendDto> {
     return this.friendsService.connect(id, viewer);
+  }
+
+  @Delete(':id/connect')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'disconnectFriend',
+    summary: 'Withdraw a pending request, or remove an existing connection',
+  })
+  @ApiOkResponse({ type: FriendDto })
+  disconnect(
+    @Param('id') id: string,
+    @CurrentUser() viewer: User,
+  ): Promise<FriendDto> {
+    return this.friendsService.disconnect(id, viewer);
   }
 
   @Post(':id/claim')

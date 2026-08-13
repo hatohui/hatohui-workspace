@@ -6,14 +6,18 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { UserDtoOnboardingStatus } from './userDtoOnboardingStatus';
-import type { UserDtoRole } from './userDtoRole';
 
 export interface UserDto {
   id: string;
-  email: string;
   name: string;
+  /**
+     * Global unique handle (e.g. "hatohui"), without the @
+     * @nullable
+     */
+  handle: string | null;
   /** @nullable */
   avatarUrl: string | null;
-  role: UserDtoRole;
+  /** Whether this account is the configured admin. Cosmetic only — admin routes enforce their own check and also require the admin key. */
+  isAdmin: boolean;
   onboardingStatus: UserDtoOnboardingStatus;
 }

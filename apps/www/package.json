@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hatohui/i18n": "workspace:*",
     "@hatohui/libs": "workspace:*",
     "@hatohui/models": "workspace:*",
     "@tanstack/react-query": "^5.101.4",

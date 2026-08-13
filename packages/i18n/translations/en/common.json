@@ -17,5 +17,53 @@
     "server": "Something went wrong on our end. Please try again.",
     "validation": "Please check the form and try again.",
     "unknown": "Something went wrong. Please try again."
+  },
+  "avatarField": {
+    "uploadLabel": "Upload photo",
+    "uploading": "Uploading...",
+    "uploadError": "Couldn't upload that photo. Please try again.",
+    "uploadAuthRequired": "Sign in to upload a photo, then try again."
+  },
+  "onboarding": {
+    "title": "Welcome",
+    "skip": "Skip",
+    "next": "Next",
+    "back": "Back",
+    "optIn": {
+      "question": "Do you want to be part of the list?",
+      "note": "You can choose who can see your birthday.",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "profile": {
+      "title": "Is this how you want to appear?",
+      "nameLabel": "Display name"
+    },
+    "handle": {
+      "title": "Pick your handle",
+      "description": "A short, unique @name people can use to find you.",
+      "placeholder": "yourhandle",
+      "invalid": "3-20 characters: lowercase letters, numbers, and underscores only"
+    },
+    "visibility": {
+      "title": "Who can see your birthday?"
+    },
+    "birthday": {
+      "title": "Is this your birthday?",
+      "confirmedFromGoogle": "We got this from your Google account.",
+      "confirm": "Yes, that's right",
+      "enterManually": "Enter it manually"
+    },
+    "connections": {
+      "title": "Do you already know anyone here?",
+      "searchPlaceholder": "Search people...",
+      "empty": "No matches.",
+      "selectedCount": "{{count}} selected",
+      "removeAria": "Remove {{name}}"
+    },
+    "complete": {
+      "title": "You're all set!",
+      "cta": "Go to dashboard"
+    }
   }
 }

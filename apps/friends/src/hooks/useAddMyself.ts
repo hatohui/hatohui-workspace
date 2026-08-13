@@ -1,5 +1,5 @@
 import { useOnboardingOptIn, useOnboardingState } from '@hatohui/models';
-import { useOnboardingModal } from './useOnboardingModal';
+import { useOnboardingModal } from '@hatohui/libs';
 
 export function useAddMyself() {
   const stateQuery = useOnboardingState();

@@ -15,7 +15,7 @@ function BirthdayCard({ friend }: Props) {
 
   return (
     <Link
-      to={routes.friend(friend.id)}
+      to={routes.friend(friend.handle ?? friend.id)}
       className={cn(
         'flex flex-col gap-6 rounded-xl border bg-card px-6 py-6 text-card-foreground no-underline transition-[background-color,box-shadow] duration-200 ease-out hover:bg-card-hover hover:shadow-[0_1px_3px_rgba(20,20,19,0.08)]',
         friend.isViewerEntry && 'border-primary ring-primary/15 ring-2',
@@ -28,7 +28,14 @@ function BirthdayCard({ friend }: Props) {
             alt={friend.name}
             className="h-10 w-10"
           />
-          {friend.name}
+          <span className="flex flex-col">
+            {friend.name}
+            {friend.handle && (
+              <span className="text-sm font-normal text-muted-foreground">
+                @{friend.handle}
+              </span>
+            )}
+          </span>
         </span>
         <time
           className="text-sm text-muted-foreground"

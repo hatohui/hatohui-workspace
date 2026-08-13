@@ -13,10 +13,15 @@ implementation spec.
       frontend pieces (now wired into `apps/friends`).
 - [x] No new calendar/date library — the calendar view is a 12-month grid built on
       `packages/tools` formatters, not a day-grid calendar widget.
-- [x] Roles are a flat `Role` enum (`ADMIN` / `MEMBER`) on `User`.
+- [x] ~~Roles are a flat `Role` enum (`ADMIN` / `MEMBER`) on `User`.~~
+      **Superseded by [connections-graph](../connections-graph/PRD.md):** the
+      `Role` enum and `User.role` column were dropped. Admin-ness is derived per
+      request from the `AppConfig` admin email instead of cached on the row.
 - [x] Admin identity comes from a singleton `AppConfig` table (`adminEmail`, seeded
-      `hatohui@gmail.com` via `apps/api/prisma/seeds/core/app-config.ts`), assigned
-      to `User.role` on every Google login.
+      `hatohui@gmail.com` via `apps/api/prisma/seeds/core/app-config.ts`).
+      ~~assigned to `User.role` on every Google login.~~ **Superseded:** resolved
+      at request time (cached in Redis), so it can no longer go stale when the
+      config changes.
 - [x] **Identity model ended up as three entities, not two** (this changed mid-way
       through discovery from the original `Friend.ownerId`/`Friend.selfOfUserId`
       design): `User` (the login account), `BirthdayDetails` (a birthday/profile
@@ -24,11 +29,17 @@ implementation spec.
       (one-to-one, permanent link between a `User` and the `BirthdayDetails` entry
       that represents them). Most `BirthdayDetails` rows are never associated —
       they're entries someone added about a third party.
-- [x] Ownership-scoped mutation via `BirthdayDetails.addedById`; admin bypasses,
-      member restricted to entries they added, anonymous is read-only.
+- [x] Ownership-scoped mutation via `BirthdayDetails.addedById`; member restricted
+      to entries they added, anonymous is read-only. ~~admin bypasses~~
+      **Superseded by [connections-graph](../connections-graph/PRD.md):** admin
+      powers no longer apply on normal routes — an admin browsing the app sees
+      and edits exactly what a member would. The unfiltered view moved to a
+      dedicated admin-gated endpoint.
 - [x] Visibility is per-entry (`FriendVisibility`: `PUBLIC` / `FRIENDS_ONLY` /
       `NONE`), settable any time (not locked after onboarding); `NONE` skips asking
-      for a birthday during onboarding.
+      for a birthday during onboarding. **Note:** `FRIENDS_ONLY` originally meant
+      "any signed-in user"; it now means the owner's accepted connections — see
+      [connections-graph](../connections-graph/PRD.md).
 - [x] **Claiming, not auto-detection.** Skipping onboarding never creates an
       `Association`, which leaves any unassociated `BirthdayDetails` entry open to
       a later claim (`POST /friends/:id/claim`) by whoever it belongs to — there's
@@ -40,9 +51,13 @@ implementation spec.
       the answers themselves are already durable server-side.
 - [x] Declining onboarding is permanent — no re-prompt; manual "add myself" entry
       point (on the Add Friend page) covers users who change their mind later.
-- [x] Connections are many-to-many between `User` and `BirthdayDetails` (not
+- [x] ~~Connections are many-to-many between `User` and `BirthdayDetails` (not
       `User`↔`User`) — the onboarding picker selects from existing directory
-      entries, most of which have no account of their own.
+      entries, most of which have no account of their own.~~
+      **Superseded by [connections-graph](../connections-graph/PRD.md):**
+      `Connection` is now a mutual, request/accept `User`↔`User` graph. "Who
+      knows this entry" is answered by `BirthdayDetails.addedById` instead, and
+      the onboarding picker searches accounts rather than directory entries.
 
 ## User stories (all confirmed and implemented, see PRD.md for full AC)
 

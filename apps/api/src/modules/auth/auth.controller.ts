@@ -32,15 +32,15 @@ export class AuthController {
       this.session.sign(user.id),
       this.session.cookieOptions(),
     );
-    return toUserDto(user);
+    return toUserDto(user, await this.authService.isAdmin(user));
   }
 
   @Get('me')
   @UseGuards(AuthGuard)
   @ApiOperation({ operationId: 'me', summary: 'Get the current session user' })
   @ApiOkResponse({ type: UserDto })
-  me(@CurrentUser() user: User): UserDto {
-    return toUserDto(user);
+  async me(@CurrentUser() user: User): Promise<UserDto> {
+    return toUserDto(user, await this.authService.isAdmin(user));
   }
 
   @Post('logout')
@@ -50,13 +50,13 @@ export class AuthController {
   }
 }
 
-function toUserDto(user: User): UserDto {
+function toUserDto(user: User, isAdmin: boolean): UserDto {
   return {
     id: user.id,
-    email: user.email,
     name: user.name,
+    handle: user.handle,
     avatarUrl: user.avatarUrl,
-    role: user.role,
+    isAdmin,
     onboardingStatus: user.onboardingStatus,
   };
 }

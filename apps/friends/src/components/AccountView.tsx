@@ -33,13 +33,15 @@ function AccountView() {
         <div>
           <p className="flex items-center gap-2 font-medium">
             {entry?.name ?? user.name}
-            {user.role === 'ADMIN' && (
+            {user.isAdmin && (
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-normal text-primary">
                 {t('account.adminTag')}
               </span>
             )}
           </p>
-          <p className="text-sm text-muted-foreground">{user.email}</p>
+          {user.handle && (
+            <p className="text-sm text-muted-foreground">@{user.handle}</p>
+          )}
         </div>
       </div>
 

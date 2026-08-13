@@ -38,7 +38,9 @@ function SocialMediaFieldList({ rows, onAdd, onRemove, onUpdate }: Props) {
             <SelectTrigger className="w-40 shrink-0">
               <SelectValue
                 placeholder={t('friendForm.socialMediaPlatformPlaceholder')}
-              />
+              >
+                {row.platform || undefined}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {platforms.map((platform) => (

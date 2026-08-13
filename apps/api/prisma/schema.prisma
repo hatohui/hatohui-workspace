@@ -7,11 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  ADMIN
-  MEMBER
-}
-
 enum OnboardingStatus {
   PENDING
   COMPLETED
@@ -23,15 +18,18 @@ model User {
   googleId          String             @unique
   email             String             @unique
   name              String
+  handle            String?            @unique
   avatarUrl         String?
-  role              Role               @default(MEMBER)
   onboardingStatus  OnboardingStatus   @default(PENDING)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
   association       Association?
   addedEntries      BirthdayDetails[]  @relation("AddedBy")
-  connections       Connection[]
+  sentConnections     Connection[]     @relation("ConnectionRequester")
+  receivedConnections Connection[]     @relation("ConnectionAddressee")
+  notifications       Notification[]   @relation("NotificationRecipient")
+  actedNotifications  Notification[]   @relation("NotificationActor")
   uploadedAssets    Asset[]
   assignedCommissions      Commission[]              @relation("CommissionAssignee")
   commissionNotes          CommissionNote[]           @relation("CommissionNoteAuthor")
@@ -108,7 +106,6 @@ model BirthdayDetails {
   addedBy         User?            @relation("AddedBy", fields: [addedById], references: [id])
 
   association     Association?
-  connections     Connection[]
 }
 
 /// A previously-current avatar image for whatever owns it (a User account, a
@@ -127,19 +124,64 @@ model AvatarVersion {
   @@index([ownerId, createdAt])
 }
 
-/// Many-to-many "I know this entry" link recorded during onboarding's
-/// add-friends step. Links an Account to an existing BirthdayDetails entry
-/// (not another Account) since most entries in the directory don't have an
-/// Account of their own.
-model Connection {
-  id                String          @id @default(cuid())
-  userId            String
-  user              User            @relation(fields: [userId], references: [id])
-  birthdayDetailsId String
-  birthdayDetails   BirthdayDetails @relation(fields: [birthdayDetailsId], references: [id])
-  createdAt         DateTime        @default(now())
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+}
 
-  @@unique([userId, birthdayDetailsId])
+/// Mutual account-to-account connection, requiring the addressee's consent.
+/// Stored as one row per pair with directional columns (requester sent it,
+/// addressee answers it) but read as symmetric: any "my connections" query
+/// must match requesterId OR addresseeId. Deliberately not tied to
+/// BirthdayDetails — this is the account-level social graph every app in the
+/// workspace shares. "Who knows this birthday entry" is answered by
+/// BirthdayDetails.addedById instead.
+model Connection {
+  id          String           @id @default(cuid())
+  requesterId String
+  requester   User             @relation("ConnectionRequester", fields: [requesterId], references: [id])
+  addresseeId String
+  addressee   User             @relation("ConnectionAddressee", fields: [addresseeId], references: [id])
+  status      ConnectionStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+  respondedAt DateTime?
+
+  @@unique([requesterId, addresseeId])
+  @@index([addresseeId, status])
+}
+
+enum NotificationType {
+  CONNECTION_REQUEST
+  CONNECTION_ACCEPTED
+  BIRTHDAY_REMINDER
+  SYSTEM
+}
+
+/// Cross-app notification inbox, shared by every app in the workspace (see
+/// AppScope). `subjectId` is deliberately NOT a foreign key — same trick as
+/// AvatarVersion.ownerId: every model here uses globally-unique cuids, and
+/// `type` already says which table to resolve it from, so one column serves
+/// Connection / BirthdayDetails / Commission / ... without a nullable FK per
+/// app. Content is never denormalized — handles are mutable and "deleted"
+/// BirthdayDetails entries are field-cleared rather than removed, so names are
+/// re-resolved at read time. `data` carries only immutable point-in-time facts;
+/// if it can change, it doesn't belong there.
+model Notification {
+  id          String           @id @default(cuid())
+  recipientId String
+  recipient   User             @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  actorId     String?
+  actor       User?            @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+  scope       AppScope         @default(FRIENDS)
+  type        NotificationType
+  subjectId   String?
+  data        Json?
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  @@unique([recipientId, type, subjectId])
+  @@index([recipientId, readAt])
+  @@index([recipientId, createdAt(sort: Desc)])
 }
 
 /// A media asset (image) uploaded to storage via the images.sign presigned

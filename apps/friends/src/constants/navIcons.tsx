@@ -1,4 +1,5 @@
 import {
+  Bell,
   Cake,
   Home,
   LogOut,
@@ -10,7 +11,14 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 export type NavIconKey =
-  'home' | 'cake' | 'userPlus' | 'settings' | 'logout' | 'social' | 'user';
+  | 'home'
+  | 'cake'
+  | 'userPlus'
+  | 'settings'
+  | 'logout'
+  | 'social'
+  | 'user'
+  | 'bell';
 
 export const navIcons: Record<NavIconKey, LucideIcon> = {
   home: Home,
@@ -20,4 +28,5 @@ export const navIcons: Record<NavIconKey, LucideIcon> = {
   logout: LogOut,
   social: Network,
   user: User,
+  bell: Bell,
 };

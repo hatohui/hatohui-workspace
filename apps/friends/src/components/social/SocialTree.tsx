@@ -67,9 +67,7 @@ function SocialTree() {
           alt={user?.name ?? ''}
           className="size-14 ring-2 ring-primary ring-offset-2 ring-offset-background"
         />
-        <span className="text-xs text-muted-foreground">
-          {t('social.you')}
-        </span>
+        <span className="text-xs text-muted-foreground">{t('social.you')}</span>
       </div>
 
       {nodes.map((node) => (

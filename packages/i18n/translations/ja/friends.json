@@ -8,7 +8,8 @@
     "logout": "ログアウト",
     "settings": "設定",
     "expandNav": "サイドバーを展開",
-    "collapseNav": "サイドバーを折りたたむ"
+    "collapseNav": "サイドバーを折りたたむ",
+    "notifications": "通知"
   },
   "settings": {
     "title": "設定",
@@ -78,10 +79,6 @@
       "FRIENDS_ONLY": "友達のみ",
       "NONE": "非公開"
     },
-    "avatarUploadLabel": "写真をアップロード",
-    "avatarUploading": "アップロード中...",
-    "avatarUploadError": "写真をアップロードできませんでした。もう一度お試しください。",
-    "avatarUploadAuthRequired": "写真をアップロードするにはサインインしてから、もう一度お試しください。",
     "avatarHistoryTitle": "過去のアバター",
     "avatarHistoryRestoreAria": "このアバターを復元",
     "avatarHistoryRestoreError": "アバターを復元できませんでした。もう一度お試しください。",
@@ -101,47 +98,31 @@
     "addAsFriendAction": "友達として追加",
     "connectedLabel": "追加済み",
     "viewProfile": "プロフィールを見る",
-    "back": "戻る"
-  },
-  "onboarding": {
-    "title": "ようこそ",
-    "skip": "スキップ",
-    "next": "次へ",
     "back": "戻る",
-    "optIn": {
-      "question": "リストに参加しますか？",
-      "note": "誕生日を誰に見せるかは自分で選べます。",
-      "yes": "はい",
-      "no": "いいえ"
-    },
-    "profile": {
-      "title": "この表示でよろしいですか？",
-      "nameLabel": "表示名"
-    },
-    "visibility": {
-      "title": "誕生日を誰に見せますか？"
-    },
-    "birthday": {
-      "title": "これはあなたの誕生日ですか？",
-      "confirmedFromGoogle": "Googleアカウントから取得しました。",
-      "confirm": "はい、合っています",
-      "enterManually": "手動で入力する"
-    },
-    "connections": {
-      "title": "すでに知っている人はいますか？",
-      "searchPlaceholder": "名前で検索...",
-      "empty": "該当する人が見つかりません。",
-      "selectedCount": "{{count}}人選択中",
-      "removeAria": "{{name}}を削除"
-    },
-    "complete": {
-      "title": "設定が完了しました！",
-      "cta": "ダッシュボードへ"
+    "connection": {
+      "connect": "つながる",
+      "accept": "リクエストを承認",
+      "cancel": "リクエストを取り消す",
+      "disconnect": "つながりを解除"
     }
   },
   "notFound": {
     "title": "ページが見つかりません",
     "subtitle": "お探しのページは存在しないか、移動した可能性があります。",
     "backToDashboard": "ダッシュボードに戻る"
+  },
+  "notifications": {
+    "title": "通知",
+    "empty": "今のところ新しい通知はありません。",
+    "markAllRead": "すべて既読にする",
+    "accept": "承認",
+    "decline": "辞退",
+    "someone": "誰か",
+    "types": {
+      "CONNECTION_REQUEST": "{{name}}さんがあなたとつながりたいそうです。",
+      "CONNECTION_ACCEPTED": "{{name}}さんがつながりのリクエストを承認しました。",
+      "BIRTHDAY_REMINDER": "もうすぐ誕生日です。",
+      "SYSTEM": "新しい通知があります。"
+    }
   }
 }

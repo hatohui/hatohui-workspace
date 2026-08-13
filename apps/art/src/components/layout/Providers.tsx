@@ -2,7 +2,11 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '@hatohui/libs';
+import {
+  AuthProvider,
+  OnboardingModalProvider,
+  OnboardingModal,
+} from '@hatohui/libs';
 import { TooltipProvider } from '@hatohui/ui';
 import { useTranslation, detectLocale } from '@hatohui/i18n';
 import '@/lib/api';
@@ -28,7 +32,10 @@ export function Providers({ children }: { children: ReactNode }) {
           process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID as string
         }
       >
-        <TooltipProvider>{children}</TooltipProvider>
+        <OnboardingModalProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+          <OnboardingModal mode="identity" />
+        </OnboardingModalProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

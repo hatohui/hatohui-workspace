@@ -342,7 +342,7 @@
             }
           }
         },
-        "summary": "Get a friend by id",
+        "summary": "Get a friend by id or by the @handle of its associated account",
         "tags": [
           "friends"
         ]
@@ -508,6 +508,35 @@
         "tags": [
           "friends"
         ]
+      },
+      "delete": {
+        "operationId": "disconnectFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Withdraw a pending request, or remove an existing connection",
+        "tags": [
+          "friends"
+        ]
       }
     },
     "/friends/{id}/claim": {
@@ -538,6 +567,261 @@
         "summary": "Claim an unassociated friend entry as your own account",
         "tags": [
           "friends"
+        ]
+      }
+    },
+    "/connections": {
+      "get": {
+        "operationId": "connections",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Accounts the current account is connected with",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/connections/requests": {
+      "get": {
+        "operationId": "connectionRequests",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionRequestsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Pending connection requests, incoming and outgoing",
+        "tags": [
+          "connections"
+        ]
+      },
+      "post": {
+        "operationId": "requestConnection",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConnectionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Ask an account to connect (auto-accepts if they already asked you)",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/connections/requests/{id}/accept": {
+      "post": {
+        "operationId": "acceptConnectionRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Accept an incoming connection request",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/connections/requests/{id}": {
+      "delete": {
+        "operationId": "withdrawConnectionRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Decline an incoming request, or withdraw one you sent",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/connections/{userId}": {
+      "delete": {
+        "operationId": "disconnect",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Remove an existing connection with an account",
+        "tags": [
+          "connections"
+        ]
+      }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "notifications",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedNotificationsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "The current account's notification inbox, newest first",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "operationId": "unreadNotificationCount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCountDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Unread notification count, for the bell badge",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/{id}/read": {
+      "post": {
+        "operationId": "markNotificationRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Mark a single notification read",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/read-all": {
+      "post": {
+        "operationId": "markAllNotificationsRead",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Mark every unread notification read",
+        "tags": [
+          "notifications"
         ]
       }
     },
@@ -836,6 +1120,123 @@
         "summary": "Abandon onboarding at any step; never re-prompted automatically",
         "tags": [
           "onboarding"
+        ]
+      }
+    },
+    "/users/search": {
+      "get": {
+        "operationId": "searchUsers",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against name or @handle",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedUsersDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Find accounts to connect with, by name or @handle",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/me": {
+      "patch": {
+        "operationId": "updateMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update the current user's account fields (e.g. handle)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/admin/birthdays": {
+      "get": {
+        "operationId": "adminBirthdays",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FriendDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every directory entry, ignoring visibility. Admin-only; regular listings stay visibility-filtered.",
+        "tags": [
+          "admin"
         ]
       }
     },
@@ -2366,22 +2767,21 @@
           "id": {
             "type": "string"
           },
-          "email": {
-            "type": "string"
-          },
           "name": {
             "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true,
+            "description": "Global unique handle (e.g. \"hatohui\"), without the @"
           },
           "avatarUrl": {
             "type": "string",
             "nullable": true
           },
-          "role": {
-            "type": "string",
-            "enum": [
-              "ADMIN",
-              "MEMBER"
-            ]
+          "isAdmin": {
+            "type": "boolean",
+            "description": "Whether this account is the configured admin. Cosmetic only — admin routes enforce their own check and also require the admin key."
           },
           "onboardingStatus": {
             "type": "string",
@@ -2394,10 +2794,10 @@
         },
         "required": [
           "id",
-          "email",
           "name",
+          "handle",
           "avatarUrl",
-          "role",
+          "isAdmin",
           "onboardingStatus"
         ]
       },
@@ -2464,6 +2864,12 @@
             "nullable": true,
             "description": "Id of the account that added this entry, if any"
           },
+          "handle": {
+            "type": "string",
+            "example": "janedoe",
+            "nullable": true,
+            "description": "The associated account's global @handle, if this entry is linked to one"
+          },
           "isAssociated": {
             "type": "boolean",
             "description": "Whether this entry is already claimed by an account"
@@ -2472,9 +2878,15 @@
             "type": "boolean",
             "description": "Whether this entry is the requesting viewer's own entry"
           },
-          "isConnected": {
-            "type": "boolean",
-            "description": "Whether the requesting viewer already knows this entry"
+          "connectionStatus": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING_OUTGOING",
+              "PENDING_INCOMING",
+              "ACCEPTED"
+            ],
+            "description": "How the viewer stands with the account behind this entry. Always NONE for entries nobody has claimed — there's no account to connect with."
           },
           "canEdit": {
             "type": "boolean",
@@ -2500,9 +2912,10 @@
           "visibility",
           "avatarUrl",
           "addedById",
+          "handle",
           "isAssociated",
           "isViewerEntry",
-          "isConnected",
+          "connectionStatus",
           "canEdit",
           "createdAt",
           "updatedAt"
@@ -2520,45 +2933,11 @@
             "type": "string",
             "example": "Jane Doe"
           },
-          "birthYear": {
-            "type": "number",
-            "example": 1998,
-            "nullable": true,
-            "description": "Birth year"
-          },
-          "birthMonth": {
-            "type": "number",
-            "example": 5,
-            "nullable": true,
-            "description": "Birth month (1-12)"
-          },
-          "birthDay": {
-            "type": "number",
-            "example": 14,
-            "nullable": true,
-            "description": "Birth day (1-31)"
-          },
-          "socialMedias": {
-            "type": "object",
-            "example": {
-              "Twitter": "@jane",
-              "Instagram": "@jane.doe"
-            },
-            "nullable": true
-          },
-          "preferAnonymous": {
-            "type": "boolean",
-            "example": true,
-            "default": true
-          },
-          "visibility": {
+          "handle": {
             "type": "string",
-            "enum": [
-              "PUBLIC",
-              "FRIENDS_ONLY",
-              "NONE"
-            ],
-            "example": "PUBLIC"
+            "example": "janedoe",
+            "nullable": true,
+            "description": "The associated account's global @handle, if this entry is linked to one"
           },
           "avatarUrl": {
             "type": "string",
@@ -2566,34 +2945,9 @@
             "nullable": true,
             "description": "Public URL of the friend's avatar image"
           },
-          "addedById": {
-            "type": "string",
-            "nullable": true,
-            "description": "Id of the account that added this entry, if any"
-          },
-          "isAssociated": {
-            "type": "boolean",
-            "description": "Whether this entry is already claimed by an account"
-          },
           "isViewerEntry": {
             "type": "boolean",
             "description": "Whether this entry is the requesting viewer's own entry"
-          },
-          "isConnected": {
-            "type": "boolean",
-            "description": "Whether the requesting viewer already knows this entry"
-          },
-          "canEdit": {
-            "type": "boolean",
-            "description": "Whether the requesting viewer is allowed to edit/delete this entry"
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2026-07-23T00:00:00.000Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "example": "2026-07-23T00:00:00.000Z"
           },
           "turningAge": {
             "type": "number",
@@ -2610,20 +2964,9 @@
         "required": [
           "id",
           "name",
-          "birthYear",
-          "birthMonth",
-          "birthDay",
-          "socialMedias",
-          "preferAnonymous",
-          "visibility",
+          "handle",
           "avatarUrl",
-          "addedById",
-          "isAssociated",
           "isViewerEntry",
-          "isConnected",
-          "canEdit",
-          "createdAt",
-          "updatedAt",
           "turningAge",
           "nextBirthdayDate"
         ]
@@ -2885,6 +3228,227 @@
           "versions"
         ]
       },
+      "PublicUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true,
+            "description": "Global unique handle, without the @"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "handle",
+          "avatarUrl"
+        ]
+      },
+      "ConnectionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Connection row id, used to accept or withdraw"
+          },
+          "user": {
+            "description": "The account on the other side, from the viewer’s perspective",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicUserDto"
+              }
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING_OUTGOING",
+              "PENDING_INCOMING",
+              "ACCEPTED"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "respondedAt": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "user",
+          "state",
+          "createdAt",
+          "respondedAt"
+        ]
+      },
+      "ConnectionsDto": {
+        "type": "object",
+        "properties": {
+          "connections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConnectionDto"
+            }
+          }
+        },
+        "required": [
+          "connections"
+        ]
+      },
+      "ConnectionRequestsDto": {
+        "type": "object",
+        "properties": {
+          "incoming": {
+            "description": "Requests waiting on the viewer to accept or decline",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConnectionDto"
+            }
+          },
+          "outgoing": {
+            "description": "Requests the viewer sent that are still unanswered",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConnectionDto"
+            }
+          }
+        },
+        "required": [
+          "incoming",
+          "outgoing"
+        ]
+      },
+      "CreateConnectionRequestDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "Account to send a connection request to"
+          }
+        },
+        "required": [
+          "userId"
+        ]
+      },
+      "NotificationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CONNECTION_REQUEST",
+              "CONNECTION_ACCEPTED",
+              "BIRTHDAY_REMINDER",
+              "SYSTEM"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "WORKSHOP",
+              "ART",
+              "FRIENDS",
+              "WWW",
+              "TRAVEL"
+            ]
+          },
+          "actor": {
+            "nullable": true,
+            "description": "Who caused this, if anyone (system notifications have none)",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicUserDto"
+              }
+            ]
+          },
+          "subjectId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the thing this is about; which table to read it from is implied by `type`"
+          },
+          "isActionable": {
+            "type": "boolean",
+            "description": "Whether the viewer can still act on this (e.g. a connection request that is still pending). False once it becomes history."
+          },
+          "readAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "scope",
+          "actor",
+          "subjectId",
+          "isActionable",
+          "readAt",
+          "createdAt"
+        ]
+      },
+      "PaginatedNotificationsDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "unreadCount": {
+            "type": "number",
+            "description": "Unread count across all pages, for the bell"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "unreadCount"
+        ]
+      },
+      "UnreadCountDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "count"
+        ]
+      },
       "HealthDto": {
         "type": "object",
         "properties": {
@@ -3089,7 +3653,8 @@
       "AddConnectionsDto": {
         "type": "object",
         "properties": {
-          "birthdayDetailsIds": {
+          "userIds": {
+            "description": "Accounts to send connection requests to. Connections are between accounts, so these are user ids — unclaimed directory entries have nobody to ask.",
             "type": "array",
             "items": {
               "type": "string"
@@ -3097,8 +3662,44 @@
           }
         },
         "required": [
-          "birthdayDetailsIds"
+          "userIds"
         ]
+      },
+      "PaginatedUsersDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicUserDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "UpdateMeDto": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "example": "hatohui",
+            "description": "Global unique handle, lowercase letters/digits/underscore, 3-20 chars"
+          }
+        }
       },
       "AssetDto": {
         "type": "object",

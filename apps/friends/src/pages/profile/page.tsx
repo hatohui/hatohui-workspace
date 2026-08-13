@@ -17,7 +17,7 @@ function ProfilePage() {
           <LoadingDots label={t('common:loading')} />
         </div>
       ) : entry ? (
-        <Navigate to={routes.friend(entry.id)} replace />
+        <Navigate to={routes.friend(entry.handle ?? entry.id)} replace />
       ) : (
         <div className="flex flex-col gap-2">
           <p className="text-muted-foreground">{t('profile.notAdded')}</p>

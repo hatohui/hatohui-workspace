@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth, GoogleLoginIconButton } from '@hatohui/libs';
-import { UserDtoRole } from '@hatohui/models';
 import { Avatar } from '@hatohui/ui';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -21,7 +20,7 @@ export function SiteHeader() {
           <Link href="/">{t('site.nav.gallery')}</Link>
           <Link href="/commission">{t('site.nav.commission')}</Link>
           <Link href="/queue">{t('site.nav.queue')}</Link>
-          {user?.role === UserDtoRole.ADMIN && (
+          {user?.isAdmin && (
             <Link href="/admin/commissions">{t('site.nav.admin')}</Link>
           )}
         </nav>

@@ -17,5 +17,53 @@
     "server": "Đã xảy ra lỗi từ hệ thống. Vui lòng thử lại.",
     "validation": "Vui lòng kiểm tra lại biểu mẫu và thử lại.",
     "unknown": "Đã xảy ra lỗi. Vui lòng thử lại."
+  },
+  "avatarField": {
+    "uploadLabel": "Tải ảnh lên",
+    "uploading": "Đang tải lên...",
+    "uploadError": "Không thể tải ảnh lên. Vui lòng thử lại.",
+    "uploadAuthRequired": "Vui lòng đăng nhập để tải ảnh lên, sau đó thử lại."
+  },
+  "onboarding": {
+    "title": "Chào mừng",
+    "skip": "Bỏ qua",
+    "next": "Tiếp theo",
+    "back": "Quay lại",
+    "optIn": {
+      "question": "Bạn có muốn tham gia danh sách không?",
+      "note": "Bạn có thể chọn ai được xem sinh nhật của mình.",
+      "yes": "Có",
+      "no": "Không"
+    },
+    "profile": {
+      "title": "Bạn muốn hiển thị như thế này chứ?",
+      "nameLabel": "Tên hiển thị"
+    },
+    "handle": {
+      "title": "Chọn tên định danh của bạn",
+      "description": "Một tên @ngắn gọn, duy nhất để mọi người tìm thấy bạn.",
+      "placeholder": "tendinhdanh",
+      "invalid": "3-20 ký tự: chữ thường, số và dấu gạch dưới"
+    },
+    "visibility": {
+      "title": "Ai có thể xem sinh nhật của bạn?"
+    },
+    "birthday": {
+      "title": "Đây có phải sinh nhật của bạn không?",
+      "confirmedFromGoogle": "Chúng tôi lấy thông tin này từ tài khoản Google của bạn.",
+      "confirm": "Đúng vậy",
+      "enterManually": "Nhập thủ công"
+    },
+    "connections": {
+      "title": "Bạn đã quen ai ở đây chưa?",
+      "searchPlaceholder": "Tìm kiếm mọi người...",
+      "empty": "Không tìm thấy kết quả phù hợp.",
+      "selectedCount": "Đã chọn {{count}}",
+      "removeAria": "Xóa {{name}}"
+    },
+    "complete": {
+      "title": "Xong rồi!",
+      "cta": "Đến bảng điều khiển"
+    }
   }
 }

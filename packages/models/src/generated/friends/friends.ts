@@ -744,7 +744,7 @@ export const getFriendUrl = (id: string,) => {
 }
 
 /**
- * @summary Get a friend by id
+ * @summary Get a friend by id or by the @handle of its associated account
  */
 export const friend = async (id: string, options?: RequestInit): Promise<friendResponse> => {
 
@@ -815,7 +815,7 @@ export function useFriend<TData = Awaited<ReturnType<typeof friend>>, TError = u
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get a friend by id
+ * @summary Get a friend by id or by the @handle of its associated account
  */
 
 export function useFriend<TData = Awaited<ReturnType<typeof friend>>, TError = unknown>(
@@ -1277,6 +1277,88 @@ export const useConnectFriend = <TError = unknown,
         TContext
       > => {
       return useMutation(getConnectFriendMutationOptions(options), queryClient);
+    }
+    export type disconnectFriendResponse200 = {
+  data: FriendDto
+  status: 200
+}
+
+export type disconnectFriendResponseSuccess = (disconnectFriendResponse200) & {
+  headers: Headers;
+};
+;
+
+export type disconnectFriendResponse = (disconnectFriendResponseSuccess)
+
+export const getDisconnectFriendUrl = (id: string,) => {
+
+
+
+
+  return `/friends/${id}/connect`
+}
+
+/**
+ * @summary Withdraw a pending request, or remove an existing connection
+ */
+export const disconnectFriend = async (id: string, options?: RequestInit): Promise<disconnectFriendResponse> => {
+
+  return customFetch<disconnectFriendResponse>(getDisconnectFriendUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDisconnectFriendMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectFriend>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof disconnectFriend>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['disconnectFriend'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof disconnectFriend>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  disconnectFriend(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DisconnectFriendMutationResult = NonNullable<Awaited<ReturnType<typeof disconnectFriend>>>
+
+    export type DisconnectFriendMutationError = unknown
+
+    /**
+ * @summary Withdraw a pending request, or remove an existing connection
+ */
+export const useDisconnectFriend = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectFriend>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof disconnectFriend>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDisconnectFriendMutationOptions(options), queryClient);
     }
     export type claimFriendResponse200 = {
   data: FriendDto

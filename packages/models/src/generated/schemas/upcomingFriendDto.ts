@@ -5,52 +5,23 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpcomingFriendDtoSocialMedias } from './upcomingFriendDtoSocialMedias';
-import type { UpcomingFriendDtoVisibility } from './upcomingFriendDtoVisibility';
 
 export interface UpcomingFriendDto {
   /** Unique friend id */
   id: string;
   name: string;
   /**
-     * Birth year
+     * The associated account's global @handle, if this entry is linked to one
      * @nullable
      */
-  birthYear: number | null;
-  /**
-     * Birth month (1-12)
-     * @nullable
-     */
-  birthMonth: number | null;
-  /**
-     * Birth day (1-31)
-     * @nullable
-     */
-  birthDay: number | null;
-  /** @nullable */
-  socialMedias: UpcomingFriendDtoSocialMedias;
-  preferAnonymous: boolean;
-  visibility: UpcomingFriendDtoVisibility;
+  handle: string | null;
   /**
      * Public URL of the friend's avatar image
      * @nullable
      */
   avatarUrl: string | null;
-  /**
-     * Id of the account that added this entry, if any
-     * @nullable
-     */
-  addedById: string | null;
-  /** Whether this entry is already claimed by an account */
-  isAssociated: boolean;
   /** Whether this entry is the requesting viewer's own entry */
   isViewerEntry: boolean;
-  /** Whether the requesting viewer already knows this entry */
-  isConnected: boolean;
-  /** Whether the requesting viewer is allowed to edit/delete this entry */
-  canEdit: boolean;
-  createdAt: string;
-  updatedAt: string;
   /**
      * Age the friend is turning on their next birthday, null if birthYear is unknown
      * @nullable

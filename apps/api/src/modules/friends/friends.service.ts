@@ -24,51 +24,96 @@ import {
   type UpcomingGroupOption,
 } from './dto/friend-upcoming.dto';
 import {
+  ConnectionsService,
+  EMPTY_CONNECTION_CONTEXT,
+  type ConnectionContext,
+} from '@/modules/connections/connections.service';
+import type { ConnectionState } from '@/modules/connections/dto/connection.dto';
+import {
   FriendVisibility,
   Prisma,
-  Role,
   type BirthdayDetails,
   type User,
 } from '@prisma/client';
 
 type BirthdayDetailsWithAssociation = BirthdayDetails & {
-  association: { userId: string } | null;
-  connections: { id: string }[];
+  association: { userId: string; user: { handle: string | null } } | null;
+};
+
+/// Everything a request needs to know about the viewer, resolved once up
+/// front. Connections used to be joined onto every BirthdayDetails query just
+/// to compute one boolean; now they're fetched once here and answered in
+/// memory, which also lets FRIENDS_ONLY be a real relationship check.
+interface ViewerContext {
+  viewer: User | null;
+  connections: ConnectionContext;
+}
+
+const ANONYMOUS_CONTEXT: ViewerContext = {
+  viewer: null,
+  connections: EMPTY_CONNECTION_CONTEXT,
+};
+
+/// The accounts whose FRIENDS_ONLY entries the viewer is allowed to see:
+/// themselves plus everyone they're connected with.
+function circleOf(ctx: ViewerContext): string[] {
+  if (!ctx.viewer) return [];
+  return [ctx.viewer.id, ...ctx.connections.connectedUserIds];
+}
+
+/// Internal-only shape used while computing/grouping/searching upcoming
+/// birthdays — carries every field the search/grouping logic needs
+/// (birthYear, socialMedias, ...). Narrowed down to the slim public
+/// `UpcomingFriendDto` only once a page of results is finalized.
+type UpcomingComputedFriend = FriendDto & {
+  turningAge: number | null;
+  nextBirthdayDate: string;
 };
 
 const SOCIAL_GRAPH_FRIEND_LIMIT = 10;
 const SOCIAL_GRAPH_FRIEND_OF_FRIEND_LIMIT = 2;
 
-/// Shared `include` shape for every BirthdayDetails query: association (for
-/// isViewerEntry/canView) plus the viewer's own Connection row, if any (for
-/// isConnected). Using a never-matching userId when there's no viewer keeps
-/// the shape identical instead of branching the include type.
-function viewerIncludes(viewerId: string | null) {
-  return {
-    association: { select: { userId: true } },
-    connections: { where: { userId: viewerId ?? '' }, select: { id: true } },
-  } as const;
+/// Shared `include` for every BirthdayDetails query — just the association,
+/// which supplies the entry's handle, owner and "is this me" answer. No longer
+/// viewer-dependent: connection state comes from the ViewerContext instead of
+/// a per-entry join.
+const ENTRY_INCLUDE = {
+  association: {
+    select: { userId: true, user: { select: { handle: true } } },
+  },
+} as const;
+
+/// An entry's "owner" for privacy purposes: the account it represents if it's
+/// been claimed, otherwise whoever added it. FRIENDS_ONLY is evaluated against
+/// this account's circle.
+function ownerIdOf(entry: BirthdayDetailsWithAssociation): string | null {
+  return entry.association?.userId ?? entry.addedById;
 }
 
-function visibilityWhere(
-  viewer: User | null,
-): Prisma.BirthdayDetailsWhereInput {
-  if (viewer?.role === Role.ADMIN) {
-    return {};
+function visibilityWhere(ctx: ViewerContext): Prisma.BirthdayDetailsWhereInput {
+  const { viewer } = ctx;
+  if (!viewer) {
+    return { visibility: FriendVisibility.PUBLIC };
   }
+
+  const circle = circleOf(ctx);
   return {
     OR: [
       { visibility: FriendVisibility.PUBLIC },
-      ...(viewer
-        ? [
-            { visibility: FriendVisibility.FRIENDS_ONLY },
-            { visibility: FriendVisibility.NONE, addedById: viewer.id },
-            {
-              visibility: FriendVisibility.NONE,
-              association: { userId: viewer.id },
-            },
-          ]
-        : []),
+      // FRIENDS_ONLY means exactly that now: the owner's accepted connections,
+      // the owner themselves, and whoever added the entry.
+      {
+        visibility: FriendVisibility.FRIENDS_ONLY,
+        OR: [
+          { addedById: { in: circle } },
+          { association: { userId: { in: circle } } },
+        ],
+      },
+      { visibility: FriendVisibility.NONE, addedById: viewer.id },
+      {
+        visibility: FriendVisibility.NONE,
+        association: { userId: viewer.id },
+      },
     ],
   };
 }
@@ -88,15 +133,28 @@ export class FriendsService {
     private readonly db: Database,
     private readonly storage: Storage,
     private readonly avatars: AvatarsService,
+    private readonly connections: ConnectionsService,
   ) {}
 
+  /// Resolves the viewer's connection graph once per request. Every public
+  /// method starts here and threads the result down, so no query below needs
+  /// to know how connections are stored.
+  private async context(viewer: User | null): Promise<ViewerContext> {
+    if (!viewer) return ANONYMOUS_CONTEXT;
+    return {
+      viewer,
+      connections: await this.connections.getContext(viewer.id),
+    };
+  }
+
   async findAll(viewer: User | null): Promise<FriendDto[]> {
+    const ctx = await this.context(viewer);
     const entries = await this.db.birthdayDetails.findMany({
-      where: visibilityWhere(viewer),
+      where: visibilityWhere(ctx),
       orderBy: { name: 'asc' },
-      include: viewerIncludes(viewer?.id ?? null),
+      include: ENTRY_INCLUDE,
     });
-    return entries.map((entry) => toFriendDto(entry, viewer));
+    return entries.map((entry) => toFriendDto(entry, ctx));
   }
 
   async findUpcomingSections(
@@ -107,7 +165,8 @@ export class FriendsService {
     pageSize: number,
     viewer: User | null,
   ): Promise<PaginatedUpcomingSectionsDto> {
-    const computed = await this.computeUpcoming(viewer);
+    const ctx = await this.context(viewer);
+    const computed = await this.computeUpcoming(ctx);
     const matching = computed
       .map((entry) => entry.upcoming)
       .filter((friend) => matchesUpcomingSearch(friend, query));
@@ -122,11 +181,12 @@ export class FriendsService {
 
     const sections: UpcomingSectionDto[] = [];
     for (const item of pageItems) {
+      const friend = toUpcomingFriendDto(item.friend);
       const existing = sections.at(-1);
       if (existing && existing.key === item.key) {
-        existing.friends.push(item.friend);
+        existing.friends.push(friend);
       } else {
-        sections.push({ key: item.key, friends: [item.friend] });
+        sections.push({ key: item.key, friends: [friend] });
       }
     }
 
@@ -143,33 +203,34 @@ export class FriendsService {
     query: string | undefined,
     viewer: User | null,
   ): Promise<BirthdaysByMonthDto> {
+    const ctx = await this.context(viewer);
     const entries = await this.db.birthdayDetails.findMany({
       where: {
         birthMonth: month,
         birthDay: { not: null },
-        AND: visibilityWhere(viewer),
+        AND: visibilityWhere(ctx),
       },
       orderBy: { birthDay: 'asc' },
-      include: viewerIncludes(viewer?.id ?? null),
+      include: ENTRY_INCLUDE,
     });
 
     return {
       friends: entries
-        .map((entry) => toFriendDto(entry, viewer))
+        .map((entry) => toFriendDto(entry, ctx))
         .filter((friend) => matchesFriendSearch(friend, query)),
     };
   }
 
   private async computeUpcoming(
-    viewer: User | null,
-  ): Promise<{ upcoming: UpcomingFriendDto; sortKey: number }[]> {
+    ctx: ViewerContext,
+  ): Promise<{ upcoming: UpcomingComputedFriend; sortKey: number }[]> {
     const entries = await this.db.birthdayDetails.findMany({
       where: {
         birthMonth: { not: null },
         birthDay: { not: null },
-        AND: visibilityWhere(viewer),
+        AND: visibilityWhere(ctx),
       },
-      include: viewerIncludes(viewer?.id ?? null),
+      include: ENTRY_INCLUDE,
     });
 
     const today = new Date();
@@ -192,7 +253,7 @@ export class FriendsService {
 
         return {
           upcoming: {
-            ...toFriendDto(entry, viewer),
+            ...toFriendDto(entry, ctx),
             turningAge,
             nextBirthdayDate: nextBirthdayDate.toISOString().slice(0, 10),
           },
@@ -202,12 +263,32 @@ export class FriendsService {
       .sort((a, b) => a.sortKey - b.sortKey);
   }
 
-  async findOne(id: string, viewer: User | null): Promise<FriendDto> {
-    const entry = await this.findVisibleOrThrow(id, viewer);
-    return toFriendDto(entry, viewer);
+  /// `idOrHandle` accepts either the entry's own id or the global @handle of
+  /// the account it's associated with, so profile links can use whichever
+  /// identifier the caller has (associated entries are linked to a User).
+  async findOne(idOrHandle: string, viewer: User | null): Promise<FriendDto> {
+    const ctx = await this.context(viewer);
+    const id = await this.resolveEntryId(idOrHandle);
+    const entry = await this.findVisibleOrThrow(id, ctx);
+    return toFriendDto(entry, ctx);
+  }
+
+  private async resolveEntryId(idOrHandle: string): Promise<string> {
+    const byId = await this.db.birthdayDetails.findUnique({
+      where: { id: idOrHandle },
+      select: { id: true },
+    });
+    if (byId) return byId.id;
+
+    const byHandle = await this.db.user.findUnique({
+      where: { handle: idOrHandle.toLowerCase() },
+      select: { association: { select: { birthdayDetailsId: true } } },
+    });
+    return byHandle?.association?.birthdayDetailsId ?? idOrHandle;
   }
 
   async create(dto: CreateFriendDto, viewer: User): Promise<FriendDto> {
+    const ctx = await this.context(viewer);
     validateBirthday(dto);
     const entry = await this.db.birthdayDetails.create({
       data: {
@@ -224,9 +305,9 @@ export class FriendsService {
           : null,
         addedById: viewer.id,
       },
-      include: viewerIncludes(viewer.id),
+      include: ENTRY_INCLUDE,
     });
-    return toFriendDto(entry, viewer);
+    return toFriendDto(entry, ctx);
   }
 
   async update(
@@ -234,7 +315,8 @@ export class FriendsService {
     dto: UpdateFriendDto,
     viewer: User,
   ): Promise<FriendDto> {
-    const existing = await this.findVisibleOrThrow(id, viewer);
+    const ctx = await this.context(viewer);
+    const existing = await this.findVisibleOrThrow(id, ctx);
     assertCanEdit(existing, viewer);
     validateBirthday(dto);
 
@@ -266,18 +348,19 @@ export class FriendsService {
             ? this.storage.getPublicUrl(dto.avatarKey)
             : undefined,
         },
-        include: viewerIncludes(viewer.id),
+        include: ENTRY_INCLUDE,
       });
     });
 
-    return toFriendDto(entry, viewer);
+    return toFriendDto(entry, ctx);
   }
 
   async listAvatarVersions(
     id: string,
     viewer: User | null,
   ): Promise<AvatarVersionsDto> {
-    await this.findVisibleOrThrow(id, viewer);
+    const ctx = await this.context(viewer);
+    await this.findVisibleOrThrow(id, ctx);
     const versions = await this.avatars.listVersions(id);
     return { versions };
   }
@@ -287,7 +370,8 @@ export class FriendsService {
     versionId: string,
     viewer: User,
   ): Promise<FriendDto> {
-    const existing = await this.findVisibleOrThrow(id, viewer);
+    const ctx = await this.context(viewer);
+    const existing = await this.findVisibleOrThrow(id, ctx);
     assertCanEdit(existing, viewer);
 
     const entry = await this.db.$transaction(async (tx) => {
@@ -303,18 +387,19 @@ export class FriendsService {
       return tx.birthdayDetails.update({
         where: { id },
         data: { avatarKey: restored.key, avatarUrl: restored.url },
-        include: viewerIncludes(viewer.id),
+        include: ENTRY_INCLUDE,
       });
     });
 
-    return toFriendDto(entry, viewer);
+    return toFriendDto(entry, ctx);
   }
 
   /// If the entry is associated with an account, the association is
   /// permanent — "deleting" only clears the profile fields, so the slot can
   /// never be re-claimed. Only unassociated entries are actually removed.
   async remove(id: string, viewer: User): Promise<void> {
-    const existing = await this.findVisibleOrThrow(id, viewer);
+    const ctx = await this.context(viewer);
+    const existing = await this.findVisibleOrThrow(id, ctx);
     assertCanEdit(existing, viewer);
 
     if (existing.association?.userId === viewer.id) {
@@ -349,9 +434,10 @@ export class FriendsService {
     pageSize: number,
     viewer: User | null,
   ): Promise<PaginatedFriendsDto> {
+    const ctx = await this.context(viewer);
     const where: Prisma.BirthdayDetailsWhereInput = {
       ...nameSearchWhere(query),
-      AND: visibilityWhere(viewer),
+      AND: visibilityWhere(ctx),
       ...(viewer ? { NOT: { association: { userId: viewer.id } } } : {}),
     };
 
@@ -361,31 +447,49 @@ export class FriendsService {
         orderBy: { name: 'asc' },
         skip: (page - 1) * pageSize,
         take: pageSize,
-        include: viewerIncludes(viewer?.id ?? null),
+        include: ENTRY_INCLUDE,
       }),
       this.db.birthdayDetails.count({ where }),
     ]);
 
-    const items = entries.map((entry) => toFriendDto(entry, viewer));
+    const items = entries.map((entry) => toFriendDto(entry, ctx));
     return { items, total, page, pageSize };
   }
 
-  /// Records that the viewer knows this entry (the same relation the
-  /// onboarding "who do you know" step writes), usable any time from a
-  /// friend's own detail page, not just during onboarding.
+  /// Sends a connection request to the account behind this entry. Kept as an
+  /// entry-shaped wrapper because the profile page only knows the entry it is
+  /// showing; the connection itself is between accounts.
   async connect(id: string, viewer: User): Promise<FriendDto> {
-    const entry = await this.findVisibleOrThrow(id, viewer);
+    const ctx = await this.context(viewer);
+    const entry = await this.findVisibleOrThrow(id, ctx);
     if (entry.association?.userId === viewer.id) {
       throw new BadRequestException('You cannot add yourself as a friend');
     }
+    if (!entry.association) {
+      throw new BadRequestException(
+        'Nobody has claimed this entry, so there is no account to connect with',
+      );
+    }
 
-    await this.db.connection.upsert({
-      where: {
-        userId_birthdayDetailsId: { userId: viewer.id, birthdayDetailsId: id },
-      },
-      update: {},
-      create: { userId: viewer.id, birthdayDetailsId: id },
-    });
+    await this.connections.request(entry.association.userId, viewer);
+    return this.findOne(id, viewer);
+  }
+
+  /// Undoes `connect` from the same entry-shaped angle: withdraws a pending
+  /// request or removes an accepted connection, whichever exists.
+  async disconnect(id: string, viewer: User): Promise<FriendDto> {
+    const ctx = await this.context(viewer);
+    const entry = await this.findVisibleOrThrow(id, ctx);
+    const ownerId = entry.association?.userId;
+    if (!ownerId || ownerId === viewer.id) {
+      throw new BadRequestException('There is no connection to remove');
+    }
+
+    if (ctx.connections.connectedUserIds.has(ownerId)) {
+      await this.connections.disconnect(ownerId, viewer);
+    } else {
+      await this.connections.withdrawWith(ownerId, viewer);
+    }
 
     return this.findOne(id, viewer);
   }
@@ -394,7 +498,8 @@ export class FriendsService {
   /// already-associated entry can never be reclaimed, even if its details
   /// are later cleared (see `remove`).
   async claim(id: string, viewer: User): Promise<FriendDto> {
-    const entry = await this.findVisibleOrThrow(id, viewer);
+    const ctx = await this.context(viewer);
+    const entry = await this.findVisibleOrThrow(id, ctx);
     if (entry.association) {
       throw new ForbiddenException('This entry has already been claimed');
     }
@@ -408,89 +513,120 @@ export class FriendsService {
       );
     }
 
-    await this.db.association.create({
-      data: { userId: viewer.id, birthdayDetailsId: id },
+    await this.db.$transaction(async (tx) => {
+      await tx.association.create({
+        data: { userId: viewer.id, birthdayDetailsId: id },
+      });
+      // Whoever added this entry already knows you — asking them to confirm a
+      // request would be theatre, so the connection is accepted outright.
+      if (entry.addedById) {
+        await this.connections.linkAccepted(tx, viewer.id, entry.addedById);
+      }
     });
+
+    if (entry.addedById) {
+      await this.connections.invalidateFor(viewer.id, entry.addedById);
+    }
 
     return this.findOne(id, viewer);
   }
 
-  /// Renders as: you -- friend -- friend's own friend. Friends-of-friends are
-  /// only discoverable when a friend has claimed their entry (an
-  /// Association), since unclaimed entries have no Connections of their own.
+  /// Renders as: you -- someone in your circle -- someone in theirs. A
+  /// "circle" is the entries you added plus the entries of accounts you're
+  /// connected with, so it spans both people who have accounts and people who
+  /// only exist as a birthday someone wrote down.
   async getSocialGraph(viewer: User): Promise<SocialGraphDto> {
-    const connections = await this.db.connection.findMany({
-      where: { userId: viewer.id },
-      take: SOCIAL_GRAPH_FRIEND_LIMIT,
-      include: {
-        birthdayDetails: { include: viewerIncludes(viewer.id) },
-      },
-    });
+    const ctx = await this.context(viewer);
+    const own = await this.circleEntries(viewer.id, ctx);
+    const firstRing = own.slice(0, SOCIAL_GRAPH_FRIEND_LIMIT);
+    const seen = new Set(firstRing.map((entry) => entry.id));
 
     const friends = await Promise.all(
-      connections
-        .filter((connection) => canView(connection.birthdayDetails, viewer))
-        .map(async (connection) => {
-          const entry = connection.birthdayDetails;
-          const friendsOfFriend = entry.association
-            ? await this.findConnectedEntries(
-                entry.association.userId,
-                entry.id,
-                viewer,
-              )
+      firstRing.map(async (entry) => {
+        const ownerId = entry.association?.userId;
+        // Only a claimed entry has an account whose own circle we can walk.
+        const friendsOfFriend =
+          ownerId && ownerId !== viewer.id
+            ? (await this.circleEntries(ownerId, ctx))
+                .filter((other) => !seen.has(other.id))
+                .slice(0, SOCIAL_GRAPH_FRIEND_OF_FRIEND_LIMIT)
             : [];
-          return { friend: toFriendDto(entry, viewer), friendsOfFriend };
-        }),
+        // Claim ids as we go so the same person can't appear twice in the
+        // tree — duplicates would collide as React keys in the layout hook.
+        for (const other of friendsOfFriend) seen.add(other.id);
+
+        return {
+          friend: toFriendDto(entry, ctx),
+          friendsOfFriend: friendsOfFriend.map((other) =>
+            toFriendDto(other, ctx),
+          ),
+        };
+      }),
     );
 
     return { friends };
   }
 
-  private async findConnectedEntries(
+  /// Everyone in one account's circle: entries they added, plus the entries
+  /// of accounts they're connected with. Visibility is filtered before any
+  /// capping so the caller never silently gets a short ring.
+  private async circleEntries(
     userId: string,
-    excludeBirthdayDetailsId: string,
-    viewer: User,
-  ): Promise<FriendDto[]> {
-    const connections = await this.db.connection.findMany({
-      where: { userId, NOT: { birthdayDetailsId: excludeBirthdayDetailsId } },
-      take: SOCIAL_GRAPH_FRIEND_OF_FRIEND_LIMIT,
-      include: {
-        birthdayDetails: { include: viewerIncludes(viewer.id) },
+    ctx: ViewerContext,
+  ): Promise<BirthdayDetailsWithAssociation[]> {
+    const connections = await this.connections.getContext(userId);
+    const connectedIds = [...connections.connectedUserIds];
+
+    const entries = await this.db.birthdayDetails.findMany({
+      where: {
+        OR: [
+          { addedById: userId },
+          ...(connectedIds.length > 0
+            ? [{ association: { userId: { in: connectedIds } } }]
+            : []),
+        ],
+        NOT: { association: { userId } },
       },
+      orderBy: { name: 'asc' },
+      include: ENTRY_INCLUDE,
     });
 
-    return connections
-      .filter((connection) => canView(connection.birthdayDetails, viewer))
-      .map((connection) => toFriendDto(connection.birthdayDetails, viewer));
+    return entries.filter((entry) => canView(entry, ctx));
   }
 
   private async findVisibleOrThrow(
     id: string,
-    viewer: User | null,
+    ctx: ViewerContext,
   ): Promise<BirthdayDetailsWithAssociation> {
     const entry = await this.db.birthdayDetails.findUnique({
       where: { id },
-      include: viewerIncludes(viewer?.id ?? null),
+      include: ENTRY_INCLUDE,
     });
-    if (!entry || !canView(entry, viewer)) {
+    if (!entry || !canView(entry, ctx)) {
       throw new NotFoundException(`Friend ${id} not found`);
     }
     return entry;
   }
 }
 
+/// In-memory mirror of `visibilityWhere` — keep the two in step.
 function canView(
   entry: BirthdayDetailsWithAssociation,
-  viewer: User | null,
+  ctx: ViewerContext,
 ): boolean {
-  if (viewer?.role === Role.ADMIN) {
-    return true;
-  }
+  const { viewer } = ctx;
   switch (entry.visibility) {
     case FriendVisibility.PUBLIC:
       return true;
-    case FriendVisibility.FRIENDS_ONLY:
-      return viewer !== null;
+    case FriendVisibility.FRIENDS_ONLY: {
+      if (!viewer) return false;
+      const circle = circleOf(ctx);
+      const owner = ownerIdOf(entry);
+      return (
+        (entry.addedById !== null && circle.includes(entry.addedById)) ||
+        (owner !== null && circle.includes(owner))
+      );
+    }
     case FriendVisibility.NONE:
       return (
         viewer !== null &&
@@ -504,9 +640,6 @@ function assertCanEdit(
   entry: BirthdayDetailsWithAssociation,
   viewer: User,
 ): void {
-  if (viewer.role === Role.ADMIN) {
-    return;
-  }
   if (entry.addedById !== viewer.id) {
     throw new ForbiddenException('You can only edit entries you added');
   }
@@ -544,8 +677,9 @@ function validateBirthday(dto: CreateFriendDto | UpdateFriendDto): void {
 
 function toFriendDto(
   entry: BirthdayDetailsWithAssociation,
-  viewer: User | null,
+  ctx: ViewerContext,
 ): FriendDto {
+  const { viewer } = ctx;
   return {
     id: entry.id,
     name: entry.name,
@@ -557,20 +691,34 @@ function toFriendDto(
     visibility: entry.visibility,
     avatarUrl: entry.avatarUrl,
     addedById: entry.addedById,
+    handle: entry.association?.user.handle ?? null,
     isAssociated: entry.association !== null,
     isViewerEntry: viewer !== null && entry.association?.userId === viewer.id,
-    isConnected: entry.connections.length > 0,
-    canEdit: viewer !== null && canEditEntry(entry, viewer),
+    connectionStatus: connectionStatusOf(entry, ctx),
+    canEdit: viewer !== null && entry.addedById === viewer.id,
     createdAt: entry.createdAt.toISOString(),
     updatedAt: entry.updatedAt.toISOString(),
   };
 }
 
-function canEditEntry(
+/// Connections are between accounts, so an entry nobody has claimed has no
+/// connection state at all — there is no one on the other side to ask.
+function connectionStatusOf(
   entry: BirthdayDetailsWithAssociation,
-  viewer: User,
-): boolean {
-  return viewer.role === Role.ADMIN || entry.addedById === viewer.id;
+  ctx: ViewerContext,
+): ConnectionState {
+  const { viewer } = ctx;
+  const ownerId = entry.association?.userId;
+  if (!viewer || !ownerId || ownerId === viewer.id) return 'NONE';
+
+  if (ctx.connections.connectedUserIds.has(ownerId)) return 'ACCEPTED';
+  if (ctx.connections.pendingOutgoingUserIds.has(ownerId)) {
+    return 'PENDING_OUTGOING';
+  }
+  if (ctx.connections.pendingIncomingUserIds.has(ownerId)) {
+    return 'PENDING_INCOMING';
+  }
+  return 'NONE';
 }
 
 function matchesFriendSearch(
@@ -584,8 +732,22 @@ function matchesFriendSearch(
   return handles.some((handle) => handle.toLowerCase().includes(needle));
 }
 
+function toUpcomingFriendDto(
+  friend: UpcomingComputedFriend,
+): UpcomingFriendDto {
+  return {
+    id: friend.id,
+    name: friend.name,
+    handle: friend.handle,
+    avatarUrl: friend.avatarUrl,
+    isViewerEntry: friend.isViewerEntry,
+    turningAge: friend.turningAge,
+    nextBirthdayDate: friend.nextBirthdayDate,
+  };
+}
+
 function matchesUpcomingSearch(
-  friend: UpcomingFriendDto,
+  friend: UpcomingComputedFriend,
   query: string | undefined,
 ): boolean {
   const needle = query?.trim().toLowerCase();
@@ -599,7 +761,7 @@ function matchesUpcomingSearch(
 const UNKNOWN_GROUP_SORT_VALUE = Number.MAX_SAFE_INTEGER;
 
 function upcomingGroupKey(
-  friend: UpcomingFriendDto,
+  friend: UpcomingComputedFriend,
   group: UpcomingGroupOption,
 ): string {
   switch (group) {
@@ -630,12 +792,17 @@ function upcomingGroupSortValue(
   }
 }
 
+type UpcomingComputedSection = {
+  key: string;
+  friends: UpcomingComputedFriend[];
+};
+
 function groupUpcomingFriends(
-  friends: UpcomingFriendDto[],
+  friends: UpcomingComputedFriend[],
   group: UpcomingGroupOption,
   direction: SortDirection,
-): UpcomingSectionDto[] {
-  const sections: (UpcomingSectionDto & { sortValue: number })[] = [];
+): UpcomingComputedSection[] {
+  const sections: (UpcomingComputedSection & { sortValue: number })[] = [];
 
   for (const friend of friends) {
     const key = upcomingGroupKey(friend, group);

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Database } from '@/libs/db';
-import { Role, type Project, type User } from '@prisma/client';
+import { AuthService } from '@/modules/auth/auth.service';
+import { type Project, type User } from '@prisma/client';
 import {
   CreateProjectDto,
   ProjectDto,
@@ -14,11 +15,15 @@ type ProjectWithCommissions = Project & {
 
 @Injectable()
 export class ProjectsService {
-  constructor(private readonly db: Database) {}
+  constructor(
+    private readonly db: Database,
+    private readonly auth: AuthService,
+  ) {}
 
   async list(viewer: User | null): Promise<ProjectDto[]> {
+    const isAdmin = await this.auth.isAdmin(viewer);
     const projects = await this.db.project.findMany({
-      where: viewer?.role === Role.ADMIN ? {} : { isHidden: false },
+      where: isAdmin ? {} : { isHidden: false },
       orderBy: { createdAt: 'desc' },
       include: { commissions: { select: { deliverableAssets: true } } },
     });
@@ -27,7 +32,7 @@ export class ProjectsService {
 
   async findOne(id: string, viewer: User | null): Promise<ProjectDto> {
     const project = await this.findOrThrow(id);
-    if (project.isHidden && viewer?.role !== Role.ADMIN) {
+    if (project.isHidden && !(await this.auth.isAdmin(viewer))) {
       throw new NotFoundException(`Project ${id} not found`);
     }
     return toProjectDto(project);

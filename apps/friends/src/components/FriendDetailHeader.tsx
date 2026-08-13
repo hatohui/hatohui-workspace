@@ -3,22 +3,23 @@ import { useTranslation } from '@hatohui/i18n';
 import { Avatar, Button } from '@hatohui/ui';
 import type { FriendDto } from '@hatohui/models';
 import routes from '../constants/routes';
+import type { ConnectionAction } from '../hooks/useFriendConnection';
 
 type Props = {
   friend: FriendDto;
-  canConnect: boolean;
-  isConnecting: boolean;
+  connectionAction: ConnectionAction | null;
+  isConnectionBusy: boolean;
   showConnectedLabel: boolean;
-  onConnect: () => void;
+  onConnectionAction: () => void;
   onDelete: () => void;
 };
 
 function FriendDetailHeader({
   friend,
-  canConnect,
-  isConnecting,
+  connectionAction,
+  isConnectionBusy,
   showConnectedLabel,
-  onConnect,
+  onConnectionAction,
   onDelete,
 }: Props) {
   const { t } = useTranslation();
@@ -71,9 +72,13 @@ function FriendDetailHeader({
           )}
         </div>
 
-        {canConnect && (
-          <Button variant="outline" disabled={isConnecting} onClick={onConnect}>
-            {t('friendDetail.addAsFriendAction')}
+        {connectionAction && (
+          <Button
+            variant={connectionAction === 'disconnect' ? 'ghost' : 'outline'}
+            disabled={isConnectionBusy}
+            onClick={onConnectionAction}
+          >
+            {t(`friendDetail.connection.${connectionAction}`)}
           </Button>
         )}
       </div>

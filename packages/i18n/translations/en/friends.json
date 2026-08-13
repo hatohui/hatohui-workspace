@@ -8,7 +8,8 @@
     "logout": "Log out",
     "settings": "Settings",
     "expandNav": "Expand sidebar",
-    "collapseNav": "Collapse sidebar"
+    "collapseNav": "Collapse sidebar",
+    "notifications": "Notifications"
   },
   "settings": {
     "title": "Settings",
@@ -78,10 +79,6 @@
       "FRIENDS_ONLY": "Friends only",
       "NONE": "None"
     },
-    "avatarUploadLabel": "Upload photo",
-    "avatarUploading": "Uploading...",
-    "avatarUploadError": "Couldn't upload that photo. Please try again.",
-    "avatarUploadAuthRequired": "Sign in to upload a photo, then try again.",
     "avatarHistoryTitle": "Past avatars",
     "avatarHistoryRestoreAria": "Restore this avatar",
     "avatarHistoryRestoreError": "Couldn't restore that avatar. Please try again.",
@@ -101,47 +98,31 @@
     "addAsFriendAction": "Add as friend",
     "connectedLabel": "Added",
     "viewProfile": "View profile",
-    "back": "Back"
-  },
-  "onboarding": {
-    "title": "Welcome",
-    "skip": "Skip",
-    "next": "Next",
     "back": "Back",
-    "optIn": {
-      "question": "Do you want to be part of the list?",
-      "note": "You can choose who can see your birthday.",
-      "yes": "Yes",
-      "no": "No"
-    },
-    "profile": {
-      "title": "Is this how you want to appear?",
-      "nameLabel": "Display name"
-    },
-    "visibility": {
-      "title": "Who can see your birthday?"
-    },
-    "birthday": {
-      "title": "Is this your birthday?",
-      "confirmedFromGoogle": "We got this from your Google account.",
-      "confirm": "Yes, that's right",
-      "enterManually": "Enter it manually"
-    },
-    "connections": {
-      "title": "Do you already know anyone here?",
-      "searchPlaceholder": "Search people...",
-      "empty": "No matches.",
-      "selectedCount": "{{count}} selected",
-      "removeAria": "Remove {{name}}"
-    },
-    "complete": {
-      "title": "You're all set!",
-      "cta": "Go to dashboard"
+    "connection": {
+      "connect": "Connect",
+      "accept": "Accept request",
+      "cancel": "Cancel request",
+      "disconnect": "Disconnect"
     }
   },
   "notFound": {
     "title": "Page not found",
     "subtitle": "The page you're looking for doesn't exist or may have moved.",
     "backToDashboard": "Back to dashboard"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Nothing new right now.",
+    "markAllRead": "Mark all read",
+    "accept": "Accept",
+    "decline": "Decline",
+    "someone": "Someone",
+    "types": {
+      "CONNECTION_REQUEST": "{{name}} wants to connect with you.",
+      "CONNECTION_ACCEPTED": "{{name}} accepted your connection request.",
+      "BIRTHDAY_REMINDER": "A birthday is coming up.",
+      "SYSTEM": "You have a new notification."
+    }
   }
 }

@@ -22,8 +22,7 @@ function CalendarBirthdayEntry({ friend, year }: Props) {
           i18n.language,
         )
       : null;
-  const turningAge =
-    friend.birthYear !== null ? year - friend.birthYear : null;
+  const turningAge = friend.birthYear !== null ? year - friend.birthYear : null;
 
   // Hover (desktop) opens the preview, so a click that follows a hover
   // navigates straight through. Without hover (touch), the first tap only
@@ -39,7 +38,7 @@ function CalendarBirthdayEntry({ friend, year }: Props) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
         <Link
-          to={routes.friend(friend.id)}
+          to={routes.friend(friend.handle ?? friend.id)}
           aria-label={friend.name}
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}

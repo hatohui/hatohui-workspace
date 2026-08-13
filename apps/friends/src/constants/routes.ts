@@ -2,6 +2,7 @@ const routes = {
   dashboard: '/',
   birthdays: '/birthdays',
   social: '/social',
+  notifications: '/notifications',
   profile: '/profile',
   account: '/account',
   newFriend: '/friends/new',

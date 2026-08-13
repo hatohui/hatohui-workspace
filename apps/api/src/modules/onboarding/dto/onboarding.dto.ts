@@ -71,9 +71,13 @@ export class SetBirthdayDto {
 }
 
 export class AddConnectionsDto {
-  @ApiProperty({ type: [String] })
+  @ApiProperty({
+    type: [String],
+    description:
+      'Accounts to send connection requests to. Connections are between accounts, so these are user ids — unclaimed directory entries have nobody to ask.',
+  })
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  birthdayDetailsIds: string[];
+  userIds: string[];
 }

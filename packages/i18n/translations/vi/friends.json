@@ -8,7 +8,8 @@
     "logout": "Đăng xuất",
     "settings": "Cài đặt",
     "expandNav": "Mở rộng thanh bên",
-    "collapseNav": "Thu gọn thanh bên"
+    "collapseNav": "Thu gọn thanh bên",
+    "notifications": "Thông báo"
   },
   "settings": {
     "title": "Cài đặt",
@@ -78,10 +79,6 @@
       "FRIENDS_ONLY": "Chỉ bạn bè",
       "NONE": "Riêng tư"
     },
-    "avatarUploadLabel": "Tải ảnh lên",
-    "avatarUploading": "Đang tải lên...",
-    "avatarUploadError": "Không thể tải ảnh lên. Vui lòng thử lại.",
-    "avatarUploadAuthRequired": "Vui lòng đăng nhập để tải ảnh lên, sau đó thử lại.",
     "avatarHistoryTitle": "Ảnh đại diện trước đây",
     "avatarHistoryRestoreAria": "Khôi phục ảnh đại diện này",
     "avatarHistoryRestoreError": "Không thể khôi phục ảnh đại diện đó. Vui lòng thử lại.",
@@ -101,47 +98,31 @@
     "addAsFriendAction": "Thêm làm bạn bè",
     "connectedLabel": "Đã thêm",
     "viewProfile": "Xem hồ sơ",
-    "back": "Quay lại"
-  },
-  "onboarding": {
-    "title": "Chào mừng",
-    "skip": "Bỏ qua",
-    "next": "Tiếp theo",
     "back": "Quay lại",
-    "optIn": {
-      "question": "Bạn có muốn tham gia danh sách không?",
-      "note": "Bạn có thể chọn ai được xem sinh nhật của mình.",
-      "yes": "Có",
-      "no": "Không"
-    },
-    "profile": {
-      "title": "Bạn muốn hiển thị như thế này chứ?",
-      "nameLabel": "Tên hiển thị"
-    },
-    "visibility": {
-      "title": "Ai có thể xem sinh nhật của bạn?"
-    },
-    "birthday": {
-      "title": "Đây có phải sinh nhật của bạn không?",
-      "confirmedFromGoogle": "Chúng tôi lấy thông tin này từ tài khoản Google của bạn.",
-      "confirm": "Đúng vậy",
-      "enterManually": "Nhập thủ công"
-    },
-    "connections": {
-      "title": "Bạn đã quen ai ở đây chưa?",
-      "searchPlaceholder": "Tìm kiếm mọi người...",
-      "empty": "Không tìm thấy kết quả phù hợp.",
-      "selectedCount": "Đã chọn {{count}}",
-      "removeAria": "Xóa {{name}}"
-    },
-    "complete": {
-      "title": "Xong rồi!",
-      "cta": "Đến bảng điều khiển"
+    "connection": {
+      "connect": "Kết nối",
+      "accept": "Chấp nhận",
+      "cancel": "Hủy yêu cầu",
+      "disconnect": "Ngắt kết nối"
     }
   },
   "notFound": {
     "title": "Không tìm thấy trang",
     "subtitle": "Trang bạn đang tìm không tồn tại hoặc có thể đã được di chuyển.",
     "backToDashboard": "Quay lại bảng điều khiển"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "empty": "Hiện chưa có gì mới.",
+    "markAllRead": "Đánh dấu đã đọc",
+    "accept": "Chấp nhận",
+    "decline": "Từ chối",
+    "someone": "Ai đó",
+    "types": {
+      "CONNECTION_REQUEST": "{{name}} muốn kết nối với bạn.",
+      "CONNECTION_ACCEPTED": "{{name}} đã chấp nhận yêu cầu kết nối của bạn.",
+      "BIRTHDAY_REMINDER": "Sắp có sinh nhật.",
+      "SYSTEM": "Bạn có thông báo mới."
+    }
   }
 }

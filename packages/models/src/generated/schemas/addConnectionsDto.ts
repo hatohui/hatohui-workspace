@@ -7,5 +7,6 @@
  */
 
 export interface AddConnectionsDto {
-  birthdayDetailsIds: string[];
+  /** Accounts to send connection requests to. Connections are between accounts, so these are user ids — unclaimed directory entries have nobody to ask. */
+  userIds: string[];
 }

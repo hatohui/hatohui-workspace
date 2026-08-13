@@ -72,7 +72,7 @@ function SidebarAccount({ expanded }: Props) {
               alt={user.name}
               className={cn(
                 'size-6 shrink-0',
-                user.role === 'ADMIN' && 'ring-primary ring-2',
+                user.isAdmin && 'ring-primary ring-2',
               )}
             />
             {expanded && (

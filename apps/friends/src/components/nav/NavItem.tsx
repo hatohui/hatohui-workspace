@@ -2,12 +2,13 @@ import { Link } from 'react-router';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@hatohui/ui';
 import { navIcons } from '../../constants/navIcons';
 import type { NavLinkItem } from '../../hooks/useNavItems';
+import NavBadge from './NavBadge';
 
 interface Props extends NavLinkItem {
   expanded: boolean;
 }
 
-function NavItem({ to, label, icon, active, expanded }: Props) {
+function NavItem({ to, label, icon, active, expanded, badge = 0 }: Props) {
   const Icon = navIcons[icon];
 
   return (
@@ -17,12 +18,13 @@ function NavItem({ to, label, icon, active, expanded }: Props) {
           asChild
           variant={active ? 'default' : 'ghost'}
           size={expanded ? 'sm' : 'icon'}
-          className={`rounded-full ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
+          className={`relative rounded-full ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
           aria-label={label}
         >
           <Link to={to}>
             <Icon className="size-4 shrink-0" />
             {expanded && <span className="text-sm">{label}</span>}
+            <NavBadge count={badge} />
           </Link>
         </Button>
       </TooltipTrigger>

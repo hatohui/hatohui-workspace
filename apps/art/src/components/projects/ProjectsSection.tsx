@@ -10,7 +10,8 @@ export function ProjectsSection() {
   const { items, isLoading } = useProjects();
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [items]);
 
-  if (isLoading) return <p className="text-muted-foreground">{t('common:loading')}</p>;
+  if (isLoading)
+    return <p className="text-muted-foreground">{t('common:loading')}</p>;
   if (items.length === 0) {
     return (
       <p className="mt-10 text-center text-muted-foreground">

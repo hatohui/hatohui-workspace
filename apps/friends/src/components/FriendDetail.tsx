@@ -2,8 +2,8 @@ import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import type { FriendDto } from '@hatohui/models';
-import { getErrorCategory, useAuth } from '@hatohui/libs';
-import { useConnectFriend } from '../hooks/useConnectFriend';
+import { getErrorCategory } from '@hatohui/libs';
+import { useFriendConnection } from '../hooks/useFriendConnection';
 import { useDeleteFriend } from '../hooks/useDeleteFriend';
 import FriendDetailHeader from './FriendDetailHeader';
 import FriendDetailInfo from './FriendDetailInfo';
@@ -15,13 +15,8 @@ type Props = {
 function FriendDetail({ friend }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const deleteFriend = useDeleteFriend();
-  const connectFriend = useConnectFriend();
-  const canConnect =
-    user !== null && !friend.isViewerEntry && !friend.isConnected;
-  const showConnectedLabel =
-    user !== null && !friend.isViewerEntry && friend.isConnected;
+  const connection = useFriendConnection(friend);
   const socialMedias =
     (friend.socialMedias as Record<string, string> | null) ?? {};
 
@@ -43,10 +38,10 @@ function FriendDetail({ friend }: Props) {
       </button>
       <FriendDetailHeader
         friend={friend}
-        canConnect={canConnect}
-        isConnecting={connectFriend.isPending}
-        showConnectedLabel={showConnectedLabel}
-        onConnect={() => connectFriend.mutate({ id: friend.id })}
+        connectionAction={connection.action}
+        isConnectionBusy={connection.isBusy}
+        showConnectedLabel={connection.isConnected}
+        onConnectionAction={connection.run}
         onDelete={handleDelete}
       />
       {deleteFriend.error != null && (
@@ -54,9 +49,9 @@ function FriendDetail({ friend }: Props) {
           {t(`common:errors.${getErrorCategory(deleteFriend.error)}`)}
         </p>
       )}
-      {connectFriend.error != null && (
+      {connection.error != null && (
         <p role="alert" className="text-sm text-destructive">
-          {t(`common:errors.${getErrorCategory(connectFriend.error)}`)}
+          {t(`common:errors.${getErrorCategory(connection.error)}`)}
         </p>
       )}
       <FriendDetailInfo socialMedias={socialMedias} />

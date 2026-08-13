@@ -1,6 +1,12 @@
 import { useState, type CSSProperties } from 'react';
 import { Link } from 'react-router';
-import { Avatar, cn, Popover, PopoverAnchor, PopoverContent } from '@hatohui/ui';
+import {
+  Avatar,
+  cn,
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+} from '@hatohui/ui';
 import { useTranslation } from '@hatohui/i18n';
 import type { FriendDto } from '@hatohui/models';
 import routes from '../../constants/routes';
@@ -32,7 +38,7 @@ function SocialTreeNode({ friend, parentName, size, style, className }: Props) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
         <Link
-          to={routes.friend(friend.id)}
+          to={routes.friend(friend.handle ?? friend.id)}
           aria-label={friend.name}
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
@@ -43,7 +49,11 @@ function SocialTreeNode({ friend, parentName, size, style, className }: Props) {
             className,
           )}
         >
-          <Avatar src={friend.avatarUrl} alt={friend.name} className={dimension} />
+          <Avatar
+            src={friend.avatarUrl}
+            alt={friend.name}
+            className={dimension}
+          />
         </Link>
       </PopoverAnchor>
       <PopoverContent

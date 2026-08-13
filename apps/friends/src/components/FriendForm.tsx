@@ -2,15 +2,17 @@ import { useState, type FormEvent } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Checkbox, Input, Label } from '@hatohui/ui';
 import type { CreateFriendDto, FriendDto } from '@hatohui/models';
-import type { Visibility } from '../constants/visibility';
-import { getErrorCategory } from '@hatohui/libs';
+import {
+  getErrorCategory,
+  useStagedAvatar,
+  BirthdayFields,
+  FriendAvatarField,
+  VisibilityField,
+  type Visibility,
+} from '@hatohui/libs';
 import { useSocialMediaFields } from '../hooks/useSocialMediaFields';
-import { useStagedAvatar } from '../hooks/useStagedAvatar';
 import SocialMediaFieldList from './SocialMediaFieldList';
-import BirthdayFields from './BirthdayFields';
-import FriendAvatarField from './FriendAvatarField';
 import AvatarHistoryGallery from './AvatarHistoryGallery';
-import VisibilityField from './VisibilityField';
 
 type Props = {
   title: string;
