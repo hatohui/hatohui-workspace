@@ -97,7 +97,7 @@ export function useUpcomingSections(
 
   return {
     groups,
-    isLoading: query.isLoading,
+    isLoading: query.isLoading && effectivePage === 1,
     isError: query.isError,
     isFetchingMore: query.isFetching && page > 1,
     hasMore: query.data?.data.hasMore ?? false,
