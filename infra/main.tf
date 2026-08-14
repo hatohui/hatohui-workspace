@@ -207,6 +207,16 @@ module "assets_r2" {
   cors_allowed_origins  = local.frontend_origins
 }
 
+module "scheduler" {
+  source = "./modules/scheduler"
+
+  project_name  = var.project_name
+  api_domain    = module.secrets.api_domain
+  admin_api_key = module.secrets.admin_api_key
+
+  depends_on = [module.dns_api_record]
+}
+
 module "github_ci" {
   source = "./modules/github"
 

@@ -66,19 +66,20 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
 
 ## Infra
 
-- [x] No AWS scheduling infra — [cronjob.com](https://cronjob.com) calls the
-      three endpoints directly, configured in its own dashboard, not
-      Terraform. `infra/modules/scheduler` (EventBridge Scheduler) was removed
-      after this decision; `terraform validate` and `terraform fmt` stay
-      clean without it.
+- [x] `infra/modules/scheduler` — three `aws_scheduler_schedule` resources
+      (evaluate hourly, process hourly, cleanup daily) targeting an
+      `aws_cloudwatch_event_api_destination` per route, authenticated via a
+      shared `aws_cloudwatch_event_connection` (`API_KEY`, `x-admin-key`
+      header sourced from `module.secrets.admin_api_key`). Wired into
+      `infra/main.tf` as `module "scheduler"`. Replaces the earlier
+      cronjob.com-based setup; at ~1,490 invocations/month this stays inside
+      EventBridge Scheduler's free tier (14M invocations/mo) with API
+      destination charges rounding to $0.
 
 ## Outstanding
 
 - [ ] Set `friends.birthday.senderemail` / `sendername` in `AppConfig` per
       environment if the seeded defaults aren't right for that environment.
       Until set, `process` logs a warning and sends nothing.
-- [ ] Configure the three cronjob.com jobs: evaluate hourly, process hourly
-      (a few minutes after evaluate), cleanup daily. Each needs the
-      `x-admin-key` header set to `ADMIN_API_KEY`.
 - [ ] No alerting on rows stuck in `SENDING` or sitting at `FAILED`. At this
       size that is a manual check.

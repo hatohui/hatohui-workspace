@@ -1,11 +1,8 @@
 # Birthday notifications
 
-Email reminders for upcoming and same-day birthdays, driven by
-[cronjob.com](https://cronjob.com) calling cron endpoints on `apps/api`. No AWS
-scheduling infra: cronjob.com is an external service configured directly in
-its own dashboard, hitting the deployed API over HTTPS with the admin key as a
-header — the same contract EventBridge would have used, just without the AWS
-side of it.
+Email reminders for upcoming and same-day birthdays, driven by AWS EventBridge
+Scheduler calling cron endpoints on `apps/api` over HTTPS, with the admin key
+sent as a header via an EventBridge API destination.
 
 ## What gets sent, to whom
 
@@ -117,13 +114,16 @@ site.
 
 ## Scheduling
 
-[cronjob.com](https://cronjob.com) calls the three endpoints on a schedule
-configured in its own dashboard — evaluate hourly, process hourly (a few
-minutes after evaluate, so a reminder queued this hour goes out in the same
-hour), cleanup daily. No infra-as-code for this: it's an external SaaS cron,
-not an AWS resource, so there is nothing in `infra/` to keep in sync with it.
+`infra/modules/scheduler` provisions three `aws_scheduler_schedule` resources
+— evaluate hourly, process hourly (a few minutes after evaluate, so a reminder
+queued this hour goes out in the same hour), cleanup daily — each targeting an
+`aws_cloudwatch_event_api_destination` that POSTs to the corresponding
+`/cron/friends/birthdays/*` route on the deployed API. A single
+`aws_cloudwatch_event_connection` (`API_KEY` auth) attaches the `x-admin-key`
+header to every invocation; the secret backing it is Doppler's
+`ADMIN_API_KEY`, wired through `module.secrets.admin_api_key`, not entered by
+hand in a third-party dashboard.
 
 Cron routes authenticate with the `ADMIN_API_KEY` header alone — `AdminGuard`'s
-session requirement can't be satisfied by an external cron call, so `CronGuard`
-checks the header (timing-safe) and nothing else. cronjob.com is configured to
-send it as a static `x-admin-key` header on each request.
+session requirement can't be satisfied by a scheduled call, so `CronGuard`
+checks the header (timing-safe) and nothing else.
