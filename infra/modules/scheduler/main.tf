@@ -77,7 +77,10 @@ resource "aws_cloudwatch_event_target" "birthdays" {
   # EventBridge's default event envelope.
   input = "{}"
 
+  # Both fields are required together: omitting the age sends 0, which AWS
+  # rejects. An hour caps retries at the point the next run supersedes them.
   retry_policy {
-    maximum_retry_attempts = 3
+    maximum_retry_attempts       = 3
+    maximum_event_age_in_seconds = 3600
   }
 }
