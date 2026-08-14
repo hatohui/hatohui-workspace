@@ -114,15 +114,22 @@ site.
 
 ## Scheduling
 
-`infra/modules/scheduler` provisions three `aws_scheduler_schedule` resources
-— evaluate hourly, process hourly (a few minutes after evaluate, so a reminder
-queued this hour goes out in the same hour), cleanup daily — each targeting an
-`aws_cloudwatch_event_api_destination` that POSTs to the corresponding
-`/cron/friends/birthdays/*` route on the deployed API. A single
+`infra/modules/scheduler` provisions three scheduled `aws_cloudwatch_event_rule`
+resources — evaluate hourly, process hourly (a few minutes after evaluate, so a
+reminder queued this hour goes out in the same hour), cleanup daily — each
+targeting an `aws_cloudwatch_event_api_destination` that POSTs to the
+corresponding `/cron/friends/birthdays/*` route on the deployed API. A single
 `aws_cloudwatch_event_connection` (`API_KEY` auth) attaches the `x-admin-key`
 header to every invocation; the secret backing it is Doppler's
 `ADMIN_API_KEY`, wired through `module.secrets.admin_api_key`, not entered by
 hand in a third-party dashboard.
+
+EventBridge **Scheduler** can't be used here despite being the newer API:
+its templated-target list has no API destination entry, so `CreateSchedule`
+rejects an API destination ARN outright. Rules are the only EventBridge
+surface that can call an arbitrary HTTPS endpoint. The tradeoff is that rule
+cron expressions are UTC-only — fine here, since evaluate is hourly and the
+per-user timezone logic lives in `evaluate` itself, not in the schedule.
 
 Cron routes authenticate with the `ADMIN_API_KEY` header alone — `AdminGuard`'s
 session requirement can't be satisfied by a scheduled call, so `CronGuard`

@@ -66,15 +66,17 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
 
 ## Infra
 
-- [x] `infra/modules/scheduler` — three `aws_scheduler_schedule` resources
-      (evaluate hourly, process hourly, cleanup daily) targeting an
+- [x] `infra/modules/scheduler` — three scheduled `aws_cloudwatch_event_rule`
+      resources (evaluate hourly, process hourly, cleanup daily) targeting an
       `aws_cloudwatch_event_api_destination` per route, authenticated via a
       shared `aws_cloudwatch_event_connection` (`API_KEY`, `x-admin-key`
       header sourced from `module.secrets.admin_api_key`). Wired into
       `infra/main.tf` as `module "scheduler"`. Replaces the earlier
-      cronjob.com-based setup; at ~1,490 invocations/month this stays inside
-      EventBridge Scheduler's free tier (14M invocations/mo) with API
-      destination charges rounding to $0.
+      cronjob.com-based setup. Scheduled rules are not billed and the ~1,490
+      API destination invocations/month cost fractions of a cent.
+      EventBridge **Scheduler** does not accept API destination targets —
+      `CreateSchedule` fails with "Provided Arn is not in correct format" —
+      so rules, not schedules, are the correct resource here.
 
 ## Outstanding
 

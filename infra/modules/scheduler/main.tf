@@ -1,6 +1,7 @@
 locals {
   # Mirrors the cronjob.com setup this replaces: evaluate hourly, process a
   # few minutes after (so queued rows are already written), cleanup daily.
+  # EventBridge rule cron is 6-field and always UTC.
   birthday_cron_routes = {
     evaluate = "rate(1 hour)"
     process  = "cron(5 * * * ? *)"
@@ -30,22 +31,22 @@ resource "aws_cloudwatch_event_api_destination" "birthdays" {
   connection_arn                   = aws_cloudwatch_event_connection.cron.arn
 }
 
-resource "aws_iam_role" "scheduler" {
-  name = "${var.project_name}-cron-scheduler"
+resource "aws_iam_role" "invoke" {
+  name = "${var.project_name}-cron-invoke"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
       Effect    = "Allow"
-      Principal = { Service = "scheduler.amazonaws.com" }
+      Principal = { Service = "events.amazonaws.com" }
       Action    = "sts:AssumeRole"
     }]
   })
 }
 
-resource "aws_iam_role_policy" "scheduler_invoke" {
+resource "aws_iam_role_policy" "invoke" {
   name = "${var.project_name}-cron-invoke"
-  role = aws_iam_role.scheduler.id
+  role = aws_iam_role.invoke.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -57,24 +58,26 @@ resource "aws_iam_role_policy" "scheduler_invoke" {
   })
 }
 
-resource "aws_scheduler_schedule" "birthdays" {
+resource "aws_cloudwatch_event_rule" "birthdays" {
   for_each = local.birthday_cron_routes
 
-  name       = "${var.project_name}-cron-${each.key}"
-  group_name = "default"
-
+  name                = "${var.project_name}-cron-${each.key}"
+  description         = "POST /cron/friends/birthdays/${each.key}"
   schedule_expression = each.value
+}
 
-  flexible_time_window {
-    mode = "OFF"
-  }
+resource "aws_cloudwatch_event_target" "birthdays" {
+  for_each = local.birthday_cron_routes
 
-  target {
-    arn      = aws_cloudwatch_event_api_destination.birthdays[each.key].arn
-    role_arn = aws_iam_role.scheduler.arn
+  rule     = aws_cloudwatch_event_rule.birthdays[each.key].name
+  arn      = aws_cloudwatch_event_api_destination.birthdays[each.key].arn
+  role_arn = aws_iam_role.invoke.arn
 
-    retry_policy {
-      maximum_retry_attempts = 3
-    }
+  # The routes read nothing off the body; send an empty object rather than
+  # EventBridge's default event envelope.
+  input = "{}"
+
+  retry_policy {
+    maximum_retry_attempts = 3
   }
 }
