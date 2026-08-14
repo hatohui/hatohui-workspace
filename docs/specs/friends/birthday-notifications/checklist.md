@@ -77,8 +77,12 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
       EventBridge **Scheduler** does not accept API destination targets —
       `CreateSchedule` fails with "Provided Arn is not in correct format" —
       so rules, not schedules, are the correct resource here. Rule cron is
-      6-field and always UTC; the per-user timezone logic lives in `evaluate`,
-      not in the schedule.
+      6-field (`minutes hours day-of-month month day-of-week year`) and always
+      UTC; the per-user timezone logic lives in `evaluate`, not in the
+      schedule. All three use cron rather than `rate()` on purpose: a rate
+      expression is phased from the rule's creation time, so `rate(1 hour)`
+      would put evaluate at an arbitrary minute and break the ordering process
+      depends on. Pinned to `:00` and `:05` instead.
 - [x] Two apply-time constraints `terraform validate` cannot catch, both hit
       once already: the target's `retry_policy` must set
       `maximum_event_age_in_seconds` explicitly, because the provider

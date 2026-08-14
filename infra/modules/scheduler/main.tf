@@ -1,6 +1,6 @@
 locals {
   birthday_cron_routes = {
-    evaluate = "rate(1 hour)"
+    evaluate = "cron(0 * * * ? *)"
     process  = "cron(5 * * * ? *)"
     cleanup  = "cron(0 3 * * ? *)"
   }
