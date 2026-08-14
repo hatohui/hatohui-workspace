@@ -1,7 +1,4 @@
 locals {
-  # Mirrors the cronjob.com setup this replaces: evaluate hourly, process a
-  # few minutes after (so queued rows are already written), cleanup daily.
-  # EventBridge rule cron is 6-field and always UTC.
   birthday_cron_routes = {
     evaluate = "rate(1 hour)"
     process  = "cron(5 * * * ? *)"
@@ -73,12 +70,8 @@ resource "aws_cloudwatch_event_target" "birthdays" {
   arn      = aws_cloudwatch_event_api_destination.birthdays[each.key].arn
   role_arn = aws_iam_role.invoke.arn
 
-  # The routes read nothing off the body; send an empty object rather than
-  # EventBridge's default event envelope.
   input = "{}"
 
-  # Both fields are required together: omitting the age sends 0, which AWS
-  # rejects. An hour caps retries at the point the next run supersedes them.
   retry_policy {
     maximum_retry_attempts       = 3
     maximum_event_age_in_seconds = 3600

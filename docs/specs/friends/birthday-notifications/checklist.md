@@ -76,7 +76,15 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
       API destination invocations/month cost fractions of a cent.
       EventBridge **Scheduler** does not accept API destination targets —
       `CreateSchedule` fails with "Provided Arn is not in correct format" —
-      so rules, not schedules, are the correct resource here.
+      so rules, not schedules, are the correct resource here. Rule cron is
+      6-field and always UTC; the per-user timezone logic lives in `evaluate`,
+      not in the schedule.
+- [x] Two apply-time constraints `terraform validate` cannot catch, both hit
+      once already: the target's `retry_policy` must set
+      `maximum_event_age_in_seconds` explicitly, because the provider
+      serializes the omitted field as `0` and `PutTargets` requires >= 60; and
+      the target sets `input = "{}"` so the routes receive an empty body
+      rather than EventBridge's event envelope.
 
 ## Outstanding
 
