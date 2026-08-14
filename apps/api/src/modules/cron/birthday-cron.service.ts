@@ -22,7 +22,7 @@ import {
 } from './birthday-outbox.service';
 import {
   civilDateIn,
-  formatCivilDate,
+  formatCivilDateLong,
   nextOccurrence,
   toUtcDate,
   type CivilDate,
@@ -361,7 +361,8 @@ function templateParams(
     friendName: subject.displayName,
     friendHandle: subject.handle,
     friendAvatarUrl: subject.avatarUrl ?? defaultAvatarUrl,
-    birthdayDate: formatCivilDate(occursOn),
+    subjectId: row.subjectId,
+    birthdayDate: formatCivilDateLong(occursOn),
     birthdayTimezone: timezone,
     turningAge: subject.birthday?.year
       ? occursOn.year - subject.birthday.year

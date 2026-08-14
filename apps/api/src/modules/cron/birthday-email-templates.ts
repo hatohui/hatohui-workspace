@@ -5,6 +5,7 @@ export interface BirthdayEmailParams {
   friendName: string;
   friendHandle: string | null;
   friendAvatarUrl: string | null;
+  subjectId: string;
   birthdayDate: string;
   birthdayTimezone: string;
   turningAge: number | null;
@@ -15,6 +16,23 @@ export interface RenderedEmail {
   html: string;
 }
 
+interface Card {
+  preheader: string;
+  eyebrow: string;
+  headline: string;
+  badge: string | null;
+  dateLine: string;
+  whenNote: string;
+  body: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  portraitName: string;
+  portraitUrl: string | null;
+  handle: string | null;
+}
+
+const APP_URL = 'friends.hatohui.com';
+
 const TEMPLATES: Record<
   EmailOutboxKind,
   (params: BirthdayEmailParams) => RenderedEmail
@@ -22,30 +40,58 @@ const TEMPLATES: Record<
   [EmailOutboxKind.SELF_BIRTHDAY]: (p) => ({
     subject: sanitizeSubject(`Happy birthday, ${p.recipientName}!`),
     html: layout({
-      heading: `Happy birthday, ${p.recipientName}!`,
-      levelUp: levelUpBlock(p),
+      ...portrait(p),
+      preheader:
+        p.turningAge !== null
+          ? `Turning ${p.turningAge} today. Hope it's a good one.`
+          : "Today's the day. Hope it's a good one.",
+      eyebrow: 'Your birthday',
+      headline: `Happy birthday, ${p.friendName}`,
+      badge: levelBadge(p.turningAge),
+      dateLine: p.birthdayDate,
+      whenNote: `Today in your timezone (${zoneLabel(p.birthdayTimezone)})`,
       body:
         p.turningAge !== null
           ? `Here's to ${p.turningAge} — have a great one.`
           : "Here's to another great year.",
+      ctaLabel: "See who's celebrating",
+      ctaUrl: `https://${APP_URL}/birthdays`,
     }),
   }),
 
   [EmailOutboxKind.FRIEND_BIRTHDAY_TODAY]: (p) => ({
     subject: sanitizeSubject(`It's ${p.friendName}'s birthday today`),
     html: layout({
-      heading: `It's ${p.friendName}'s birthday today`,
-      levelUp: levelUpBlock(p),
-      body: friendBody(p, 'today, where they are — go say happy birthday.'),
+      ...portrait(p),
+      preheader: `Today in ${zoneLabel(p.birthdayTimezone)} — a good moment to say something.`,
+      eyebrow: 'Birthday today',
+      headline: p.friendName,
+      badge: levelBadge(p.turningAge),
+      dateLine: p.birthdayDate,
+      whenNote: `Today in their timezone (${zoneLabel(p.birthdayTimezone)})`,
+      body: `It's ${p.friendName}'s day where they are. A quick hello goes a long way.`,
+      ctaLabel: 'See their profile',
+      ctaUrl: profileUrl(p.subjectId),
     }),
   }),
 
+  /// No level badge here: the birthday hasn't happened yet, so claiming the
+  /// level-up on a "coming up" email would be a day or more early.
   [EmailOutboxKind.FRIEND_BIRTHDAY_UPCOMING]: (p) => ({
     subject: sanitizeSubject(`${p.friendName}'s birthday is coming up`),
     html: layout({
-      heading: `${p.friendName}'s birthday is coming up`,
-      levelUp: levelUpBlock(p),
-      body: friendBody(p, `on ${p.birthdayDate}.`),
+      ...portrait(p),
+      preheader: `${p.birthdayDate} — a heads-up so it doesn't sneak past you.`,
+      eyebrow: 'Upcoming birthday',
+      headline: p.friendName,
+      badge: null,
+      dateLine: p.birthdayDate,
+      whenNote: `In their timezone (${zoneLabel(p.birthdayTimezone)})`,
+      body: `A heads-up so the day doesn't sneak past you.${
+        p.turningAge !== null ? ` They're turning ${p.turningAge}.` : ''
+      }`,
+      ctaLabel: 'See their profile',
+      ctaUrl: profileUrl(p.subjectId),
     }),
   }),
 };
@@ -57,147 +103,83 @@ export function renderBirthdayEmail(
   return TEMPLATES[kind](params);
 }
 
-function friendBody(p: BirthdayEmailParams, whenClause: string): string {
-  const age = p.turningAge !== null ? ` They're turning ${p.turningAge}.` : '';
-  return `${p.friendName}'s birthday is ${whenClause}${age}`;
-}
-
-/// The avatar/handle/level-up badge is the same block for all three kinds —
-/// it's always about the person whose birthday it is (`friendName`), even in
+/// The portrait is always the person whose birthday it is, even in
 /// SELF_BIRTHDAY where that happens to be the recipient too.
-function levelUpBlock(p: BirthdayEmailParams): string {
-  const avatar = p.friendAvatarUrl
-    ? `<img src="${escapeAttr(p.friendAvatarUrl)}" width="72" height="72" alt="" style="display:block;width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #cc785c;" />`
-    : `<div style="width:72px;height:72px;border-radius:50%;border:3px solid #cc785c;background:#e8e0d2;"></div>`;
-  const handle = p.friendHandle
-    ? `<p style="margin:8px 0 0;font-size:13px;font-weight:600;color:#6c6a64;">@${escapeHtml(p.friendHandle)}</p>`
-    : '';
-
-  return `
-    <table role="presentation" align="center" cellpadding="0" cellspacing="0" style="margin:20px auto;">
-      <tr>
-        <td align="center">
-          ${avatar}
-          ${handle}
-          <div style="display:inline-block;margin-top:12px;padding:6px 18px;background:#cc785c;color:#ffffff;font-size:15px;font-weight:800;letter-spacing:0.5px;border-radius:999px;transform:rotate(-3deg);">
-            +1 LEVEL!!!!!!
-          </div>
-        </td>
-      </tr>
-    </table>`;
+function portrait(
+  p: BirthdayEmailParams,
+): Pick<Card, 'portraitName' | 'portraitUrl' | 'handle'> {
+  return {
+    portraitName: p.friendName,
+    portraitUrl: safeUrl(p.friendAvatarUrl),
+    handle: p.friendHandle,
+  };
 }
 
-/// Inline SVG rather than a hosted image: no upload target exists for it
-/// (nothing in this repo has write access to the production asset CDN), and
-/// inline markup means the card never depends on an external fetch succeeding.
-const BANNER_SVG = `
-<svg width="416" height="166" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" role="presentation" style="display:block;margin:0 auto 8px;">
-  <defs>
-    <radialGradient id="glow" cx="50%" cy="120%" r="75%">
-      <stop offset="0%" stop-color="#f5d9c8"/>
-      <stop offset="62%" stop-color="#efe9de"/>
-    </radialGradient>
-  </defs>
-  <rect x="0" y="0" width="600" height="240" fill="url(#glow)"/>
-  <rect x="40" y="30" width="10" height="10" fill="#cc785c" transform="rotate(20 45 35)"/>
-  <rect x="80" y="60" width="8" height="8" fill="#e8b04b" transform="rotate(-15 84 64)"/>
-  <circle cx="130" cy="35" r="5" fill="#7fa87a"/>
-  <rect x="510" y="40" width="9" height="9" fill="#cc785c" transform="rotate(35 514 44)"/>
-  <circle cx="560" cy="70" r="6" fill="#e8b04b"/>
-  <rect x="475" y="90" width="7" height="7" fill="#7fa87a" transform="rotate(10 478 93)"/>
-  <circle cx="30" cy="100" r="4" fill="#cc785c"/>
-  <rect x="550" y="130" width="8" height="8" fill="#7fa87a" transform="rotate(-25 554 134)"/>
-  <circle cx="70" cy="140" r="5" fill="#e8b04b"/>
-  <rect x="20" y="180" width="9" height="9" fill="#cc785c" transform="rotate(15 24 184)"/>
-  <circle cx="575" cy="180" r="5" fill="#7fa87a"/>
-  <rect x="490" y="200" width="7" height="7" fill="#e8b04b" transform="rotate(-10 493 203)"/>
-  <g transform="translate(0,20)">
-    <line x1="30" y1="60" x2="20" y2="130" stroke="#cc785c" stroke-width="2" opacity="0.5"/>
-    <ellipse cx="30" cy="40" rx="18" ry="24" fill="#cc785c" opacity="0.85"/>
-    <polygon points="26,62 34,62 30,72" fill="#cc785c" opacity="0.85"/>
-    <ellipse cx="95" cy="150" rx="42" ry="34" fill="#e0a370"/>
-    <circle cx="95" cy="95" r="38" fill="#e8b385"/>
-    <polygon points="65,70 55,35 80,60" fill="#e0a370"/>
-    <polygon points="65,70 60,45 78,63" fill="#faf3ec"/>
-    <polygon points="125,70 135,35 110,60" fill="#e0a370"/>
-    <polygon points="125,70 130,45 112,63" fill="#faf3ec"/>
-    <ellipse cx="95" cy="108" rx="20" ry="16" fill="#faf3ec"/>
-    <path d="M78 90 Q83 84 88 90" stroke="#141413" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M102 90 Q107 84 112 90" stroke="#141413" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <ellipse cx="95" cy="106" rx="5" ry="4" fill="#141413"/>
-    <path d="M85 114 Q95 122 105 114" stroke="#141413" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <circle cx="76" cy="104" r="5" fill="#cc785c" opacity="0.35"/>
-    <circle cx="114" cy="104" r="5" fill="#cc785c" opacity="0.35"/>
-    <polygon points="95,30 75,68 115,68" fill="#7fa87a"/>
-    <polygon points="95,30 87,50 103,50" fill="#e8b04b"/>
-    <circle cx="95" cy="30" r="6" fill="#e8b04b"/>
-    <circle cx="82" cy="60" r="3" fill="#faf9f5"/>
-    <circle cx="108" cy="55" r="3" fill="#faf9f5"/>
-    <circle cx="95" cy="45" r="3" fill="#faf9f5"/>
-  </g>
-  <g transform="translate(450,30)">
-    <circle cx="30" cy="30" r="4" fill="#7fa87a"/>
-    <rect x="110" y="40" width="7" height="7" fill="#cc785c" transform="rotate(20 113 43)"/>
-    <ellipse cx="55" cy="60" rx="4" ry="7" fill="#e8b04b"/>
-    <ellipse cx="75" cy="52" rx="4" ry="8" fill="#e8b04b"/>
-    <ellipse cx="95" cy="60" rx="4" ry="7" fill="#e8b04b"/>
-    <rect x="52" y="66" width="6" height="20" fill="#cc785c"/>
-    <rect x="72" y="58" width="6" height="28" fill="#7fa87a"/>
-    <rect x="92" y="66" width="6" height="20" fill="#cc785c"/>
-    <rect x="35" y="86" width="80" height="34" rx="6" fill="#faf3ec" stroke="#e0a370" stroke-width="2"/>
-    <circle cx="50" cy="103" r="4" fill="#cc785c"/>
-    <circle cx="70" cy="98" r="4" fill="#7fa87a"/>
-    <circle cx="90" cy="103" r="4" fill="#e8b04b"/>
-    <circle cx="60" cy="110" r="4" fill="#e8b04b"/>
-    <circle cx="100" cy="112" r="4" fill="#cc785c"/>
-    <rect x="20" y="118" width="110" height="46" rx="8" fill="#e0a370"/>
-    <rect x="20" y="118" width="110" height="10" rx="5" fill="#e8b385"/>
-  </g>
-  <g fill="#cc785c" opacity="0.28">
-    <ellipse cx="235" cy="205" rx="6" ry="8"/>
-    <ellipse cx="225" cy="195" rx="3" ry="4"/>
-    <ellipse cx="233" cy="192" rx="3" ry="4"/>
-    <ellipse cx="241" cy="194" rx="3" ry="4"/>
-    <ellipse cx="270" cy="185" rx="6" ry="8"/>
-    <ellipse cx="260" cy="175" rx="3" ry="4"/>
-    <ellipse cx="268" cy="172" rx="3" ry="4"/>
-    <ellipse cx="276" cy="174" rx="3" ry="4"/>
-  </g>
-</svg>`;
+function levelBadge(turningAge: number | null): string {
+  return turningAge !== null ? `Level ${turningAge}` : '+1 Level';
+}
 
-const APP_URL = 'friends.hatohui.com';
+function profileUrl(subjectId: string): string {
+  return `https://${APP_URL}/profile/${encodeURIComponent(subjectId)}`;
+}
 
-function layout({
-  heading,
-  levelUp,
-  body,
-}: {
-  heading: string;
-  levelUp: string;
-  body: string;
-}): string {
+function zoneLabel(timezone: string): string {
+  return timezone.replaceAll('_', ' ');
+}
+
+/// Georgia is deliberately absent: it has no precomposed Vietnamese glyphs, so
+/// names like "Quốc" render with a displaced accent. Every face listed here was
+/// checked against Vietnamese, Japanese and Korean sample names.
+const SERIF =
+  "'Palatino Linotype','Book Antiqua',Palatino,Constantia,'Times New Roman',serif";
+const SANS =
+  "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+
+/// Every decorative element is a background-filled table cell rather than an
+/// inline SVG or a hosted image: Gmail, Outlook and Yahoo all strip <svg>, and
+/// there is no upload target in this repo for a raster fallback.
+function layout(card: Card): string {
   return `<!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
+    <title>${escapeHtml(card.headline)}</title>
+    <style>
+      @media only screen and (max-width: 480px) {
+        .card-pad { padding: 24px 20px !important; }
+        .headline { font-size: 24px !important; }
+      }
+    </style>
   </head>
-  <body style="margin:0;padding:32px 16px;background-color:#faf9f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#141413;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+  <body style="margin:0;padding:0;background-color:#faf9f5;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;height:0;width:0;">
+      ${escapeHtml(card.preheader)}
+      ${'&#8203;'.repeat(60)}
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#faf9f5;">
       <tr>
-        <td align="center">
-          <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;width:100%;background-color:#efe9de;border-radius:12px;padding:32px;">
+        <td align="center" style="padding:32px 12px;">
+          <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;width:100%;background-color:#efe9de;border-radius:12px;">
             <tr>
-              <td align="center">
-                ${BANNER_SVG}
-                <h1 style="margin:0;font-size:20px;line-height:1.4;color:#141413;text-align:center;">${escapeHtml(heading)}</h1>
-                ${levelUp}
-                <p style="margin:0;font-size:15px;line-height:1.6;color:#141413;text-align:center;">${escapeHtml(body)}</p>
+              <td style="height:4px;line-height:4px;font-size:0;background-color:#cc785c;border-radius:12px 12px 0 0;">&nbsp;</td>
+            </tr>
+            <tr>
+              <td class="card-pad" align="center" style="padding:32px;">
+                ${eyebrow(card.eyebrow)}
+                ${portraitBlock(card)}
+                <h1 class="headline" style="margin:18px 0 0;font-family:${SERIF};font-size:28px;font-weight:400;line-height:1.2;letter-spacing:-0.3px;color:#141413;">${escapeHtml(card.headline)}</h1>
+                ${handleLine(card.handle)}
+                ${badgeBlock(card.badge)}
+                ${dateBlock(card)}
+                <p style="margin:20px 0 0;font-family:${SANS};font-size:15px;line-height:1.6;color:#3d3d3a;">${escapeHtml(card.body)}</p>
+                ${button(card.ctaLabel, card.ctaUrl)}
               </td>
             </tr>
           </table>
-          <p style="margin:16px 0 0;font-size:12px;color:#a09d96;text-align:center;">
-            automated with love from <a href="https://${APP_URL}" style="color:#a09d96;">${APP_URL}</a>
-          </p>
+          ${footer()}
         </td>
       </tr>
     </table>
@@ -205,17 +187,96 @@ function layout({
 </html>`;
 }
 
+function eyebrow(text: string): string {
+  return `<p style="margin:0 0 20px;font-family:${SANS};font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#5f5d57;">${escapeHtml(text)}</p>`;
+}
+
+function portraitBlock(card: Card): string {
+  const inner = card.portraitUrl
+    ? `<img src="${escapeHtml(card.portraitUrl)}" width="88" height="88" alt="" style="display:block;width:88px;height:88px;border-radius:50%;object-fit:cover;" />`
+    : `<span style="font-family:${SERIF};font-size:34px;line-height:88px;color:#a9583e;">${escapeHtml(initial(card.portraitName))}</span>`;
+
+  return `
+    <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+      <tr>
+        <td width="88" height="88" align="center" valign="middle" bgcolor="#e8e0d2" style="width:88px;height:88px;background-color:#e8e0d2;border:3px solid #cc785c;border-radius:50%;">${inner}</td>
+      </tr>
+    </table>`;
+}
+
+function handleLine(handle: string | null): string {
+  if (!handle) return '';
+  return `<p style="margin:6px 0 0;font-family:${SANS};font-size:13px;font-weight:600;color:#5f5d57;">@${escapeHtml(handle)}</p>`;
+}
+
+function badgeBlock(badge: string | null): string {
+  if (!badge) return '';
+  return `
+    <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:14px auto 0;">
+      <tr>
+        <td bgcolor="#a9583e" style="background-color:#a9583e;border-radius:999px;padding:6px 16px;font-family:${SANS};font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ffffff;">${escapeHtml(badge)}</td>
+      </tr>
+    </table>`;
+}
+
+function dateBlock(card: Card): string {
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0;">
+      <tr>
+        <td align="center" bgcolor="#e8e0d2" style="background-color:#e8e0d2;border-radius:8px;padding:16px 20px;">
+          <p style="margin:0;font-family:${SERIF};font-size:19px;line-height:1.3;color:#141413;">${escapeHtml(card.dateLine)}</p>
+          <p style="margin:6px 0 0;font-family:${SANS};font-size:13px;line-height:1.5;color:#5f5d57;">${escapeHtml(card.whenNote)}</p>
+        </td>
+      </tr>
+    </table>`;
+}
+
+function button(label: string, url: string): string {
+  return `
+    <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:24px auto 0;">
+      <tr>
+        <td align="center" bgcolor="#a9583e" style="background-color:#a9583e;border-radius:8px;">
+          <a href="${escapeHtml(url)}" style="display:block;padding:14px 28px;font-family:${SANS};font-size:15px;font-weight:600;line-height:1.2;color:#ffffff;text-decoration:none;">${escapeHtml(label)}</a>
+        </td>
+      </tr>
+    </table>`;
+}
+
+function footer(): string {
+  return `
+    <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;width:100%;">
+      <tr>
+        <td align="center" style="padding:16px 8px 0;">
+          <p style="margin:0;font-family:${SANS};font-size:12px;line-height:1.5;color:#6c6a64;">
+            automated with love from <a href="https://${APP_URL}" style="color:#6c6a64;text-decoration:underline;">${APP_URL}</a>
+          </p>
+        </td>
+      </tr>
+    </table>`;
+}
+
+/// Array.from, not [0]: a display name starting outside the BMP would
+/// otherwise render as half a surrogate pair.
+function initial(name: string): string {
+  return (Array.from(name.trim())[0] ?? '?').toUpperCase();
+}
+
+function safeUrl(value: string | null): string | null {
+  if (!value) return null;
+  return /^https?:\/\//i.test(value) ? value : null;
+}
+
+/// NFC first: names entered on macOS/iOS arrive decomposed, and a combining
+/// mark renders displaced in many mail clients even when the font has the
+/// precomposed glyph.
 function escapeHtml(value: string): string {
   return value
+    .normalize('NFC')
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-}
-
-function escapeAttr(value: string): string {
-  return escapeHtml(value);
 }
 
 function sanitizeSubject(value: string): string {

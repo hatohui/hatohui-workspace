@@ -47,6 +47,17 @@ export function formatCivilDate({ year, month, day }: CivilDate): string {
   return `${year}-${pad(month)}-${pad(day)}`;
 }
 
+/// Formatted in UTC against the already-resolved civil date, so the rendered
+/// day matches the date the schedule computed rather than the server's zone.
+export function formatCivilDateLong(date: CivilDate): string {
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC',
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  }).format(toUtcDate(date));
+}
+
 function celebratedOn(year: number, month: number, day: number): CivilDate {
   if (month === 2 && day === 29 && !isLeapYear(year)) {
     return { year, month: 2, day: 28 };
