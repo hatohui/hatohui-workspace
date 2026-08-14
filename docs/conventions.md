@@ -10,6 +10,15 @@ Cross-cutting conventions for this monorepo. Per-app specs live in `docs/specs/<
 - **Lint/format: one shared config for the whole repo.** Root `eslint.config.mjs` + root `.prettierrc` — no per-app ESLint/Prettier/oxlint configs. Per-app overrides (globals, sourceType, plugin rules) live as `files`-scoped blocks inside the root config.
 - Local infra (Postgres, MinIO, Mailpit, Redis) runs via root `docker-compose.yml`.
 
+## Comments
+
+Don't explain code in comments — code should read on its own, and prose next to
+it goes stale. Reasoning that genuinely needs writing down (why a design was
+chosen, what a failure mode is, what a constraint protects against) goes in
+`docs/specs/<app>/<feature>/`, and the code points at it with a one-line
+reference at most. This applies to `///` doc comments, inline `//` notes, and
+Prisma schema comments alike.
+
 ## NestJS apps (`apps/api` and future backend apps)
 
 Standard folder layout:

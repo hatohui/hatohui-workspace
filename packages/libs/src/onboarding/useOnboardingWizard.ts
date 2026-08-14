@@ -69,7 +69,7 @@ export function useOnboardingWizard(
 
   const optIn = useOnboardingOptIn({ mutation: onChanged });
   const setProfile = useOnboardingSetProfile({ mutation: onChanged });
-  const updateHandle = useUpdateMe();
+  const updateMe = useUpdateMe();
   const setVisibility = useOnboardingSetVisibility({ mutation: onChanged });
   const setBirthday = useOnboardingSetBirthday({ mutation: onChanged });
   const addConnections = useOnboardingAddConnections({ mutation: onChanged });
@@ -80,8 +80,9 @@ export function useOnboardingWizard(
     entry,
     isLoading: stateQuery.isLoading,
     step,
-    isSubmittingHandle: updateHandle.isPending,
-    handleError: updateHandle.error,
+    isSubmittingHandle: updateMe.isPending,
+    isSubmittingTimezone: updateMe.isPending,
+    handleError: updateMe.error,
 
     submitOptIn: (join: boolean) => {
       if (!join) {
@@ -108,7 +109,7 @@ export function useOnboardingWizard(
         setStep(next);
         return;
       }
-      updateHandle.mutate(
+      updateMe.mutate(
         { data: { handle } },
         {
           onSuccess: () => {
@@ -130,8 +131,16 @@ export function useOnboardingWizard(
       birthMonth: number;
       birthDay: number;
     }) => {
-      setStep('connections');
+      setStep('timezone');
       setBirthday.mutate({ data: { ...data, visibility: birthdayVisibility } });
+    },
+
+    submitTimezone: (timezone: string) => {
+      setStep('connections');
+      updateMe.mutate(
+        { data: { timezone } },
+        { onSuccess: () => void refetchUser() },
+      );
     },
 
     submitConnections: (userIds: string[]) => {

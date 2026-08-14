@@ -122,10 +122,20 @@
     "markAllRead": "Mark all read",
     "accept": "Accept",
     "decline": "Decline",
+    "delete": "Delete",
+    "clearHistory": "Clear history",
     "someone": "Someone",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "indicator": "Page {{page}} of {{total}}"
+    },
     "types": {
       "CONNECTION_REQUEST": "{{name}} wants to connect with you.",
       "CONNECTION_ACCEPTED": "{{name}} accepted your connection request.",
+      "CONNECTION_ACCEPTED_BY_YOU": "You accepted {{name}}'s connection request.",
+      "CONNECTION_REJECTED": "{{name}} rejected your connection request.",
+      "CONNECTION_REJECTED_BY_YOU": "You rejected {{name}}'s connection request.",
       "BIRTHDAY_REMINDER": "A birthday is coming up.",
       "SYSTEM": "You have a new notification."
     }

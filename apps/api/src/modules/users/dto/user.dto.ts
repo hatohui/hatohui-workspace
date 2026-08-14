@@ -9,6 +9,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { IsTimezone } from '@/libs/timezone';
 import { HANDLE_PATTERN } from '../handle.util';
 import { PublicUserDto } from './public-user.dto';
 
@@ -37,6 +38,16 @@ export class UpdateMeDto {
   @IsNotEmpty()
   @MaxLength(60)
   displayName?: string;
+
+  @ApiProperty({
+    example: 'Asia/Ho_Chi_Minh',
+    required: false,
+    description:
+      'IANA timezone name. Birthday reminders about this account are timed against it.',
+  })
+  @IsOptional()
+  @IsTimezone()
+  timezone?: string;
 }
 
 export class UserSearchQueryDto {

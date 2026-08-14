@@ -8,6 +8,8 @@ import OnboardingProfileStep from './OnboardingProfileStep';
 import OnboardingHandleStep from './OnboardingHandleStep';
 import OnboardingVisibilityStep from './OnboardingVisibilityStep';
 import OnboardingBirthdayStep from './OnboardingBirthdayStep';
+import OnboardingTimezoneStep from './OnboardingTimezoneStep';
+import { detectTimezone } from './timezones';
 import OnboardingConnectionsStep from './OnboardingConnectionsStep';
 import OnboardingCompleteStep from './OnboardingCompleteStep';
 
@@ -73,6 +75,13 @@ function OnboardingWizard({ mode = 'full', onEntityChanged }: Props) {
         <OnboardingBirthdayStep
           submitting={false}
           onSubmit={wizard.submitBirthday}
+        />
+      )}
+      {wizard.step === 'timezone' && (
+        <OnboardingTimezoneStep
+          initialTimezone={detectTimezone()}
+          submitting={wizard.isSubmittingTimezone}
+          onSubmit={wizard.submitTimezone}
         />
       )}
       {wizard.step === 'connections' && (

@@ -122,10 +122,20 @@
     "markAllRead": "全部标为已读",
     "accept": "接受",
     "decline": "拒绝",
+    "delete": "删除",
+    "clearHistory": "清除历史记录",
     "someone": "某人",
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "indicator": "第 {{page}} / {{total}} 页"
+    },
     "types": {
       "CONNECTION_REQUEST": "{{name}} 想与你建立联系。",
       "CONNECTION_ACCEPTED": "{{name}} 接受了你的联系请求。",
+      "CONNECTION_ACCEPTED_BY_YOU": "你接受了 {{name}} 的联系请求。",
+      "CONNECTION_REJECTED": "{{name}} 拒绝了你的联系请求。",
+      "CONNECTION_REJECTED_BY_YOU": "你拒绝了 {{name}} 的联系请求。",
       "BIRTHDAY_REMINDER": "有生日快到了。",
       "SYSTEM": "你有一条新通知。"
     }

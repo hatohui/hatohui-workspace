@@ -13,9 +13,18 @@ function NotificationsPage() {
         isLoading={notifications.isLoading}
         isError={notifications.isError}
         isActing={notifications.isActing}
+        isDeleting={notifications.isDeleting}
+        page={notifications.page}
+        totalPages={notifications.totalPages}
+        hasNextPage={notifications.hasNextPage}
+        hasPrevPage={notifications.hasPrevPage}
         onAccept={notifications.accept}
         onDecline={notifications.decline}
         onMarkAllRead={notifications.markAllRead}
+        onDelete={notifications.deleteNotification}
+        onClearHistory={notifications.clearHistory}
+        onNextPage={notifications.nextPage}
+        onPrevPage={notifications.prevPage}
       />
     </RequireAuth>
   );

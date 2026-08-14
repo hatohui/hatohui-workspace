@@ -55,6 +55,13 @@
       "confirm": "はい、合っています",
       "enterManually": "手動で入力する"
     },
+    "timezone": {
+      "title": "お住まいの地域は？",
+      "description": "あなたの誕生日のお知らせはこのタイムゾーンを基準に送られます。",
+      "label": "タイムゾーン",
+      "search": "タイムゾーンを検索...",
+      "empty": "一致するタイムゾーンがありません。"
+    },
     "connections": {
       "title": "すでに知っている人はいますか？",
       "searchPlaceholder": "名前で検索...",

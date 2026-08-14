@@ -7,6 +7,14 @@ export const COMMISSION_RECEIVED_NOTIFICATION_CONFIG_TYPE =
   'art.commissionreceived.notification';
 const COMMISSION_RECEIVED_NOTIFICATION_EMAIL = 'hatohui@gmail.com';
 
+const BIRTHDAY_DEFAULTS: [type: string, value: string][] = [
+  ['friends.birthday.reminderdays', '7'],
+  ['friends.birthday.dailysendcap', '250'],
+  ['friends.birthday.senderemail', 'noreply@hatohui.com'],
+  ['friends.birthday.sendername', 'Friends - Hatohui Notifications'],
+  ['friends.birthday.avatarurl', 'https://assets.hatohui.com/assets/wqee.jpg'],
+];
+
 export async function seedAppConfig(prisma: PrismaClient) {
   await prisma.appConfig.upsert({
     where: {
@@ -34,4 +42,12 @@ export async function seedAppConfig(prisma: PrismaClient) {
       value: COMMISSION_RECEIVED_NOTIFICATION_EMAIL,
     },
   });
+
+  for (const [type, value] of BIRTHDAY_DEFAULTS) {
+    await prisma.appConfig.upsert({
+      where: { type_scope: { type, scope: AppScope.FRIENDS } },
+      update: {},
+      create: { type, scope: AppScope.FRIENDS, value },
+    });
+  }
 }

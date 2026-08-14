@@ -48,6 +48,7 @@ export class AuthService {
       avatarUrl: profile?.avatarUrl ?? user.avatarUrl,
       isAdmin: await this.isAdmin(user),
       onboardingStatus: user.onboardingStatus,
+      timezone: user.timezone,
     };
   }
 

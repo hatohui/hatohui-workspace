@@ -11,4 +11,6 @@ export interface UpdateMeDto {
   handle?: string;
   /** Display name, overriding the name from Google login. Unlike handle, any casing/spacing/accents are fine. */
   displayName?: string;
+  /** IANA timezone name. Birthday reminders about this account are timed against it. */
+  timezone?: string;
 }

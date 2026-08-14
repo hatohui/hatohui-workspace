@@ -122,10 +122,20 @@
     "markAllRead": "Đánh dấu đã đọc",
     "accept": "Chấp nhận",
     "decline": "Từ chối",
+    "delete": "Xóa",
+    "clearHistory": "Xóa lịch sử",
     "someone": "Ai đó",
+    "pagination": {
+      "prev": "Trước",
+      "next": "Tiếp",
+      "indicator": "Trang {{page}} / {{total}}"
+    },
     "types": {
       "CONNECTION_REQUEST": "{{name}} muốn kết nối với bạn.",
       "CONNECTION_ACCEPTED": "{{name}} đã chấp nhận yêu cầu kết nối của bạn.",
+      "CONNECTION_ACCEPTED_BY_YOU": "Bạn đã chấp nhận yêu cầu kết nối của {{name}}.",
+      "CONNECTION_REJECTED": "{{name}} đã từ chối yêu cầu kết nối của bạn.",
+      "CONNECTION_REJECTED_BY_YOU": "Bạn đã từ chối yêu cầu kết nối của {{name}}.",
       "BIRTHDAY_REMINDER": "Sắp có sinh nhật.",
       "SYSTEM": "Bạn có thông báo mới."
     }

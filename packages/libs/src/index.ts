@@ -19,3 +19,4 @@ export { default as FriendAvatarField } from './onboarding/FriendAvatarField';
 export { useStagedAvatar } from './onboarding/useStagedAvatar';
 export { default as VisibilityField } from './onboarding/VisibilityField';
 export { default as BirthdayFields } from './onboarding/BirthdayFields';
+export * from './onboarding/timezones';

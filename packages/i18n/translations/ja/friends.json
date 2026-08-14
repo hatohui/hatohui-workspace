@@ -122,10 +122,20 @@
     "markAllRead": "すべて既読にする",
     "accept": "承認",
     "decline": "辞退",
+    "delete": "削除",
+    "clearHistory": "履歴を削除",
     "someone": "誰か",
+    "pagination": {
+      "prev": "前へ",
+      "next": "次へ",
+      "indicator": "{{page}} / {{total}} ページ"
+    },
     "types": {
       "CONNECTION_REQUEST": "{{name}}さんがあなたとつながりたいそうです。",
       "CONNECTION_ACCEPTED": "{{name}}さんがつながりのリクエストを承認しました。",
+      "CONNECTION_ACCEPTED_BY_YOU": "あなたは{{name}}さんのつながりリクエストを承認しました。",
+      "CONNECTION_REJECTED": "{{name}}さんがつながりのリクエストを辞退しました。",
+      "CONNECTION_REJECTED_BY_YOU": "あなたは{{name}}さんのつながりリクエストを辞退しました。",
       "BIRTHDAY_REMINDER": "もうすぐ誕生日です。",
       "SYSTEM": "新しい通知があります。"
     }

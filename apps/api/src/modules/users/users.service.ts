@@ -62,32 +62,36 @@ export class UsersService {
     return { items: users.map(toPublicUserDto), total, page, pageSize };
   }
 
-  /// Both fields describe the public persona, so they live on the profile —
-  /// an account that never opted in has none to update.
+  /// Handle and display name describe the public persona, so they live on the
+  /// profile — an account that never opted in has none to update. Timezone is
+  /// account state and is writable either way.
   async updateMe(dto: UpdateMeDto, viewer: User): Promise<User> {
-    if (dto.handle === undefined && dto.displayName === undefined) {
-      return viewer;
+    if (dto.handle !== undefined || dto.displayName !== undefined) {
+      await this.db.profile
+        .update({
+          where: { userId: viewer.id },
+          data: { handle: dto.handle, displayName: dto.displayName },
+        })
+        .catch((error) => {
+          if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+              throw new ConflictException('That handle is already taken');
+            }
+            if (error.code === 'P2025') {
+              throw new BadRequestException(
+                'Join the directory before setting a handle or display name',
+              );
+            }
+          }
+          throw error;
+        });
     }
 
-    await this.db.profile
-      .update({
-        where: { userId: viewer.id },
-        data: { handle: dto.handle, displayName: dto.displayName },
-      })
-      .catch((error) => {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          if (error.code === 'P2002') {
-            throw new ConflictException('That handle is already taken');
-          }
-          if (error.code === 'P2025') {
-            throw new BadRequestException(
-              'Join the directory before setting a handle or display name',
-            );
-          }
-        }
-        throw error;
-      });
+    if (dto.timezone === undefined) return viewer;
 
-    return viewer;
+    return this.db.user.update({
+      where: { id: viewer.id },
+      data: { timezone: dto.timezone },
+    });
   }
 }

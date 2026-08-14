@@ -15,6 +15,7 @@ import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
 import { UsersModule } from '@/modules/users/users.module';
 import { AdminModule } from '@/modules/admin/admin.module';
 import { ConnectionsModule } from '@/modules/connections/connections.module';
+import { CronModule } from '@/modules/cron/cron.module';
 import { NotificationsModule } from '@/modules/notifications/notifications.module';
 import { AssetsModule } from '@/modules/assets/assets.module';
 import { CommissionsModule } from '@/modules/commissions/commissions.module';
@@ -41,6 +42,7 @@ import { ProjectsModule } from '@/modules/projects/projects.module';
     UsersModule,
     AdminModule,
     ConnectionsModule,
+    CronModule,
     NotificationsModule,
     AssetsModule,
     CommissionsModule,

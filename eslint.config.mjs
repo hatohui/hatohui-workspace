@@ -12,6 +12,9 @@ export default tseslint.config(
       '**/dist/**',
       '**/node_modules/**',
       '**/generated/**',
+      '**/.next/**',
+      '**/.open-next/**',
+      '**/next-env.d.ts',
       '**/postcss.config.mjs',
     ],
   },
@@ -39,6 +42,13 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+    },
+  },
+  {
+    files: ['apps/api/prisma/**/*.ts', 'apps/api/prisma.config.ts'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      parserOptions: { projectService: false, project: false },
     },
   },
   {

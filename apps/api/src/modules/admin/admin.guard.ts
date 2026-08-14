@@ -5,8 +5,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { timingSafeEqual } from 'node:crypto';
 import type { Env } from '@/config/env';
+import { ADMIN_KEY_HEADER, adminKeyMatches } from '@/libs/admin-key';
 import { Database } from '@/libs/db';
 import {
   AuthGuard,
@@ -14,8 +14,6 @@ import {
 } from '@/modules/auth/auth.guard';
 import { AuthService } from '@/modules/auth/auth.service';
 import { SessionService } from '@/modules/auth/session.service';
-
-export const ADMIN_KEY_HEADER = 'x-admin-key';
 
 /// Two independent factors: the session must belong to the configured admin
 /// address, *and* the request must carry the admin key — so a stolen session
@@ -37,9 +35,8 @@ export class AdminGuard extends AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-    const provided = request.headers[ADMIN_KEY_HEADER];
     const expected = this.config.get('ADMIN_API_KEY', { infer: true });
-    if (typeof provided !== 'string' || !matches(provided, expected)) {
+    if (!adminKeyMatches(request.headers[ADMIN_KEY_HEADER], expected)) {
       throw new ForbiddenException('Admin access denied');
     }
 
@@ -49,13 +46,4 @@ export class AdminGuard extends AuthGuard implements CanActivate {
 
     return true;
   }
-}
-
-/// Constant-time compare so a wrong key can't be discovered byte by byte.
-/// Lengths are compared first because timingSafeEqual throws on a mismatch.
-function matches(provided: string, expected: string): boolean {
-  const a = Buffer.from(provided);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length) return false;
-  return timingSafeEqual(a, b);
 }

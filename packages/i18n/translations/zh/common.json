@@ -55,6 +55,13 @@
       "confirm": "是的，没错",
       "enterManually": "手动输入"
     },
+    "timezone": {
+      "title": "你在哪个地区？",
+      "description": "关于你的生日提醒将按此时区发送，确保大家在你的当天收到通知。",
+      "label": "时区",
+      "search": "搜索时区...",
+      "empty": "没有匹配的时区。"
+    },
     "connections": {
       "title": "您已经认识这里的人了吗？",
       "searchPlaceholder": "搜索人员...",

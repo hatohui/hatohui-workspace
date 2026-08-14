@@ -153,6 +153,7 @@ module "dns_api_record" {
   }
 }
 
+
 module "pages_friends" {
   source = "./modules/pages"
 
@@ -211,15 +212,12 @@ module "github_ci" {
 
   repository_name = split("/", var.github_repository)[1]
   variables = {
-    AWS_REGION            = var.aws_region
-    AWS_ROLE_ARN          = module.iam.github_deploy_role_arn
-    ECR_REPOSITORY_URL    = module.ecr.repository_url
-    LAMBDA_FUNCTION_NAME  = module.lambda.function_name
-    CLOUDFLARE_ACCOUNT_ID = var.cloudflare_account_id
-    API_URL               = module.api_gateway.custom_domain_url
-    # OAuth client IDs are meant to be public (they're visible in the browser's
-    # own auth redirect URL) -- only client_secret is confidential, and that
-    # never leaves apps/api's Lambda environment.
+    AWS_REGION             = var.aws_region
+    AWS_ROLE_ARN           = module.iam.github_deploy_role_arn
+    ECR_REPOSITORY_URL     = module.ecr.repository_url
+    LAMBDA_FUNCTION_NAME   = module.lambda.function_name
+    CLOUDFLARE_ACCOUNT_ID  = var.cloudflare_account_id
+    API_URL                = module.api_gateway.custom_domain_url
     GOOGLE_OAUTH_CLIENT_ID = module.google_oauth.client_id
   }
 
@@ -227,8 +225,6 @@ module "github_ci" {
     CLOUDFLARE_API_TOKEN = var.cloudflare_api_token
     DOPPLER_TOKEN        = var.doppler_token
     TF_API_TOKEN         = var.tf_api_token
-    # Unpooled Neon connection string -- Prisma's migration engine needs a
-    # direct connection and isn't compatible with the pgbouncer pooler.
-    MIGRATION_DB_URL = module.database.database_url
+    MIGRATION_DB_URL     = module.database.database_url
   }
 }

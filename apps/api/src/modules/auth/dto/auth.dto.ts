@@ -45,4 +45,10 @@ export class UserDto {
 
   @ApiProperty({ enum: OnboardingStatus })
   onboardingStatus!: OnboardingStatus;
+
+  @ApiProperty({
+    example: 'Asia/Ho_Chi_Minh',
+    description: 'IANA timezone name this account is scheduled against',
+  })
+  timezone!: string;
 }

@@ -762,6 +762,26 @@
         "tags": [
           "notifications"
         ]
+      },
+      "delete": {
+        "operationId": "clearNotifications",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClearNotificationsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete every settled notification (read history, accepted/rejected). Pending connection requests are kept.",
+        "tags": [
+          "notifications"
+        ]
       }
     },
     "/notifications/unread-count": {
@@ -820,6 +840,30 @@
           }
         },
         "summary": "Mark every unread notification read",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/notifications/{id}": {
+      "delete": {
+        "operationId": "deleteNotification",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a settled notification. Rejects a still-pending, still-actionable connection request.",
         "tags": [
           "notifications"
         ]
@@ -1237,6 +1281,102 @@
         "summary": "Every directory entry, ignoring visibility. Admin-only; regular listings stay visibility-filtered.",
         "tags": [
           "admin"
+        ]
+      }
+    },
+    "/cron/friends/birthdays/evaluate": {
+      "post": {
+        "operationId": "evaluateBirthdayReminders",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BirthdayEvaluationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Queue reminders that are due now in each birthday owner's timezone. Runs hourly; re-running is a no-op.",
+        "tags": [
+          "cron"
+        ]
+      }
+    },
+    "/cron/friends/birthdays/process": {
+      "post": {
+        "operationId": "processBirthdayReminders",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BirthdayProcessingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Send queued reminders within the remaining daily quota. Unsent rows stay queued for the next run.",
+        "tags": [
+          "cron"
+        ]
+      }
+    },
+    "/cron/friends/birthdays/cleanup": {
+      "post": {
+        "operationId": "cleanupBirthdayReminders",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BirthdayCleanupDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Drop sent reminders past the retention window",
+        "tags": [
+          "cron"
         ]
       }
     },
@@ -2791,6 +2931,11 @@
               "COMPLETED",
               "SKIPPED"
             ]
+          },
+          "timezone": {
+            "type": "string",
+            "example": "Asia/Ho_Chi_Minh",
+            "description": "IANA timezone name this account is scheduled against"
           }
         },
         "required": [
@@ -2799,7 +2944,8 @@
           "handle",
           "avatarUrl",
           "isAdmin",
-          "onboardingStatus"
+          "onboardingStatus",
+          "timezone"
         ]
       },
       "FriendDto": {
@@ -3343,6 +3489,9 @@
             "enum": [
               "CONNECTION_REQUEST",
               "CONNECTION_ACCEPTED",
+              "CONNECTION_ACCEPTED_BY_YOU",
+              "CONNECTION_REJECTED",
+              "CONNECTION_REJECTED_BY_YOU",
               "BIRTHDAY_REMINDER",
               "SYSTEM"
             ]
@@ -3432,6 +3581,18 @@
         "properties": {
           "count": {
             "type": "number"
+          }
+        },
+        "required": [
+          "count"
+        ]
+      },
+      "ClearNotificationsDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Number of notifications deleted"
           }
         },
         "required": [
@@ -3702,8 +3863,93 @@
             "type": "string",
             "example": "Hatohui",
             "description": "Display name, overriding the name from Google login. Unlike handle, any casing/spacing/accents are fine."
+          },
+          "timezone": {
+            "type": "string",
+            "example": "Asia/Ho_Chi_Minh",
+            "description": "IANA timezone name. Birthday reminders about this account are timed against it."
           }
         }
+      },
+      "BirthdayEvaluationDto": {
+        "type": "object",
+        "properties": {
+          "examined": {
+            "type": "number",
+            "description": "Birthdays examined across every timezone"
+          },
+          "due": {
+            "type": "number",
+            "description": "Birthdays landing on a reminder day right now"
+          },
+          "queued": {
+            "type": "number",
+            "description": "Rows added to the outbox by this pass"
+          },
+          "alreadyQueued": {
+            "type": "number",
+            "description": "Rows this pass derived that were already queued by an earlier pass"
+          },
+          "notified": {
+            "type": "number",
+            "description": "In-app birthday notifications created by this pass"
+          }
+        },
+        "required": [
+          "examined",
+          "due",
+          "queued",
+          "alreadyQueued",
+          "notified"
+        ]
+      },
+      "BirthdayProcessingDto": {
+        "type": "object",
+        "properties": {
+          "claimed": {
+            "type": "number",
+            "description": "Rows claimed for sending by this pass"
+          },
+          "sent": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number",
+            "description": "Rows the provider rejected outright"
+          },
+          "released": {
+            "type": "number",
+            "description": "Claimed rows released back to the queue, either because the daily quota ran out mid-batch or because their template is unconfigured"
+          },
+          "rateLimited": {
+            "type": "boolean",
+            "description": "Whether the provider reported a rate limit during this pass"
+          },
+          "remainingBudget": {
+            "type": "number",
+            "description": "Sends still allowed today after this pass"
+          }
+        },
+        "required": [
+          "claimed",
+          "sent",
+          "failed",
+          "released",
+          "rateLimited",
+          "remainingBudget"
+        ]
+      },
+      "BirthdayCleanupDto": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "number",
+            "description": "Sent rows past the retention window, deleted"
+          }
+        },
+        "required": [
+          "deleted"
+        ]
       },
       "AssetDto": {
         "type": "object",

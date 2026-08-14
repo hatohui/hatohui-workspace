@@ -81,3 +81,8 @@ export class UnreadCountDto {
   @ApiProperty()
   count!: number;
 }
+
+export class ClearNotificationsDto {
+  @ApiProperty({ description: 'Number of notifications deleted' })
+  count!: number;
+}

@@ -4,6 +4,7 @@ export type OnboardingStep =
   | 'handle'
   | 'visibility'
   | 'birthday'
+  | 'timezone'
   | 'connections'
   | 'complete';
 

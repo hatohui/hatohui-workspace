@@ -21,6 +21,7 @@ model User {
   name              String
   avatarUrl         String?
   onboardingStatus  OnboardingStatus   @default(PENDING)
+  timezone          String             @default("UTC")
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
@@ -31,6 +32,7 @@ model User {
   notifications       Notification[]   @relation("NotificationRecipient")
   actedNotifications  Notification[]   @relation("NotificationActor")
   uploadedAssets    Asset[]
+  queuedEmails      EmailOutbox[]      @relation("EmailOutboxRecipient")
   assignedCommissions      Commission[]              @relation("CommissionAssignee")
   commissionNotes          CommissionNote[]           @relation("CommissionNoteAuthor")
   commissionStatusChanges  CommissionStatusHistory[]  @relation("CommissionStatusChangedBy")
@@ -144,6 +146,9 @@ model Connection {
 enum NotificationType {
   CONNECTION_REQUEST
   CONNECTION_ACCEPTED
+  CONNECTION_ACCEPTED_BY_YOU
+  CONNECTION_REJECTED
+  CONNECTION_REJECTED_BY_YOU
   BIRTHDAY_REMINDER
   SYSTEM
 }
@@ -166,6 +171,39 @@ model Notification {
   @@unique([recipientId, type, subjectId])
   @@index([recipientId, readAt])
   @@index([recipientId, createdAt(sort: Desc)])
+}
+
+enum EmailOutboxKind {
+  SELF_BIRTHDAY
+  FRIEND_BIRTHDAY_UPCOMING
+  FRIEND_BIRTHDAY_TODAY
+}
+
+enum EmailOutboxStatus {
+  PENDING
+  SENDING
+  SENT
+  FAILED
+}
+
+/// See docs/specs/friends/birthday-notifications.
+model EmailOutbox {
+  id          String            @id @default(cuid())
+  kind        EmailOutboxKind
+  recipientId String
+  recipient   User              @relation("EmailOutboxRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  subjectId   String
+  occursOn    DateTime          @db.Date
+  status      EmailOutboxStatus @default(PENDING)
+  attempts    Int               @default(0)
+  lastError   String?
+  claimedAt   DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime          @default(now())
+
+  @@unique([kind, recipientId, subjectId, occursOn])
+  @@index([status, createdAt])
+  @@index([status, sentAt])
 }
 
 /// A media asset (image) uploaded to storage via the images.sign presigned

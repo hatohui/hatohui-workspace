@@ -21,4 +21,6 @@ export interface UserDto {
   /** Whether this account is the configured admin. Cosmetic only — admin routes enforce their own check and also require the admin key. */
   isAdmin: boolean;
   onboardingStatus: UserDtoOnboardingStatus;
+  /** IANA timezone name this account is scheduled against */
+  timezone: string;
 }

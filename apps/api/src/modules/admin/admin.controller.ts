@@ -5,8 +5,9 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { ADMIN_KEY_HEADER } from '@/libs/admin-key';
 import { FriendDto } from '@/modules/friends/dto/friend.dto';
-import { AdminGuard, ADMIN_KEY_HEADER } from './admin.guard';
+import { AdminGuard } from './admin.guard';
 import { AdminService } from './admin.service';
 
 @ApiTags('admin')

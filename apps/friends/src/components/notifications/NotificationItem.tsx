@@ -5,15 +5,19 @@ import type { NotificationDto } from '@hatohui/models';
 type Props = {
   notification: NotificationDto;
   isActing: boolean;
+  isDeleting: boolean;
   onAccept: (connectionId: string) => void;
   onDecline: (connectionId: string) => void;
+  onDelete: (notificationId: string) => void;
 };
 
 function NotificationItem({
   notification,
   isActing,
+  isDeleting,
   onAccept,
   onDecline,
+  onDelete,
 }: Props) {
   const { t } = useTranslation();
   const actorName = notification.actor?.name ?? t('notifications.someone');
@@ -54,6 +58,16 @@ function NotificationItem({
           </div>
         )}
       </div>
+      {!canAct && (
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={isDeleting}
+          onClick={() => onDelete(notification.id)}
+        >
+          {t('notifications.delete')}
+        </Button>
+      )}
     </li>
   );
 }

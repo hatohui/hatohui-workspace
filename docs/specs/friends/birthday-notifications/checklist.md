@@ -1,0 +1,84 @@
+# Birthday notifications — implementation checklist
+
+See [PRD.md](./PRD.md) for the reasoning behind each decision.
+
+## Schema
+
+- [x] `User.timezone` (IANA name, defaults to `UTC` so existing rows stay
+      valid).
+- [x] `EmailOutboxKind` (`SELF_BIRTHDAY` / `FRIEND_BIRTHDAY_UPCOMING` /
+      `FRIEND_BIRTHDAY_TODAY`) and `EmailOutboxStatus` (`PENDING` / `SENDING` /
+      `SENT` / `FAILED`).
+- [x] `EmailOutbox`, unique on `(kind, recipientId, subjectId, occursOn)` —
+      the constraint the hourly evaluate pass relies on. `occursOn` is a DATE;
+      `subjectId` is deliberately not an FK, same precedent as
+      `Notification.subjectId`.
+- [x] Indexes on `(status, createdAt)` for claiming and `(status, sentAt)` for
+      the quota count and cleanup sweep.
+- [x] `friends.birthday.{reminderdays,dailysendcap,senderemail,sendername}`
+      seeded into `AppConfig` with `update: {}`, so re-seeding never overwrites
+      a value edited in the database.
+
+## API
+
+- [x] `CronGuard` — `x-admin-key` only, no session. `ADMIN_KEY_HEADER` and the
+      timing-safe compare moved to `libs/admin-key.ts` and shared with
+      `AdminGuard` rather than duplicated.
+- [x] `cron` module at `POST /cron/friends/birthdays/{evaluate,process,cleanup}`.
+- [x] `birthday-schedule.ts` — pure civil-date maths (zone resolution, next
+      occurrence, Feb 29 handling), unit tested. No instants, so DST can't
+      shift a count.
+- [x] `evaluate` derives the full set of due reminders each run and writes with
+      `skipDuplicates`; recipients are the owner's `ACCEPTED` connections, read
+      through the existing cached `ConnectionsService.getContext`.
+- [x] `FriendVisibility.NONE` suppresses the friend-facing kinds but not
+      `SELF_BIRTHDAY` — the owner's own inbox is not a disclosure.
+- [x] `process` claims with `UPDATE ... FOR UPDATE SKIP LOCKED ... RETURNING`,
+      isolates per-row failures, and aborts only on a rate limit.
+- [x] `EmailService.send` sends raw `htmlContent`/`subject`/`sender` (not a
+      Brevo dashboard `templateId`); `isRateLimitError` reads the 429 out of
+      whichever shape the Brevo SDK throws.
+- [x] `birthday-email-templates.ts` — one render function per
+      `EmailOutboxKind`, sharing an inline-styled layout. User-derived strings
+      are HTML-escaped once, in the layout function.
+- [x] Retries: a failed row returns to `PENDING` until 3 attempts, then stops
+      at `FAILED`.
+- [x] If the sender pair (`friends.birthday.senderemail`/`sendername`) is
+      unset, `process` logs and returns without claiming anything — no rows
+      are held in `SENDING` for a config problem.
+- [x] Rows with no matching subject profile (deleted mid-batch) are released
+      untouched rather than failed.
+- [x] `UpdateMeDto.timezone` with an `IsTimezone` validator; `UserDto.timezone`
+      so the client can prefill. Timezone rides the existing `PATCH /users/me`
+      rather than adding an onboarding-only endpoint, which also makes it
+      editable after onboarding.
+
+## Frontend
+
+- [x] `SearchableSelect` extracted to `packages/ui` — the birth-year picker and
+      the timezone picker are the same widget, so `BirthdayFields` was moved
+      onto it rather than the pattern being copied.
+- [x] `OnboardingTimezoneStep` between the birthday and connections steps,
+      prefilled from `Intl.DateTimeFormat().resolvedOptions().timeZone` and
+      editable — same "detect, then let them correct it" shape as the name and
+      avatar steps. Options are labelled with their current UTC offset.
+- [x] i18n keys added for en / vi / ja / zh.
+
+## Infra
+
+- [x] No AWS scheduling infra — [cronjob.com](https://cronjob.com) calls the
+      three endpoints directly, configured in its own dashboard, not
+      Terraform. `infra/modules/scheduler` (EventBridge Scheduler) was removed
+      after this decision; `terraform validate` and `terraform fmt` stay
+      clean without it.
+
+## Outstanding
+
+- [ ] Set `friends.birthday.senderemail` / `sendername` in `AppConfig` per
+      environment if the seeded defaults aren't right for that environment.
+      Until set, `process` logs a warning and sends nothing.
+- [ ] Configure the three cronjob.com jobs: evaluate hourly, process hourly
+      (a few minutes after evaluate), cleanup daily. Each needs the
+      `x-admin-key` header set to `ADMIN_API_KEY`.
+- [ ] No alerting on rows stuck in `SENDING` or sitting at `FAILED`. At this
+      size that is a manual check.

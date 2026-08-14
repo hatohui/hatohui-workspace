@@ -55,6 +55,13 @@
       "confirm": "Đúng vậy",
       "enterManually": "Nhập thủ công"
     },
+    "timezone": {
+      "title": "Bạn đang ở đâu?",
+      "description": "Lời nhắc sinh nhật về bạn được tính theo múi giờ này, để mọi người được báo đúng ngày của bạn.",
+      "label": "Múi giờ",
+      "search": "Tìm múi giờ...",
+      "empty": "Không tìm thấy múi giờ phù hợp."
+    },
     "connections": {
       "title": "Bạn đã quen ai ở đây chưa?",
       "searchPlaceholder": "Tìm kiếm mọi người...",

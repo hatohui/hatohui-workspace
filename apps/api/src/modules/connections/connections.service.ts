@@ -226,13 +226,19 @@ export class ConnectionsService {
         data: { status: ConnectionStatus.ACCEPTED, respondedAt: new Date() },
         include: withUsers,
       });
-      // The request is history now, not something to act on — keep it, mark it read.
-      await this.notifications.settleForSubject(
+      // Superseded by the two history notifications below.
+      await this.notifications.discardForSubject(
         tx,
-        viewer.id,
         NotificationType.CONNECTION_REQUEST,
         id,
       );
+      await this.notifications.emit(tx, {
+        recipientId: viewer.id,
+        actorId: updated.requesterId,
+        type: NotificationType.CONNECTION_ACCEPTED_BY_YOU,
+        subjectId: id,
+        read: true,
+      });
       await this.notifications.emit(tx, {
         recipientId: updated.requesterId,
         actorId: viewer.id,
@@ -246,8 +252,10 @@ export class ConnectionsService {
     return toConnectionDto(accepted, viewer);
   }
 
-  /// Decline or withdraw — the row goes away either way, along with the inbox
-  /// item pointing at it.
+  /// Decline or withdraw — the row goes away either way. A decline (the
+  /// addressee acting) leaves a history trail on both sides; a withdrawal
+  /// (the requester canceling their own outgoing request) doesn't — there's
+  /// nothing for the other side to see a history entry about.
   async withdraw(id: string, viewer: User): Promise<void> {
     const connection = await this.db.connection.findUnique({ where: { id } });
     if (
@@ -263,6 +271,8 @@ export class ConnectionsService {
       );
     }
 
+    const isDecline = connection.addresseeId === viewer.id;
+
     await this.db.$transaction(async (tx) => {
       await tx.connection.delete({ where: { id } });
       await this.notifications.discardForSubject(
@@ -270,6 +280,21 @@ export class ConnectionsService {
         NotificationType.CONNECTION_REQUEST,
         id,
       );
+      if (isDecline) {
+        await this.notifications.emit(tx, {
+          recipientId: viewer.id,
+          actorId: connection.requesterId,
+          type: NotificationType.CONNECTION_REJECTED_BY_YOU,
+          subjectId: id,
+          read: true,
+        });
+        await this.notifications.emit(tx, {
+          recipientId: connection.requesterId,
+          actorId: viewer.id,
+          type: NotificationType.CONNECTION_REJECTED,
+          subjectId: id,
+        });
+      }
     });
 
     await this.invalidateFor(connection.requesterId, connection.addresseeId);
@@ -319,6 +344,11 @@ export class ConnectionsService {
       await this.notifications.discardForSubject(
         tx,
         NotificationType.CONNECTION_ACCEPTED,
+        connection.id,
+      );
+      await this.notifications.discardForSubject(
+        tx,
+        NotificationType.CONNECTION_ACCEPTED_BY_YOU,
         connection.id,
       );
     });

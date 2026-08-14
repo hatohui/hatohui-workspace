@@ -25,6 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ClearNotificationsDto,
   NotificationsParams,
   PaginatedNotificationsDto,
   UnreadCountDto
@@ -171,7 +172,89 @@ export function useNotifications<TData = Awaited<ReturnType<typeof notifications
 
 
 
-export type unreadNotificationCountResponse200 = {
+export type clearNotificationsResponse200 = {
+  data: ClearNotificationsDto
+  status: 200
+}
+
+export type clearNotificationsResponseSuccess = (clearNotificationsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type clearNotificationsResponse = (clearNotificationsResponseSuccess)
+
+export const getClearNotificationsUrl = () => {
+
+
+
+
+  return `/notifications`
+}
+
+/**
+ * @summary Delete every settled notification (read history, accepted/rejected). Pending connection requests are kept.
+ */
+export const clearNotifications = async ( options?: RequestInit): Promise<clearNotificationsResponse> => {
+
+  return customFetch<clearNotificationsResponse>(getClearNotificationsUrl(),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getClearNotificationsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearNotifications>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof clearNotifications>>, TError,void, TContext> => {
+
+const mutationKey = ['clearNotifications'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof clearNotifications>>, void> = () => {
+
+
+          return  clearNotifications(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ClearNotificationsMutationResult = NonNullable<Awaited<ReturnType<typeof clearNotifications>>>
+
+    export type ClearNotificationsMutationError = unknown
+
+    /**
+ * @summary Delete every settled notification (read history, accepted/rejected). Pending connection requests are kept.
+ */
+export const useClearNotifications = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearNotifications>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof clearNotifications>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getClearNotificationsMutationOptions(options), queryClient);
+    }
+    export type unreadNotificationCountResponse200 = {
   data: UnreadCountDto
   status: 200
 }
@@ -446,4 +529,86 @@ export const useMarkAllNotificationsRead = <TError = unknown,
         TContext
       > => {
       return useMutation(getMarkAllNotificationsReadMutationOptions(options), queryClient);
+    }
+    export type deleteNotificationResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteNotificationResponseSuccess = (deleteNotificationResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteNotificationResponse = (deleteNotificationResponseSuccess)
+
+export const getDeleteNotificationUrl = (id: string,) => {
+
+
+
+
+  return `/notifications/${id}`
+}
+
+/**
+ * @summary Delete a settled notification. Rejects a still-pending, still-actionable connection request.
+ */
+export const deleteNotification = async (id: string, options?: RequestInit): Promise<deleteNotificationResponse> => {
+
+  return customFetch<deleteNotificationResponse>(getDeleteNotificationUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteNotificationMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteNotification>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteNotification>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteNotification'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteNotification>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteNotification(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteNotificationMutationResult = NonNullable<Awaited<ReturnType<typeof deleteNotification>>>
+
+    export type DeleteNotificationMutationError = unknown
+
+    /**
+ * @summary Delete a settled notification. Rejects a still-pending, still-actionable connection request.
+ */
+export const useDeleteNotification = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteNotification>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteNotification>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteNotificationMutationOptions(options), queryClient);
     }

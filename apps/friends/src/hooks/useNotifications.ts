@@ -1,6 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import {
   useAcceptConnectionRequest,
+  useClearNotifications,
+  useDeleteNotification,
   useMarkAllNotificationsRead,
   useNotifications as useNotificationsQuery,
   useUnreadNotificationCount,
@@ -32,13 +35,16 @@ export function useUnreadCount() {
 
 export function useNotifications() {
   const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+
   const query = useNotificationsQuery({
-    page: 1,
+    page,
     pageSize: NOTIFICATIONS_PAGE_SIZE,
   });
 
   const onSettled = {
     onSuccess: async () => {
+      setPage(1);
       await invalidateInbox(queryClient);
       await invalidateFriendQueries(queryClient);
     },
@@ -49,15 +55,44 @@ export function useNotifications() {
   const markAllRead = useMarkAllNotificationsRead({
     mutation: { onSuccess: () => invalidateInbox(queryClient) },
   });
+  const deleteOne = useDeleteNotification({
+    mutation: {
+      onSuccess: async () => {
+        setPage(1);
+        await invalidateInbox(queryClient);
+      },
+    },
+  });
+  const clearHistory = useClearNotifications({
+    mutation: {
+      onSuccess: async () => {
+        setPage(1);
+        await invalidateInbox(queryClient);
+      },
+    },
+  });
+
+  const total = query.data?.data.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / NOTIFICATIONS_PAGE_SIZE));
 
   return {
     items: query.data?.data.items ?? [],
     unreadCount: query.data?.data.unreadCount ?? 0,
     isLoading: query.isLoading,
     isError: query.isError,
+    isFetching: query.isFetching,
+    page,
+    totalPages,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+    nextPage: () => setPage((p) => Math.min(p + 1, totalPages)),
+    prevPage: () => setPage((p) => Math.max(p - 1, 1)),
     isActing: accept.isPending || decline.isPending,
+    isDeleting: deleteOne.isPending || clearHistory.isPending,
     accept: (connectionId: string) => accept.mutate({ id: connectionId }),
     decline: (connectionId: string) => decline.mutate({ id: connectionId }),
     markAllRead: () => markAllRead.mutate(),
+    deleteNotification: (id: string) => deleteOne.mutate({ id }),
+    clearHistory: () => clearHistory.mutate(),
   };
 }

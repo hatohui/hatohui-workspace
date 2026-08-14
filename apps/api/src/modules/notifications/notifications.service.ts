@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Database, type PrismaTransactionClient } from '@/libs/db';
 import { Cache, CACHE_KEYS } from '@/libs/cache';
 import {
@@ -31,7 +35,21 @@ interface CreateNotificationInput {
   scope?: AppScope;
   subjectId?: string | null;
   data?: Prisma.InputJsonValue;
+  /// Self-history items (e.g. "you accepted X") are already seen by
+  /// definition — the viewer just performed the action — so they're created
+  /// pre-read instead of adding to the unread badge.
+  read?: boolean;
 }
+
+/// Types whose subject is a Connection row that may since have been
+/// disconnected — those get hidden rather than shown against a dead entity.
+/// CONNECTION_REJECTED(_BY_YOU) reference a connection that's *always*
+/// gone (rejecting deletes the row), so they're exempt from this lookup.
+const CONNECTION_LIFECYCLE_TYPES = new Set<NotificationType>([
+  NotificationType.CONNECTION_REQUEST,
+  NotificationType.CONNECTION_ACCEPTED,
+  NotificationType.CONNECTION_ACCEPTED_BY_YOU,
+]);
 
 const UNREAD_COUNT_TTL_SECONDS = 300;
 
@@ -118,11 +136,7 @@ export class NotificationsService {
     viewer: User,
   ): Promise<NotificationDto[]> {
     const connectionIds = rows
-      .filter(
-        (row) =>
-          row.type === NotificationType.CONNECTION_REQUEST ||
-          row.type === NotificationType.CONNECTION_ACCEPTED,
-      )
+      .filter((row) => CONNECTION_LIFECYCLE_TYPES.has(row.type))
       .map((row) => row.subjectId)
       .filter((id): id is string => id !== null);
 
@@ -137,12 +151,7 @@ export class NotificationsService {
 
     return rows
       .filter((row) => {
-        if (
-          row.type !== NotificationType.CONNECTION_REQUEST &&
-          row.type !== NotificationType.CONNECTION_ACCEPTED
-        ) {
-          return true;
-        }
+        if (!CONNECTION_LIFECYCLE_TYPES.has(row.type)) return true;
         return row.subjectId !== null && connectionById.has(row.subjectId);
       })
       .map((row) => {
@@ -172,11 +181,13 @@ export class NotificationsService {
     tx: PrismaTransactionClient,
     input: CreateNotificationInput,
   ): Promise<Notification> {
+    const readAt = input.read ? new Date() : null;
     const data = {
       recipientId: input.recipientId,
       actorId: input.actorId ?? null,
       type: input.type,
       subjectId: input.subjectId ?? null,
+      readAt,
       ...(input.scope ? { scope: input.scope } : {}),
       ...(input.data ? { data: input.data } : {}),
     };
@@ -197,7 +208,7 @@ export class NotificationsService {
         },
       },
       create: data,
-      update: { ...data, readAt: null },
+      update: { ...data, readAt },
     });
   }
 
@@ -211,16 +222,55 @@ export class NotificationsService {
     return tx.notification.deleteMany({ where: { type, subjectId } });
   }
 
-  /// Marks read without deleting, so it survives as history.
-  settleForSubject(
-    tx: PrismaTransactionClient,
-    recipientId: string,
-    type: NotificationType,
-    subjectId: string,
-  ): Promise<{ count: number }> {
-    return tx.notification.updateMany({
-      where: { recipientId, type, subjectId, readAt: null },
-      data: { readAt: new Date() },
+  async delete(id: string, viewer: User): Promise<void> {
+    const row = await this.db.notification.findFirst({
+      where: { id, recipientId: viewer.id },
     });
+    if (!row) throw new NotFoundException(`Notification ${id} not found`);
+    if (await this.isActionable(row, viewer)) {
+      throw new BadRequestException(
+        'Respond to this connection request before deleting it',
+      );
+    }
+    await this.db.notification.delete({ where: { id } });
+    await this.invalidateUnread(viewer.id);
+  }
+
+  /// Clears the settled inbox — everything but still-pending, still-actionable
+  /// connection requests, which stay until the viewer responds.
+  async clear(viewer: User): Promise<{ count: number }> {
+    const pendingIncoming = await this.db.connection.findMany({
+      where: { addresseeId: viewer.id, status: ConnectionStatus.PENDING },
+      select: { id: true },
+    });
+
+    const result = await this.db.notification.deleteMany({
+      where: {
+        recipientId: viewer.id,
+        NOT: {
+          type: NotificationType.CONNECTION_REQUEST,
+          subjectId: { in: pendingIncoming.map((c) => c.id) },
+        },
+      },
+    });
+    await this.invalidateUnread(viewer.id);
+    return { count: result.count };
+  }
+
+  private async isActionable(
+    row: Notification,
+    viewer: User,
+  ): Promise<boolean> {
+    if (row.type !== NotificationType.CONNECTION_REQUEST || !row.subjectId) {
+      return false;
+    }
+    const connection = await this.db.connection.findUnique({
+      where: { id: row.subjectId },
+      select: { status: true, addresseeId: true },
+    });
+    return (
+      connection?.status === ConnectionStatus.PENDING &&
+      connection.addresseeId === viewer.id
+    );
   }
 }

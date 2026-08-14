@@ -55,6 +55,13 @@
       "confirm": "Yes, that's right",
       "enterManually": "Enter it manually"
     },
+    "timezone": {
+      "title": "Where are you?",
+      "description": "Birthday reminders about you are timed to this zone, so people are told on your day.",
+      "label": "Timezone",
+      "search": "Search timezones...",
+      "empty": "No matching timezone."
+    },
     "connections": {
       "title": "Do you already know anyone here?",
       "searchPlaceholder": "Search people...",
