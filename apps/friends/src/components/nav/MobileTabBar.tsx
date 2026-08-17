@@ -1,7 +1,14 @@
+import { useLocation } from 'react-router';
+import { useTranslation } from '@hatohui/i18n';
+import { useAuth } from '@hatohui/libs';
+import routes from '../../constants/routes';
 import { useNavItems } from '../../hooks/useNavItems';
 import MobileNavItem from './MobileNavItem';
 
 function MobileTabBar() {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const location = useLocation();
   const navItems = useNavItems();
 
   return (
@@ -12,6 +19,14 @@ function MobileTabBar() {
       {navItems.map((item) => (
         <MobileNavItem key={item.to} {...item} />
       ))}
+      {user && (
+        <MobileNavItem
+          to={routes.account}
+          label={t('navigation.account')}
+          icon="settings"
+          active={location.pathname.startsWith(routes.account)}
+        />
+      )}
     </nav>
   );
 }

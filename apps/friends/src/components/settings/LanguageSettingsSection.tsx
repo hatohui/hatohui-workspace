@@ -1,5 +1,5 @@
 import { useTranslation } from '@hatohui/i18n';
-import LanguageOptionsList from './LanguageOptionsList';
+import LanguageSelect from './LanguageSelect';
 
 function LanguageSettingsSection() {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ function LanguageSettingsSection() {
           {t('settings.languageDescription')}
         </p>
       </div>
-      <LanguageOptionsList />
+      <LanguageSelect />
     </section>
   );
 }
