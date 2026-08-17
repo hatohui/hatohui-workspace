@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '@/modules/auth/auth.module';
-import { AdminController } from './admin.controller';
-import { AdminGuard } from './admin.guard';
-import { AdminService } from './admin.service';
+import { AdminController } from '@/modules/admin/admin.controller';
+import { AdminGuard } from '@/modules/admin/guards/admin.guard';
+import { AdminService } from '@/modules/admin/services/admin.service';
 
 @Module({
   imports: [AuthModule],

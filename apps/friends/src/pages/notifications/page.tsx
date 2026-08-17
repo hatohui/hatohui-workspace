@@ -1,4 +1,4 @@
-import RequireAuth from '../../components/RequireAuth';
+import RequireAuth from '../../components/auth/RequireAuth';
 import NotificationList from '../../components/notifications/NotificationList';
 import { useNotifications } from '../../hooks/useNotifications';
 

@@ -1,0 +1,171 @@
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
+import { FriendVisibility } from '@prisma/client';
+import {
+  CONNECTION_STATES,
+  type ConnectionState,
+} from '@/modules/connections/connections.constants';
+
+export { FriendVisibility };
+
+export class FriendDto {
+  @ApiProperty({ example: 'clx1234567890', description: 'Unique friend id' })
+  id: string;
+
+  @ApiProperty({ example: 'Jane Doe' })
+  name: string;
+
+  @ApiProperty({
+    example: 1998,
+    nullable: true,
+    description:
+      'Birth year. Null when no birthday is recorded, or the viewer is not allowed to see it.',
+  })
+  birthYear: number | null;
+
+  @ApiProperty({
+    example: 5,
+    nullable: true,
+    description: 'Birth month (1-12), null when the birthday is not visible',
+  })
+  birthMonth: number | null;
+
+  @ApiProperty({
+    example: 14,
+    nullable: true,
+    description: 'Birth day (1-31), null when the birthday is not visible',
+  })
+  birthDay: number | null;
+
+  @ApiProperty({
+    example: { Twitter: '@jane', Instagram: '@jane.doe' },
+    nullable: true,
+    type: Object,
+  })
+  socialMedias: Record<string, string> | null;
+
+  @ApiProperty({
+    enum: FriendVisibility,
+    example: FriendVisibility.PUBLIC,
+    nullable: true,
+    description:
+      'Who can see the birthday. Null when there is no birthday to govern. The profile itself is always public.',
+  })
+  visibility: FriendVisibility | null;
+
+  @ApiProperty({
+    example:
+      'http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg',
+    nullable: true,
+    description: "Public URL of the friend's avatar image",
+  })
+  avatarUrl: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Id of the account that added this entry, if any',
+  })
+  addedById: string | null;
+
+  @ApiProperty({
+    example: 'janedoe',
+    nullable: true,
+    description: "The profile's global @handle, if it has one",
+  })
+  handle: string | null;
+
+  @ApiProperty({
+    description: 'Whether this entry is already claimed by an account',
+  })
+  isAssociated: boolean;
+
+  @ApiProperty({
+    description: "Whether this entry is the requesting viewer's own entry",
+  })
+  isViewerEntry: boolean;
+
+  @ApiProperty({
+    enum: CONNECTION_STATES,
+    description:
+      "How the viewer stands with the account behind this entry. Always NONE for entries nobody has claimed — there's no account to connect with.",
+  })
+  connectionStatus: ConnectionState;
+
+  @ApiProperty({
+    description:
+      'Whether the requesting viewer is allowed to edit/delete this entry',
+  })
+  canEdit: boolean;
+
+  @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
+  createdAt: string;
+
+  @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
+  updatedAt: string;
+}
+
+export class CreateFriendDto {
+  @ApiProperty({ example: 'Jane Doe' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ example: 1998, required: false })
+  @IsOptional()
+  @IsInt()
+  birthYear?: number;
+
+  @ApiProperty({ example: 5, required: false })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(12)
+  birthMonth?: number;
+
+  @ApiProperty({ example: 14, required: false })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(31)
+  birthDay?: number;
+
+  @ApiProperty({
+    example: { Twitter: '@jane', Instagram: '@jane.doe' },
+    required: false,
+    type: Object,
+  })
+  @IsOptional()
+  @IsObject()
+  socialMedias?: Record<string, string>;
+
+  @ApiProperty({
+    enum: FriendVisibility,
+    default: FriendVisibility.PUBLIC,
+    required: false,
+    description: 'Who can see the birthday. Ignored if no date is given.',
+  })
+  @IsOptional()
+  @IsEnum(FriendVisibility)
+  visibility?: FriendVisibility;
+
+  @ApiProperty({
+    example: 'uploads/clx1234567890/abc123.jpg',
+    required: false,
+    description:
+      'Object key returned by POST /images/sign, after uploading the avatar file to storage',
+  })
+  @IsOptional()
+  @IsString()
+  avatarKey?: string;
+}
+
+export class UpdateFriendDto extends PartialType(CreateFriendDto) {}

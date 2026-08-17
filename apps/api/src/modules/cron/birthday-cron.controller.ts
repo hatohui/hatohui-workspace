@@ -5,14 +5,14 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { ADMIN_KEY_HEADER } from '@/libs/admin-key';
-import { BirthdayCronService } from './birthday-cron.service';
-import { CronGuard } from './cron.guard';
+import { ADMIN_KEY_HEADER } from '@/common/utils/admin-key';
+import { BirthdayCronService } from '@/modules/cron/services/birthday-cron.service';
+import { CronGuard } from '@/modules/cron/guards/cron.guard';
 import {
   BirthdayCleanupDto,
   BirthdayEvaluationDto,
   BirthdayProcessingDto,
-} from './dto/birthday-cron.dto';
+} from '@/modules/cron/dto/birthday-cron.dto';
 
 @ApiTags('cron')
 @Controller('cron/friends/birthdays')

@@ -36,6 +36,14 @@
       "daysBeforeHint": "0-6 days. 0 emails you on the day itself.",
       "weeksBeforeLabel": "Weeks before",
       "weeksBeforeHint": "0-4 weeks. 0 turns the weekly reminder off."
+    },
+    "timezone": {
+      "title": "Timezone",
+      "description": "Birthday reminders are timed against this timezone.",
+      "label": "Timezone",
+      "placeholder": "Select a timezone",
+      "searchPlaceholder": "Search timezones",
+      "emptyLabel": "No timezone found."
     }
   },
   "account": {

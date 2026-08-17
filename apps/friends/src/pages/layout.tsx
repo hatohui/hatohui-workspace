@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import SidebarNav from '../components/SidebarNav';
+import SidebarNav from '../components/nav/SidebarNav';
 
 function RootLayout({ children }: { children: ReactNode }) {
   return (

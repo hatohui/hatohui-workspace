@@ -10,16 +10,12 @@ import {
 } from 'class-validator';
 import { CommissionStatus } from '@prisma/client';
 import { CommissionDto } from './commission.dto';
-
-export const COMMISSION_SORT_OPTIONS = [
-  'createdAt',
-  'deadline',
-  'quote',
-] as const;
-export type CommissionSortOption = (typeof COMMISSION_SORT_OPTIONS)[number];
-
-export const SORT_DIRECTIONS = ['asc', 'desc'] as const;
-export type SortDirection = (typeof SORT_DIRECTIONS)[number];
+import {
+  COMMISSION_SORT_OPTIONS,
+  SORT_DIRECTIONS,
+  type CommissionSortOption,
+  type SortDirection,
+} from '@/modules/commissions/commissions.constants';
 
 export class CommissionQueryDto {
   @ApiProperty({

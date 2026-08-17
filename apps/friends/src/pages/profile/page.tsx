@@ -2,8 +2,8 @@ import { Navigate } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { LoadingDots } from '@hatohui/ui';
 import { useMyEntry } from '../../hooks/useMyEntry';
-import AddMyselfButton from '../../components/AddMyselfButton';
-import RequireAuth from '../../components/RequireAuth';
+import AddMyselfButton from '../../components/friends/AddMyselfButton';
+import RequireAuth from '../../components/auth/RequireAuth';
 import routes from '../../constants/routes';
 
 function ProfilePage() {

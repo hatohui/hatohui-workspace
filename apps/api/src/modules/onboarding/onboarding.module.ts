@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { ConnectionsModule } from '@/modules/connections/connections.module';
-import { FriendsModule } from '@/modules/friends/friends.module';
-import { OnboardingController } from './onboarding.controller';
-import { OnboardingService } from './onboarding.service';
+import { ProfilesModule } from '@/modules/profiles/profiles.module';
+import { OnboardingController } from '@/modules/onboarding/onboarding.controller';
+import { OnboardingService } from '@/modules/onboarding/services/onboarding.service';
 
 @Module({
-  imports: [AuthModule, ConnectionsModule, FriendsModule],
+  imports: [AuthModule, ConnectionsModule, ProfilesModule],
   controllers: [OnboardingController],
   providers: [OnboardingService],
 })

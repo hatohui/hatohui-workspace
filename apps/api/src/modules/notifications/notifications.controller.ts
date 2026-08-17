@@ -9,15 +9,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/modules/auth/auth.guard';
-import { CurrentUser } from '@/modules/auth/current-user.decorator';
-import { NotificationsService } from './notifications.service';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { NotificationsService } from '@/modules/notifications/services/notifications.service';
 import {
   ClearNotificationsDto,
   NotificationsQueryDto,
   PaginatedNotificationsDto,
   UnreadCountDto,
-} from './dto/notification.dto';
+} from '@/modules/notifications/dto/notification.dto';
 import type { User } from '@prisma/client';
 
 @ApiTags('notifications')

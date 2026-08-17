@@ -10,8 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/modules/auth/auth.guard';
-import { CommissionPricingService } from './commission-pricing.service';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
 import {
   CommissionAddonPricingDto,
   CommissionOptionPricingDto,
@@ -22,7 +22,7 @@ import {
   UpsertCommissionOptionPricingDto,
   UpsertCommissionRushFeeSettingDto,
   UpsertCommissionTypePricingDto,
-} from './dto/commission-pricing.dto';
+} from '@/modules/commission-pricing/dto/commission-pricing.dto';
 
 @ApiTags('commission-pricing')
 @Controller('commission-pricing')

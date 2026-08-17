@@ -36,6 +36,14 @@
       "daysBeforeHint": "0-6 天。0 表示当天发送。",
       "weeksBeforeLabel": "提前周数",
       "weeksBeforeHint": "0-4 周。0 表示关闭每周提醒。"
+    },
+    "timezone": {
+      "title": "时区",
+      "description": "生日提醒将按此时区计算时间。",
+      "label": "时区",
+      "placeholder": "选择时区",
+      "searchPlaceholder": "搜索时区",
+      "emptyLabel": "未找到匹配的时区。"
     }
   },
   "account": {

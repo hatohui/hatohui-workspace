@@ -3,8 +3,8 @@ import { useTranslation } from '@hatohui/i18n';
 import { ErrorState, LoadingDots } from '@hatohui/ui';
 import { useFriend } from '../../../../hooks/useFriend';
 import { useUpdateFriend } from '../../../../hooks/useUpdateFriend';
-import FriendForm from '../../../../components/FriendForm';
-import RequireAuth from '../../../../components/RequireAuth';
+import FriendForm from '../../../../components/friends/FriendForm';
+import RequireAuth from '../../../../components/auth/RequireAuth';
 import routes from '../../../../constants/routes';
 
 function EditFriendPage() {

@@ -1,6 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
-import RequireAuth from '../../components/RequireAuth';
-import AccountView from '../../components/AccountView';
+import RequireAuth from '../../components/auth/RequireAuth';
+import AccountView from '../../components/profile/AccountView';
 
 function AccountPage() {
   const { t } = useTranslation();

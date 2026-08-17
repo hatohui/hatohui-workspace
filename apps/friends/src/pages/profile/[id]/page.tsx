@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { ErrorState, LoadingDots } from '@hatohui/ui';
 import { useFriend } from '../../../hooks/useFriend';
-import FriendDetail from '../../../components/FriendDetail';
+import FriendDetail from '../../../components/friends/FriendDetail';
 import routes from '../../../constants/routes';
 
 function FriendDetailPage() {

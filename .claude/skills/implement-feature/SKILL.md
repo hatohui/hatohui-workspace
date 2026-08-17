@@ -163,30 +163,53 @@ Standard NestJS module layout under `apps/api/src/modules/<resource>/`:
 
 ```
 src/modules/<resource>/
+  <resource>.module.ts        # always at the module root
+  <resource>.controller.ts    # stays flat while there's only one
+  <resource>.constants.ts     # same — flat until a second one is needed
+  services/
+  guards/
+  decorators/
   dto/
-  <resource>.controller.ts
-  <resource>.service.ts
-  <resource>.module.ts
+  utils/
 ```
+
+A module is one resource, not a domain — don't group sibling resources
+under one module folder (see `docs/conventions.md` for why). A type gets its
+own folder only once a module needs ≥2 files of that type; `<resource>.controller.ts`
+and `<resource>.constants.ts` stay flat at the root until then, and fold into
+`controllers/`/`constants/` in place once a second file shows up — don't
+pre-create the folder.
 
 Non-negotiables from `docs/conventions.md`:
 
 - Every `@ApiOperation` needs an explicit `operationId` (e.g.
   `operationId: 'createWidget'`) — without it, Orval generates an ugly hook
   name from Nest's default `<Controller>_<method>`.
-- Database access goes through the `Database` injectable from `@/libs/db`
+- Database access goes through the `Database` injectable from `@/infra/db`
   (global `DatabaseModule`), not a new PrismaClient.
 - Register the new module in `apps/api/src/app.module.ts`, and add its tag
-  to `apps/api/src/libs/openapi.ts`'s `DocumentBuilder`.
+  to `apps/api/src/bootstrap/openapi.ts`'s `DocumentBuilder`.
 - Path alias `@/*` for cross-cutting imports; relative imports for
   same-directory siblings.
 - One API serves every frontend, so a module is only "the friends module"
   if the data really is friends-only. Anything several apps will read
   (accounts, settings, assets, notifications) is a shared resource — scope
   the *rows* with `AppScope`, don't fork the module per app.
+- If several controllers in one module share a route prefix, watch
+  registration order: a `@Get(':id')` shadows any literal sibling route
+  registered after it. Order comes from Nest's depth-first scan of the
+  module graph, not from `app.module.ts`'s `imports` array — a module reached
+  transitively through another module's `imports` registers at that point,
+  which can silently defeat the order you wrote. Verify with a real request,
+  not by reading the generated OpenAPI spec (it's built from decorators, so
+  it looks correct either way). See `docs/specs/api/friends-controllers/`.
 - No comments in `schema.prisma`, including `///` doc comments.
   `docs/conventions.md` names Prisma schema comments explicitly; the
   reasoning goes in `docs/specs/<app>/<feature>/` instead.
+- Everywhere else: comment only if absolutely needed, and then only the
+  **purpose**, in one line. Never narrate your reasoning or the
+  decision-making behind a choice — no "your thought process" comments. If
+  it's not needed, don't comment at all.
 
 ## 7. Codegen
 

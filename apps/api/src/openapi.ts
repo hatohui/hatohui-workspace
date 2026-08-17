@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '@/app.module';
-import { buildOpenApiDocument } from '@/libs/openapi';
+import { AppModule } from './app.module';
+import { buildOpenApiDocument } from '@/bootstrap/openapi';
 
 async function run() {
   const app = await NestFactory.create(AppModule, { logger: false });

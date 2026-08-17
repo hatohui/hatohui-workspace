@@ -1,10 +1,13 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { User } from '@prisma/client';
-import { AuthGuard } from '@/modules/auth/auth.guard';
-import { CurrentUser } from '@/modules/auth/current-user.decorator';
-import { SignImageDto, SignedImageDto } from './dto/sign-image.dto';
-import { ImagesService } from './images.service';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import {
+  SignImageDto,
+  SignedImageDto,
+} from '@/modules/images/dto/sign-image.dto';
+import { ImagesService } from '@/modules/images/services/images.service';
 
 @ApiTags('images')
 @Controller('images')

@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
-import { AuthGuard } from './auth.guard';
-import { AuthService } from './auth.service';
-import { CurrentUser } from './current-user.decorator';
-import { GoogleLoginDto, UserDto } from './dto/auth.dto';
-import { SESSION_COOKIE_NAME, SessionService } from './session.service';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { AuthService } from '@/modules/auth/services/auth.service';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { GoogleLoginDto, UserDto } from '@/modules/auth/dto/auth.dto';
+import { SessionService } from '@/modules/auth/services/session.service';
+import { SESSION_COOKIE_NAME } from '@/modules/auth/auth.constants';
 import type { User } from '@prisma/client';
 
 @ApiTags('auth')

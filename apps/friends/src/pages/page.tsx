@@ -5,10 +5,10 @@ import { useAuth } from '@hatohui/libs';
 import { Button, ErrorState, LoadingDots } from '@hatohui/ui';
 import { useUpcomingSections } from '../hooks/useUpcomingSections';
 import { useDirectoryControls } from '../hooks/useDirectoryControls';
-import BirthdayList from '../components/BirthdayList';
-import CalendarView from '../components/CalendarView';
-import DirectoryControls from '../components/DirectoryControls';
-import WelcomeHero from '../components/WelcomeHero';
+import BirthdayList from '../components/birthdays/BirthdayList';
+import CalendarView from '../components/calendar/CalendarView';
+import DirectoryControls from '../components/directory/DirectoryControls';
+import WelcomeHero from '../components/home/WelcomeHero';
 import routes from '../constants/routes';
 
 function DashboardPage() {

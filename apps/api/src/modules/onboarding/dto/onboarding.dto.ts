@@ -11,8 +11,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { FriendDto, FriendVisibility } from '../../friends/dto/friend.dto';
-import { OnboardingStatus } from '../../auth/dto/auth.dto';
+import { FriendDto, FriendVisibility } from '@/modules/profiles/dto/friend.dto';
+import { OnboardingStatus } from '@/modules/auth/dto/auth.dto';
 
 export class OnboardingStateDto {
   @ApiProperty({ enum: OnboardingStatus })

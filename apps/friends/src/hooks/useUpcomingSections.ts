@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useUpcomingFriendSections,
   type UpcomingFriendSectionsQueryResult,
@@ -88,17 +88,16 @@ export function useUpcomingSections(
     pageSize: UPCOMING_SECTIONS_PAGE_SIZE,
   });
 
-  const seenDataRef = useRef<UpcomingFriendSectionsQueryResult | undefined>(
-    undefined,
-  );
+  const [seenData, setSeenData] = useState<
+    UpcomingFriendSectionsQueryResult | undefined
+  >(undefined);
   const fetchingRef = useRef(false);
+
   if (filtersChanged) {
-    seenDataRef.current = undefined;
-    fetchingRef.current = false;
+    setSeenData(undefined);
   }
-  if (query.data && query.data !== seenDataRef.current) {
-    seenDataRef.current = query.data;
-    fetchingRef.current = false;
+  if (query.data && query.data !== seenData) {
+    setSeenData(query.data);
     const incoming = query.data.data.sections.map((section) => ({
       key: section.key,
       label: sectionLabel(section.key, group, locale),
@@ -106,6 +105,10 @@ export function useUpcomingSections(
     }));
     setGroups((prev) => mergeSections(prev, incoming, effectivePage === 1));
   }
+
+  useEffect(() => {
+    fetchingRef.current = false;
+  }, [query.data, search, group, direction]);
 
   return {
     groups,

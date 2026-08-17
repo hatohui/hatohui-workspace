@@ -9,15 +9,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/modules/auth/auth.guard';
-import { CurrentUser } from '@/modules/auth/current-user.decorator';
-import { ConnectionsService } from './connections.service';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { ConnectionsService } from '@/modules/connections/services/connections.service';
 import {
   ConnectionDto,
   ConnectionRequestsDto,
   ConnectionsDto,
   CreateConnectionRequestDto,
-} from './dto/connection.dto';
+} from '@/modules/connections/dto/connection.dto';
 import type { User } from '@prisma/client';
 
 @ApiTags('connections')

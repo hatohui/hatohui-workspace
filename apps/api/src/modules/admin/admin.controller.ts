@@ -5,10 +5,10 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { ADMIN_KEY_HEADER } from '@/libs/admin-key';
-import { FriendDto } from '@/modules/friends/dto/friend.dto';
-import { AdminGuard } from './admin.guard';
-import { AdminService } from './admin.service';
+import { ADMIN_KEY_HEADER } from '@/common/utils/admin-key';
+import { FriendDto } from '@/modules/profiles/dto/friend.dto';
+import { AdminGuard } from '@/modules/admin/guards/admin.guard';
+import { AdminService } from '@/modules/admin/services/admin.service';
 
 @ApiTags('admin')
 @Controller('admin')

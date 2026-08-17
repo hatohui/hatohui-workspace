@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '@/modules/auth/auth.module';
-import { AssetsController } from './assets.controller';
-import { AssetsService } from './assets.service';
+import { AssetsController } from '@/modules/assets/assets.controller';
+import { AssetsService } from '@/modules/assets/services/assets.service';
 
 @Module({
   imports: [AuthModule],

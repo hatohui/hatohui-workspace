@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router';
 import { setApiBaseUrl } from '@hatohui/models';
 import { AuthProvider, OnboardingModalProvider } from '@hatohui/libs';
-import FriendsOnboardingModal from './components/FriendsOnboardingModal';
+import FriendsOnboardingModal from './components/onboarding/FriendsOnboardingModal';
 import './index.css';
 import './config/i18n';
 import router from './config/router';

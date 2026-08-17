@@ -1,5 +1,5 @@
 import { useTranslation } from '@hatohui/i18n';
-import RequireAuth from '../../components/RequireAuth';
+import RequireAuth from '../../components/auth/RequireAuth';
 import SettingsView from '../../components/settings/SettingsView';
 
 function SettingsPage() {

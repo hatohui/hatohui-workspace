@@ -1,8 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
 import { useCreateFriend } from '../../../hooks/useCreateFriend';
-import FriendForm from '../../../components/FriendForm';
-import RequireAuth from '../../../components/RequireAuth';
-import AddMyselfButton from '../../../components/AddMyselfButton';
+import FriendForm from '../../../components/friends/FriendForm';
+import RequireAuth from '../../../components/auth/RequireAuth';
+import AddMyselfButton from '../../../components/friends/AddMyselfButton';
 
 function NewFriendPage() {
   const { t } = useTranslation();

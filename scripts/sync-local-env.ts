@@ -10,6 +10,7 @@ const DOPPLER_SOURCED_VARS = [
   'GOOGLE_OAUTH_CLIENT_ID',
   'GOOGLE_OAUTH_CLIENT_SECRET',
   'EMAIL_API_KEY',
+  'ADMIN_API_KEY',
 ];
 const DOPPLER_PROJECT = 'hatohui-workspace';
 const DOPPLER_CONFIG = 'tf';
@@ -53,7 +54,9 @@ function upsertEnvVars(contents: string, vars: Record<string, string>): string {
   for (const [key, value] of Object.entries(vars)) {
     const line = `${key}=${value}`;
     const pattern = new RegExp(`^${key}=.*$`, 'm');
-    next = pattern.test(next) ? next.replace(pattern, line) : `${next}\n${line}`;
+    next = pattern.test(next)
+      ? next.replace(pattern, line)
+      : `${next}\n${line}`;
   }
   return next;
 }

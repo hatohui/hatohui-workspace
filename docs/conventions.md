@@ -25,18 +25,76 @@ Standard folder layout:
 
 ```text
 src/
-  config/     # env validation (zod), other startup config
-  libs/       # cross-cutting infrastructure (db client, openapi doc builder, etc.) — one file per concern
+  config/     # env validation (zod)
+  bootstrap/  # what main.ts calls at startup (banner, openapi document builder)
+  infra/      # @Global injectable clients for external systems — one file per concern
+  common/     # cross-cutting Nest plumbing and pure helpers
+    interceptors/
+    validators/
+    utils/
   modules/
     <resource>/
+      <resource>.module.ts        # always at the module root
+      <resource>.controller.ts    # stays flat at the root while there's only one
+      <resource>.constants.ts     # same — flat until a module needs a second
+      services/
+      guards/
+      decorators/
       dto/
-      <resource>.controller.ts
-      <resource>.service.ts
-      <resource>.module.ts
+      utils/
   app.module.ts
   main.ts
 ```
 
+- **A module is one resource, not a domain.** `profiles`, `birthdays` and
+  `social-graph` are three modules even though they all serve `/friends`. Don't
+  create a module that groups sibling resources — that puts two different
+  grouping rules in one flat list, which is how `friends/` ended up holding
+  three resources while `connections/` and `avatars/` sat next to it.
+- **A type-folder appears only once a module has ≥2 files of that type.** One
+  controller and one constants file is the norm — every module currently has
+  exactly one of each — so those two stay flat at the module root
+  (`<resource>.controller.ts`, `<resource>.constants.ts`) rather than living
+  inside a single-entry `controllers/`/`constants/` folder. `services/`,
+  `guards/`, `decorators/`, `dto/` and `utils/` get folders regardless, since
+  several of those are already multi-file in practice (see `commissions/dto/`,
+  `cron/services/`). **The day a module needs a second controller or constants
+  file, fold it into `controllers/`/`constants/` at that point** — don't
+  pre-create the folder for a file that doesn't exist yet.
+- **Split a controller when it stops being about one thing**, rather than
+  letting it accumulate injected services. `commissions.controller.ts` is the
+  first candidate: it mixes unguarded client-lookup routes with
+  `@UseGuards(AuthGuard)` admin routes and should become
+  `controllers/{commission-lookup,commissions}.controller.ts` once someone
+  touches it next. Several controllers in one module is normal:
+  `controllers/<feature>.controller.ts`.
+- **Watch route registration order when several controllers share a prefix.** A
+  controller owning `@Get(':id')` shadows any literal sibling route (`/search`,
+  `/social-graph`) registered after it, returning 404. Order comes from Nest's
+  depth-first scan of the module graph — a module pulled in through another
+  module's `imports` registers at the point it's reached, which can silently
+  override the order in `app.module.ts`. Nothing fails at compile time, and the
+  OpenAPI spec still looks right because it's built from decorators, not the
+  router; only a real request proves it. See
+  [`docs/specs/api/friends-controllers/`](./specs/api/friends-controllers/).
+- **Literals go in `constants/`.** TTLs, retry limits, page sizes, cookie names,
+  config-type keys, regexes, and the option arrays that back
+  `@IsIn`/`@ApiProperty({ enum })` — plus the `(typeof X)[number]` type derived
+  from each. Two things deliberately stay put: Prisma `select`/`include` shapes
+  (they're query composition, and belong next to the query), and any constant
+  typed by an interface from a sibling file, which would otherwise import back
+  into itself.
+- **Imports across type-folders use `@/modules/...`.** Only true same-directory
+  siblings stay relative, since after this layout a controller and its service
+  are no longer siblings.
+
+- **`infra/` is only for injectable clients of external systems** (`db`, `redis`,
+  `cache`, `email`, `storage`) — each an `@Injectable` plus its `@Global`
+  module. A pure function is not infra: it goes in `common/utils/`. A Nest
+  interceptor/pipe/filter goes in `common/<kind>s/`, a `class-validator`
+  decorator in `common/validators/`. Anything only `main.ts` calls is
+  `bootstrap/`. These were one flat `libs/` folder that had drifted into holding
+  all five kinds at once.
 - **Path alias `@/*` → `src/*`.** Use it for cross-cutting imports (`@/libs/db`, `@/config/env`); same-directory sibling imports (e.g. a controller importing its own service) stay relative.
 - **Env validation:** a zod schema in `src/config/env.ts`, wired via `ConfigModule.forRoot({ validate })`. Every required env var must be declared there, even if a lib (like `libs/db.ts`) reads `process.env` directly.
 - **Database: Prisma.** Generator must be the classic `prisma-client-js` (the newer ESM-only `prisma-client` generator doesn't interop with this CJS build). Prisma 7 requires a driver adapter (`@prisma/adapter-pg` for Postgres) — plain `new PrismaClient()` no longer works. The client + module live together in `src/libs/db.ts` (`Database` injectable + `@Global() DatabaseModule`), not split across a separate module/service file pair.
@@ -49,10 +107,26 @@ Route-level files (`*Page.tsx` / a router's `page.tsx` equivalent) only **wire u
 
 ```text
 src/
-  components/   # presentational, one component per file
+  components/
+    <feature>/  # grouped by feature — never loose files at the components/ root
   hooks/        # all logic (data fetching, derived state, event handling) lives here
   constants/    # every literal that isn't inline JSX copy
 ```
+
+- **Components group by feature, not by type.** `components/calendar/`,
+  `components/directory/`, `components/nav/` — a file directly under
+  `components/` means it hasn't been placed yet. Reference layouts:
+  `apps/art/src/components/`, `apps/friends/src/components/`.
+- **Before adding a component, decide which of three places it belongs in:**
+  - generic and domain-free (button, dialog, field) → `packages/ui`
+  - carries domain meaning but is used by more than one app (auth, onboarding,
+    timezone helpers) → `packages/libs`
+  - otherwise → the app's own `components/<feature>/`
+
+  Check `packages/libs` before writing a helper — it already exports
+  `timezoneOptions`, `detectTimezone`, `useDebouncedValue`,
+  `useIntersectionObserver`, `useImageUpload` and the onboarding wizard, all of
+  which are easy to reinvent locally.
 
 - **Logic goes in hooks, not components.** A component reads props/hook return values and renders; it doesn't compute, transform, or branch on business rules itself.
 - **One React component per file.** No multi-component files, no inline helper components defined inside another component's body.
@@ -101,6 +175,7 @@ Adding a new MCP server: register it in `.mcp.json`, then add a row here explain
 ## Taskfile
 
 - `task setup` — installs deps, copies every app's `.env.example` → `.env`, generates the Prisma client. Safe to re-run.
+- **Any required env var that can't ship a real default in `.env.example`** (an external API credential, or a local secret with a validation constraint like `apps/api`'s `ADMIN_API_KEY` min-length) **must be in `DOPPLER_SOURCED_VARS`** in `scripts/sync-local-env.ts`, or `task setup` silently leaves it unset and the app fails env validation on first boot. `.env.example` may only default vars that are genuinely safe as committed values (local infra URLs, ports).
 - `task app:openapi:generate` — full chain: export spec from Nest, regenerate the Orval client.
 - `task db:migrate` / `task db:generate` / `task db:studio` — local Prisma workflows, always run with `apps/api` as `dir`.
 - `task db:prod:apply` — applies pending migrations to the production database via `prisma migrate deploy`, sourcing `DATABASE_URL` from Doppler's `prod_api` config (no dev-mode prompts).

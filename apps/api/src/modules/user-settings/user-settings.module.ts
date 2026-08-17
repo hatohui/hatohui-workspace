@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserSettingsService } from './user-settings.service';
+import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
 
 @Module({
   providers: [UserSettingsService],

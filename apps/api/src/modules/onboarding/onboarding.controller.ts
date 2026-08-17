@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '../auth/auth.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import {
   AddConnectionsDto,
   OnboardingStateDto,
@@ -9,8 +9,8 @@ import {
   SetBirthdayDto,
   SetProfileDto,
   SetVisibilityDto,
-} from './dto/onboarding.dto';
-import { OnboardingService } from './onboarding.service';
+} from '@/modules/onboarding/dto/onboarding.dto';
+import { OnboardingService } from '@/modules/onboarding/services/onboarding.service';
 import type { User } from '@prisma/client';
 
 @ApiTags('onboarding')

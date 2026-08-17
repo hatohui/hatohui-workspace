@@ -4,10 +4,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import cookieParser from 'cookie-parser';
 import type { Request, Response, NextFunction } from 'express';
-import { AppModule } from '@/app.module';
-import { buildOpenApiDocument } from '@/libs/openapi';
-import { printBanner } from '@/libs/banner';
-import { LoggingInterceptor } from '@/libs/logging-interceptor';
+import { AppModule } from './app.module';
+import { buildOpenApiDocument } from '@/bootstrap/openapi';
+import { printBanner } from '@/bootstrap/banner';
+import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
 import type { Env } from '@/config/env';
 
 async function bootstrap() {

@@ -9,18 +9,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/modules/auth/auth.guard';
-import { CurrentUser } from '@/modules/auth/current-user.decorator';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import type { User } from '@prisma/client';
-import { CommissionsService } from './commissions.service';
+import { CommissionsService } from '@/modules/commissions/services/commissions.service';
 import {
   CommissionEmailLookupQueryDto,
   CreateClientNoteDto,
-} from './dto/commission-lookup.dto';
+} from '@/modules/commissions/dto/commission-lookup.dto';
 import {
   CommissionQueryDto,
   PaginatedCommissionsDto,
-} from './dto/commission-query.dto';
+} from '@/modules/commissions/dto/commission-query.dto';
 import {
   AddReferenceAssetsDto,
   AssignCommissionDto,
@@ -34,16 +34,16 @@ import {
   UpdateCommissionVisibilityDto,
   UpdateCommissionProjectDto,
   UpdatePaymentStatusDto,
-} from './dto/commission.dto';
+} from '@/modules/commissions/dto/commission.dto';
 import {
   CommissionDetailDto,
   CommissionPublicDetailDto,
-} from './dto/commission-detail.dto';
+} from '@/modules/commissions/dto/commission-detail.dto';
 import {
   CommissionNoteDto,
   CreateCommissionNoteDto,
-} from './dto/commission-note.dto';
-import { CommissionQueueDto } from './dto/commission-queue.dto';
+} from '@/modules/commissions/dto/commission-note.dto';
+import { CommissionQueueDto } from '@/modules/commissions/dto/commission-queue.dto';
 
 @ApiTags('commissions')
 @Controller('commissions')

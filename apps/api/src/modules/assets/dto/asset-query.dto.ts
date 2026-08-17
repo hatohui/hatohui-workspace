@@ -2,14 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsIn, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { AssetDto } from './asset.dto';
-
-export const ASSET_SORT_OPTIONS = [
-  'newest',
-  'oldest',
-  'size',
-  'alphabetical',
-] as const;
-export type AssetSortOption = (typeof ASSET_SORT_OPTIONS)[number];
+import {
+  ASSET_SORT_OPTIONS,
+  type AssetSortOption,
+} from '@/modules/assets/assets.constants';
 
 export class AssetQueryDto {
   @ApiProperty({

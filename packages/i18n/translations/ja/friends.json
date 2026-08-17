@@ -36,6 +36,14 @@
       "daysBeforeHint": "0〜6日。0 は当日に届きます。",
       "weeksBeforeLabel": "何週間前",
       "weeksBeforeHint": "0〜4週間。0 で週単位のリマインダーを無効にします。"
+    },
+    "timezone": {
+      "title": "タイムゾーン",
+      "description": "誕生日のリマインダーはこのタイムゾーンを基準に送信されます。",
+      "label": "タイムゾーン",
+      "placeholder": "タイムゾーンを選択",
+      "searchPlaceholder": "タイムゾーンを検索",
+      "emptyLabel": "該当するタイムゾーンがありません。"
     }
   },
   "account": {

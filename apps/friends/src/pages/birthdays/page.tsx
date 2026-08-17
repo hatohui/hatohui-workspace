@@ -3,9 +3,9 @@ import { useTranslation } from '@hatohui/i18n';
 import { ErrorState, LoadingDots } from '@hatohui/ui';
 import { useUpcomingSections } from '../../hooks/useUpcomingSections';
 import { useDirectoryControls } from '../../hooks/useDirectoryControls';
-import BirthdayList from '../../components/BirthdayList';
-import CalendarView from '../../components/CalendarView';
-import DirectoryControls from '../../components/DirectoryControls';
+import BirthdayList from '../../components/birthdays/BirthdayList';
+import CalendarView from '../../components/calendar/CalendarView';
+import DirectoryControls from '../../components/directory/DirectoryControls';
 
 function BirthdaysPage() {
   const { t, i18n } = useTranslation();

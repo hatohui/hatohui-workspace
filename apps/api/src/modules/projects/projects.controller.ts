@@ -10,17 +10,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/modules/auth/auth.guard';
-import { OptionalAuthGuard } from '@/modules/auth/optional-auth.guard';
-import { OptionalCurrentUser } from '@/modules/auth/optional-current-user.decorator';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { OptionalAuthGuard } from '@/modules/auth/guards/optional-auth.guard';
+import { OptionalCurrentUser } from '@/modules/auth/decorators/optional-current-user.decorator';
 import type { User } from '@prisma/client';
-import { ProjectsService } from './projects.service';
+import { ProjectsService } from '@/modules/projects/services/projects.service';
 import {
   CreateProjectDto,
   ProjectDto,
   UpdateProjectDto,
   UpdateProjectVisibilityDto,
-} from './dto/project.dto';
+} from '@/modules/projects/dto/project.dto';
 
 @ApiTags('projects')
 @Controller('projects')

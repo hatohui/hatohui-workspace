@@ -18,9 +18,9 @@ import {
   MAX_BIRTHDAY_LEAD_DAY_ENTRIES,
   MAX_BIRTHDAY_REMINDER_DAYS_BEFORE,
   MAX_BIRTHDAY_REMINDER_WEEKS_BEFORE,
-} from '@/libs/birthday-reminders';
-import { IsTimezone } from '@/libs/timezone';
-import { HANDLE_PATTERN } from '../handle.util';
+} from '@/common/utils/birthday-reminders';
+import { IsTimezone } from '@/common/validators/timezone.validator';
+import { HANDLE_PATTERN } from '@/modules/users/users.constants';
 import { PublicUserDto } from './public-user.dto';
 
 export class UpdateMeDto {

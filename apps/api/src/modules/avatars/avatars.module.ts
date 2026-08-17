@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AvatarsService } from './avatars.service';
+import { AvatarsService } from '@/modules/avatars/services/avatars.service';
 
 @Module({
   providers: [AvatarsService],

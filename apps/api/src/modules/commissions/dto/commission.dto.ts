@@ -17,6 +17,10 @@ import {
   PaymentStatus,
   PreferredContactMethod,
 } from '@prisma/client';
+import {
+  COMMISSION_STEP_KEYS,
+  type CommissionStepKey,
+} from '@/modules/commissions/commissions.constants';
 
 export {
   CommissionStatus,
@@ -271,16 +275,6 @@ export class UpdatePaymentStatusDto {
   @IsEnum(PaymentStatus)
   paymentStatus: PaymentStatus;
 }
-
-export const COMMISSION_STEP_KEYS = [
-  'ideaConfirmedAt',
-  'sketchConfirmedAt',
-  'paymentConfirmedAt',
-  'lineDoneAt',
-  'coloringDoneAt',
-  'finishedAt',
-] as const;
-export type CommissionStepKey = (typeof COMMISSION_STEP_KEYS)[number];
 
 export class UpdateCommissionStepDto {
   @ApiProperty({ enum: COMMISSION_STEP_KEYS })

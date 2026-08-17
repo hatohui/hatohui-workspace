@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from '@/config/env';
-import { DatabaseModule } from '@/libs/db';
-import { RedisModule } from '@/libs/redis';
-import { CacheModule } from '@/libs/cache';
-import { EmailModule } from '@/libs/email';
-import { StorageModule } from '@/libs/storage';
-import { FriendsModule } from '@/modules/friends/friends.module';
+import { DatabaseModule } from '@/infra/db';
+import { RedisModule } from '@/infra/redis';
+import { CacheModule } from '@/infra/cache';
+import { EmailModule } from '@/infra/email';
+import { StorageModule } from '@/infra/storage';
+import { BirthdaysModule } from '@/modules/birthdays/birthdays.module';
+import { SocialGraphModule } from '@/modules/social-graph/social-graph.module';
+import { ProfilesModule } from '@/modules/profiles/profiles.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { HealthModule } from '@/modules/health/health.module';
 import { ImagesModule } from '@/modules/images/images.module';
-import { PlatformsModule } from '@/modules/platforms/platforms.module';
+import { SocialPlatformsModule } from '@/modules/social-platforms/social-platforms.module';
 import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
 import { UsersModule } from '@/modules/users/users.module';
 import { AdminModule } from '@/modules/admin/admin.module';
@@ -34,10 +36,13 @@ import { ProjectsModule } from '@/modules/projects/projects.module';
     EmailModule,
     StorageModule,
     AuthModule,
-    FriendsModule,
+    /// Order matters — see docs/specs/api/friends-controllers/README.md
+    BirthdaysModule,
+    SocialGraphModule,
+    ProfilesModule,
     HealthModule,
     ImagesModule,
-    PlatformsModule,
+    SocialPlatformsModule,
     OnboardingModule,
     UsersModule,
     AdminModule,

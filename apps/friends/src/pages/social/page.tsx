@@ -1,6 +1,6 @@
 import { Network } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
-import RequireAuth from '../../components/RequireAuth';
+import RequireAuth from '../../components/auth/RequireAuth';
 import SocialTree from '../../components/social/SocialTree';
 
 function SocialPage() {

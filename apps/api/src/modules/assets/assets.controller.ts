@@ -11,12 +11,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/modules/auth/auth.guard';
-import { CurrentUser } from '@/modules/auth/current-user.decorator';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import type { User } from '@prisma/client';
-import { AssetsService } from './assets.service';
-import { AssetQueryDto, PaginatedAssetsDto } from './dto/asset-query.dto';
-import { AssetDto, CreateAssetDto, UpdateAssetDto } from './dto/asset.dto';
+import { AssetsService } from '@/modules/assets/services/assets.service';
+import {
+  AssetQueryDto,
+  PaginatedAssetsDto,
+} from '@/modules/assets/dto/asset-query.dto';
+import {
+  AssetDto,
+  CreateAssetDto,
+  UpdateAssetDto,
+} from '@/modules/assets/dto/asset.dto';
 
 @ApiTags('assets')
 @Controller('assets')
