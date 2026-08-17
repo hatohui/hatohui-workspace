@@ -49,7 +49,7 @@ function BirthdayFields({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="birthday">{t('friendForm.birthdayLabel')}</Label>
         <Popover>
@@ -81,7 +81,7 @@ function BirthdayFields({
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="birthYear">{t('friendForm.birthYearLabel')}</Label>
-        <div className="flex items-center gap-1.5">
+        <div className="relative">
           <SearchableSelect
             id="birthYear"
             value={birthYear || null}
@@ -90,6 +90,7 @@ function BirthdayFields({
             searchPlaceholder={t('friendForm.birthYearSearch')}
             emptyLabel={t('friendForm.birthYearEmpty')}
             onChange={onBirthYearChange}
+            className={birthYear ? 'pr-16' : undefined}
           />
 
           {birthYear && (
@@ -97,7 +98,7 @@ function BirthdayFields({
               type="button"
               variant="ghost"
               size="icon"
-              className="size-9 shrink-0"
+              className="absolute top-1/2 right-7 size-6 -translate-y-1/2"
               onClick={() => onBirthYearChange('')}
             >
               <X className="size-4" />

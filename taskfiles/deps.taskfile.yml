@@ -46,6 +46,12 @@ tasks:
       - |
         printf "Please input your Doppler token here (ask hatohui): "
         read -r token
+        # read -r keeps the CR from CRLF input, and a CR in an Authorization
+        # header makes Doppler fail with "invalid header field value".
+        # Parameter expansion only — Task's embedded shell has no `tr`.
+        token="${token//$'\r'/}"
+        token="${token// /}"
+        if [ -z "$token" ]; then echo "[ERROR] No token entered." && exit 1; fi
         "{{.DOPPLER_BIN}}" configure set token "$token"
         "{{.DOPPLER_BIN}}" whoami || (echo "[ERROR] Doppler authentication failed." && exit 1)
         "{{.DOPPLER_BIN}}" setup --project hatohui-workspace --config tf
