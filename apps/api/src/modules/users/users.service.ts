@@ -4,13 +4,19 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Database } from '@/libs/db';
+import { serializeLeadDays } from '@/libs/birthday-reminders';
+import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
+import { UserSettingsService } from '@/modules/user-settings/user-settings.service';
 import { Prisma, type User } from '@prisma/client';
 import { PaginatedUsersDto, UpdateMeDto } from './dto/user.dto';
 import { PUBLIC_USER_SELECT, toPublicUserDto } from './dto/public-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly db: Database) {}
+  constructor(
+    private readonly db: Database,
+    private readonly userSettings: UserSettingsService,
+  ) {}
 
   /// Finds accounts to connect with, by name or @handle. Only accounts that
   /// have claimed a directory entry are offered — an unclaimed entry has
@@ -85,6 +91,16 @@ export class UsersService {
           }
           throw error;
         });
+    }
+
+    if (dto.birthdayReminderLeadDays !== undefined) {
+      const setting = USER_SETTING_TYPES.birthdayReminderLeadDays;
+      await this.userSettings.set(
+        viewer.id,
+        setting.scope,
+        setting.type,
+        serializeLeadDays(dto.birthdayReminderLeadDays),
+      );
     }
 
     if (dto.timezone === undefined) return viewer;

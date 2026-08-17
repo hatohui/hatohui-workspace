@@ -21,6 +21,16 @@
       "handlePlaceholder": "yourhandle",
       "handleInvalid": "ハンドルは3〜20文字の半角小文字・数字・アンダースコアで入力してください",
       "save": "保存"
+    },
+    "languageDescription": "アプリ全体で使用する言語です。",
+    "notifications": {
+      "title": "誕生日のリマインダー",
+      "description": "つながっている友達の誕生日について、いつメールを受け取るか。",
+      "onTheDay": "当日",
+      "oneWeek": "1週間前",
+      "twoWeeks": "2週間前",
+      "oneMonth": "1か月前",
+      "allOff": "誕生日メールは届きません。"
     }
   },
   "account": {

@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import {
   Button,
@@ -7,9 +8,10 @@ import {
   TooltipTrigger,
 } from '@hatohui/ui';
 import { navIcons } from '../../constants/navIcons';
+import routes from '../../constants/routes';
 import { useNavItems } from '../../hooks/useNavItems';
-import { useSettingsModal } from '../../hooks/useSettingsModal';
 import useSidebarExpanded from '../../hooks/useSidebarExpanded';
+import LanguageMenu from './LanguageMenu';
 import NavItem from './NavItem';
 import SidebarAccount from './SidebarAccount';
 import SidebarCollapseToggle from './SidebarCollapseToggle';
@@ -18,7 +20,6 @@ function DesktopSidebar() {
   const { t } = useTranslation();
   const { expanded, toggle } = useSidebarExpanded();
   const navItems = useNavItems();
-  const { open: openSettings } = useSettingsModal();
   const SettingsIcon = navIcons.settings;
 
   return (
@@ -37,20 +38,25 @@ function DesktopSidebar() {
         <div
           className={`flex flex-col gap-1 ${expanded ? '' : 'items-center'}`}
         >
+          <LanguageMenu expanded={expanded} />
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                type="button"
+                asChild
                 variant="ghost"
                 size={expanded ? 'sm' : 'icon'}
                 className={`rounded-full ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
-                aria-label={t('navigation.settings')}
-                onClick={openSettings}
               >
-                <SettingsIcon className="size-4 shrink-0" />
-                {expanded && (
-                  <span className="text-sm">{t('navigation.settings')}</span>
-                )}
+                <Link
+                  to={routes.settings}
+                  aria-label={t('navigation.settings')}
+                >
+                  <SettingsIcon className="size-4 shrink-0" />
+                  {expanded && (
+                    <span className="text-sm">{t('navigation.settings')}</span>
+                  )}
+                </Link>
               </Button>
             </TooltipTrigger>
             {!expanded && (

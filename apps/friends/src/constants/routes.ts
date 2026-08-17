@@ -5,6 +5,7 @@ const routes = {
   notifications: '/notifications',
   profile: '/profile',
   account: '/account',
+  settings: '/settings',
   newFriend: '/friends/new',
   friend: (id: string) => `/profile/${id}`,
   editFriend: (id: string) => `/profile/${id}/edit`,

@@ -23,4 +23,6 @@ export interface UserDto {
   onboardingStatus: UserDtoOnboardingStatus;
   /** IANA timezone name this account is scheduled against */
   timezone: string;
+  /** Days before a connection's birthday this account is emailed, where 0 is the day itself. Falls back to the app-wide default until the account sets its own; an empty array means birthday emails are off. */
+  birthdayReminderLeadDays: number[];
 }

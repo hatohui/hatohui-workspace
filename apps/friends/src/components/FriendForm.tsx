@@ -62,9 +62,9 @@ function FriendForm({
       val ? Number(val) : initialFriend ? null : undefined;
     onSubmit({
       name,
-      birthYear: nullIfEditing(birthYear) as number | undefined,
-      birthMonth: nullIfEditing(birthMonth) as number | undefined,
-      birthDay: nullIfEditing(birthDay) as number | undefined,
+      birthYear: nullIfEditing(birthYear),
+      birthMonth: nullIfEditing(birthMonth),
+      birthDay: nullIfEditing(birthDay),
       visibility,
       socialMedias: socialFields.toSocialMedias(),
       avatarKey,

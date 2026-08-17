@@ -1,9 +1,10 @@
+import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { Avatar, Button, LoadingDots } from '@hatohui/ui';
 import { useAuth } from '@hatohui/libs';
 import { navIcons } from '../constants/navIcons';
+import routes from '../constants/routes';
 import { useMyEntry } from '../hooks/useMyEntry';
-import { useSettingsModal } from '../hooks/useSettingsModal';
 import ProfileEntryDetails from './ProfileEntryDetails';
 import ProfileSettingsForm from './ProfileSettingsForm';
 
@@ -11,7 +12,6 @@ function AccountView() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { entry, isLoading } = useMyEntry();
-  const { open: openSettings } = useSettingsModal();
   const SettingsIcon = navIcons.settings;
   const LogoutIcon = navIcons.logout;
 
@@ -45,13 +45,11 @@ function AccountView() {
       )}
 
       <div className="flex flex-col gap-1 border-t border-border pt-4">
-        <Button
-          variant="ghost"
-          className="w-fit justify-start gap-2"
-          onClick={openSettings}
-        >
-          <SettingsIcon className="size-4 shrink-0" />
-          {t('navigation.settings')}
+        <Button asChild variant="ghost" className="w-fit justify-start gap-2">
+          <Link to={routes.settings}>
+            <SettingsIcon className="size-4 shrink-0" />
+            {t('navigation.settings')}
+          </Link>
         </Button>
         <Button
           variant="ghost"

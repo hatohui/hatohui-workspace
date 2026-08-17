@@ -13,4 +13,6 @@ export interface UpdateMeDto {
   displayName?: string;
   /** IANA timezone name. Birthday reminders about this account are timed against it. */
   timezone?: string;
+  /** Days before a connection's birthday to be emailed, where 0 is the day itself. An empty array turns birthday emails off; omitting the field leaves the current preference untouched. */
+  birthdayReminderLeadDays?: number[];
 }

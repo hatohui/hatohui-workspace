@@ -1,14 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  IsArray,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
+  Max,
   MaxLength,
   Min,
 } from 'class-validator';
+import {
+  MAX_BIRTHDAY_LEAD_DAYS,
+  MAX_BIRTHDAY_LEAD_DAY_ENTRIES,
+} from '@/libs/birthday-reminders';
 import { IsTimezone } from '@/libs/timezone';
 import { HANDLE_PATTERN } from '../handle.util';
 import { PublicUserDto } from './public-user.dto';
@@ -48,6 +55,22 @@ export class UpdateMeDto {
   @IsOptional()
   @IsTimezone()
   timezone?: string;
+
+  @ApiProperty({
+    type: Number,
+    isArray: true,
+    example: [0, 7],
+    required: false,
+    description:
+      "Days before a connection's birthday to be emailed, where 0 is the day itself. An empty array turns birthday emails off; omitting the field leaves the current preference untouched.",
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(MAX_BIRTHDAY_LEAD_DAY_ENTRIES)
+  @IsInt({ each: true })
+  @Min(0, { each: true })
+  @Max(MAX_BIRTHDAY_LEAD_DAYS, { each: true })
+  birthdayReminderLeadDays?: number[];
 }
 
 export class UserSearchQueryDto {

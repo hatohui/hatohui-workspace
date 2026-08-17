@@ -21,6 +21,16 @@
       "handlePlaceholder": "yourhandle",
       "handleInvalid": "代号须为3-20位小写字母、数字或下划线",
       "save": "保存"
+    },
+    "languageDescription": "整个应用使用的语言。",
+    "notifications": {
+      "title": "生日提醒",
+      "description": "何时通过邮件提醒你已连接好友的生日。",
+      "onTheDay": "当天",
+      "oneWeek": "提前 1 周",
+      "twoWeeks": "提前 2 周",
+      "oneMonth": "提前 1 个月",
+      "allOff": "你将不会收到任何生日邮件。"
     }
   },
   "account": {

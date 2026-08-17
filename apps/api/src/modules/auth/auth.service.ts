@@ -3,7 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { Database } from '@/libs/db';
 import { Cache, CACHE_KEYS } from '@/libs/cache';
+import { resolveLeadDays } from '@/libs/birthday-reminders';
 import { UserDto } from '@/modules/auth/dto/auth.dto';
+import { BirthdayConfigService } from '@/modules/cron/birthday-config';
+import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
+import { UserSettingsService } from '@/modules/user-settings/user-settings.service';
 import type { Env } from '@/config/env';
 import { AppScope, type User } from '@prisma/client';
 
@@ -18,6 +22,8 @@ export class AuthService {
     private readonly db: Database,
     private readonly config: ConfigService<Env, true>,
     private readonly cache: Cache,
+    private readonly userSettings: UserSettingsService,
+    private readonly birthdayConfig: BirthdayConfigService,
   ) {
     this.client = new OAuth2Client(
       this.config.get('GOOGLE_OAUTH_CLIENT_ID', { infer: true }),
@@ -36,10 +42,15 @@ export class AuthService {
   /// Everything displayable comes from the profile, resolved here so callers
   /// never touch the raw Google values.
   async toUserDto(user: User): Promise<UserDto> {
-    const profile = await this.db.profile.findUnique({
-      where: { userId: user.id },
-      select: { displayName: true, handle: true, avatarUrl: true },
-    });
+    const setting = USER_SETTING_TYPES.birthdayReminderLeadDays;
+    const [profile, storedLeadDays, birthdayConfig] = await Promise.all([
+      this.db.profile.findUnique({
+        where: { userId: user.id },
+        select: { displayName: true, handle: true, avatarUrl: true },
+      }),
+      this.userSettings.get(user.id, setting.scope, setting.type),
+      this.birthdayConfig.load(),
+    ]);
 
     return {
       id: user.id,
@@ -49,6 +60,10 @@ export class AuthService {
       isAdmin: await this.isAdmin(user),
       onboardingStatus: user.onboardingStatus,
       timezone: user.timezone,
+      birthdayReminderLeadDays: resolveLeadDays(
+        storedLeadDays,
+        birthdayConfig.reminderDays,
+      ),
     };
   }
 

@@ -51,4 +51,13 @@ export class UserDto {
     description: 'IANA timezone name this account is scheduled against',
   })
   timezone!: string;
+
+  @ApiProperty({
+    type: Number,
+    isArray: true,
+    example: [0, 7],
+    description:
+      "Days before a connection's birthday this account is emailed, where 0 is the day itself. Falls back to the app-wide default until the account sets its own; an empty array means birthday emails are off.",
+  })
+  birthdayReminderLeadDays!: number[];
 }

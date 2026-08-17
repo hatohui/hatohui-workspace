@@ -6,14 +6,16 @@ import {
   Prisma,
 } from '@prisma/client';
 import { Database } from '@/libs/db';
+import { resolveLeadDays } from '@/libs/birthday-reminders';
 import { EmailService, isRateLimitError } from '@/libs/email';
+import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
+import { UserSettingsService } from '@/modules/user-settings/user-settings.service';
 import { ConnectionsService } from '@/modules/connections/connections.service';
 import { NotificationsService } from '@/modules/notifications/notifications.service';
 import { renderBirthdayEmail } from './birthday-email-templates';
 import {
   BIRTHDAY_CONFIG_TYPES,
   BirthdayConfigService,
-  type BirthdayConfig,
 } from './birthday-config';
 import {
   BirthdayOutboxService,
@@ -59,6 +61,7 @@ export class BirthdayCronService {
     private readonly connections: ConnectionsService,
     private readonly notifications: NotificationsService,
     private readonly email: EmailService,
+    private readonly userSettings: UserSettingsService,
   ) {}
 
   async evaluate(): Promise<BirthdayEvaluationDto> {
@@ -68,13 +71,14 @@ export class BirthdayCronService {
       include: OWNED_BIRTHDAY,
     });
 
+    const leadDaysByUser = await this.loadLeadDays(config.reminderDays);
     const now = new Date();
     const rows: Prisma.EmailOutboxCreateManyInput[] = [];
     const celebrations: Celebration[] = [];
     let due = 0;
 
     for (const birthday of birthdays) {
-      const derived = await this.reminderRowsFor(birthday, now, config);
+      const derived = await this.reminderRowsFor(birthday, now, leadDaysByUser);
       if (derived.outbox.length === 0) continue;
       due += 1;
       rows.push(...derived.outbox);
@@ -193,10 +197,13 @@ export class BirthdayCronService {
     return { deleted: await this.outbox.deleteSentBefore(cutoff) };
   }
 
+  /// Each lead day is a distinct outbox row so that an account asking for both
+  /// a month's and a week's notice gets both — the unique index carries
+  /// leadDays for exactly that reason.
   private async reminderRowsFor(
     birthday: OwnedBirthday,
     now: Date,
-    config: BirthdayConfig,
+    leadDaysByUser: Map<string, number[]>,
   ): Promise<DerivedReminders> {
     const owner = birthday.profile.user;
     if (!owner) return { outbox: [] };
@@ -208,21 +215,21 @@ export class BirthdayCronService {
       birthday.day,
     );
 
-    const isReminderDay = daysUntil === config.reminderDays;
-    const isBirthday = daysUntil === 0;
-    if (!isReminderDay && !isBirthday) return { outbox: [] };
-
     const base = {
       subjectId: birthday.profile.id,
       occursOn: toUtcDate(occursOn),
     };
     const outbox: Prisma.EmailOutboxCreateManyInput[] = [];
+    const isBirthday = daysUntil === 0;
+    const wants = (userId: string) =>
+      (leadDaysByUser.get(userId) ?? []).includes(daysUntil);
 
-    if (isBirthday) {
+    if (isBirthday && wants(owner.id)) {
       outbox.push({
         ...base,
         kind: EmailOutboxKind.SELF_BIRTHDAY,
         recipientId: owner.id,
+        leadDays: 0,
       });
     }
 
@@ -232,12 +239,13 @@ export class BirthdayCronService {
       ? EmailOutboxKind.FRIEND_BIRTHDAY_TODAY
       : EmailOutboxKind.FRIEND_BIRTHDAY_UPCOMING;
     const { connectedUserIds } = await this.connections.getContext(owner.id);
+    const notified = [...connectedUserIds].filter(wants);
 
-    for (const recipientId of connectedUserIds) {
-      outbox.push({ ...base, kind, recipientId });
+    for (const recipientId of notified) {
+      outbox.push({ ...base, kind, recipientId, leadDays: daysUntil });
     }
 
-    if (!isBirthday || connectedUserIds.size === 0) return { outbox };
+    if (!isBirthday || notified.length === 0) return { outbox };
 
     return {
       outbox,
@@ -245,9 +253,31 @@ export class BirthdayCronService {
         subjectId: birthday.profile.id,
         actorId: owner.id,
         occursOn: toUtcDate(occursOn),
-        recipientIds: [...connectedUserIds],
+        recipientIds: notified,
       },
     };
+  }
+
+  /// One read for every account rather than per birthday: an account that has
+  /// never opened the settings page has no row at all and inherits the
+  /// app-wide default.
+  private async loadLeadDays(
+    appDefaultAdvanceDays: number | null,
+  ): Promise<Map<string, number[]>> {
+    const setting = USER_SETTING_TYPES.birthdayReminderLeadDays;
+    const users = await this.db.user.findMany({ select: { id: true } });
+    const stored = await this.userSettings.getManyUsers(
+      users.map((user) => user.id),
+      setting.scope,
+      setting.type,
+    );
+
+    return new Map(
+      users.map((user) => [
+        user.id,
+        resolveLeadDays(stored.get(user.id) ?? null, appDefaultAdvanceDays),
+      ]),
+    );
   }
 
   /// The bell counterpart to FRIEND_BIRTHDAY_TODAY. Last year's row for the

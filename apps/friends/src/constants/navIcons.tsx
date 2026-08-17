@@ -2,6 +2,7 @@ import {
   Bell,
   Cake,
   Home,
+  Languages,
   LogOut,
   Network,
   Settings,
@@ -15,6 +16,7 @@ export type NavIconKey =
   | 'cake'
   | 'userPlus'
   | 'settings'
+  | 'language'
   | 'logout'
   | 'social'
   | 'user'
@@ -25,6 +27,7 @@ export const navIcons: Record<NavIconKey, LucideIcon> = {
   cake: Cake,
   userPlus: UserPlus,
   settings: Settings,
+  language: Languages,
   logout: LogOut,
   social: Network,
   user: User,

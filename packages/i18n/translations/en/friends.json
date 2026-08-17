@@ -21,6 +21,16 @@
       "handlePlaceholder": "yourhandle",
       "handleInvalid": "Handle must be 3-20 lowercase letters, digits, or underscores",
       "save": "Save"
+    },
+    "languageDescription": "Language used across the app.",
+    "notifications": {
+      "title": "Birthday reminders",
+      "description": "When to email you about the birthdays of friends you're connected to.",
+      "onTheDay": "On the day itself",
+      "oneWeek": "1 week before",
+      "twoWeeks": "2 weeks before",
+      "oneMonth": "1 month before",
+      "allOff": "You won't get any birthday emails."
     }
   },
   "account": {

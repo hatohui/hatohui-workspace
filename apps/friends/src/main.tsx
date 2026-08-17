@@ -4,8 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router';
 import { setApiBaseUrl } from '@hatohui/models';
 import { AuthProvider, OnboardingModalProvider } from '@hatohui/libs';
-import { SettingsModalProvider } from './components/settings/SettingsModalContext';
-import GlobalSettingsDialog from './components/settings/GlobalSettingsDialog';
 import FriendsOnboardingModal from './components/FriendsOnboardingModal';
 import './index.css';
 import './config/i18n';
@@ -23,11 +21,8 @@ createRoot(document.getElementById('root')!).render(
         googleClientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}
       >
         <OnboardingModalProvider>
-          <SettingsModalProvider>
-            <RouterProvider router={router} />
-            <FriendsOnboardingModal />
-            <GlobalSettingsDialog />
-          </SettingsModalProvider>
+          <RouterProvider router={router} />
+          <FriendsOnboardingModal />
         </OnboardingModalProvider>
       </AuthProvider>
     </QueryClientProvider>

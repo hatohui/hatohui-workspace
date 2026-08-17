@@ -1,12 +1,16 @@
 ---
 name: implement-feature
-description: End-to-end workflow for shipping a new backend-touching feature in hatohui-workspace — planning, Prisma schema/migrations, Doppler secrets, infra wiring, NestJS API code, OpenAPI/Orval codegen, and frontend wiring in packages/*. Use when asked to implement, add, build, or ship a new feature that touches apps/api and/or shared packages.
+description: End-to-end workflow for shipping a new backend-touching feature in hatohui-workspace — planning, Prisma schema/migrations, Doppler secrets, infra wiring, NestJS API code, OpenAPI/Orval codegen, and frontend wiring across apps/* and packages/*. Use when asked to implement, add, build, or ship a new feature that touches apps/api and/or shared packages.
 ---
 
 The end-to-end recipe for a feature that touches `apps/api` and needs new
 env vars/secrets, new API endpoints, and frontend consumption. Follow the
 steps in order — each one depends on the last actually being done, not just
 planned.
+
+One API, several frontends. `apps/api` is the single backend for every
+frontend in the monorepo, so treat "which app is this for?" as a real
+question with a real answer, never an assumption that it is `friends`.
 
 ## 0. Before anything
 
@@ -17,14 +21,44 @@ assumes you already know.
 
 ## 1. Planning
 
-Clarify with the user, once, up front:
+### Know the estate before you scope
 
-- Which app(s) need this (check `apps/*` — not every directory listed there
-  is actually scaffolded; some are empty placeholders with no
-  `package.json`). Don't assume "all apps" means anything is there to wire.
+Re-derive this list rather than trusting it — directories get added — but as
+of writing:
+
+| Directory        | State                    | Frontend? | CD workflow      |
+| ---------------- | ------------------------ | --------- | ---------------- |
+| `apps/api`       | scaffolded (NestJS)      | —         | `api-cd.yml`     |
+| `apps/friends`   | scaffolded (React SPA)   | yes       | `friends-cd.yml` |
+| `apps/art`       | scaffolded (React SPA)   | yes       | `art-cd.yml`     |
+| `apps/www`       | scaffolded (React SPA)   | yes       | `www-cd.yml`     |
+| `apps/travel`    | placeholder, no `package.json` | —   | none             |
+| `apps/workspace` | placeholder, no `package.json` | —   | none             |
+
+Check with `ls apps/*/package.json` — a directory without one is a
+placeholder and there is nothing there to wire.
+
+Note the `AppScope` enum in `schema.prisma` (`ALL`, `WORKSHOP`, `ART`,
+`FRIENDS`, `WWW`, `TRAVEL`) does **not** map one-to-one onto `apps/*`:
+`WORKSHOP` has no directory and `workspace` has no scope. Scope values are a
+data-partitioning vocabulary, not an app inventory — don't infer one from
+the other.
+
+### Then clarify with the user, once, up front
+
+- Which app(s) need this. Ask if it is not stated; "add a settings page"
+  does not say which frontend. If the answer is more than one, decide up
+  front what is shared and what is per-app before writing any of it.
 - Shared vs per-app: if more than one app needs the same client-side logic
   (a hook, a provider, a component), it is a `packages/*` package, built
   once. Never duplicate the same logic into two apps.
+- Per-user state that more than one app will want (preferences, opt-outs,
+  display choices) belongs in the generic `UserSetting` table — a
+  `(userId, type, scope)` row keyed by the same vocabulary `AppConfig`
+  uses for app-wide defaults. Add columns to `User` only for identity
+  fields that are genuinely global to the account. The pairing is the
+  point: `AppConfig` holds the default, `UserSetting` holds the override,
+  and an absent row means "inherit".
 - Which flow/architecture fits the constraints (e.g. multiple separate SPA
   origins sharing one API argues for token-based auth over server-side
   session redirects). Use `AskUserQuestion` for genuine architecture forks —
@@ -146,6 +180,13 @@ Non-negotiables from `docs/conventions.md`:
   to `apps/api/src/libs/openapi.ts`'s `DocumentBuilder`.
 - Path alias `@/*` for cross-cutting imports; relative imports for
   same-directory siblings.
+- One API serves every frontend, so a module is only "the friends module"
+  if the data really is friends-only. Anything several apps will read
+  (accounts, settings, assets, notifications) is a shared resource — scope
+  the *rows* with `AppScope`, don't fork the module per app.
+- No comments in `schema.prisma`, including `///` doc comments.
+  `docs/conventions.md` names Prisma schema comments explicitly; the
+  reasoning goes in `docs/specs/<app>/<feature>/` instead.
 
 ## 7. Codegen
 
@@ -157,6 +198,14 @@ without one):
 docker compose up -d database
 task app:openapi:generate   # exports the OpenAPI spec, then runs Orval
 ```
+
+If Docker Desktop is not running, `docker compose up` fails with a named-pipe
+error on Windows and there is no way around it — `prisma generate` works
+offline (it reads the schema, not the database) but `db:migrate` and this
+codegen step both genuinely need Postgres. Stop and ask the user to start
+Docker rather than hand-writing a migration: Prisma auto-names indexes and
+constraints, and a hand-rolled name that differs from what Prisma expects
+leaves the schema permanently drifted.
 
 `packages/models/openapi.json` and `packages/models/src/generated/` are
 **committed to git in this repo** (check `.gitignore` hasn't drifted back
@@ -202,12 +251,21 @@ user which workflows will fire based on what changed:
 
 - `apps/api/**` changes → `api-cd.yml` (includes the `verify-openapi-client`
   gate before the Lambda deploy).
-- `apps/friends/**` or `packages/**` changes → `friends-cd.yml`.
-- `apps/www/**` or `packages/**` changes → `www-cd.yml`.
+- `apps/friends/**` or `packages/**` → `friends-cd.yml`.
+- `apps/art/**` or `packages/**` → `art-cd.yml`.
+- `apps/www/**` or `packages/**` → `www-cd.yml`.
+- `apps/api/prisma/migrations/**` → `db-migrate-cd.yml`.
+- `infra/**` → `infra-cd.yml`.
 
-These build straight from the committed generated client with no database
-service — if step 7 was skipped or is stale, they will fail on a missing
-`packages/models/src/generated/*` import.
+A `packages/**` change fans out to **every** frontend workflow at once, so a
+tweak to `packages/ui` or `packages/models` rebuilds friends, art and www
+together. Say so when you push one — a shared-package change has a much
+wider blast radius than an app-local one, and a regression there breaks
+three deploys rather than one.
+
+The frontend builds run straight from the committed generated client with no
+database service — if step 7 was skipped or is stale, they will fail on a
+missing `packages/models/src/generated/*` import.
 
 ## 11. Finish
 

@@ -21,6 +21,16 @@
       "handlePlaceholder": "handlecuaban",
       "handleInvalid": "Handle phải có 3-20 ký tự, gồm chữ thường, số hoặc dấu gạch dưới",
       "save": "Lưu"
+    },
+    "languageDescription": "Ngôn ngữ dùng trong toàn bộ ứng dụng.",
+    "notifications": {
+      "title": "Nhắc sinh nhật",
+      "description": "Khi nào gửi email cho bạn về sinh nhật của những người bạn đã kết nối.",
+      "onTheDay": "Đúng ngày sinh nhật",
+      "oneWeek": "Trước 1 tuần",
+      "twoWeeks": "Trước 2 tuần",
+      "oneMonth": "Trước 1 tháng",
+      "allOff": "Bạn sẽ không nhận email sinh nhật nào."
     }
   },
   "account": {
