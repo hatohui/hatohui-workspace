@@ -30,7 +30,12 @@
       "oneWeek": "1週間前",
       "twoWeeks": "2週間前",
       "oneMonth": "1か月前",
-      "allOff": "誕生日メールは届きません。"
+      "allOff": "誕生日メールは届きません。",
+      "enabledLabel": "誕生日をメールで知らせる",
+      "daysBeforeLabel": "何日前",
+      "daysBeforeHint": "0〜6日。0 は当日に届きます。",
+      "weeksBeforeLabel": "何週間前",
+      "weeksBeforeHint": "0〜4週間。0 で週単位のリマインダーを無効にします。"
     }
   },
   "account": {

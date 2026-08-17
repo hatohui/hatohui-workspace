@@ -1,14 +1,25 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Checkbox, Label } from '@hatohui/ui';
 import {
-  BIRTHDAY_REMINDER_LABEL_KEYS,
-  BIRTHDAY_REMINDER_LEAD_DAYS,
+  MAX_BIRTHDAY_REMINDER_DAYS_BEFORE,
+  MAX_BIRTHDAY_REMINDER_WEEKS_BEFORE,
+  MIN_BIRTHDAY_REMINDER_DAYS_BEFORE,
+  MIN_BIRTHDAY_REMINDER_WEEKS_BEFORE,
 } from '../../constants/birthdayReminders';
-import { useBirthdayReminders } from '../../hooks/useBirthdayReminders';
+import { useBirthdayReminderOffsets } from '../../hooks/useBirthdayReminderOffsets';
+import ReminderOffsetField from './ReminderOffsetField';
 
 function NotificationSettingsSection() {
   const { t } = useTranslation();
-  const { selected, isReady, toggle } = useBirthdayReminders();
+  const {
+    daysBefore,
+    weeksBefore,
+    isEnabled,
+    isReady,
+    setDaysBefore,
+    setWeeksBefore,
+    setEnabled,
+  } = useBirthdayReminderOffsets();
 
   return (
     <section className="flex flex-col gap-3">
@@ -21,26 +32,45 @@ function NotificationSettingsSection() {
         </p>
       </div>
 
-      <ul className="flex flex-col gap-2">
-        {BIRTHDAY_REMINDER_LEAD_DAYS.map((leadDay) => (
-          <li key={leadDay} className="flex items-center gap-2.5">
-            <Checkbox
-              id={`reminder-${leadDay}`}
-              checked={selected.includes(leadDay)}
-              disabled={!isReady}
-              onCheckedChange={() => toggle(leadDay)}
-            />
-            <Label
-              htmlFor={`reminder-${leadDay}`}
-              className="cursor-pointer text-sm font-normal"
-            >
-              {t(BIRTHDAY_REMINDER_LABEL_KEYS[leadDay])}
-            </Label>
-          </li>
-        ))}
-      </ul>
+      <div className="flex items-center gap-2.5">
+        <Checkbox
+          id="reminders-enabled"
+          checked={isEnabled}
+          disabled={!isReady}
+          onCheckedChange={(checked) => setEnabled(checked === true)}
+        />
+        <Label
+          htmlFor="reminders-enabled"
+          className="cursor-pointer text-sm font-normal"
+        >
+          {t('settings.notifications.enabledLabel')}
+        </Label>
+      </div>
 
-      {selected.length === 0 && isReady && (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <ReminderOffsetField
+          id="reminder-days-before"
+          label={t('settings.notifications.daysBeforeLabel')}
+          hint={t('settings.notifications.daysBeforeHint')}
+          value={daysBefore}
+          min={MIN_BIRTHDAY_REMINDER_DAYS_BEFORE}
+          max={MAX_BIRTHDAY_REMINDER_DAYS_BEFORE}
+          disabled={!isReady || !isEnabled}
+          onChange={setDaysBefore}
+        />
+        <ReminderOffsetField
+          id="reminder-weeks-before"
+          label={t('settings.notifications.weeksBeforeLabel')}
+          hint={t('settings.notifications.weeksBeforeHint')}
+          value={weeksBefore}
+          min={MIN_BIRTHDAY_REMINDER_WEEKS_BEFORE}
+          max={MAX_BIRTHDAY_REMINDER_WEEKS_BEFORE}
+          disabled={!isReady || !isEnabled}
+          onChange={setWeeksBefore}
+        />
+      </div>
+
+      {!isEnabled && isReady && (
         <p className="text-sm text-muted-foreground">
           {t('settings.notifications.allOff')}
         </p>

@@ -3,7 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { Database } from '@/libs/db';
 import { Cache, CACHE_KEYS } from '@/libs/cache';
-import { resolveLeadDays } from '@/libs/birthday-reminders';
+import {
+  decomposeLeadDays,
+  resolveLeadDays,
+  resolveRemindersEnabled,
+} from '@/libs/birthday-reminders';
 import { UserDto } from '@/modules/auth/dto/auth.dto';
 import { BirthdayConfigService } from '@/modules/cron/birthday-config';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
@@ -43,14 +47,27 @@ export class AuthService {
   /// never touch the raw Google values.
   async toUserDto(user: User): Promise<UserDto> {
     const setting = USER_SETTING_TYPES.birthdayReminderLeadDays;
-    const [profile, storedLeadDays, birthdayConfig] = await Promise.all([
-      this.db.profile.findUnique({
-        where: { userId: user.id },
-        select: { displayName: true, handle: true, avatarUrl: true },
-      }),
-      this.userSettings.get(user.id, setting.scope, setting.type),
-      this.birthdayConfig.load(),
-    ]);
+    const enabledSetting = USER_SETTING_TYPES.birthdayRemindersEnabled;
+    const [profile, storedLeadDays, storedEnabled, birthdayConfig] =
+      await Promise.all([
+        this.db.profile.findUnique({
+          where: { userId: user.id },
+          select: { displayName: true, handle: true, avatarUrl: true },
+        }),
+        this.userSettings.get(user.id, setting.scope, setting.type),
+        this.userSettings.get(
+          user.id,
+          enabledSetting.scope,
+          enabledSetting.type,
+        ),
+        this.birthdayConfig.load(),
+      ]);
+
+    const leadDays = resolveLeadDays(
+      storedLeadDays,
+      birthdayConfig.reminderDays,
+    );
+    const offsets = decomposeLeadDays(leadDays);
 
     return {
       id: user.id,
@@ -60,10 +77,13 @@ export class AuthService {
       isAdmin: await this.isAdmin(user),
       onboardingStatus: user.onboardingStatus,
       timezone: user.timezone,
-      birthdayReminderLeadDays: resolveLeadDays(
-        storedLeadDays,
-        birthdayConfig.reminderDays,
+      birthdayReminderLeadDays: leadDays,
+      birthdayRemindersEnabled: resolveRemindersEnabled(
+        storedEnabled,
+        leadDays,
       ),
+      birthdayReminderDaysBefore: offsets.daysBefore,
+      birthdayReminderWeeksBefore: offsets.weeksBefore,
     };
   }
 

@@ -4,7 +4,14 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Database } from '@/libs/db';
-import { serializeLeadDays } from '@/libs/birthday-reminders';
+import {
+  composeLeadDays,
+  decomposeLeadDays,
+  resolveLeadDays,
+  serializeLeadDays,
+  serializeRemindersEnabled,
+} from '@/libs/birthday-reminders';
+import { BirthdayConfigService } from '@/modules/cron/birthday-config';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/user-settings.service';
 import { Prisma, type User } from '@prisma/client';
@@ -16,12 +23,9 @@ export class UsersService {
   constructor(
     private readonly db: Database,
     private readonly userSettings: UserSettingsService,
+    private readonly birthdayConfig: BirthdayConfigService,
   ) {}
 
-  /// Finds accounts to connect with, by name or @handle. Only accounts that
-  /// have claimed a directory entry are offered — an unclaimed entry has
-  /// nobody behind it to accept a request. Returns PublicUserDto, so no
-  /// contact details ever leave here.
   async search(
     query: string | undefined,
     page: number,
@@ -68,9 +72,6 @@ export class UsersService {
     return { items: users.map(toPublicUserDto), total, page, pageSize };
   }
 
-  /// Handle and display name describe the public persona, so they live on the
-  /// profile — an account that never opted in has none to update. Timezone is
-  /// account state and is writable either way.
   async updateMe(dto: UpdateMeDto, viewer: User): Promise<User> {
     if (dto.handle !== undefined || dto.displayName !== undefined) {
       await this.db.profile
@@ -103,11 +104,56 @@ export class UsersService {
       );
     }
 
+    if (
+      dto.birthdayReminderDaysBefore !== undefined ||
+      dto.birthdayReminderWeeksBefore !== undefined
+    ) {
+      await this.setReminderOffsets(viewer, dto);
+    }
+
+    if (dto.birthdayRemindersEnabled !== undefined) {
+      const enabledSetting = USER_SETTING_TYPES.birthdayRemindersEnabled;
+      await this.userSettings.set(
+        viewer.id,
+        enabledSetting.scope,
+        enabledSetting.type,
+        serializeRemindersEnabled(dto.birthdayRemindersEnabled),
+      );
+    }
+
     if (dto.timezone === undefined) return viewer;
 
     return this.db.user.update({
       where: { id: viewer.id },
       data: { timezone: dto.timezone },
     });
+  }
+
+  /// The two offsets share one stored lead-days list, so a request that sets
+  /// only one of them has to keep the other's current value.
+  private async setReminderOffsets(
+    viewer: User,
+    dto: UpdateMeDto,
+  ): Promise<void> {
+    const setting = USER_SETTING_TYPES.birthdayReminderLeadDays;
+    const [stored, birthdayConfig] = await Promise.all([
+      this.userSettings.get(viewer.id, setting.scope, setting.type),
+      this.birthdayConfig.load(),
+    ]);
+    const current = decomposeLeadDays(
+      resolveLeadDays(stored, birthdayConfig.reminderDays),
+    );
+
+    await this.userSettings.set(
+      viewer.id,
+      setting.scope,
+      setting.type,
+      serializeLeadDays(
+        composeLeadDays({
+          daysBefore: dto.birthdayReminderDaysBefore ?? current.daysBefore,
+          weeksBefore: dto.birthdayReminderWeeksBefore ?? current.weeksBefore,
+        }),
+      ),
+    );
   }
 }

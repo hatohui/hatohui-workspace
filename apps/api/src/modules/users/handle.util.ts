@@ -14,8 +14,6 @@ function slugifyBase(name: string): string {
   return slug.length >= 3 ? slug : `user${slug}`;
 }
 
-/// Derives a lowercase, URL-safe handle from a display name and appends a
-/// numeric suffix on collision until a free one is found.
 export async function generateUniqueHandle(
   db: Database,
   name: string,

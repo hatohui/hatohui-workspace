@@ -60,4 +60,30 @@ export class UserDto {
       "Days before a connection's birthday this account is emailed, where 0 is the day itself. Falls back to the app-wide default until the account sets its own; an empty array means birthday emails are off.",
   })
   birthdayReminderLeadDays!: number[];
+
+  @ApiProperty({
+    description:
+      'Whether birthday reminder emails are sent at all. When false the lead-time settings are kept but nothing is queued.',
+  })
+  birthdayRemindersEnabled!: boolean;
+
+  @ApiProperty({
+    type: Number,
+    example: 0,
+    minimum: 0,
+    maximum: 6,
+    description:
+      'Days before a birthday for the daily reminder, where 0 is the day itself. Derived from birthdayReminderLeadDays.',
+  })
+  birthdayReminderDaysBefore!: number;
+
+  @ApiProperty({
+    type: Number,
+    example: 1,
+    minimum: 0,
+    maximum: 4,
+    description:
+      'Weeks before a birthday for the weekly reminder; 0 means no weekly reminder. Derived from birthdayReminderLeadDays.',
+  })
+  birthdayReminderWeeksBefore!: number;
 }

@@ -30,7 +30,12 @@
       "oneWeek": "1 week before",
       "twoWeeks": "2 weeks before",
       "oneMonth": "1 month before",
-      "allOff": "You won't get any birthday emails."
+      "allOff": "You won't get any birthday emails.",
+      "enabledLabel": "Email me about birthdays",
+      "daysBeforeLabel": "Days before",
+      "daysBeforeHint": "0-6 days. 0 emails you on the day itself.",
+      "weeksBeforeLabel": "Weeks before",
+      "weeksBeforeHint": "0-4 weeks. 0 turns the weekly reminder off."
     }
   },
   "account": {

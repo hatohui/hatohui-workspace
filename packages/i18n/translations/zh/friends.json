@@ -30,7 +30,12 @@
       "oneWeek": "提前 1 周",
       "twoWeeks": "提前 2 周",
       "oneMonth": "提前 1 个月",
-      "allOff": "你将不会收到任何生日邮件。"
+      "allOff": "你将不会收到任何生日邮件。",
+      "enabledLabel": "通过邮件提醒我生日",
+      "daysBeforeLabel": "提前天数",
+      "daysBeforeHint": "0-6 天。0 表示当天发送。",
+      "weeksBeforeLabel": "提前周数",
+      "weeksBeforeHint": "0-4 周。0 表示关闭每周提醒。"
     }
   },
   "account": {

@@ -15,4 +15,18 @@ export interface UpdateMeDto {
   timezone?: string;
   /** Days before a connection's birthday to be emailed, where 0 is the day itself. An empty array turns birthday emails off; omitting the field leaves the current preference untouched. */
   birthdayReminderLeadDays?: number[];
+  /** Turns birthday reminder emails on or off without discarding the lead-time settings. */
+  birthdayRemindersEnabled?: boolean;
+  /**
+     * Days before a birthday for the daily reminder, where 0 is the day itself. Omitting the field leaves it untouched.
+     * @minimum 0
+     * @maximum 6
+     */
+  birthdayReminderDaysBefore?: number;
+  /**
+     * Weeks before a birthday for the weekly reminder; 0 turns the weekly reminder off. Omitting the field leaves it untouched.
+     * @minimum 0
+     * @maximum 4
+     */
+  birthdayReminderWeeksBefore?: number;
 }

@@ -30,7 +30,12 @@
       "oneWeek": "Trước 1 tuần",
       "twoWeeks": "Trước 2 tuần",
       "oneMonth": "Trước 1 tháng",
-      "allOff": "Bạn sẽ không nhận email sinh nhật nào."
+      "allOff": "Bạn sẽ không nhận email sinh nhật nào.",
+      "enabledLabel": "Gửi email nhắc sinh nhật cho tôi",
+      "daysBeforeLabel": "Số ngày trước",
+      "daysBeforeHint": "0-6 ngày. 0 nghĩa là gửi đúng ngày sinh nhật.",
+      "weeksBeforeLabel": "Số tuần trước",
+      "weeksBeforeHint": "0-4 tuần. 0 nghĩa là tắt nhắc theo tuần."
     }
   },
   "account": {

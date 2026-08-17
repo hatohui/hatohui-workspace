@@ -6,7 +6,10 @@ import {
   Prisma,
 } from '@prisma/client';
 import { Database } from '@/libs/db';
-import { resolveLeadDays } from '@/libs/birthday-reminders';
+import {
+  resolveLeadDays,
+  resolveRemindersEnabled,
+} from '@/libs/birthday-reminders';
 import { EmailService, isRateLimitError } from '@/libs/email';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/user-settings.service';
@@ -265,18 +268,30 @@ export class BirthdayCronService {
     appDefaultAdvanceDays: number | null,
   ): Promise<Map<string, number[]>> {
     const setting = USER_SETTING_TYPES.birthdayReminderLeadDays;
+    const enabledSetting = USER_SETTING_TYPES.birthdayRemindersEnabled;
     const users = await this.db.user.findMany({ select: { id: true } });
-    const stored = await this.userSettings.getManyUsers(
-      users.map((user) => user.id),
-      setting.scope,
-      setting.type,
-    );
+    const userIds = users.map((user) => user.id);
+    const [stored, storedEnabled] = await Promise.all([
+      this.userSettings.getManyUsers(userIds, setting.scope, setting.type),
+      this.userSettings.getManyUsers(
+        userIds,
+        enabledSetting.scope,
+        enabledSetting.type,
+      ),
+    ]);
 
     return new Map(
-      users.map((user) => [
-        user.id,
-        resolveLeadDays(stored.get(user.id) ?? null, appDefaultAdvanceDays),
-      ]),
+      users.map((user) => {
+        const leadDays = resolveLeadDays(
+          stored.get(user.id) ?? null,
+          appDefaultAdvanceDays,
+        );
+        const enabled = resolveRemindersEnabled(
+          storedEnabled.get(user.id) ?? null,
+          leadDays,
+        );
+        return [user.id, enabled ? leadDays : []];
+      }),
     );
   }
 

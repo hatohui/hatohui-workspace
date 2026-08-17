@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   IsArray,
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -15,6 +16,8 @@ import {
 import {
   MAX_BIRTHDAY_LEAD_DAYS,
   MAX_BIRTHDAY_LEAD_DAY_ENTRIES,
+  MAX_BIRTHDAY_REMINDER_DAYS_BEFORE,
+  MAX_BIRTHDAY_REMINDER_WEEKS_BEFORE,
 } from '@/libs/birthday-reminders';
 import { IsTimezone } from '@/libs/timezone';
 import { HANDLE_PATTERN } from '../handle.util';
@@ -71,6 +74,45 @@ export class UpdateMeDto {
   @Min(0, { each: true })
   @Max(MAX_BIRTHDAY_LEAD_DAYS, { each: true })
   birthdayReminderLeadDays?: number[];
+
+  @ApiProperty({
+    required: false,
+    description:
+      'Turns birthday reminder emails on or off without discarding the lead-time settings.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  birthdayRemindersEnabled?: boolean;
+
+  @ApiProperty({
+    type: Number,
+    example: 0,
+    minimum: 0,
+    maximum: MAX_BIRTHDAY_REMINDER_DAYS_BEFORE,
+    required: false,
+    description:
+      'Days before a birthday for the daily reminder, where 0 is the day itself. Omitting the field leaves it untouched.',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(MAX_BIRTHDAY_REMINDER_DAYS_BEFORE)
+  birthdayReminderDaysBefore?: number;
+
+  @ApiProperty({
+    type: Number,
+    example: 1,
+    minimum: 0,
+    maximum: MAX_BIRTHDAY_REMINDER_WEEKS_BEFORE,
+    required: false,
+    description:
+      'Weeks before a birthday for the weekly reminder; 0 turns the weekly reminder off. Omitting the field leaves it untouched.',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(MAX_BIRTHDAY_REMINDER_WEEKS_BEFORE)
+  birthdayReminderWeeksBefore?: number;
 }
 
 export class UserSearchQueryDto {

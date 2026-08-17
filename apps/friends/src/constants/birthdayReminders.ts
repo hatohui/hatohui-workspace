@@ -12,3 +12,11 @@ export const BIRTHDAY_REMINDER_LABEL_KEYS: Record<
   14: 'settings.notifications.twoWeeks',
   30: 'settings.notifications.oneMonth',
 };
+
+export const MIN_BIRTHDAY_REMINDER_DAYS_BEFORE = 0;
+
+export const MAX_BIRTHDAY_REMINDER_DAYS_BEFORE = 6;
+
+export const MIN_BIRTHDAY_REMINDER_WEEKS_BEFORE = 0;
+
+export const MAX_BIRTHDAY_REMINDER_WEEKS_BEFORE = 4;

@@ -5,4 +5,8 @@ export const USER_SETTING_TYPES = {
     scope: AppScope.FRIENDS,
     type: 'friends.birthday.reminderleaddays',
   },
+  birthdayRemindersEnabled: {
+    scope: AppScope.FRIENDS,
+    type: 'friends.birthday.remindersenabled',
+  },
 } as const;

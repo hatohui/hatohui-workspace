@@ -25,4 +25,18 @@ export interface UserDto {
   timezone: string;
   /** Days before a connection's birthday this account is emailed, where 0 is the day itself. Falls back to the app-wide default until the account sets its own; an empty array means birthday emails are off. */
   birthdayReminderLeadDays: number[];
+  /** Whether birthday reminder emails are sent at all. When false the lead-time settings are kept but nothing is queued. */
+  birthdayRemindersEnabled: boolean;
+  /**
+     * Days before a birthday for the daily reminder, where 0 is the day itself. Derived from birthdayReminderLeadDays.
+     * @minimum 0
+     * @maximum 6
+     */
+  birthdayReminderDaysBefore: number;
+  /**
+     * Weeks before a birthday for the weekly reminder; 0 means no weekly reminder. Derived from birthdayReminderLeadDays.
+     * @minimum 0
+     * @maximum 4
+     */
+  birthdayReminderWeeksBefore: number;
 }
