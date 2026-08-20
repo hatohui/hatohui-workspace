@@ -2,7 +2,10 @@
   "nav": {
     "dashboard": "概览",
     "users": "用户",
-    "settings": "设置"
+    "systemParameters": "系统参数",
+    "settings": "设置",
+    "expand": "展开侧边栏",
+    "collapse": "收起侧边栏"
   },
   "adminGate": {
     "notAdmin": "您没有管理员权限。",
@@ -27,6 +30,9 @@
     },
     "saveError": "无法保存该更改。",
     "searchPlaceholder": "搜索姓名或邮箱...",
+    "selectPlaceholder": "选择...",
+    "searchOptionPlaceholder": "搜索...",
+    "noMatches": "无匹配结果。",
     "allStatuses": "所有状态",
     "ascending": "升序",
     "descending": "降序",
@@ -36,6 +42,11 @@
   },
   "settings": {
     "title": "设置",
+    "placeholder": "工作区设置即将推出。"
+  },
+  "systemParameters": {
+    "title": "系统参数",
+    "addRow": "添加参数",
     "columns": {
       "type": "类型",
       "scope": "范围",

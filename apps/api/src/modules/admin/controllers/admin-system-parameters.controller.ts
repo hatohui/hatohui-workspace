@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiHeader,
   ApiOkResponse,
@@ -10,6 +18,7 @@ import { AdminGuard } from '@/modules/admin/guards/admin.guard';
 import { AdminSystemParametersService } from '@/modules/admin/services/admin-system-parameters.service';
 import {
   AdminSystemParameterDto,
+  CreateAdminSystemParameterDto,
   UpdateAdminSystemParameterDto,
 } from '@/modules/admin/dto/admin-system-parameter.dto';
 
@@ -35,6 +44,18 @@ export class AdminSystemParametersController {
   @ApiOkResponse({ type: AdminSystemParameterDto, isArray: true })
   list(): Promise<AdminSystemParameterDto[]> {
     return this.adminSystemParameters.list();
+  }
+
+  @Post()
+  @ApiOperation({
+    operationId: 'adminCreateSystemParameter',
+    summary: 'Add a new configuration value',
+  })
+  @ApiOkResponse({ type: AdminSystemParameterDto })
+  create(
+    @Body() dto: CreateAdminSystemParameterDto,
+  ): Promise<AdminSystemParameterDto> {
+    return this.adminSystemParameters.create(dto);
   }
 
   @Patch(':id')

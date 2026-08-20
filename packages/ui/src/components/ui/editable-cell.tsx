@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { cn } from '../../lib/utils';
+import { SearchableSelect } from './searchable-select';
 
 export interface EditableCellOption {
   label: string;
@@ -11,6 +12,9 @@ export interface EditableCellProps {
   displayValue?: string;
   editable?: boolean;
   options?: EditableCellOption[];
+  selectPlaceholder?: string;
+  searchPlaceholder?: string;
+  emptyLabel?: string;
   onCommit: (value: string) => void;
   onNavigate?: (direction: 'down' | 'right') => void;
 }
@@ -20,20 +24,37 @@ export function EditableCell({
   displayValue,
   editable = true,
   options,
+  selectPlaceholder = 'Select...',
+  searchPlaceholder = 'Search...',
+  emptyLabel = 'No matches.',
   onCommit,
   onNavigate,
 }: EditableCellProps) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(value);
-  const ref = React.useRef<HTMLInputElement | HTMLSelectElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    if (editing) ref.current?.focus();
+    if (editing) inputRef.current?.focus();
   }, [editing]);
 
   if (!editable) {
     return (
       <div className="truncate px-3 py-2 text-sm">{displayValue ?? value}</div>
+    );
+  }
+
+  if (options) {
+    return (
+      <SearchableSelect
+        value={value}
+        options={options}
+        placeholder={selectPlaceholder}
+        searchPlaceholder={searchPlaceholder}
+        emptyLabel={emptyLabel}
+        onChange={onCommit}
+        className="h-auto w-full rounded-none border-0 px-3 py-2 text-sm"
+      />
     );
   }
 
@@ -60,52 +81,29 @@ export function EditableCell({
     );
   }
 
-  const commonProps = {
-    autoFocus: true,
-    className:
-      'w-full border-0 bg-transparent px-3 py-2 text-sm outline-none ring-2 ring-ring',
-    onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) =>
-      commit(e.target.value),
-    onKeyDown: (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setEditing(false);
-        return;
-      }
-      if (e.key === 'Enter') {
-        commit((e.target as HTMLInputElement).value);
-        onNavigate?.('down');
-      }
-      if (e.key === 'Tab' && !e.shiftKey) {
-        e.preventDefault();
-        commit((e.target as HTMLInputElement).value);
-        onNavigate?.('right');
-      }
-    },
-  };
-
-  if (options) {
-    return (
-      <select
-        ref={ref as React.RefObject<HTMLSelectElement>}
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        {...commonProps}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    );
-  }
-
   return (
     <input
-      ref={ref as React.RefObject<HTMLInputElement>}
+      ref={inputRef}
       value={draft}
       onChange={(e) => setDraft(e.target.value)}
-      {...commonProps}
+      autoFocus
+      className="w-full border-0 bg-transparent px-3 py-2 text-sm outline-none ring-2 ring-ring"
+      onBlur={(e) => commit(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          setEditing(false);
+          return;
+        }
+        if (e.key === 'Enter') {
+          commit((e.target as HTMLInputElement).value);
+          onNavigate?.('down');
+        }
+        if (e.key === 'Tab' && !e.shiftKey) {
+          e.preventDefault();
+          commit((e.target as HTMLInputElement).value);
+          onNavigate?.('right');
+        }
+      }}
     />
   );
 }

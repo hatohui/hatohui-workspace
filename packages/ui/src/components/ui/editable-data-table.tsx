@@ -1,14 +1,24 @@
 import * as React from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  type ColumnDef,
+  type ColumnSizingState,
+} from '@tanstack/react-table';
 import { cn } from '../../lib/utils';
 import { EditableCell, type EditableCellOption } from './editable-cell';
 
 export interface EditableColumn<T> {
   key: keyof T & string;
   label: string;
-  editable?: boolean;
+  editable?: boolean | ((row: T) => boolean);
   options?: EditableCellOption[];
   render?: (row: T) => string;
-  width?: string;
+  /** Initial column width in pixels. */
+  size?: number;
+  selectPlaceholder?: string;
+  searchPlaceholder?: string;
+  emptyLabel?: string;
 }
 
 export interface EditableDataTableProps<T extends { id: string }> {
@@ -18,17 +28,21 @@ export interface EditableDataTableProps<T extends { id: string }> {
   className?: string;
   /** When set, column widths persist to localStorage under this key. */
   storageKey?: string;
+  /** When set, renders a trailing "+ addRowLabel" row that calls this. */
+  onAddRow?: () => void;
+  addRowLabel?: string;
 }
 
+const DEFAULT_COLUMN_WIDTH = 160;
 const MIN_COLUMN_WIDTH = 80;
 
-function loadStoredWidths(storageKey: string | undefined) {
-  if (!storageKey || typeof window === 'undefined') return null;
+function loadStoredSizing(storageKey: string | undefined): ColumnSizingState {
+  if (!storageKey || typeof window === 'undefined') return {};
   try {
     const raw = window.localStorage.getItem(`editable-table:${storageKey}`);
-    return raw ? (JSON.parse(raw) as Record<string, number>) : null;
+    return raw ? (JSON.parse(raw) as ColumnSizingState) : {};
   } catch {
-    return null;
+    return {};
   }
 }
 
@@ -38,49 +52,49 @@ export function EditableDataTable<T extends { id: string }>({
   onCommit,
   className,
   storageKey,
+  onAddRow,
+  addRowLabel,
 }: EditableDataTableProps<T>) {
+  const [columnSizing, setColumnSizing] = React.useState<ColumnSizingState>(
+    () => loadStoredSizing(storageKey),
+  );
   const tableRef = React.useRef<HTMLTableElement>(null);
-  const [widths, setWidths] = React.useState<Record<string, number>>(
-    () => loadStoredWidths(storageKey) ?? {},
+  const columnsByKey = React.useMemo(
+    () => new Map(columns.map((column) => [column.key, column])),
+    [columns],
   );
 
-  const persistWidths = (next: Record<string, number>) => {
-    setWidths(next);
-    if (!storageKey) return;
-    window.localStorage.setItem(
-      `editable-table:${storageKey}`,
-      JSON.stringify(next),
-    );
-  };
+  const columnDefs = React.useMemo<ColumnDef<T>[]>(
+    () =>
+      columns.map((column) => ({
+        id: column.key,
+        accessorKey: column.key,
+        header: column.label,
+        size: column.size ?? DEFAULT_COLUMN_WIDTH,
+        minSize: MIN_COLUMN_WIDTH,
+      })),
+    [columns],
+  );
 
-  const startResize = (
-    event: React.PointerEvent<HTMLDivElement>,
-    columnKey: string,
-    currentWidth: number,
-  ) => {
-    event.preventDefault();
-    const startX = event.clientX;
-    const target = event.currentTarget;
-    target.setPointerCapture(event.pointerId);
-
-    const handleMove = (moveEvent: PointerEvent) => {
-      const delta = moveEvent.clientX - startX;
-      const nextWidth = Math.max(MIN_COLUMN_WIDTH, currentWidth + delta);
-      setWidths((prev) => ({ ...prev, [columnKey]: nextWidth }));
-    };
-
-    const handleUp = (upEvent: PointerEvent) => {
-      const delta = upEvent.clientX - startX;
-      const nextWidth = Math.max(MIN_COLUMN_WIDTH, currentWidth + delta);
-      persistWidths({ ...widths, [columnKey]: nextWidth });
-      target.releasePointerCapture(upEvent.pointerId);
-      window.removeEventListener('pointermove', handleMove);
-      window.removeEventListener('pointerup', handleUp);
-    };
-
-    window.addEventListener('pointermove', handleMove);
-    window.addEventListener('pointerup', handleUp);
-  };
+  const table = useReactTable({
+    data: rows,
+    columns: columnDefs,
+    state: { columnSizing },
+    onColumnSizingChange: (updater) => {
+      setColumnSizing((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        if (storageKey) {
+          window.localStorage.setItem(
+            `editable-table:${storageKey}`,
+            JSON.stringify(next),
+          );
+        }
+        return next;
+      });
+    },
+    columnResizeMode: 'onChange',
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   const focusCell = (rowIndex: number, colIndex: number) => {
     const target = tableRef.current?.querySelector<HTMLButtonElement>(
@@ -92,70 +106,100 @@ export function EditableDataTable<T extends { id: string }>({
   return (
     <div
       className={cn(
-        'overflow-x-auto rounded-md border border-border',
+        'max-h-[70vh] overflow-auto rounded-md border border-border',
         className,
       )}
     >
       <table
         ref={tableRef}
-        className="w-full table-fixed border-collapse text-sm"
+        style={{ width: table.getTotalSize() }}
+        className="border-collapse text-sm"
       >
-        <thead>
-          <tr className="border-b border-border bg-muted/50">
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                style={{
-                  width: widths[column.key]
-                    ? `${widths[column.key]}px`
-                    : column.width,
-                }}
-                className="relative truncate border-r border-border px-3 py-2 text-left font-medium last:border-r-0"
-              >
-                {column.label}
-                <div
-                  onPointerDown={(event) =>
-                    startResize(
-                      event,
-                      column.key,
-                      event.currentTarget.parentElement?.getBoundingClientRect()
-                        .width ?? MIN_COLUMN_WIDTH,
-                    )
-                  }
-                  className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-ring"
-                />
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, rowIndex) => (
-            <tr key={row.id} className="border-b border-border last:border-b-0">
-              {columns.map((column, colIndex) => (
-                <td
-                  key={column.key}
-                  data-row={rowIndex}
-                  data-col={colIndex}
-                  className="border-r border-border p-0 last:border-r-0"
+        <thead className="sticky top-0 z-10">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr
+              key={headerGroup.id}
+              className="border-b border-border bg-muted"
+            >
+              {headerGroup.headers.map((header) => (
+                <th
+                  key={header.id}
+                  style={{ width: header.getSize() }}
+                  className="relative truncate border-r border-border px-3 py-2 text-left font-medium last:border-r-0"
                 >
-                  <EditableCell
-                    value={String(row[column.key] ?? '')}
-                    displayValue={column.render?.(row)}
-                    editable={column.editable}
-                    options={column.options}
-                    onCommit={(value) => onCommit(row.id, column.key, value)}
-                    onNavigate={(direction) => {
-                      if (direction === 'down')
-                        focusCell(rowIndex + 1, colIndex);
-                      if (direction === 'right')
-                        focusCell(rowIndex, colIndex + 1);
-                    }}
+                  {header.column.columnDef.header as string}
+                  <div
+                    onPointerDown={header.getResizeHandler()}
+                    onTouchStart={header.getResizeHandler()}
+                    className={cn(
+                      'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-ring',
+                      header.column.getIsResizing() && 'bg-ring',
+                    )}
                   />
-                </td>
+                </th>
               ))}
             </tr>
           ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row, rowIndex) => (
+            <tr key={row.id} className="border-b border-border last:border-b-0">
+              {row.getVisibleCells().map((cell, colIndex) => {
+                const column = columnsByKey.get(
+                  cell.column.id as keyof T & string,
+                );
+                if (!column) return null;
+                return (
+                  <td
+                    key={cell.id}
+                    data-row={rowIndex}
+                    data-col={colIndex}
+                    style={{ width: cell.column.getSize() }}
+                    className="border-r border-border p-0 last:border-r-0"
+                  >
+                    <EditableCell
+                      value={String(row.original[column.key] ?? '')}
+                      displayValue={column.render?.(row.original)}
+                      editable={
+                        typeof column.editable === 'function'
+                          ? column.editable(row.original)
+                          : column.editable
+                      }
+                      options={column.options}
+                      selectPlaceholder={column.selectPlaceholder}
+                      searchPlaceholder={column.searchPlaceholder}
+                      emptyLabel={column.emptyLabel}
+                      onCommit={(value) =>
+                        onCommit(row.original.id, column.key, value)
+                      }
+                      onNavigate={(direction) => {
+                        if (direction === 'down')
+                          focusCell(rowIndex + 1, colIndex);
+                        if (direction === 'right')
+                          focusCell(rowIndex, colIndex + 1);
+                      }}
+                    />
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
         </tbody>
+        {onAddRow && (
+          <tfoot>
+            <tr>
+              <td colSpan={columns.length} className="p-0">
+                <button
+                  type="button"
+                  onClick={onAddRow}
+                  className="w-full px-3 py-2 text-left text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                >
+                  + {addRowLabel}
+                </button>
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );

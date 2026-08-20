@@ -28,6 +28,7 @@ import type {
   AdminListUsersParams,
   AdminSystemParameterDto,
   AdminUserDto,
+  CreateAdminSystemParameterDto,
   FriendDto,
   PaginatedAdminUsersDto,
   UpdateAdminSystemParameterDto,
@@ -482,7 +483,89 @@ export function useAdminListSystemParameters<TData = Awaited<ReturnType<typeof a
 
 
 
-export type adminUpdateSystemParameterResponse200 = {
+export type adminCreateSystemParameterResponse200 = {
+  data: AdminSystemParameterDto
+  status: 200
+}
+
+export type adminCreateSystemParameterResponseSuccess = (adminCreateSystemParameterResponse200) & {
+  headers: Headers;
+};
+;
+
+export type adminCreateSystemParameterResponse = (adminCreateSystemParameterResponseSuccess)
+
+export const getAdminCreateSystemParameterUrl = () => {
+
+
+
+
+  return `/admin/system-parameters`
+}
+
+/**
+ * @summary Add a new configuration value
+ */
+export const adminCreateSystemParameter = async (createAdminSystemParameterDto: CreateAdminSystemParameterDto, options?: RequestInit): Promise<adminCreateSystemParameterResponse> => {
+
+  return customFetch<adminCreateSystemParameterResponse>(getAdminCreateSystemParameterUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createAdminSystemParameterDto)
+  }
+);}
+
+
+
+
+
+export const getAdminCreateSystemParameterMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminCreateSystemParameter>>, TError,{data: CreateAdminSystemParameterDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminCreateSystemParameter>>, TError,{data: CreateAdminSystemParameterDto}, TContext> => {
+
+const mutationKey = ['adminCreateSystemParameter'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminCreateSystemParameter>>, {data: CreateAdminSystemParameterDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  adminCreateSystemParameter(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminCreateSystemParameterMutationResult = NonNullable<Awaited<ReturnType<typeof adminCreateSystemParameter>>>
+    export type AdminCreateSystemParameterMutationBody = CreateAdminSystemParameterDto
+    export type AdminCreateSystemParameterMutationError = unknown
+
+    /**
+ * @summary Add a new configuration value
+ */
+export const useAdminCreateSystemParameter = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminCreateSystemParameter>>, TError,{data: CreateAdminSystemParameterDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof adminCreateSystemParameter>>,
+        TError,
+        {data: CreateAdminSystemParameterDto},
+        TContext
+      > => {
+      return useMutation(getAdminCreateSystemParameterMutationOptions(options), queryClient);
+    }
+    export type adminUpdateSystemParameterResponse200 = {
   data: AdminSystemParameterDto
   status: 200
 }

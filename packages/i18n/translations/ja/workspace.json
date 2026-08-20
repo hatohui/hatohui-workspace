@@ -2,7 +2,10 @@
   "nav": {
     "dashboard": "ダッシュボード",
     "users": "ユーザー",
-    "settings": "設定"
+    "systemParameters": "システムパラメータ",
+    "settings": "設定",
+    "expand": "サイドバーを展開",
+    "collapse": "サイドバーを折りたたむ"
   },
   "adminGate": {
     "notAdmin": "管理者権限がありません。",
@@ -27,6 +30,9 @@
     },
     "saveError": "変更を保存できませんでした。",
     "searchPlaceholder": "名前またはメールで検索...",
+    "selectPlaceholder": "選択...",
+    "searchOptionPlaceholder": "検索...",
+    "noMatches": "一致する項目がありません。",
     "allStatuses": "すべての状態",
     "ascending": "昇順",
     "descending": "降順",
@@ -36,6 +42,11 @@
   },
   "settings": {
     "title": "設定",
+    "placeholder": "ワークスペース設定は近日公開予定です。"
+  },
+  "systemParameters": {
+    "title": "システムパラメータ",
+    "addRow": "パラメータを追加",
     "columns": {
       "type": "種類",
       "scope": "範囲",

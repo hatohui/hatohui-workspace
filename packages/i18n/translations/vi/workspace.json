@@ -2,7 +2,10 @@
   "nav": {
     "dashboard": "Tổng quan",
     "users": "Người dùng",
-    "settings": "Cài đặt"
+    "systemParameters": "Tham số hệ thống",
+    "settings": "Cài đặt",
+    "expand": "Mở rộng thanh bên",
+    "collapse": "Thu gọn thanh bên"
   },
   "adminGate": {
     "notAdmin": "Bạn không có quyền quản trị.",
@@ -27,6 +30,9 @@
     },
     "saveError": "Không thể lưu thay đổi.",
     "searchPlaceholder": "Tìm theo tên hoặc email...",
+    "selectPlaceholder": "Chọn...",
+    "searchOptionPlaceholder": "Tìm kiếm...",
+    "noMatches": "Không có kết quả.",
     "allStatuses": "Tất cả trạng thái",
     "ascending": "Tăng dần",
     "descending": "Giảm dần",
@@ -36,6 +42,11 @@
   },
   "settings": {
     "title": "Cài đặt",
+    "placeholder": "Cài đặt không gian làm việc sẽ sớm ra mắt."
+  },
+  "systemParameters": {
+    "title": "Tham số hệ thống",
+    "addRow": "Thêm tham số",
     "columns": {
       "type": "Loại",
       "scope": "Phạm vi",

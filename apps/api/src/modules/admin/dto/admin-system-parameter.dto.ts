@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, MinLength } from 'class-validator';
+import { IsEnum, IsString, MinLength } from 'class-validator';
 import { AppScope } from '@prisma/client';
 
 export class AdminSystemParameterDto {
@@ -20,6 +20,22 @@ export class AdminSystemParameterDto {
 }
 
 export class UpdateAdminSystemParameterDto {
+  @ApiProperty()
+  @IsString()
+  @MinLength(1)
+  value!: string;
+}
+
+export class CreateAdminSystemParameterDto {
+  @ApiProperty()
+  @IsString()
+  @MinLength(1)
+  type!: string;
+
+  @ApiProperty({ enum: AppScope })
+  @IsEnum(AppScope)
+  scope!: AppScope;
+
   @ApiProperty()
   @IsString()
   @MinLength(1)

@@ -5,7 +5,6 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpdateAdminUserDtoOnboardingStatus } from './updateAdminUserDtoOnboardingStatus';
 
 export interface UpdateAdminUserDto {
   email?: string;
@@ -13,5 +12,4 @@ export interface UpdateAdminUserDto {
   /** @nullable */
   avatarUrl?: string | null;
   timezone?: string;
-  onboardingStatus?: UpdateAdminUserDtoOnboardingStatus;
 }

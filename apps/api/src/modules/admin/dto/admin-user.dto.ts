@@ -69,11 +69,6 @@ export class UpdateAdminUserDto extends PartialType(
   @IsOptional()
   @IsString()
   override timezone?: string;
-
-  @ApiProperty({ required: false, enum: OnboardingStatus })
-  @IsOptional()
-  @IsIn(ONBOARDING_STATUSES)
-  onboardingStatus?: OnboardingStatus;
 }
 
 export class AdminUserQueryDto {

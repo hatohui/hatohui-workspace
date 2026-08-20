@@ -2,7 +2,10 @@
   "nav": {
     "dashboard": "Dashboard",
     "users": "Users",
-    "settings": "Settings"
+    "systemParameters": "System Parameters",
+    "settings": "Settings",
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar"
   },
   "adminGate": {
     "notAdmin": "You don't have admin access.",
@@ -27,6 +30,9 @@
     },
     "saveError": "Couldn't save that change.",
     "searchPlaceholder": "Search name or email...",
+    "selectPlaceholder": "Select...",
+    "searchOptionPlaceholder": "Search...",
+    "noMatches": "No matches.",
     "allStatuses": "All statuses",
     "ascending": "Ascending",
     "descending": "Descending",
@@ -36,6 +42,11 @@
   },
   "settings": {
     "title": "Settings",
+    "placeholder": "Workspace settings are coming soon."
+  },
+  "systemParameters": {
+    "title": "System Parameters",
+    "addRow": "Add parameter",
     "columns": {
       "type": "Type",
       "scope": "Scope",

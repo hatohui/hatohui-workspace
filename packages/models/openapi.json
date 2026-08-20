@@ -1467,6 +1467,46 @@
         "tags": [
           "admin"
         ]
+      },
+      "post": {
+        "operationId": "adminCreateSystemParameter",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdminSystemParameterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSystemParameterDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add a new configuration value",
+        "tags": [
+          "admin"
+        ]
       }
     },
     "/admin/system-parameters/{id}": {
@@ -4267,14 +4307,6 @@
           },
           "timezone": {
             "type": "string"
-          },
-          "onboardingStatus": {
-            "type": "string",
-            "enum": [
-              "PENDING",
-              "COMPLETED",
-              "SKIPPED"
-            ]
           }
         }
       },
@@ -4311,6 +4343,33 @@
           "scope",
           "value",
           "updatedAt"
+        ]
+      },
+      "CreateAdminSystemParameterDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "WORKSHOP",
+              "ART",
+              "FRIENDS",
+              "WWW",
+              "TRAVEL"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "scope",
+          "value"
         ]
       },
       "UpdateAdminSystemParameterDto": {
