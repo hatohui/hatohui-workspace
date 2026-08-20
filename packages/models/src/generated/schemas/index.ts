@@ -8,6 +8,8 @@
 
 export * from './addConnectionsDto';
 export * from './addReferenceAssetsDto';
+export * from './adminUserDto';
+export * from './adminUserDtoOnboardingStatus';
 export * from './assetDto';
 export * from './assetsParams';
 export * from './assetsSort';
@@ -119,6 +121,8 @@ export * from './upcomingFriendSectionsDirection';
 export * from './upcomingFriendSectionsGroup';
 export * from './upcomingFriendSectionsParams';
 export * from './upcomingSectionDto';
+export * from './updateAdminUserDto';
+export * from './updateAdminUserDtoOnboardingStatus';
 export * from './updateAssetDto';
 export * from './updateCommissionProjectDto';
 export * from './updateCommissionQuoteDto';

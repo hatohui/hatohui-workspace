@@ -70,61 +70,6 @@
         ]
       }
     },
-    "/friends": {
-      "get": {
-        "operationId": "friends",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FriendDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List all friends",
-        "tags": [
-          "friends"
-        ]
-      },
-      "post": {
-        "operationId": "createFriend",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateFriendDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FriendDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create a friend",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
     "/friends/upcoming/sections": {
       "get": {
         "operationId": "upcomingFriendSections",
@@ -240,331 +185,6 @@
           }
         },
         "summary": "Friends whose birthday falls in a given calendar month",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
-    "/friends/search": {
-      "get": {
-        "operationId": "searchFriends",
-        "parameters": [
-          {
-            "name": "query",
-            "required": false,
-            "in": "query",
-            "description": "Match against friend name",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "default": 20,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedFriendsDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Paginated, name-filtered friend search (used by the onboarding connections picker)",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
-    "/friends/social-graph": {
-      "get": {
-        "operationId": "friendsSocialGraph",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SocialGraphDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Data for the social tree view",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
-    "/friends/{id}": {
-      "get": {
-        "operationId": "friend",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FriendDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get a friend by id or by the @handle of its associated account",
-        "tags": [
-          "friends"
-        ]
-      },
-      "patch": {
-        "operationId": "updateFriend",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateFriendDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FriendDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update a friend",
-        "tags": [
-          "friends"
-        ]
-      },
-      "delete": {
-        "operationId": "deleteFriend",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "summary": "Delete a friend",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
-    "/friends/{id}/avatar/versions": {
-      "get": {
-        "operationId": "friendAvatarVersions",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AvatarVersionsDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "A friend's past avatars, newest first",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
-    "/friends/{id}/avatar/versions/{versionId}/restore": {
-      "post": {
-        "operationId": "restoreFriendAvatarVersion",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "versionId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FriendDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Restore a past avatar as the current one",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
-    "/friends/{id}/connect": {
-      "post": {
-        "operationId": "connectFriend",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FriendDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Add an existing entry as someone you know",
-        "tags": [
-          "friends"
-        ]
-      },
-      "delete": {
-        "operationId": "disconnectFriend",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FriendDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Withdraw a pending request, or remove an existing connection",
-        "tags": [
-          "friends"
-        ]
-      }
-    },
-    "/friends/{id}/claim": {
-      "post": {
-        "operationId": "claimFriend",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FriendDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Claim an unassociated friend entry as your own account",
         "tags": [
           "friends"
         ]
@@ -866,6 +486,386 @@
         "summary": "Delete a settled notification. Rejects a still-pending, still-actionable connection request.",
         "tags": [
           "notifications"
+        ]
+      }
+    },
+    "/friends/social-graph": {
+      "get": {
+        "operationId": "friendsSocialGraph",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialGraphDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Data for the social tree view",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends": {
+      "get": {
+        "operationId": "friends",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FriendDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all friends",
+        "tags": [
+          "friends"
+        ]
+      },
+      "post": {
+        "operationId": "createFriend",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFriendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a friend",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/search": {
+      "get": {
+        "operationId": "searchFriends",
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against friend name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFriendsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Paginated, name-filtered friend search (used by the onboarding connections picker)",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/{id}": {
+      "get": {
+        "operationId": "friend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a friend by id or by the @handle of its associated account",
+        "tags": [
+          "friends"
+        ]
+      },
+      "patch": {
+        "operationId": "updateFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFriendDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a friend",
+        "tags": [
+          "friends"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a friend",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/{id}/avatar/versions": {
+      "get": {
+        "operationId": "friendAvatarVersions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvatarVersionsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A friend's past avatars, newest first",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/{id}/avatar/versions/{versionId}/restore": {
+      "post": {
+        "operationId": "restoreFriendAvatarVersion",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Restore a past avatar as the current one",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/{id}/connect": {
+      "post": {
+        "operationId": "connectFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add an existing entry as someone you know",
+        "tags": [
+          "friends"
+        ]
+      },
+      "delete": {
+        "operationId": "disconnectFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Withdraw a pending request, or remove an existing connection",
+        "tags": [
+          "friends"
+        ]
+      }
+    },
+    "/friends/{id}/claim": {
+      "post": {
+        "operationId": "claimFriend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Claim an unassociated friend entry as your own account",
+        "tags": [
+          "friends"
         ]
       }
     },
@@ -1279,6 +1279,91 @@
           }
         },
         "summary": "Every directory entry, ignoring visibility. Admin-only; regular listings stay visibility-filtered.",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "operationId": "adminListUsers",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminUserDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every user account, for the workspace admin dashboard",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/users/{id}": {
+      "patch": {
+        "operationId": "adminUpdateUser",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdminUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Edit a user account",
         "tags": [
           "admin"
         ]
@@ -2846,6 +2931,10 @@
   },
   "tags": [
     {
+      "name": "admin",
+      "description": ""
+    },
+    {
       "name": "auth",
       "description": ""
     },
@@ -2981,6 +3070,103 @@
           "birthdayReminderWeeksBefore"
         ]
       },
+      "UpcomingFriendDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890",
+            "description": "Unique friend id"
+          },
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "handle": {
+            "type": "string",
+            "example": "janedoe",
+            "nullable": true,
+            "description": "The associated account's global @handle, if this entry is linked to one"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "example": "http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg",
+            "nullable": true,
+            "description": "Public URL of the friend's avatar image"
+          },
+          "isViewerEntry": {
+            "type": "boolean",
+            "description": "Whether this entry is the requesting viewer's own entry"
+          },
+          "turningAge": {
+            "type": "number",
+            "example": 28,
+            "nullable": true,
+            "description": "Age the friend is turning on their next birthday, null if birthYear is unknown"
+          },
+          "nextBirthdayDate": {
+            "type": "string",
+            "example": "2026-08-14",
+            "description": "The friend's next occurring birthday date (year is the anchor year, not necessarily their birth year)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "handle",
+          "avatarUrl",
+          "isViewerEntry",
+          "turningAge",
+          "nextBirthdayDate"
+        ]
+      },
+      "UpcomingSectionDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "2026-08",
+            "description": "The section's grouping key: YYYY-MM for 'month', the age/year as a string for 'age'/'year', 'unknown' when the underlying field is unset, or 'all' for group 'none'"
+          },
+          "friends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpcomingFriendDto"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "friends"
+        ]
+      },
+      "PaginatedUpcomingSectionsDto": {
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpcomingSectionDto"
+            }
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "sections",
+          "page",
+          "pageSize",
+          "hasMore"
+        ]
+      },
       "FriendDto": {
         "type": "object",
         "properties": {
@@ -3097,103 +3283,6 @@
           "updatedAt"
         ]
       },
-      "UpcomingFriendDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "clx1234567890",
-            "description": "Unique friend id"
-          },
-          "name": {
-            "type": "string",
-            "example": "Jane Doe"
-          },
-          "handle": {
-            "type": "string",
-            "example": "janedoe",
-            "nullable": true,
-            "description": "The associated account's global @handle, if this entry is linked to one"
-          },
-          "avatarUrl": {
-            "type": "string",
-            "example": "http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg",
-            "nullable": true,
-            "description": "Public URL of the friend's avatar image"
-          },
-          "isViewerEntry": {
-            "type": "boolean",
-            "description": "Whether this entry is the requesting viewer's own entry"
-          },
-          "turningAge": {
-            "type": "number",
-            "example": 28,
-            "nullable": true,
-            "description": "Age the friend is turning on their next birthday, null if birthYear is unknown"
-          },
-          "nextBirthdayDate": {
-            "type": "string",
-            "example": "2026-08-14",
-            "description": "The friend's next occurring birthday date (year is the anchor year, not necessarily their birth year)"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "handle",
-          "avatarUrl",
-          "isViewerEntry",
-          "turningAge",
-          "nextBirthdayDate"
-        ]
-      },
-      "UpcomingSectionDto": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "example": "2026-08",
-            "description": "The section's grouping key: YYYY-MM for 'month', the age/year as a string for 'age'/'year', 'unknown' when the underlying field is unset, or 'all' for group 'none'"
-          },
-          "friends": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UpcomingFriendDto"
-            }
-          }
-        },
-        "required": [
-          "key",
-          "friends"
-        ]
-      },
-      "PaginatedUpcomingSectionsDto": {
-        "type": "object",
-        "properties": {
-          "sections": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UpcomingSectionDto"
-            }
-          },
-          "page": {
-            "type": "number"
-          },
-          "pageSize": {
-            "type": "number"
-          },
-          "hasMore": {
-            "type": "boolean",
-            "description": "Whether another page can be requested"
-          }
-        },
-        "required": [
-          "sections",
-          "page",
-          "pageSize",
-          "hasMore"
-        ]
-      },
       "BirthdaysByMonthDto": {
         "type": "object",
         "properties": {
@@ -3206,194 +3295,6 @@
         },
         "required": [
           "friends"
-        ]
-      },
-      "PaginatedFriendsDto": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FriendDto"
-            }
-          },
-          "total": {
-            "type": "number"
-          },
-          "page": {
-            "type": "number"
-          },
-          "pageSize": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "items",
-          "total",
-          "page",
-          "pageSize"
-        ]
-      },
-      "SocialGraphNodeDto": {
-        "type": "object",
-        "properties": {
-          "friend": {
-            "$ref": "#/components/schemas/FriendDto"
-          },
-          "friendsOfFriend": {
-            "description": "The next branch out in the social tree view",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FriendDto"
-            }
-          }
-        },
-        "required": [
-          "friend",
-          "friendsOfFriend"
-        ]
-      },
-      "SocialGraphDto": {
-        "type": "object",
-        "properties": {
-          "friends": {
-            "description": "The viewer's connections, for the social tree view",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SocialGraphNodeDto"
-            }
-          }
-        },
-        "required": [
-          "friends"
-        ]
-      },
-      "CreateFriendDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Jane Doe"
-          },
-          "birthYear": {
-            "type": "number",
-            "example": 1998
-          },
-          "birthMonth": {
-            "type": "number",
-            "example": 5
-          },
-          "birthDay": {
-            "type": "number",
-            "example": 14
-          },
-          "socialMedias": {
-            "type": "object",
-            "example": {
-              "Twitter": "@jane",
-              "Instagram": "@jane.doe"
-            }
-          },
-          "visibility": {
-            "type": "string",
-            "enum": [
-              "PUBLIC",
-              "FRIENDS_ONLY",
-              "NONE"
-            ],
-            "default": "PUBLIC",
-            "description": "Who can see the birthday. Ignored if no date is given."
-          },
-          "avatarKey": {
-            "type": "string",
-            "example": "uploads/clx1234567890/abc123.jpg",
-            "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "UpdateFriendDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Jane Doe"
-          },
-          "birthYear": {
-            "type": "number",
-            "example": 1998
-          },
-          "birthMonth": {
-            "type": "number",
-            "example": 5
-          },
-          "birthDay": {
-            "type": "number",
-            "example": 14
-          },
-          "socialMedias": {
-            "type": "object",
-            "example": {
-              "Twitter": "@jane",
-              "Instagram": "@jane.doe"
-            }
-          },
-          "visibility": {
-            "type": "string",
-            "enum": [
-              "PUBLIC",
-              "FRIENDS_ONLY",
-              "NONE"
-            ],
-            "default": "PUBLIC",
-            "description": "Who can see the birthday. Ignored if no date is given."
-          },
-          "avatarKey": {
-            "type": "string",
-            "example": "uploads/clx1234567890/abc123.jpg",
-            "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
-          }
-        }
-      },
-      "AvatarVersionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "clx1234567890",
-            "description": "Avatar version id"
-          },
-          "url": {
-            "type": "string",
-            "example": "http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg",
-            "description": "Public URL of this past avatar"
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2026-07-23T00:00:00.000Z"
-          }
-        },
-        "required": [
-          "id",
-          "url",
-          "createdAt"
-        ]
-      },
-      "AvatarVersionsDto": {
-        "type": "object",
-        "properties": {
-          "versions": {
-            "description": "Past avatars, newest first",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AvatarVersionDto"
-            }
-          }
-        },
-        "required": [
-          "versions"
         ]
       },
       "PublicUserDto": {
@@ -3630,6 +3531,194 @@
         },
         "required": [
           "count"
+        ]
+      },
+      "SocialGraphNodeDto": {
+        "type": "object",
+        "properties": {
+          "friend": {
+            "$ref": "#/components/schemas/FriendDto"
+          },
+          "friendsOfFriend": {
+            "description": "The next branch out in the social tree view",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendDto"
+            }
+          }
+        },
+        "required": [
+          "friend",
+          "friendsOfFriend"
+        ]
+      },
+      "SocialGraphDto": {
+        "type": "object",
+        "properties": {
+          "friends": {
+            "description": "The viewer's connections, for the social tree view",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SocialGraphNodeDto"
+            }
+          }
+        },
+        "required": [
+          "friends"
+        ]
+      },
+      "PaginatedFriendsDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "CreateFriendDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "birthYear": {
+            "type": "number",
+            "example": 1998
+          },
+          "birthMonth": {
+            "type": "number",
+            "example": 5
+          },
+          "birthDay": {
+            "type": "number",
+            "example": 14
+          },
+          "socialMedias": {
+            "type": "object",
+            "example": {
+              "Twitter": "@jane",
+              "Instagram": "@jane.doe"
+            }
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ],
+            "default": "PUBLIC",
+            "description": "Who can see the birthday. Ignored if no date is given."
+          },
+          "avatarKey": {
+            "type": "string",
+            "example": "uploads/clx1234567890/abc123.jpg",
+            "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateFriendDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "birthYear": {
+            "type": "number",
+            "example": 1998
+          },
+          "birthMonth": {
+            "type": "number",
+            "example": 5
+          },
+          "birthDay": {
+            "type": "number",
+            "example": 14
+          },
+          "socialMedias": {
+            "type": "object",
+            "example": {
+              "Twitter": "@jane",
+              "Instagram": "@jane.doe"
+            }
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ],
+            "default": "PUBLIC",
+            "description": "Who can see the birthday. Ignored if no date is given."
+          },
+          "avatarKey": {
+            "type": "string",
+            "example": "uploads/clx1234567890/abc123.jpg",
+            "description": "Object key returned by POST /images/sign, after uploading the avatar file to storage"
+          }
+        }
+      },
+      "AvatarVersionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890",
+            "description": "Avatar version id"
+          },
+          "url": {
+            "type": "string",
+            "example": "http://localhost:9000/hatohui-dev/avatars/clx1234567890/abc123.jpg",
+            "description": "Public URL of this past avatar"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "createdAt"
+        ]
+      },
+      "AvatarVersionsDto": {
+        "type": "object",
+        "properties": {
+          "versions": {
+            "description": "Past avatars, newest first",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvatarVersionDto"
+            }
+          }
+        },
+        "required": [
+          "versions"
         ]
       },
       "HealthDto": {
@@ -3930,6 +4019,81 @@
             "minimum": 0,
             "maximum": 4,
             "description": "Weeks before a birthday for the weekly reminder; 0 turns the weekly reminder off. Omitting the field leaves it untouched."
+          }
+        }
+      },
+      "AdminUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "onboardingStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "SKIPPED"
+            ]
+          },
+          "isAdmin": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "avatarUrl",
+          "timezone",
+          "onboardingStatus",
+          "isAdmin",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateAdminUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "onboardingStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "SKIPPED"
+            ]
           }
         }
       },

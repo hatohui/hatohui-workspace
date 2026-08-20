@@ -1,4 +1,5 @@
 let baseUrl: string | undefined;
+let adminKey: string | undefined;
 
 export function setApiBaseUrl(url: string) {
   baseUrl = url;
@@ -6,6 +7,10 @@ export function setApiBaseUrl(url: string) {
 
 export function getApiBaseUrl(): string {
   return getBaseUrl();
+}
+
+export function setAdminKey(key: string | undefined) {
+  adminKey = key;
 }
 
 function getBaseUrl(): string {
@@ -34,6 +39,9 @@ export const customFetch = async <T>(
   const response = await fetch(`${getBaseUrl()}${url}`, {
     ...options,
     credentials: 'include',
+    headers: adminKey
+      ? { ...options.headers, 'x-admin-key': adminKey }
+      : options.headers,
   });
 
   if (!response.ok) {

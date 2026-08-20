@@ -18,7 +18,7 @@ import { AdminService } from '@/modules/admin/services/admin.service';
   required: true,
   description: 'Admin API key — required on every route in this controller',
 })
-export class AdminController {
+export class AdminBirthdaysController {
   constructor(private readonly admin: AdminService) {}
 
   @Get('birthdays')

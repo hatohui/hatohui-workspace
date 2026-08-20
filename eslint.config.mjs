@@ -52,7 +52,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ['apps/www/**/*.{ts,tsx}', 'apps/friends/**/*.{ts,tsx}'],
+    files: [
+      'apps/www/**/*.{ts,tsx}',
+      'apps/friends/**/*.{ts,tsx}',
+      'apps/workspace/**/*.{ts,tsx}',
+    ],
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,

@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "dashboard": "Tổng quan",
+    "users": "Người dùng"
+  },
+  "adminGate": {
+    "notAdmin": "Bạn không có quyền quản trị.",
+    "keyLabel": "Mã quản trị",
+    "keyPlaceholder": "Nhập mã quản trị",
+    "keySubmit": "Tiếp tục",
+    "keyInvalid": "Mã quản trị không hợp lệ."
+  },
+  "dashboard": {
+    "title": "Tổng quan"
+  },
+  "users": {
+    "title": "Người dùng",
+    "columns": {
+      "name": "Tên",
+      "email": "Email",
+      "timezone": "Múi giờ",
+      "onboardingStatus": "Trạng thái",
+      "isAdmin": "Quản trị",
+      "createdAt": "Ngày tạo"
+    },
+    "saveError": "Không thể lưu thay đổi."
+  }
+}

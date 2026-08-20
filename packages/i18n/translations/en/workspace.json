@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Users"
+  },
+  "adminGate": {
+    "notAdmin": "You don't have admin access.",
+    "keyLabel": "Admin key",
+    "keyPlaceholder": "Enter admin key",
+    "keySubmit": "Continue",
+    "keyInvalid": "Invalid admin key."
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "users": {
+    "title": "Users",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "timezone": "Timezone",
+      "onboardingStatus": "Onboarding",
+      "isAdmin": "Admin",
+      "createdAt": "Created"
+    },
+    "saveError": "Couldn't save that change."
+  }
+}

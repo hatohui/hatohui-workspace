@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "dashboard": "概览",
+    "users": "用户"
+  },
+  "adminGate": {
+    "notAdmin": "您没有管理员权限。",
+    "keyLabel": "管理密钥",
+    "keyPlaceholder": "输入管理密钥",
+    "keySubmit": "继续",
+    "keyInvalid": "管理密钥无效。"
+  },
+  "dashboard": {
+    "title": "概览"
+  },
+  "users": {
+    "title": "用户",
+    "columns": {
+      "name": "姓名",
+      "email": "邮箱",
+      "timezone": "时区",
+      "onboardingStatus": "状态",
+      "isAdmin": "管理员",
+      "createdAt": "创建时间"
+    },
+    "saveError": "无法保存该更改。"
+  }
+}

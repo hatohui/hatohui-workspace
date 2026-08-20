@@ -13,4 +13,9 @@ export * from './generated/commissions/commissions';
 export * from './generated/commission-pricing/commission-pricing';
 export * from './generated/projects/projects';
 export * from './generated/schemas';
-export { setApiBaseUrl, getApiBaseUrl, ApiError } from './mutator/custom-fetch';
+export {
+  setApiBaseUrl,
+  getApiBaseUrl,
+  setAdminKey,
+  ApiError,
+} from './mutator/custom-fetch';

@@ -4,7 +4,9 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   CORS_ORIGIN: z
     .string()
-    .default('http://localhost:5173,http://localhost:5174')
+    .default(
+      'http://localhost:5173,http://localhost:5174,http://localhost:5177',
+    )
     .transform((value) => value.split(',').map((origin) => origin.trim())),
   DATABASE_URL: z.url(),
   REDIS_URL: z.url(),

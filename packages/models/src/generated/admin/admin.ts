@@ -6,22 +6,28 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  FriendDto
+  AdminUserDto,
+  FriendDto,
+  UpdateAdminUserDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -158,3 +164,198 @@ export function useAdminBirthdays<TData = Awaited<ReturnType<typeof adminBirthda
 
 
 
+export type adminListUsersResponse200 = {
+  data: AdminUserDto[]
+  status: 200
+}
+
+export type adminListUsersResponseSuccess = (adminListUsersResponse200) & {
+  headers: Headers;
+};
+;
+
+export type adminListUsersResponse = (adminListUsersResponseSuccess)
+
+export const getAdminListUsersUrl = () => {
+
+
+
+
+  return `/admin/users`
+}
+
+/**
+ * @summary Every user account, for the workspace admin dashboard
+ */
+export const adminListUsers = async ( options?: RequestInit): Promise<adminListUsersResponse> => {
+
+  return customFetch<adminListUsersResponse>(getAdminListUsersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAdminListUsersQueryKey = () => {
+    return [
+    `/admin/users`
+    ] as const;
+    }
+
+
+export const getAdminListUsersQueryOptions = <TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAdminListUsersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminListUsers>>> = ({ signal }) => adminListUsers({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AdminListUsersQueryResult = NonNullable<Awaited<ReturnType<typeof adminListUsers>>>
+export type AdminListUsersQueryError = unknown
+
+
+export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminListUsers>>,
+          TError,
+          Awaited<ReturnType<typeof adminListUsers>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminListUsers>>,
+          TError,
+          Awaited<ReturnType<typeof adminListUsers>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Every user account, for the workspace admin dashboard
+ */
+
+export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getAdminListUsersQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type adminUpdateUserResponse200 = {
+  data: AdminUserDto
+  status: 200
+}
+
+export type adminUpdateUserResponseSuccess = (adminUpdateUserResponse200) & {
+  headers: Headers;
+};
+;
+
+export type adminUpdateUserResponse = (adminUpdateUserResponseSuccess)
+
+export const getAdminUpdateUserUrl = (id: string,) => {
+
+
+
+
+  return `/admin/users/${id}`
+}
+
+/**
+ * @summary Edit a user account
+ */
+export const adminUpdateUser = async (id: string,
+    updateAdminUserDto: UpdateAdminUserDto, options?: RequestInit): Promise<adminUpdateUserResponse> => {
+
+  return customFetch<adminUpdateUserResponse>(getAdminUpdateUserUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateAdminUserDto)
+  }
+);}
+
+
+
+
+
+export const getAdminUpdateUserMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateUser>>, TError,{id: string;data: UpdateAdminUserDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminUpdateUser>>, TError,{id: string;data: UpdateAdminUserDto}, TContext> => {
+
+const mutationKey = ['adminUpdateUser'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminUpdateUser>>, {id: string;data: UpdateAdminUserDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  adminUpdateUser(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminUpdateUserMutationResult = NonNullable<Awaited<ReturnType<typeof adminUpdateUser>>>
+    export type AdminUpdateUserMutationBody = UpdateAdminUserDto
+    export type AdminUpdateUserMutationError = unknown
+
+    /**
+ * @summary Edit a user account
+ */
+export const useAdminUpdateUser = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateUser>>, TError,{id: string;data: UpdateAdminUserDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof adminUpdateUser>>,
+        TError,
+        {id: string;data: UpdateAdminUserDto},
+        TContext
+      > => {
+      return useMutation(getAdminUpdateUserMutationOptions(options), queryClient);
+    }

@@ -15,4 +15,6 @@ export * from './components/ui/tooltip';
 export * from './components/ui/loading-dots';
 export * from './components/ui/spinner';
 export * from './components/ui/error-state';
+export * from './components/ui/editable-cell';
+export * from './components/ui/editable-data-table';
 export * from './lib/utils';
