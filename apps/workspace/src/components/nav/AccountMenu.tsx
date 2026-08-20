@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { useAuth } from '@hatohui/libs';
+import { useAuth, useConfirmLogout } from '@hatohui/libs';
 import {
   Avatar,
+  ConfirmDialog,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -17,7 +18,9 @@ interface AccountMenuProps {
 
 function AccountMenu({ collapsed }: AccountMenuProps) {
   const { t } = useTranslation('workspace');
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  const { confirming, requestLogout, cancelLogout, confirmLogout } =
+    useConfirmLogout();
   const { clear } = useAdminKey();
   const LogoutIcon = navIcons.logout;
 
@@ -47,10 +50,7 @@ function AccountMenu({ collapsed }: AccountMenuProps) {
     <button
       type="button"
       aria-label={t('adminGate.logout')}
-      onClick={() => {
-        clear();
-        void logout();
-      }}
+      onClick={requestLogout}
       className={cn(
         'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10',
         collapsed && 'justify-center px-2',
@@ -61,11 +61,27 @@ function AccountMenu({ collapsed }: AccountMenuProps) {
     </button>
   );
 
+  const confirmDialog = (
+    <ConfirmDialog
+      open={confirming}
+      title={t('common:auth.logoutConfirmTitle')}
+      description={t('common:auth.logoutConfirmDescription')}
+      cancelLabel={t('common:auth.logoutConfirmCancel')}
+      confirmLabel={t('common:auth.logoutConfirmSubmit')}
+      onCancel={cancelLogout}
+      onConfirm={() => {
+        clear();
+        void confirmLogout();
+      }}
+    />
+  );
+
   if (!collapsed) {
     return (
       <div className="flex flex-col gap-1 border-t border-border p-2">
         {profile}
         {logoutButton}
+        {confirmDialog}
       </div>
     );
   }
@@ -80,6 +96,7 @@ function AccountMenu({ collapsed }: AccountMenuProps) {
         <TooltipTrigger asChild>{logoutButton}</TooltipTrigger>
         <TooltipContent side="right">{t('adminGate.logout')}</TooltipContent>
       </Tooltip>
+      {confirmDialog}
     </div>
   );
 }

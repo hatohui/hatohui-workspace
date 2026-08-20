@@ -7,7 +7,13 @@
     "label": "Đổi ngôn ngữ"
   },
   "auth": {
-    "login": "Đăng nhập"
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "logoutConfirmTitle": "Đăng xuất?",
+    "logoutConfirmDescription": "Bạn sẽ cần đăng nhập lại để tiếp tục.",
+    "logoutConfirmCancel": "Hủy",
+    "logoutConfirmSubmit": "Đăng xuất",
+    "loggedInAs": "Đăng nhập với tên {{name}}"
   },
   "errors": {
     "unauthorized": "Bạn cần đăng nhập để thực hiện thao tác này.",

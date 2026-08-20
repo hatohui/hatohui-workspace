@@ -14,9 +14,13 @@
     "@hatohui/i18n": "workspace:*",
     "@hatohui/libs": "workspace:*",
     "@hatohui/models": "workspace:*",
+    "@hatohui/ui": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-query": "^5.101.4",
+    "gsap": "^3.15.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",

@@ -7,7 +7,13 @@
     "label": "切换语言"
   },
   "auth": {
-    "login": "登录"
+    "login": "登录",
+    "logout": "退出登录",
+    "logoutConfirmTitle": "退出登录？",
+    "logoutConfirmDescription": "您需要重新登录才能继续。",
+    "logoutConfirmCancel": "取消",
+    "logoutConfirmSubmit": "退出登录",
+    "loggedInAs": "已登录为 {{name}}"
   },
   "errors": {
     "unauthorized": "请先登录后再进行此操作。",

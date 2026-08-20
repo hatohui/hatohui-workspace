@@ -7,7 +7,13 @@
     "label": "言語を切り替える"
   },
   "auth": {
-    "login": "ログイン"
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "logoutConfirmTitle": "ログアウトしますか？",
+    "logoutConfirmDescription": "続けるには再度ログインが必要です。",
+    "logoutConfirmCancel": "キャンセル",
+    "logoutConfirmSubmit": "ログアウト",
+    "loggedInAs": "{{name}} としてログイン中"
   },
   "errors": {
     "unauthorized": "この操作を行うにはサインインが必要です。",

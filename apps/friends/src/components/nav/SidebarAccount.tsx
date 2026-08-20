@@ -4,12 +4,18 @@ import {
   Avatar,
   Button,
   cn,
+  ConfirmDialog,
   Spinner,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@hatohui/ui';
-import { GoogleIcon, useAuth, useGoogleAuth } from '@hatohui/libs';
+import {
+  GoogleIcon,
+  useAuth,
+  useConfirmLogout,
+  useGoogleAuth,
+} from '@hatohui/libs';
 import { navIcons } from '../../constants/navIcons';
 import routes from '../../constants/routes';
 import NavSlotPlaceholder from './NavSlotPlaceholder';
@@ -20,7 +26,9 @@ interface Props {
 
 function SidebarAccount({ expanded }: Props) {
   const { t } = useTranslation();
-  const { user, isLoading, isLoggingIn, logout } = useAuth();
+  const { user, isLoading, isLoggingIn } = useAuth();
+  const { confirming, requestLogout, cancelLogout, confirmLogout } =
+    useConfirmLogout();
   const login = useGoogleAuth();
   const LogoutIcon = navIcons.logout;
 
@@ -60,6 +68,15 @@ function SidebarAccount({ expanded }: Props) {
 
   return (
     <>
+      <ConfirmDialog
+        open={confirming}
+        title={t('common:auth.logoutConfirmTitle')}
+        description={t('common:auth.logoutConfirmDescription')}
+        cancelLabel={t('common:auth.logoutConfirmCancel')}
+        confirmLabel={t('common:auth.logoutConfirmSubmit')}
+        onCancel={cancelLogout}
+        onConfirm={() => void confirmLogout()}
+      />
       <Tooltip>
         <TooltipTrigger asChild>
           <Link
@@ -97,7 +114,7 @@ function SidebarAccount({ expanded }: Props) {
             size={expanded ? 'sm' : 'icon'}
             className={`rounded-full text-destructive hover:text-destructive ${expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''}`}
             aria-label={t('navigation.logout')}
-            onClick={() => void logout()}
+            onClick={requestLogout}
           >
             <LogoutIcon className="size-4 shrink-0" />
             {expanded && (

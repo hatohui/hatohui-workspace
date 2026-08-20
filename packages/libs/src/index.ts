@@ -1,4 +1,6 @@
 export * from './auth/AuthContext';
+export * from './auth/useConfirmLogout';
+export * from './auth/AccountBar';
 export * from './auth/GoogleLoginButton';
 export * from './auth/GoogleLoginIconButton';
 export * from './auth/GoogleIcon';

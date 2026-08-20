@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { Avatar, Button, LoadingDots } from '@hatohui/ui';
-import { useAuth } from '@hatohui/libs';
+import { Avatar, Button, ConfirmDialog, LoadingDots } from '@hatohui/ui';
+import { useAuth, useConfirmLogout } from '@hatohui/libs';
 import { navIcons } from '../../constants/navIcons';
 import routes from '../../constants/routes';
 import { useMyEntry } from '../../hooks/useMyEntry';
@@ -10,7 +10,9 @@ import ProfileSettingsForm from './ProfileSettingsForm';
 
 function AccountView() {
   const { t } = useTranslation();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  const { confirming, requestLogout, cancelLogout, confirmLogout } =
+    useConfirmLogout();
   const { entry, isLoading } = useMyEntry();
   const SettingsIcon = navIcons.settings;
   const LogoutIcon = navIcons.logout;
@@ -54,12 +56,21 @@ function AccountView() {
         <Button
           variant="ghost"
           className="w-fit justify-start gap-2 text-destructive hover:text-destructive"
-          onClick={() => void logout()}
+          onClick={requestLogout}
         >
           <LogoutIcon className="size-4 shrink-0" />
           {t('navigation.logout')}
         </Button>
       </div>
+      <ConfirmDialog
+        open={confirming}
+        title={t('common:auth.logoutConfirmTitle')}
+        description={t('common:auth.logoutConfirmDescription')}
+        cancelLabel={t('common:auth.logoutConfirmCancel')}
+        confirmLabel={t('common:auth.logoutConfirmSubmit')}
+        onCancel={cancelLogout}
+        onConfirm={() => void confirmLogout()}
+      />
     </div>
   );
 }
