@@ -9,6 +9,7 @@ import AccountMenu from './AccountMenu';
 const NAV_ITEMS = [
   { to: '/', labelKey: 'nav.dashboard', icon: 'dashboard', end: true },
   { to: '/users', labelKey: 'nav.users', icon: 'users', end: false },
+  { to: '/profiles', labelKey: 'nav.profiles', icon: 'profiles', end: false },
   {
     to: '/system-parameters',
     labelKey: 'nav.systemParameters',

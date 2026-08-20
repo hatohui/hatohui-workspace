@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "users": "Users",
+    "profiles": "Profiles",
     "systemParameters": "System Parameters",
     "settings": "Settings",
     "expand": "Expand sidebar",
@@ -34,11 +35,24 @@
     "searchOptionPlaceholder": "Search...",
     "noMatches": "No matches.",
     "allStatuses": "All statuses",
-    "ascending": "Ascending",
-    "descending": "Descending",
+    "clearFilters": "Clear filters",
     "prevPage": "Previous",
     "nextPage": "Next",
     "pageIndicator": "Page {{page}} of {{total}}"
+  },
+  "profiles": {
+    "title": "Profiles",
+    "searchPlaceholder": "Search name or handle...",
+    "columns": {
+      "name": "Name",
+      "handle": "Handle",
+      "birthYear": "Birth year",
+      "birthMonth": "Birth month",
+      "birthDay": "Birth day",
+      "visibility": "Visibility",
+      "isAssociated": "Claimed",
+      "createdAt": "Created"
+    }
   },
   "settings": {
     "title": "Settings",
@@ -52,10 +66,6 @@
       "scope": "Scope",
       "value": "Value",
       "updatedAt": "Updated"
-    },
-    "confirmTitle": "Change admin email?",
-    "confirmDescription": "This changes who can access this admin dashboard. \"{{from}}\" will lose admin access; \"{{to}}\" will gain it.",
-    "confirmCancel": "Cancel",
-    "confirmSubmit": "Confirm change"
+    }
   }
 }

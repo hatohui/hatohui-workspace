@@ -1,28 +1,23 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Pagination, Spinner } from '@hatohui/ui';
-import { useAdminUsers } from '../../hooks/useAdminUsers';
-import UsersTable from '../../components/users/UsersTable';
-import UsersFilters from '../../components/users/UsersFilters';
-import { ADMIN_USERS_PAGE_SIZE } from '../../constants/admin';
+import { useAdminProfiles } from '../../hooks/useAdminProfiles';
+import ProfilesTable from '../../components/profiles/ProfilesTable';
+import ProfilesFilters from '../../components/profiles/ProfilesFilters';
+import { ADMIN_PROFILES_PAGE_SIZE } from '../../constants/admin';
 
-function UsersPage() {
+function ProfilesPage() {
   const { t } = useTranslation('workspace');
-  const admin = useAdminUsers();
+  const admin = useAdminProfiles();
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t('users.title')}</h1>
-      <UsersFilters
-        search={admin.search}
-        onSearchChange={admin.setSearch}
-        onboardingStatus={admin.onboardingStatus}
-        onOnboardingStatusChange={admin.setOnboardingStatus}
-      />
+      <h1 className="text-xl font-semibold">{t('profiles.title')}</h1>
+      <ProfilesFilters search={admin.search} onSearchChange={admin.setSearch} />
       {admin.isLoading ? (
         <Spinner />
       ) : (
-        <UsersTable
-          users={admin.users}
+        <ProfilesTable
+          profiles={admin.profiles}
           onCommit={admin.updateField}
           sortBy={admin.sort}
           sortDirection={admin.direction}
@@ -31,7 +26,7 @@ function UsersPage() {
       )}
       <Pagination
         page={admin.page}
-        pageSize={ADMIN_USERS_PAGE_SIZE}
+        pageSize={ADMIN_PROFILES_PAGE_SIZE}
         total={admin.total}
         hasMore={admin.hasMore}
         onPageChange={admin.setPage}
@@ -45,4 +40,4 @@ function UsersPage() {
   );
 }
 
-export default UsersPage;
+export default ProfilesPage;

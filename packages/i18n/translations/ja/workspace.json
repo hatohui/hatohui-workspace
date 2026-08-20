@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "ダッシュボード",
     "users": "ユーザー",
+    "profiles": "プロフィール",
     "systemParameters": "システムパラメータ",
     "settings": "設定",
     "expand": "サイドバーを展開",
@@ -34,11 +35,24 @@
     "searchOptionPlaceholder": "検索...",
     "noMatches": "一致する項目がありません。",
     "allStatuses": "すべての状態",
-    "ascending": "昇順",
-    "descending": "降順",
+    "clearFilters": "フィルターを解除",
     "prevPage": "前へ",
     "nextPage": "次へ",
     "pageIndicator": "{{page}} / {{total}} ページ"
+  },
+  "profiles": {
+    "title": "プロフィール",
+    "searchPlaceholder": "名前またはハンドルで検索...",
+    "columns": {
+      "name": "名前",
+      "handle": "ハンドル",
+      "birthYear": "生年",
+      "birthMonth": "生月",
+      "birthDay": "生日",
+      "visibility": "公開範囲",
+      "isAssociated": "紐付け済み",
+      "createdAt": "作成日"
+    }
   },
   "settings": {
     "title": "設定",
@@ -52,10 +66,6 @@
       "scope": "範囲",
       "value": "値",
       "updatedAt": "更新日"
-    },
-    "confirmTitle": "管理者メールを変更しますか？",
-    "confirmDescription": "この操作は管理ダッシュボードへのアクセス権を変更します。「{{from}}」は管理者権限を失い、「{{to}}」が権限を得ます。",
-    "confirmCancel": "キャンセル",
-    "confirmSubmit": "変更を確定"
+    }
   }
 }

@@ -120,7 +120,7 @@ export function EditableDataTable<T extends { id: string }>({
     >
       <table
         ref={tableRef}
-        style={{ width: table.getTotalSize(), minWidth: '100%' }}
+        style={{ width: table.getTotalSize() }}
         className="table-fixed border-collapse text-sm"
       >
         <thead className="sticky top-0 z-10">

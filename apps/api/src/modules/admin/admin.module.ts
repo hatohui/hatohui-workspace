@@ -1,28 +1,28 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '@/modules/auth/auth.module';
-import { AdminBirthdaysController } from '@/modules/admin/controllers/admin-birthdays.controller';
+import { AdminProfilesController } from '@/modules/admin/controllers/admin-profiles.controller';
 import { AdminUsersController } from '@/modules/admin/controllers/admin-users.controller';
 import { AdminSystemParametersController } from '@/modules/admin/controllers/admin-system-parameters.controller';
 import { AdminGuard } from '@/modules/admin/guards/admin.guard';
-import { AdminService } from '@/modules/admin/services/admin.service';
+import { AdminProfilesService } from '@/modules/admin/services/admin-profiles.service';
 import { AdminUsersService } from '@/modules/admin/services/admin-users.service';
 import { AdminSystemParametersService } from '@/modules/admin/services/admin-system-parameters.service';
 
 @Module({
   imports: [AuthModule],
   controllers: [
-    AdminBirthdaysController,
+    AdminProfilesController,
     AdminUsersController,
     AdminSystemParametersController,
   ],
   providers: [
-    AdminService,
+    AdminProfilesService,
     AdminUsersService,
     AdminSystemParametersService,
     AdminGuard,
   ],
   exports: [
-    AdminService,
+    AdminProfilesService,
     AdminUsersService,
     AdminSystemParametersService,
     AdminGuard,

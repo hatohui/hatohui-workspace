@@ -1249,9 +1249,9 @@
         ]
       }
     },
-    "/admin/birthdays": {
+    "/admin/profiles": {
       "get": {
-        "operationId": "adminBirthdays",
+        "operationId": "adminListProfiles",
         "parameters": [
           {
             "name": "x-admin-key",
@@ -1261,6 +1261,59 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against name or handle",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "name",
+              "type": "string",
+              "enum": [
+                "name",
+                "createdAt"
+              ]
+            }
+          },
+          {
+            "name": "direction",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "asc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 50,
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -1269,16 +1322,63 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FriendDto"
-                  }
+                  "$ref": "#/components/schemas/PaginatedAdminProfilesDto"
                 }
               }
             }
           }
         },
-        "summary": "Every directory entry, ignoring visibility. Admin-only; regular listings stay visibility-filtered.",
+        "summary": "Every directory entry (profile + birthday), ignoring visibility, paginated",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/profiles/{id}": {
+      "patch": {
+        "operationId": "adminUpdateProfile",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdminProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Edit a directory entry",
         "tags": [
           "admin"
         ]
@@ -4209,6 +4309,137 @@
             "minimum": 0,
             "maximum": 4,
             "description": "Weeks before a birthday for the weekly reminder; 0 turns the weekly reminder off. Omitting the field leaves it untouched."
+          }
+        }
+      },
+      "AdminProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "birthYear": {
+            "type": "number",
+            "nullable": true
+          },
+          "birthMonth": {
+            "type": "number",
+            "nullable": true
+          },
+          "birthDay": {
+            "type": "number",
+            "nullable": true
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ],
+            "nullable": true
+          },
+          "addedById": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAssociated": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "handle",
+          "avatarUrl",
+          "birthYear",
+          "birthMonth",
+          "birthDay",
+          "visibility",
+          "addedById",
+          "isAssociated",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedAdminProfilesDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminProfileDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "hasMore"
+        ]
+      },
+      "UpdateAdminProfileDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true
+          },
+          "birthYear": {
+            "type": "number",
+            "nullable": true
+          },
+          "birthMonth": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "birthDay": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 31
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "FRIENDS_ONLY",
+              "NONE"
+            ]
           }
         }
       },

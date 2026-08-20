@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "Tổng quan",
     "users": "Người dùng",
+    "profiles": "Hồ sơ",
     "systemParameters": "Tham số hệ thống",
     "settings": "Cài đặt",
     "expand": "Mở rộng thanh bên",
@@ -34,11 +35,24 @@
     "searchOptionPlaceholder": "Tìm kiếm...",
     "noMatches": "Không có kết quả.",
     "allStatuses": "Tất cả trạng thái",
-    "ascending": "Tăng dần",
-    "descending": "Giảm dần",
+    "clearFilters": "Xóa bộ lọc",
     "prevPage": "Trước",
     "nextPage": "Sau",
     "pageIndicator": "Trang {{page}} / {{total}}"
+  },
+  "profiles": {
+    "title": "Hồ sơ",
+    "searchPlaceholder": "Tìm theo tên hoặc handle...",
+    "columns": {
+      "name": "Tên",
+      "handle": "Handle",
+      "birthYear": "Năm sinh",
+      "birthMonth": "Tháng sinh",
+      "birthDay": "Ngày sinh",
+      "visibility": "Hiển thị",
+      "isAssociated": "Đã liên kết",
+      "createdAt": "Ngày tạo"
+    }
   },
   "settings": {
     "title": "Cài đặt",
@@ -52,10 +66,6 @@
       "scope": "Phạm vi",
       "value": "Giá trị",
       "updatedAt": "Cập nhật"
-    },
-    "confirmTitle": "Đổi email quản trị?",
-    "confirmDescription": "Thao tác này thay đổi ai có thể truy cập trang quản trị. \"{{from}}\" sẽ mất quyền quản trị; \"{{to}}\" sẽ được cấp quyền.",
-    "confirmCancel": "Hủy",
-    "confirmSubmit": "Xác nhận thay đổi"
+    }
   }
 }

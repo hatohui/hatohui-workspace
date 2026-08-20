@@ -16,3 +16,10 @@ export const ADMIN_USER_DEFAULT_SORT: AdminUserSortOption = 'createdAt';
 export const ADMIN_DEFAULT_SORT_DIRECTION: AdminSortDirection = 'desc';
 
 export const SYSTEM_PARAMETERS_CACHE_TTL_SECONDS = 300;
+
+export const ADMIN_PROFILE_SORT_OPTIONS = ['name', 'createdAt'] as const;
+export type AdminProfileSortOption =
+  (typeof ADMIN_PROFILE_SORT_OPTIONS)[number];
+
+export const ADMIN_PROFILE_DEFAULT_SORT: AdminProfileSortOption = 'name';
+export const ADMIN_PROFILE_DEFAULT_SORT_DIRECTION: AdminSortDirection = 'asc';

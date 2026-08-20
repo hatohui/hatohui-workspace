@@ -25,12 +25,15 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminListProfilesParams,
   AdminListUsersParams,
+  AdminProfileDto,
   AdminSystemParameterDto,
   AdminUserDto,
   CreateAdminSystemParameterDto,
-  FriendDto,
+  PaginatedAdminProfilesDto,
   PaginatedAdminUsersDto,
+  UpdateAdminProfileDto,
   UpdateAdminSystemParameterDto,
   UpdateAdminUserDto
 } from '../schemas';
@@ -57,32 +60,39 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type adminBirthdaysResponse200 = {
-  data: FriendDto[]
+export type adminListProfilesResponse200 = {
+  data: PaginatedAdminProfilesDto
   status: 200
 }
 
-export type adminBirthdaysResponseSuccess = (adminBirthdaysResponse200) & {
+export type adminListProfilesResponseSuccess = (adminListProfilesResponse200) & {
   headers: Headers;
 };
 ;
 
-export type adminBirthdaysResponse = (adminBirthdaysResponseSuccess)
+export type adminListProfilesResponse = (adminListProfilesResponseSuccess)
 
-export const getAdminBirthdaysUrl = () => {
+export const getAdminListProfilesUrl = (params?: AdminListProfilesParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/admin/birthdays`
+  return stringifiedParams.length > 0 ? `/admin/profiles?${stringifiedParams}` : `/admin/profiles`
 }
 
 /**
- * @summary Every directory entry, ignoring visibility. Admin-only; regular listings stay visibility-filtered.
+ * @summary Every directory entry (profile + birthday), ignoring visibility, paginated
  */
-export const adminBirthdays = async ( options?: RequestInit): Promise<adminBirthdaysResponse> => {
+export const adminListProfiles = async (params?: AdminListProfilesParams, options?: RequestInit): Promise<adminListProfilesResponse> => {
 
-  return customFetch<adminBirthdaysResponse>(getAdminBirthdaysUrl(),
+  return customFetch<adminListProfilesResponse>(getAdminListProfilesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -95,69 +105,69 @@ export const adminBirthdays = async ( options?: RequestInit): Promise<adminBirth
 
 
 
-export const getAdminBirthdaysQueryKey = () => {
+export const getAdminListProfilesQueryKey = (params?: AdminListProfilesParams,) => {
     return [
-    `/admin/birthdays`
+    `/admin/profiles`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getAdminBirthdaysQueryOptions = <TData = Awaited<ReturnType<typeof adminBirthdays>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminBirthdays>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminListProfilesQueryOptions = <TData = Awaited<ReturnType<typeof adminListProfiles>>, TError = unknown>(params?: AdminListProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getAdminBirthdaysQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getAdminListProfilesQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminBirthdays>>> = ({ signal }) => adminBirthdays({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminListProfiles>>> = ({ signal }) => adminListProfiles(params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof adminBirthdays>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof adminListProfiles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type AdminBirthdaysQueryResult = NonNullable<Awaited<ReturnType<typeof adminBirthdays>>>
-export type AdminBirthdaysQueryError = unknown
+export type AdminListProfilesQueryResult = NonNullable<Awaited<ReturnType<typeof adminListProfiles>>>
+export type AdminListProfilesQueryError = unknown
 
 
-export function useAdminBirthdays<TData = Awaited<ReturnType<typeof adminBirthdays>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminBirthdays>>, TError, TData>> & Pick<
+export function useAdminListProfiles<TData = Awaited<ReturnType<typeof adminListProfiles>>, TError = unknown>(
+ params: undefined |  AdminListProfilesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListProfiles>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminBirthdays>>,
+          Awaited<ReturnType<typeof adminListProfiles>>,
           TError,
-          Awaited<ReturnType<typeof adminBirthdays>>
+          Awaited<ReturnType<typeof adminListProfiles>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAdminBirthdays<TData = Awaited<ReturnType<typeof adminBirthdays>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminBirthdays>>, TError, TData>> & Pick<
+export function useAdminListProfiles<TData = Awaited<ReturnType<typeof adminListProfiles>>, TError = unknown>(
+ params?: AdminListProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListProfiles>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof adminBirthdays>>,
+          Awaited<ReturnType<typeof adminListProfiles>>,
           TError,
-          Awaited<ReturnType<typeof adminBirthdays>>
+          Awaited<ReturnType<typeof adminListProfiles>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAdminBirthdays<TData = Awaited<ReturnType<typeof adminBirthdays>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminBirthdays>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function useAdminListProfiles<TData = Awaited<ReturnType<typeof adminListProfiles>>, TError = unknown>(
+ params?: AdminListProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Every directory entry, ignoring visibility. Admin-only; regular listings stay visibility-filtered.
+ * @summary Every directory entry (profile + birthday), ignoring visibility, paginated
  */
 
-export function useAdminBirthdays<TData = Awaited<ReturnType<typeof adminBirthdays>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminBirthdays>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function useAdminListProfiles<TData = Awaited<ReturnType<typeof adminListProfiles>>, TError = unknown>(
+ params?: AdminListProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListProfiles>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getAdminBirthdaysQueryOptions(options)
+  const queryOptions = getAdminListProfilesQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -169,7 +179,90 @@ export function useAdminBirthdays<TData = Awaited<ReturnType<typeof adminBirthda
 
 
 
-export type adminListUsersResponse200 = {
+export type adminUpdateProfileResponse200 = {
+  data: AdminProfileDto
+  status: 200
+}
+
+export type adminUpdateProfileResponseSuccess = (adminUpdateProfileResponse200) & {
+  headers: Headers;
+};
+;
+
+export type adminUpdateProfileResponse = (adminUpdateProfileResponseSuccess)
+
+export const getAdminUpdateProfileUrl = (id: string,) => {
+
+
+
+
+  return `/admin/profiles/${id}`
+}
+
+/**
+ * @summary Edit a directory entry
+ */
+export const adminUpdateProfile = async (id: string,
+    updateAdminProfileDto: UpdateAdminProfileDto, options?: RequestInit): Promise<adminUpdateProfileResponse> => {
+
+  return customFetch<adminUpdateProfileResponse>(getAdminUpdateProfileUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateAdminProfileDto)
+  }
+);}
+
+
+
+
+
+export const getAdminUpdateProfileMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateProfile>>, TError,{id: string;data: UpdateAdminProfileDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminUpdateProfile>>, TError,{id: string;data: UpdateAdminProfileDto}, TContext> => {
+
+const mutationKey = ['adminUpdateProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminUpdateProfile>>, {id: string;data: UpdateAdminProfileDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  adminUpdateProfile(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminUpdateProfileMutationResult = NonNullable<Awaited<ReturnType<typeof adminUpdateProfile>>>
+    export type AdminUpdateProfileMutationBody = UpdateAdminProfileDto
+    export type AdminUpdateProfileMutationError = unknown
+
+    /**
+ * @summary Edit a directory entry
+ */
+export const useAdminUpdateProfile = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateProfile>>, TError,{id: string;data: UpdateAdminProfileDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof adminUpdateProfile>>,
+        TError,
+        {id: string;data: UpdateAdminProfileDto},
+        TContext
+      > => {
+      return useMutation(getAdminUpdateProfileMutationOptions(options), queryClient);
+    }
+    export type adminListUsersResponse200 = {
   data: PaginatedAdminUsersDto
   status: 200
 }

@@ -1,5 +1,5 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Input } from '@hatohui/ui';
+import { Button, Input } from '@hatohui/ui';
 import type { AdminListUsersOnboardingStatus } from '@hatohui/models';
 import { ADMIN_ONBOARDING_STATUSES } from '../../constants/admin';
 
@@ -19,6 +19,7 @@ function UsersFilters({
   onOnboardingStatusChange,
 }: UsersFiltersProps) {
   const { t } = useTranslation('workspace');
+  const hasFilters = search !== '' || onboardingStatus !== undefined;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -45,6 +46,18 @@ function UsersFilters({
           </option>
         ))}
       </select>
+      {hasFilters && (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => {
+            onSearchChange('');
+            onOnboardingStatusChange(undefined);
+          }}
+        >
+          {t('users.clearFilters')}
+        </Button>
+      )}
     </div>
   );
 }

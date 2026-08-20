@@ -18,3 +18,5 @@ export const ADMIN_ONBOARDING_STATUSES = [
 ] as const;
 
 export const ADMIN_EMAIL_CONFIG_TYPE = 'admin.email';
+
+export const ADMIN_PROFILES_PAGE_SIZE = 25;

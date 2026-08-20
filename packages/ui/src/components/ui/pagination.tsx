@@ -1,22 +1,26 @@
-import { useTranslation } from '@hatohui/i18n';
-import { Button } from '@hatohui/ui';
+import { Button } from './button';
 
-interface UsersPaginationProps {
+export interface PaginationProps {
   page: number;
   pageSize: number;
   total: number;
   hasMore: boolean;
   onPageChange: (page: number) => void;
+  prevLabel: string;
+  nextLabel: string;
+  pageIndicator: (page: number, totalPages: number) => string;
 }
 
-function UsersPagination({
+export function Pagination({
   page,
   pageSize,
   total,
   hasMore,
   onPageChange,
-}: UsersPaginationProps) {
-  const { t } = useTranslation('workspace');
+  prevLabel,
+  nextLabel,
+  pageIndicator,
+}: PaginationProps) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
@@ -27,19 +31,17 @@ function UsersPagination({
         disabled={page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
-        {t('users.prevPage')}
+        {prevLabel}
       </Button>
-      <span>{t('users.pageIndicator', { page, total: totalPages })}</span>
+      <span>{pageIndicator(page, totalPages)}</span>
       <Button
         type="button"
         variant="outline"
         disabled={!hasMore}
         onClick={() => onPageChange(page + 1)}
       >
-        {t('users.nextPage')}
+        {nextLabel}
       </Button>
     </div>
   );
 }
-
-export default UsersPagination;
