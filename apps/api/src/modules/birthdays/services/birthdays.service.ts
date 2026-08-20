@@ -39,12 +39,21 @@ export class BirthdaysService {
     private readonly viewerContext: ViewerContextService,
   ) {}
 
-  private allBirthdays(): Promise<BirthdayWithProfile[]> {
-    return this.cache.getOrSet(
+  private async allBirthdays(): Promise<BirthdayWithProfile[]> {
+    const rows = await this.cache.getOrSet(
       CACHE_KEYS.birthdaysList(),
       BIRTHDAYS_CACHE_TTL_SECONDS,
       () => this.db.birthday.findMany({ include: WITH_PROFILE }),
     );
+
+    return rows.map((row) => ({
+      ...row,
+      profile: {
+        ...row.profile,
+        createdAt: new Date(row.profile.createdAt),
+        updatedAt: new Date(row.profile.updatedAt),
+      },
+    }));
   }
 
   async findUpcomingSections(
