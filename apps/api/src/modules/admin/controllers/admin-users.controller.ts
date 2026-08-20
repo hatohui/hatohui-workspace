@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiHeader,
   ApiOkResponse,
@@ -10,8 +18,16 @@ import { AdminGuard } from '@/modules/admin/guards/admin.guard';
 import { AdminUsersService } from '@/modules/admin/services/admin-users.service';
 import {
   AdminUserDto,
+  AdminUserQueryDto,
+  PaginatedAdminUsersDto,
   UpdateAdminUserDto,
 } from '@/modules/admin/dto/admin-user.dto';
+import {
+  DEFAULT_ADMIN_PAGE,
+  DEFAULT_ADMIN_PAGE_SIZE,
+  ADMIN_USER_DEFAULT_SORT,
+  ADMIN_DEFAULT_SORT_DIRECTION,
+} from '@/modules/admin/admin.constants';
 
 @ApiTags('admin')
 @Controller('admin/users')
@@ -27,11 +43,18 @@ export class AdminUsersController {
   @Get()
   @ApiOperation({
     operationId: 'adminListUsers',
-    summary: 'Every user account, for the workspace admin dashboard',
+    summary: 'Every user account, paginated, for the workspace admin dashboard',
   })
-  @ApiOkResponse({ type: AdminUserDto, isArray: true })
-  list(): Promise<AdminUserDto[]> {
-    return this.adminUsers.list();
+  @ApiOkResponse({ type: PaginatedAdminUsersDto })
+  list(@Query() query: AdminUserQueryDto): Promise<PaginatedAdminUsersDto> {
+    return this.adminUsers.list(
+      query.query,
+      query.onboardingStatus,
+      query.sort ?? ADMIN_USER_DEFAULT_SORT,
+      query.direction ?? ADMIN_DEFAULT_SORT_DIRECTION,
+      query.page ?? DEFAULT_ADMIN_PAGE,
+      query.pageSize ?? DEFAULT_ADMIN_PAGE_SIZE,
+    );
   }
 
   @Patch(':id')

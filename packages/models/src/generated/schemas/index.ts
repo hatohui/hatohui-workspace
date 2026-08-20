@@ -8,6 +8,12 @@
 
 export * from './addConnectionsDto';
 export * from './addReferenceAssetsDto';
+export * from './adminListUsersDirection';
+export * from './adminListUsersOnboardingStatus';
+export * from './adminListUsersParams';
+export * from './adminListUsersSort';
+export * from './adminSystemParameterDto';
+export * from './adminSystemParameterDtoScope';
 export * from './adminUserDto';
 export * from './adminUserDtoOnboardingStatus';
 export * from './assetDto';
@@ -91,6 +97,7 @@ export * from './notificationsParams';
 export * from './onboardingStateDto';
 export * from './onboardingStateDtoOnboardingStatus';
 export * from './optInDto';
+export * from './paginatedAdminUsersDto';
 export * from './paginatedAssetsDto';
 export * from './paginatedCommissionsDto';
 export * from './paginatedFriendsDto';
@@ -121,6 +128,7 @@ export * from './upcomingFriendSectionsDirection';
 export * from './upcomingFriendSectionsGroup';
 export * from './upcomingFriendSectionsParams';
 export * from './upcomingSectionDto';
+export * from './updateAdminSystemParameterDto';
 export * from './updateAdminUserDto';
 export * from './updateAdminUserDtoOnboardingStatus';
 export * from './updateAssetDto';

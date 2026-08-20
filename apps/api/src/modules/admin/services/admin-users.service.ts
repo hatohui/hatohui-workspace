@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma, type OnboardingStatus, type User } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { AuthService } from '@/modules/auth/services/auth.service';
+import type {
+  AdminSortDirection,
+  AdminUserSortOption,
+} from '@/modules/admin/admin.constants';
 import {
   AdminUserDto,
+  PaginatedAdminUsersDto,
   UpdateAdminUserDto,
 } from '@/modules/admin/dto/admin-user.dto';
-import type { User } from '@prisma/client';
 
 @Injectable()
 export class AdminUsersService {
@@ -14,11 +19,45 @@ export class AdminUsersService {
     private readonly auth: AuthService,
   ) {}
 
-  async list(): Promise<AdminUserDto[]> {
-    const users = await this.db.user.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
-    return Promise.all(users.map((user) => this.toDto(user)));
+  async list(
+    query: string | undefined,
+    onboardingStatus: OnboardingStatus | undefined,
+    sort: AdminUserSortOption,
+    direction: AdminSortDirection,
+    page: number,
+    pageSize: number,
+  ): Promise<PaginatedAdminUsersDto> {
+    const where: Prisma.UserWhereInput = {
+      AND: [
+        onboardingStatus ? { onboardingStatus } : {},
+        query
+          ? {
+              OR: [
+                { name: { contains: query, mode: 'insensitive' } },
+                { email: { contains: query, mode: 'insensitive' } },
+              ],
+            }
+          : {},
+      ],
+    };
+
+    const [users, total] = await Promise.all([
+      this.db.user.findMany({
+        where,
+        orderBy: { [sort]: direction },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.db.user.count({ where }),
+    ]);
+
+    return {
+      items: await Promise.all(users.map((user) => this.toDto(user))),
+      total,
+      page,
+      pageSize,
+      hasMore: page * pageSize < total,
+    };
   }
 
   async update(id: string, dto: UpdateAdminUserDto): Promise<AdminUserDto> {

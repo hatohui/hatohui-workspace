@@ -1296,6 +1296,74 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Match against name or email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "onboardingStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "COMPLETED",
+                "SKIPPED"
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "createdAt",
+              "type": "string",
+              "enum": [
+                "name",
+                "email",
+                "timezone",
+                "createdAt"
+              ]
+            }
+          },
+          {
+            "name": "direction",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "desc",
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 50,
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -1304,16 +1372,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/AdminUserDto"
-                  }
+                  "$ref": "#/components/schemas/PaginatedAdminUsersDto"
                 }
               }
             }
           }
         },
-        "summary": "Every user account, for the workspace admin dashboard",
+        "summary": "Every user account, paginated, for the workspace admin dashboard",
         "tags": [
           "admin"
         ]
@@ -1364,6 +1429,91 @@
           }
         },
         "summary": "Edit a user account",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/system-parameters": {
+      "get": {
+        "operationId": "adminListSystemParameters",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminSystemParameterDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every app-wide configuration value, for the workspace admin dashboard",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/system-parameters/{id}": {
+      "patch": {
+        "operationId": "adminUpdateSystemParameter",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdminSystemParameterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSystemParameterDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Edit a configuration value",
         "tags": [
           "admin"
         ]
@@ -4071,6 +4221,37 @@
           "updatedAt"
         ]
       },
+      "PaginatedAdminUsersDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminUserDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "hasMore"
+        ]
+      },
       "UpdateAdminUserDto": {
         "type": "object",
         "properties": {
@@ -4096,6 +4277,52 @@
             ]
           }
         }
+      },
+      "AdminSystemParameterDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "WORKSHOP",
+              "ART",
+              "FRIENDS",
+              "WWW",
+              "TRAVEL"
+            ]
+          },
+          "value": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "scope",
+          "value",
+          "updatedAt"
+        ]
+      },
+      "UpdateAdminSystemParameterDto": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ]
       },
       "BirthdayEvaluationDto": {
         "type": "object",

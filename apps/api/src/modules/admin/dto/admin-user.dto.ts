@@ -1,6 +1,20 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, IsIn } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsIn,
+  IsInt,
+  Min,
+} from 'class-validator';
 import { OnboardingStatus } from '@prisma/client';
+import {
+  ADMIN_USER_SORT_OPTIONS,
+  ADMIN_SORT_DIRECTIONS,
+  type AdminUserSortOption,
+  type AdminSortDirection,
+} from '@/modules/admin/admin.constants';
 
 const ONBOARDING_STATUSES = Object.values(OnboardingStatus);
 
@@ -60,4 +74,68 @@ export class UpdateAdminUserDto extends PartialType(
   @IsOptional()
   @IsIn(ONBOARDING_STATUSES)
   onboardingStatus?: OnboardingStatus;
+}
+
+export class AdminUserQueryDto {
+  @ApiProperty({
+    required: false,
+    description: 'Match against name or email',
+  })
+  @IsOptional()
+  @IsString()
+  query?: string;
+
+  @ApiProperty({ required: false, enum: OnboardingStatus })
+  @IsOptional()
+  @IsIn(ONBOARDING_STATUSES)
+  onboardingStatus?: OnboardingStatus;
+
+  @ApiProperty({
+    enum: ADMIN_USER_SORT_OPTIONS,
+    required: false,
+    default: 'createdAt',
+  })
+  @IsOptional()
+  @IsIn(ADMIN_USER_SORT_OPTIONS)
+  sort?: AdminUserSortOption;
+
+  @ApiProperty({
+    enum: ADMIN_SORT_DIRECTIONS,
+    required: false,
+    default: 'desc',
+  })
+  @IsOptional()
+  @IsIn(ADMIN_SORT_DIRECTIONS)
+  direction?: AdminSortDirection;
+
+  @ApiProperty({ required: false, default: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number;
+
+  @ApiProperty({ required: false, default: 50 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  pageSize?: number;
+}
+
+export class PaginatedAdminUsersDto {
+  @ApiProperty({ type: AdminUserDto, isArray: true })
+  items!: AdminUserDto[];
+
+  @ApiProperty()
+  total!: number;
+
+  @ApiProperty()
+  page!: number;
+
+  @ApiProperty()
+  pageSize!: number;
+
+  @ApiProperty({ description: 'Whether another page can be requested' })
+  hasMore!: boolean;
 }

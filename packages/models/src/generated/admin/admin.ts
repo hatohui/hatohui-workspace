@@ -25,8 +25,12 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminListUsersParams,
+  AdminSystemParameterDto,
   AdminUserDto,
   FriendDto,
+  PaginatedAdminUsersDto,
+  UpdateAdminSystemParameterDto,
   UpdateAdminUserDto
 } from '../schemas';
 
@@ -165,7 +169,7 @@ export function useAdminBirthdays<TData = Awaited<ReturnType<typeof adminBirthda
 
 
 export type adminListUsersResponse200 = {
-  data: AdminUserDto[]
+  data: PaginatedAdminUsersDto
   status: 200
 }
 
@@ -176,20 +180,27 @@ export type adminListUsersResponseSuccess = (adminListUsersResponse200) & {
 
 export type adminListUsersResponse = (adminListUsersResponseSuccess)
 
-export const getAdminListUsersUrl = () => {
+export const getAdminListUsersUrl = (params?: AdminListUsersParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/admin/users`
+  return stringifiedParams.length > 0 ? `/admin/users?${stringifiedParams}` : `/admin/users`
 }
 
 /**
- * @summary Every user account, for the workspace admin dashboard
+ * @summary Every user account, paginated, for the workspace admin dashboard
  */
-export const adminListUsers = async ( options?: RequestInit): Promise<adminListUsersResponse> => {
+export const adminListUsers = async (params?: AdminListUsersParams, options?: RequestInit): Promise<adminListUsersResponse> => {
 
-  return customFetch<adminListUsersResponse>(getAdminListUsersUrl(),
+  return customFetch<adminListUsersResponse>(getAdminListUsersUrl(params),
   {
     ...options,
     method: 'GET'
@@ -202,23 +213,23 @@ export const adminListUsers = async ( options?: RequestInit): Promise<adminListU
 
 
 
-export const getAdminListUsersQueryKey = () => {
+export const getAdminListUsersQueryKey = (params?: AdminListUsersParams,) => {
     return [
-    `/admin/users`
+    `/admin/users`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getAdminListUsersQueryOptions = <TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getAdminListUsersQueryOptions = <TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(params?: AdminListUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getAdminListUsersQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getAdminListUsersQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminListUsers>>> = ({ signal }) => adminListUsers({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminListUsers>>> = ({ signal }) => adminListUsers(params, { signal, ...requestOptions });
 
 
 
@@ -232,7 +243,7 @@ export type AdminListUsersQueryError = unknown
 
 
 export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>> & Pick<
+ params: undefined |  AdminListUsersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof adminListUsers>>,
           TError,
@@ -242,7 +253,7 @@ export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUse
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>> & Pick<
+ params?: AdminListUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof adminListUsers>>,
           TError,
@@ -252,19 +263,19 @@ export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUse
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: AdminListUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Every user account, for the workspace admin dashboard
+ * @summary Every user account, paginated, for the workspace admin dashboard
  */
 
 export function useAdminListUsers<TData = Awaited<ReturnType<typeof adminListUsers>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: AdminListUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getAdminListUsersQueryOptions(options)
+  const queryOptions = getAdminListUsersQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -358,4 +369,199 @@ export const useAdminUpdateUser = <TError = unknown,
         TContext
       > => {
       return useMutation(getAdminUpdateUserMutationOptions(options), queryClient);
+    }
+    export type adminListSystemParametersResponse200 = {
+  data: AdminSystemParameterDto[]
+  status: 200
+}
+
+export type adminListSystemParametersResponseSuccess = (adminListSystemParametersResponse200) & {
+  headers: Headers;
+};
+;
+
+export type adminListSystemParametersResponse = (adminListSystemParametersResponseSuccess)
+
+export const getAdminListSystemParametersUrl = () => {
+
+
+
+
+  return `/admin/system-parameters`
+}
+
+/**
+ * @summary Every app-wide configuration value, for the workspace admin dashboard
+ */
+export const adminListSystemParameters = async ( options?: RequestInit): Promise<adminListSystemParametersResponse> => {
+
+  return customFetch<adminListSystemParametersResponse>(getAdminListSystemParametersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAdminListSystemParametersQueryKey = () => {
+    return [
+    `/admin/system-parameters`
+    ] as const;
+    }
+
+
+export const getAdminListSystemParametersQueryOptions = <TData = Awaited<ReturnType<typeof adminListSystemParameters>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListSystemParameters>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAdminListSystemParametersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof adminListSystemParameters>>> = ({ signal }) => adminListSystemParameters({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof adminListSystemParameters>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AdminListSystemParametersQueryResult = NonNullable<Awaited<ReturnType<typeof adminListSystemParameters>>>
+export type AdminListSystemParametersQueryError = unknown
+
+
+export function useAdminListSystemParameters<TData = Awaited<ReturnType<typeof adminListSystemParameters>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListSystemParameters>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminListSystemParameters>>,
+          TError,
+          Awaited<ReturnType<typeof adminListSystemParameters>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAdminListSystemParameters<TData = Awaited<ReturnType<typeof adminListSystemParameters>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListSystemParameters>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof adminListSystemParameters>>,
+          TError,
+          Awaited<ReturnType<typeof adminListSystemParameters>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAdminListSystemParameters<TData = Awaited<ReturnType<typeof adminListSystemParameters>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListSystemParameters>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Every app-wide configuration value, for the workspace admin dashboard
+ */
+
+export function useAdminListSystemParameters<TData = Awaited<ReturnType<typeof adminListSystemParameters>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof adminListSystemParameters>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getAdminListSystemParametersQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type adminUpdateSystemParameterResponse200 = {
+  data: AdminSystemParameterDto
+  status: 200
+}
+
+export type adminUpdateSystemParameterResponseSuccess = (adminUpdateSystemParameterResponse200) & {
+  headers: Headers;
+};
+;
+
+export type adminUpdateSystemParameterResponse = (adminUpdateSystemParameterResponseSuccess)
+
+export const getAdminUpdateSystemParameterUrl = (id: string,) => {
+
+
+
+
+  return `/admin/system-parameters/${id}`
+}
+
+/**
+ * @summary Edit a configuration value
+ */
+export const adminUpdateSystemParameter = async (id: string,
+    updateAdminSystemParameterDto: UpdateAdminSystemParameterDto, options?: RequestInit): Promise<adminUpdateSystemParameterResponse> => {
+
+  return customFetch<adminUpdateSystemParameterResponse>(getAdminUpdateSystemParameterUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateAdminSystemParameterDto)
+  }
+);}
+
+
+
+
+
+export const getAdminUpdateSystemParameterMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateSystemParameter>>, TError,{id: string;data: UpdateAdminSystemParameterDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminUpdateSystemParameter>>, TError,{id: string;data: UpdateAdminSystemParameterDto}, TContext> => {
+
+const mutationKey = ['adminUpdateSystemParameter'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminUpdateSystemParameter>>, {id: string;data: UpdateAdminSystemParameterDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  adminUpdateSystemParameter(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminUpdateSystemParameterMutationResult = NonNullable<Awaited<ReturnType<typeof adminUpdateSystemParameter>>>
+    export type AdminUpdateSystemParameterMutationBody = UpdateAdminSystemParameterDto
+    export type AdminUpdateSystemParameterMutationError = unknown
+
+    /**
+ * @summary Edit a configuration value
+ */
+export const useAdminUpdateSystemParameter = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminUpdateSystemParameter>>, TError,{id: string;data: UpdateAdminSystemParameterDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof adminUpdateSystemParameter>>,
+        TError,
+        {id: string;data: UpdateAdminSystemParameterDto},
+        TContext
+      > => {
+      return useMutation(getAdminUpdateSystemParameterMutationOptions(options), queryClient);
     }

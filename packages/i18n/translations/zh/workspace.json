@@ -1,14 +1,16 @@
 {
   "nav": {
     "dashboard": "概览",
-    "users": "用户"
+    "users": "用户",
+    "settings": "设置"
   },
   "adminGate": {
     "notAdmin": "您没有管理员权限。",
     "keyLabel": "管理密钥",
     "keyPlaceholder": "输入管理密钥",
     "keySubmit": "继续",
-    "keyInvalid": "管理密钥无效。"
+    "keyInvalid": "管理密钥无效。",
+    "logout": "退出登录"
   },
   "dashboard": {
     "title": "概览"
@@ -23,6 +25,26 @@
       "isAdmin": "管理员",
       "createdAt": "创建时间"
     },
-    "saveError": "无法保存该更改。"
+    "saveError": "无法保存该更改。",
+    "searchPlaceholder": "搜索姓名或邮箱...",
+    "allStatuses": "所有状态",
+    "ascending": "升序",
+    "descending": "降序",
+    "prevPage": "上一页",
+    "nextPage": "下一页",
+    "pageIndicator": "第 {{page}} / {{total}} 页"
+  },
+  "settings": {
+    "title": "设置",
+    "columns": {
+      "type": "类型",
+      "scope": "范围",
+      "value": "值",
+      "updatedAt": "更新时间"
+    },
+    "confirmTitle": "更改管理员邮箱？",
+    "confirmDescription": "此操作将更改谁可以访问此管理后台。“{{from}}” 将失去管理员权限；“{{to}}” 将获得权限。",
+    "confirmCancel": "取消",
+    "confirmSubmit": "确认更改"
   }
 }

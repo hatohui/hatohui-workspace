@@ -1,14 +1,16 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "users": "Users"
+    "users": "Users",
+    "settings": "Settings"
   },
   "adminGate": {
     "notAdmin": "You don't have admin access.",
     "keyLabel": "Admin key",
     "keyPlaceholder": "Enter admin key",
     "keySubmit": "Continue",
-    "keyInvalid": "Invalid admin key."
+    "keyInvalid": "Invalid admin key.",
+    "logout": "Log out"
   },
   "dashboard": {
     "title": "Dashboard"
@@ -23,6 +25,26 @@
       "isAdmin": "Admin",
       "createdAt": "Created"
     },
-    "saveError": "Couldn't save that change."
+    "saveError": "Couldn't save that change.",
+    "searchPlaceholder": "Search name or email...",
+    "allStatuses": "All statuses",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "pageIndicator": "Page {{page}} of {{total}}"
+  },
+  "settings": {
+    "title": "Settings",
+    "columns": {
+      "type": "Type",
+      "scope": "Scope",
+      "value": "Value",
+      "updatedAt": "Updated"
+    },
+    "confirmTitle": "Change admin email?",
+    "confirmDescription": "This changes who can access this admin dashboard. \"{{from}}\" will lose admin access; \"{{to}}\" will gain it.",
+    "confirmCancel": "Cancel",
+    "confirmSubmit": "Confirm change"
   }
 }

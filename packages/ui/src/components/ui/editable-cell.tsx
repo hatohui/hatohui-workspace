@@ -32,7 +32,9 @@ export function EditableCell({
   }, [editing]);
 
   if (!editable) {
-    return <div className="px-3 py-2 text-sm">{displayValue ?? value}</div>;
+    return (
+      <div className="truncate px-3 py-2 text-sm">{displayValue ?? value}</div>
+    );
   }
 
   const commit = (next: string) => {
@@ -49,7 +51,7 @@ export function EditableCell({
           setEditing(true);
         }}
         className={cn(
-          'w-full px-3 py-2 text-left text-sm outline-none',
+          'w-full truncate px-3 py-2 text-left text-sm outline-none',
           'hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
         )}
       >

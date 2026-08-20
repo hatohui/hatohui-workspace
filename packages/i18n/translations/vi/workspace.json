@@ -1,14 +1,16 @@
 {
   "nav": {
     "dashboard": "Tổng quan",
-    "users": "Người dùng"
+    "users": "Người dùng",
+    "settings": "Cài đặt"
   },
   "adminGate": {
     "notAdmin": "Bạn không có quyền quản trị.",
     "keyLabel": "Mã quản trị",
     "keyPlaceholder": "Nhập mã quản trị",
     "keySubmit": "Tiếp tục",
-    "keyInvalid": "Mã quản trị không hợp lệ."
+    "keyInvalid": "Mã quản trị không hợp lệ.",
+    "logout": "Đăng xuất"
   },
   "dashboard": {
     "title": "Tổng quan"
@@ -23,6 +25,26 @@
       "isAdmin": "Quản trị",
       "createdAt": "Ngày tạo"
     },
-    "saveError": "Không thể lưu thay đổi."
+    "saveError": "Không thể lưu thay đổi.",
+    "searchPlaceholder": "Tìm theo tên hoặc email...",
+    "allStatuses": "Tất cả trạng thái",
+    "ascending": "Tăng dần",
+    "descending": "Giảm dần",
+    "prevPage": "Trước",
+    "nextPage": "Sau",
+    "pageIndicator": "Trang {{page}} / {{total}}"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "columns": {
+      "type": "Loại",
+      "scope": "Phạm vi",
+      "value": "Giá trị",
+      "updatedAt": "Cập nhật"
+    },
+    "confirmTitle": "Đổi email quản trị?",
+    "confirmDescription": "Thao tác này thay đổi ai có thể truy cập trang quản trị. \"{{from}}\" sẽ mất quyền quản trị; \"{{to}}\" sẽ được cấp quyền.",
+    "confirmCancel": "Hủy",
+    "confirmSubmit": "Xác nhận thay đổi"
   }
 }

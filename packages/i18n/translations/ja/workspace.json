@@ -1,14 +1,16 @@
 {
   "nav": {
     "dashboard": "ダッシュボード",
-    "users": "ユーザー"
+    "users": "ユーザー",
+    "settings": "設定"
   },
   "adminGate": {
     "notAdmin": "管理者権限がありません。",
     "keyLabel": "管理者キー",
     "keyPlaceholder": "管理者キーを入力",
     "keySubmit": "続ける",
-    "keyInvalid": "管理者キーが無効です。"
+    "keyInvalid": "管理者キーが無効です。",
+    "logout": "ログアウト"
   },
   "dashboard": {
     "title": "ダッシュボード"
@@ -23,6 +25,26 @@
       "isAdmin": "管理者",
       "createdAt": "作成日"
     },
-    "saveError": "変更を保存できませんでした。"
+    "saveError": "変更を保存できませんでした。",
+    "searchPlaceholder": "名前またはメールで検索...",
+    "allStatuses": "すべての状態",
+    "ascending": "昇順",
+    "descending": "降順",
+    "prevPage": "前へ",
+    "nextPage": "次へ",
+    "pageIndicator": "{{page}} / {{total}} ページ"
+  },
+  "settings": {
+    "title": "設定",
+    "columns": {
+      "type": "種類",
+      "scope": "範囲",
+      "value": "値",
+      "updatedAt": "更新日"
+    },
+    "confirmTitle": "管理者メールを変更しますか？",
+    "confirmDescription": "この操作は管理ダッシュボードへのアクセス権を変更します。「{{from}}」は管理者権限を失い、「{{to}}」が権限を得ます。",
+    "confirmCancel": "キャンセル",
+    "confirmSubmit": "変更を確定"
   }
 }
