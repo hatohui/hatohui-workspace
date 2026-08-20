@@ -5,6 +5,7 @@ import {
   type ColumnDef,
   type ColumnSizingState,
 } from '@tanstack/react-table';
+import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EditableCell, type EditableCellOption } from './editable-cell';
 
@@ -19,6 +20,7 @@ export interface EditableColumn<T> {
   selectPlaceholder?: string;
   searchPlaceholder?: string;
   emptyLabel?: string;
+  sortable?: boolean;
 }
 
 export interface EditableDataTableProps<T extends { id: string }> {
@@ -31,6 +33,9 @@ export interface EditableDataTableProps<T extends { id: string }> {
   /** When set, renders a trailing "+ addRowLabel" row that calls this. */
   onAddRow?: () => void;
   addRowLabel?: string;
+  sortBy?: keyof T & string;
+  sortDirection?: 'asc' | 'desc';
+  onSortChange?: (key: keyof T & string) => void;
 }
 
 const DEFAULT_COLUMN_WIDTH = 160;
@@ -54,6 +59,9 @@ export function EditableDataTable<T extends { id: string }>({
   storageKey,
   onAddRow,
   addRowLabel,
+  sortBy,
+  sortDirection,
+  onSortChange,
 }: EditableDataTableProps<T>) {
   const [columnSizing, setColumnSizing] = React.useState<ColumnSizingState>(
     () => loadStoredSizing(storageKey),
@@ -106,14 +114,14 @@ export function EditableDataTable<T extends { id: string }>({
   return (
     <div
       className={cn(
-        'max-h-[70vh] overflow-auto rounded-md border border-border',
+        'max-h-[70vh] w-full overflow-auto rounded-md border border-border',
         className,
       )}
     >
       <table
         ref={tableRef}
-        style={{ width: table.getTotalSize() }}
-        className="border-collapse text-sm"
+        style={{ width: table.getTotalSize(), minWidth: '100%' }}
+        className="table-fixed border-collapse text-sm"
       >
         <thead className="sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -121,23 +129,56 @@ export function EditableDataTable<T extends { id: string }>({
               key={headerGroup.id}
               className="border-b border-border bg-muted"
             >
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  style={{ width: header.getSize() }}
-                  className="relative truncate border-r border-border px-3 py-2 text-left font-medium last:border-r-0"
-                >
-                  {header.column.columnDef.header as string}
-                  <div
-                    onPointerDown={header.getResizeHandler()}
-                    onTouchStart={header.getResizeHandler()}
-                    className={cn(
-                      'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-ring',
-                      header.column.getIsResizing() && 'bg-ring',
+              {headerGroup.headers.map((header) => {
+                const column = columnsByKey.get(
+                  header.column.id as keyof T & string,
+                );
+                const sortable = column?.sortable && onSortChange;
+                const isSorted = sortBy === header.column.id;
+                const SortIcon = !isSorted
+                  ? ChevronsUpDown
+                  : sortDirection === 'asc'
+                    ? ArrowUp
+                    : ArrowDown;
+
+                return (
+                  <th
+                    key={header.id}
+                    style={{ width: header.getSize() }}
+                    className="relative truncate border-r border-border px-3 py-2 text-left font-medium last:border-r-0"
+                  >
+                    {sortable ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onSortChange(header.column.id as keyof T & string)
+                        }
+                        className="flex items-center gap-1 hover:text-foreground"
+                      >
+                        <span className="truncate">
+                          {header.column.columnDef.header as string}
+                        </span>
+                        <SortIcon
+                          className={cn(
+                            'size-3.5 shrink-0',
+                            !isSorted && 'opacity-50',
+                          )}
+                        />
+                      </button>
+                    ) : (
+                      (header.column.columnDef.header as string)
                     )}
-                  />
-                </th>
-              ))}
+                    <div
+                      onPointerDown={header.getResizeHandler()}
+                      onTouchStart={header.getResizeHandler()}
+                      className={cn(
+                        'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-ring',
+                        header.column.getIsResizing() && 'bg-ring',
+                      )}
+                    />
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>

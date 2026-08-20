@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import type { User } from '@prisma/client';
+import { Prisma, type User } from '@prisma/client';
 import { Database } from '@/infra/db';
+import { Cache, CACHE_KEYS } from '@/infra/cache';
 import { BirthdaysByMonthDto } from '@/modules/birthdays/dto/by-month.dto';
 import {
   PaginatedUpcomingSectionsDto,
   UpcomingSectionDto,
 } from '@/modules/birthdays/dto/upcoming.dto';
-import type {
-  SortDirection,
-  UpcomingGroupOption,
+import {
+  BIRTHDAYS_CACHE_TTL_SECONDS,
+  type SortDirection,
+  type UpcomingGroupOption,
 } from '@/modules/birthdays/birthdays.constants';
-import { birthdayVisibilityWhere } from '@/modules/profiles/utils/birthday-visibility';
+import { canViewBirthday } from '@/modules/profiles/utils/birthday-visibility';
 import {
   groupUpcomingFriends,
   matchesFriendSearch,
@@ -25,13 +27,29 @@ import {
 } from '@/modules/viewer-context/services/viewer-context.service';
 
 const WITH_PROFILE = { profile: { include: { birthday: true } } } as const;
+type BirthdayWithProfile = Prisma.BirthdayGetPayload<{
+  include: typeof WITH_PROFILE;
+}>;
 
 @Injectable()
 export class BirthdaysService {
   constructor(
     private readonly db: Database,
+    private readonly cache: Cache,
     private readonly viewerContext: ViewerContextService,
   ) {}
+
+  /// Unfiltered and shared across every viewer — visibility is applied
+  /// afterwards via `canViewBirthday`, the in-memory mirror of the same
+  /// rule `birthdayVisibilityWhere` used to apply in SQL. Invalidated
+  /// explicitly wherever a birthday is created or onboarding finishes.
+  private allBirthdays(): Promise<BirthdayWithProfile[]> {
+    return this.cache.getOrSet(
+      CACHE_KEYS.birthdaysList(),
+      BIRTHDAYS_CACHE_TTL_SECONDS,
+      () => this.db.birthday.findMany({ include: WITH_PROFILE }),
+    );
+  }
 
   async findUpcomingSections(
     query: string | undefined,
@@ -80,11 +98,13 @@ export class BirthdaysService {
     viewer: User | null,
   ): Promise<BirthdaysByMonthDto> {
     const ctx = await this.viewerContext.for(viewer);
-    const birthdays = await this.db.birthday.findMany({
-      where: { month, AND: birthdayVisibilityWhere(ctx) },
-      orderBy: { day: 'asc' },
-      include: WITH_PROFILE,
-    });
+    const all = await this.allBirthdays();
+    const birthdays = all
+      .filter(
+        (birthday) =>
+          birthday.month === month && canViewBirthday(birthday.profile, ctx),
+      )
+      .sort((a, b) => a.day - b.day);
 
     return {
       friends: birthdays
@@ -96,10 +116,10 @@ export class BirthdaysService {
   private async computeUpcoming(
     ctx: ViewerContext,
   ): Promise<UpcomingComputedFriend[]> {
-    const birthdays = await this.db.birthday.findMany({
-      where: birthdayVisibilityWhere(ctx),
-      include: WITH_PROFILE,
-    });
+    const all = await this.allBirthdays();
+    const birthdays = all.filter((birthday) =>
+      canViewBirthday(birthday.profile, ctx),
+    );
 
     const today = new Date();
     const todayMonth = today.getMonth() + 1;

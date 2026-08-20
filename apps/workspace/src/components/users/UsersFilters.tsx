@@ -1,12 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Input } from '@hatohui/ui';
 import type { AdminListUsersOnboardingStatus } from '@hatohui/models';
-import {
-  ADMIN_ONBOARDING_STATUSES,
-  ADMIN_USER_SORT_OPTIONS,
-  type AdminSortDirection,
-  type AdminUserSortOption,
-} from '../../constants/admin';
+import { ADMIN_ONBOARDING_STATUSES } from '../../constants/admin';
 
 interface UsersFiltersProps {
   search: string;
@@ -15,10 +10,6 @@ interface UsersFiltersProps {
   onOnboardingStatusChange: (
     value: AdminListUsersOnboardingStatus | undefined,
   ) => void;
-  sort: AdminUserSortOption;
-  onSortChange: (value: AdminUserSortOption) => void;
-  direction: AdminSortDirection;
-  onDirectionChange: (value: AdminSortDirection) => void;
 }
 
 function UsersFilters({
@@ -26,10 +17,6 @@ function UsersFilters({
   onSearchChange,
   onboardingStatus,
   onOnboardingStatusChange,
-  sort,
-  onSortChange,
-  direction,
-  onDirectionChange,
 }: UsersFiltersProps) {
   const { t } = useTranslation('workspace');
 
@@ -57,27 +44,6 @@ function UsersFilters({
             {status}
           </option>
         ))}
-      </select>
-      <select
-        value={sort}
-        onChange={(e) => onSortChange(e.target.value as AdminUserSortOption)}
-        className="h-9 rounded-md border border-input bg-transparent px-2 text-sm"
-      >
-        {ADMIN_USER_SORT_OPTIONS.map((option) => (
-          <option key={option} value={option}>
-            {t(`users.columns.${option}`)}
-          </option>
-        ))}
-      </select>
-      <select
-        value={direction}
-        onChange={(e) =>
-          onDirectionChange(e.target.value as AdminSortDirection)
-        }
-        className="h-9 rounded-md border border-input bg-transparent px-2 text-sm"
-      >
-        <option value="asc">{t('users.ascending')}</option>
-        <option value="desc">{t('users.descending')}</option>
       </select>
     </div>
   );

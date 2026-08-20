@@ -7,6 +7,7 @@ import {
 import { FriendVisibility, Prisma } from '@prisma/client';
 import type { User } from '@prisma/client';
 import { Database } from '@/infra/db';
+import { Cache, CACHE_KEYS } from '@/infra/cache';
 import { Storage } from '@/infra/storage';
 import { avatarKeyFor, isStagedKey } from '@/common/utils/asset-paths';
 import { AvatarsService } from '@/modules/avatars/services/avatars.service';
@@ -75,6 +76,7 @@ function birthdayWriteFor(
 export class ProfilesService {
   constructor(
     private readonly db: Database,
+    private readonly cache: Cache,
     private readonly storage: Storage,
     private readonly avatars: AvatarsService,
     private readonly connections: ConnectionsService,
@@ -125,6 +127,10 @@ export class ProfilesService {
       },
       include: PROFILE_INCLUDE,
     });
+
+    if (dto.birthMonth !== undefined && dto.birthDay !== undefined) {
+      await this.cache.invalidate(CACHE_KEYS.birthdaysList());
+    }
 
     return toFriendDto(await this.settleAvatar(profile), ctx);
   }

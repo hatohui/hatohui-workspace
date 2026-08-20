@@ -96,13 +96,12 @@ export function useAdminUsers() {
       setPage(1);
     },
     sort,
-    setSort: (value: AdminUserSortOption) => {
-      setSort(value);
-      setPage(1);
-    },
     direction,
-    setDirection: (value: AdminSortDirection) => {
-      setDirection(value);
+    onHeaderSort: (key: AdminUserSortOption) => {
+      setDirection((prevDirection) =>
+        sort === key && prevDirection === 'asc' ? 'desc' : 'asc',
+      );
+      setSort(key);
       setPage(1);
     },
   };

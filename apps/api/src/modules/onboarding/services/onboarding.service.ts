@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Database } from '@/infra/db';
+import { Cache, CACHE_KEYS } from '@/infra/cache';
 import { FriendVisibility, OnboardingStatus, type User } from '@prisma/client';
 import { ConnectionsService } from '@/modules/connections/services/connections.service';
 import { ProfilesService } from '@/modules/profiles/services/profiles.service';
@@ -22,6 +23,7 @@ import {
 export class OnboardingService {
   constructor(
     private readonly db: Database,
+    private readonly cache: Cache,
     private readonly profiles: ProfilesService,
     private readonly connections: ConnectionsService,
   ) {}
@@ -141,6 +143,7 @@ export class OnboardingService {
       where: { id: viewer.id },
       data: { onboardingStatus: OnboardingStatus.COMPLETED },
     });
+    await this.cache.invalidate(CACHE_KEYS.birthdaysList());
     return this.getState(updated);
   }
 
@@ -150,6 +153,7 @@ export class OnboardingService {
       where: { id: viewer.id },
       data: { onboardingStatus: OnboardingStatus.SKIPPED },
     });
+    await this.cache.invalidate(CACHE_KEYS.birthdaysList());
     return this.getState(updated);
   }
 

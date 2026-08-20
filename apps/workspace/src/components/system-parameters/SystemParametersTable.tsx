@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import {
-  ConfirmDialog,
-  EditableDataTable,
-  type EditableColumn,
-} from '@hatohui/ui';
+import { EditableDataTable, type EditableColumn } from '@hatohui/ui';
 import {
   AdminSystemParameterDtoScope,
   type AdminSystemParameterDto,
@@ -39,11 +35,6 @@ function SystemParametersTable({
   onCreate,
 }: SystemParametersTableProps) {
   const { t } = useTranslation('workspace');
-  const [pending, setPending] = useState<{
-    id: string;
-    from: string;
-    to: string;
-  } | null>(null);
   const [draft, setDraft] = useState<AdminSystemParameterDto | null>(null);
 
   const columns: EditableColumn<AdminSystemParameterDto>[] = [
@@ -63,7 +54,7 @@ function SystemParametersTable({
     {
       key: 'value',
       label: t('systemParameters.columns.value'),
-      editable: true,
+      editable: (row) => row.type !== ADMIN_EMAIL_CONFIG_TYPE,
       size: 300,
     },
     {
@@ -96,40 +87,18 @@ function SystemParametersTable({
     }
 
     if (key !== 'value') return;
-    const row = rows.find((r) => r.id === id);
-    if (row?.type === ADMIN_EMAIL_CONFIG_TYPE) {
-      setPending({ id, from: row.value, to: value });
-      return;
-    }
     onCommit(id, value);
   };
 
   return (
-    <>
-      <EditableDataTable
-        columns={columns}
-        rows={draft ? [...rows, draft] : rows}
-        storageKey="system-parameters"
-        onCommit={handleCommit}
-        onAddRow={() => setDraft((prev) => prev ?? blankDraft())}
-        addRowLabel={t('systemParameters.addRow')}
-      />
-      <ConfirmDialog
-        open={pending !== null}
-        title={t('systemParameters.confirmTitle')}
-        description={t('systemParameters.confirmDescription', {
-          from: pending?.from ?? '',
-          to: pending?.to ?? '',
-        })}
-        cancelLabel={t('systemParameters.confirmCancel')}
-        confirmLabel={t('systemParameters.confirmSubmit')}
-        onCancel={() => setPending(null)}
-        onConfirm={() => {
-          if (pending) onCommit(pending.id, pending.to);
-          setPending(null);
-        }}
-      />
-    </>
+    <EditableDataTable
+      columns={columns}
+      rows={draft ? [...rows, draft] : rows}
+      storageKey="system-parameters"
+      onCommit={handleCommit}
+      onAddRow={() => setDraft((prev) => prev ?? blankDraft())}
+      addRowLabel={t('systemParameters.addRow')}
+    />
   );
 }
 

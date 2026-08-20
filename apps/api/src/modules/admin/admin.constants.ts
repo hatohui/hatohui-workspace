@@ -14,3 +14,5 @@ export type AdminSortDirection = (typeof ADMIN_SORT_DIRECTIONS)[number];
 
 export const ADMIN_USER_DEFAULT_SORT: AdminUserSortOption = 'createdAt';
 export const ADMIN_DEFAULT_SORT_DIRECTION: AdminSortDirection = 'desc';
+
+export const SYSTEM_PARAMETERS_CACHE_TTL_SECONDS = 300;

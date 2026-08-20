@@ -18,15 +18,17 @@ function UsersPage() {
         onSearchChange={admin.setSearch}
         onboardingStatus={admin.onboardingStatus}
         onOnboardingStatusChange={admin.setOnboardingStatus}
-        sort={admin.sort}
-        onSortChange={admin.setSort}
-        direction={admin.direction}
-        onDirectionChange={admin.setDirection}
       />
       {admin.isLoading ? (
         <Spinner />
       ) : (
-        <UsersTable users={admin.users} onCommit={admin.updateField} />
+        <UsersTable
+          users={admin.users}
+          onCommit={admin.updateField}
+          sortBy={admin.sort}
+          sortDirection={admin.direction}
+          onSortChange={admin.onHeaderSort}
+        />
       )}
       <UsersPagination
         page={admin.page}
