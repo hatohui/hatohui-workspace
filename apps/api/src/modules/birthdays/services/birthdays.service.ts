@@ -39,10 +39,6 @@ export class BirthdaysService {
     private readonly viewerContext: ViewerContextService,
   ) {}
 
-  /// Unfiltered and shared across every viewer — visibility is applied
-  /// afterwards via `canViewBirthday`, the in-memory mirror of the same
-  /// rule `birthdayVisibilityWhere` used to apply in SQL. Invalidated
-  /// explicitly wherever a birthday is created or onboarding finishes.
   private allBirthdays(): Promise<BirthdayWithProfile[]> {
     return this.cache.getOrSet(
       CACHE_KEYS.birthdaysList(),

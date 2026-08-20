@@ -6,6 +6,4 @@ export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 
 export const UNKNOWN_GROUP_SORT_VALUE = Number.MAX_SAFE_INTEGER;
 
-/// Long-lived: invalidated explicitly on onboarding completion/skip and new
-/// birthday entries, not relied on to expire on its own.
 export const BIRTHDAYS_CACHE_TTL_SECONDS = 3600;
