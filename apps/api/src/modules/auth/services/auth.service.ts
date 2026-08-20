@@ -93,7 +93,7 @@ export class AuthService {
       CACHE_KEYS.adminEmail(),
       ADMIN_EMAIL_TTL_SECONDS,
       async () => {
-        const config = await this.db.appConfig.findUnique({
+        const config = await this.db.systemParameters.findUnique({
           where: {
             type_scope: { type: ADMIN_EMAIL_CONFIG_TYPE, scope: AppScope.ALL },
           },

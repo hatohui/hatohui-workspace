@@ -379,7 +379,7 @@ export class CommissionsService {
   private async notifyCommissionReceived(
     commission: Commission,
   ): Promise<void> {
-    const config = await this.db.appConfig.findUnique({
+    const config = await this.db.systemParameters.findUnique({
       where: {
         type_scope: {
           type: COMMISSION_RECEIVED_NOTIFICATION_CONFIG_TYPE,
@@ -407,7 +407,7 @@ export class CommissionsService {
   }
 
   private async getTemplateId(configType: string): Promise<number | null> {
-    const config = await this.db.appConfig.findUnique({
+    const config = await this.db.systemParameters.findUnique({
       where: { type_scope: { type: configType, scope: AppScope.ART } },
     });
     const parsed = config ? Number(config.value) : NaN;

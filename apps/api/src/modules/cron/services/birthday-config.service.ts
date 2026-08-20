@@ -22,7 +22,7 @@ export class BirthdayConfigService {
   constructor(private readonly db: Database) {}
 
   async load(): Promise<BirthdayConfig> {
-    const rows = await this.db.appConfig.findMany({
+    const rows = await this.db.systemParameters.findMany({
       where: {
         scope: AppScope.FRIENDS,
         type: { startsWith: 'friends.birthday.' },
@@ -53,13 +53,13 @@ export class BirthdayConfigService {
 
   private positiveInt(value: string | undefined, type: string): number | null {
     if (value === undefined) {
-      this.logger.warn(`AppConfig ${type} is not set`);
+      this.logger.warn(`SystemParameters ${type} is not set`);
       return null;
     }
     const parsed = Number(value);
     if (!Number.isInteger(parsed) || parsed <= 0) {
       this.logger.warn(
-        `Ignoring AppConfig ${type}: expected a positive integer, got "${value}"`,
+        `Ignoring SystemParameters ${type}: expected a positive integer, got "${value}"`,
       );
       return null;
     }

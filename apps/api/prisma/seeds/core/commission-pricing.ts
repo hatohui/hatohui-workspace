@@ -29,7 +29,7 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
   for (const row of TYPE_PRICING) {
     await prisma.commissionTypePricing.upsert({
       where: { type: row.type },
-      update: { basePriceCents: row.basePriceCents },
+      update: {},
       create: row,
     });
   }
@@ -37,7 +37,7 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
   for (const row of OPTION_PRICING) {
     await prisma.commissionOptionPricing.upsert({
       where: { key: row.key },
-      update: { modifierPercent: row.modifierPercent },
+      update: {},
       create: row,
     });
   }
@@ -45,7 +45,7 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
   for (const row of ADDON_PRICING) {
     await prisma.commissionAddonPricing.upsert({
       where: { key: row.key },
-      update: { minPriceCents: row.minPriceCents },
+      update: {},
       create: row,
     });
   }

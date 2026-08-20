@@ -19,7 +19,7 @@ export async function seedSocialPlatforms(prisma: PrismaClient) {
   for (const platform of socialPlatforms) {
     await prisma.socialPlatform.upsert({
       where: { key: platform.key },
-      update: platform,
+      update: {},
       create: platform,
     });
   }

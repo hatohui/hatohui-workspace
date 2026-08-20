@@ -48,7 +48,7 @@ enum AppScope {
   TRAVEL
 }
 
-model AppConfig {
+model SystemParameters {
   id        String   @id @default(cuid())
   type      String
   scope     AppScope
