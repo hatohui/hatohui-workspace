@@ -4,9 +4,10 @@ import { gsap } from 'gsap';
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 const ORBS = [
-  { color: '#cc785c', size: 520, top: '-10%', left: '-8%' },
-  { color: '#e8b568', size: 420, top: '55%', left: '65%' },
-  { color: '#b45f6c', size: 380, top: '10%', left: '70%' },
+  { color: '#e8622e', size: 520, top: '-10%', left: '-8%' },
+  { color: '#f0a828', size: 420, top: '55%', left: '65%' },
+  { color: '#c23a5e', size: 380, top: '10%', left: '70%' },
+  { color: '#3a8fc2', size: 340, top: '65%', left: '5%' },
 ];
 
 function AmbientBackground() {
@@ -52,13 +53,13 @@ function AmbientBackground() {
         <div
           key={index}
           data-orb
-          className="absolute rounded-full opacity-30 blur-3xl"
+          className="absolute rounded-full opacity-[0.22] blur-2xl"
           style={{
             width: orb.size,
             height: orb.size,
             top: orb.top,
             left: orb.left,
-            background: `radial-gradient(circle, ${orb.color} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${orb.color} 0%, transparent 65%)`,
           }}
         />
       ))}

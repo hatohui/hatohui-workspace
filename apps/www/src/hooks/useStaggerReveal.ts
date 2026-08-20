@@ -20,7 +20,6 @@ export function useStaggerReveal<T extends HTMLElement>(
 
     const context = gsap.context(() => {
       gsap.from(items, {
-        opacity: 0,
         y: 16,
         duration: 0.6,
         ease: 'power3.out',
