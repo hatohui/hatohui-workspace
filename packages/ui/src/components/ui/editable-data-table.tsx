@@ -66,7 +66,19 @@ export function EditableDataTable<T extends { id: string }>({
   const [columnSizing, setColumnSizing] = React.useState<ColumnSizingState>(
     () => loadStoredSizing(storageKey),
   );
+  const [containerWidth, setContainerWidth] = React.useState(0);
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const tableRef = React.useRef<HTMLTableElement>(null);
+
+  React.useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      setContainerWidth(entries[0].contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   const columnsByKey = React.useMemo(
     () => new Map(columns.map((column) => [column.key, column])),
     [columns],
@@ -104,6 +116,20 @@ export function EditableDataTable<T extends { id: string }>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const lastColumnKey = columns.at(-1)?.key;
+  const lastColumnSize = lastColumnKey
+    ? (table.getColumn(lastColumnKey)?.getSize() ?? 0)
+    : 0;
+  const otherColumnsSize = table.getTotalSize() - lastColumnSize;
+  const effectiveLastColumnSize = Math.max(
+    MIN_COLUMN_WIDTH,
+    containerWidth - otherColumnsSize,
+  );
+  const tableWidth = otherColumnsSize + effectiveLastColumnSize;
+
+  const getColumnWidth = (columnId: string, rawSize: number) =>
+    columnId === lastColumnKey ? effectiveLastColumnSize : rawSize;
+
   const focusCell = (rowIndex: number, colIndex: number) => {
     const target = tableRef.current?.querySelector<HTMLButtonElement>(
       `[data-row="${rowIndex}"][data-col="${colIndex}"] button`,
@@ -113,6 +139,7 @@ export function EditableDataTable<T extends { id: string }>({
 
   return (
     <div
+      ref={wrapperRef}
       className={cn(
         'max-h-[70vh] w-full overflow-auto rounded-md border border-border',
         className,
@@ -120,7 +147,7 @@ export function EditableDataTable<T extends { id: string }>({
     >
       <table
         ref={tableRef}
-        style={{ width: table.getTotalSize() }}
+        style={{ width: containerWidth ? tableWidth : table.getTotalSize() }}
         className="table-fixed border-collapse text-sm"
       >
         <thead className="sticky top-0 z-10">
@@ -144,7 +171,11 @@ export function EditableDataTable<T extends { id: string }>({
                 return (
                   <th
                     key={header.id}
-                    style={{ width: header.getSize() }}
+                    style={{
+                      width: containerWidth
+                        ? getColumnWidth(header.column.id, header.getSize())
+                        : header.getSize(),
+                    }}
                     className="relative truncate border-r border-border px-3 py-2 text-left font-medium last:border-r-0"
                   >
                     {sortable ? (
@@ -168,14 +199,16 @@ export function EditableDataTable<T extends { id: string }>({
                     ) : (
                       (header.column.columnDef.header as string)
                     )}
-                    <div
-                      onPointerDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                      className={cn(
-                        'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-ring',
-                        header.column.getIsResizing() && 'bg-ring',
-                      )}
-                    />
+                    {header.column.id !== lastColumnKey && (
+                      <div
+                        onPointerDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                        className={cn(
+                          'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-ring',
+                          header.column.getIsResizing() && 'bg-ring',
+                        )}
+                      />
+                    )}
                   </th>
                 );
               })}
@@ -195,7 +228,11 @@ export function EditableDataTable<T extends { id: string }>({
                     key={cell.id}
                     data-row={rowIndex}
                     data-col={colIndex}
-                    style={{ width: cell.column.getSize() }}
+                    style={{
+                      width: containerWidth
+                        ? getColumnWidth(cell.column.id, cell.column.getSize())
+                        : cell.column.getSize(),
+                    }}
                     className="border-r border-border p-0 last:border-r-0"
                   >
                     <EditableCell
