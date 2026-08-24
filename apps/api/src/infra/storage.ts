@@ -3,6 +3,7 @@ import {
   S3Client,
   CopyObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -39,6 +40,28 @@ export class Storage {
 
   getPublicUrl(key: string): string {
     return `${this.publicUrl}/${key}`;
+  }
+
+  async getObjectBytes(key: string): Promise<Buffer> {
+    const result = await this.client.send(
+      new GetObjectCommand({ Bucket: this.bucket, Key: key }),
+    );
+    return Buffer.from(await result.Body!.transformToByteArray());
+  }
+
+  async putObject(
+    key: string,
+    body: Buffer,
+    contentType: string,
+  ): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: body,
+        ContentType: contentType,
+      }),
+    );
   }
 
   deleteObject(key: string): Promise<unknown> {

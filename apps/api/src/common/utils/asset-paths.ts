@@ -25,6 +25,7 @@ export const STAGING_PREFIX = 'uploads';
 export const AVATARS_PREFIX = 'avatars';
 export const COMMISSIONS_PREFIX = 'art/commissions';
 export const REFERENCES_PREFIX = 'art/references';
+export const ASSET_THUMBNAILS_PREFIX = 'art/assets/thumbnails';
 
 /// Where a freshly signed upload goes before its owning record exists.
 export function stagedUploadKey(uploaderId: string, extension: string): string {
@@ -51,6 +52,11 @@ export function referenceAssetKeyFor(
   sourceKey: string,
 ): string {
   return `${REFERENCES_PREFIX}/${userId}/${fileNameOf(sourceKey)}`;
+}
+
+export function assetThumbnailKeyFor(sourceKeyOrFilename: string): string {
+  const base = fileNameOf(sourceKeyOrFilename).replace(/\.[^.]+$/, '');
+  return `${ASSET_THUMBNAILS_PREFIX}/${randomUUID()}-${base}.webp`;
 }
 
 function fileNameOf(key: string): string {

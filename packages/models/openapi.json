@@ -1755,6 +1755,49 @@
         ]
       }
     },
+    "/cron/queue/process": {
+      "post": {
+        "operationId": "processQueue",
+        "parameters": [
+          {
+            "name": "x-admin-key",
+            "in": "header",
+            "description": "Admin API key — required on every route in this controller",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASSET_THUMBNAIL"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessQueueRunDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retry due process-queue jobs, optionally scoped to one type. Idempotent.",
+        "tags": [
+          "cron"
+        ]
+      }
+    },
     "/assets": {
       "get": {
         "operationId": "assets",
@@ -4694,6 +4737,32 @@
           "deleted"
         ]
       },
+      "ProcessQueueRunDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ASSET_THUMBNAIL"
+            ],
+            "nullable": true,
+            "example": null
+          },
+          "due": {
+            "type": "number",
+            "description": "Number of jobs picked up this run"
+          },
+          "succeeded": {
+            "type": "number",
+            "description": "Number of jobs that succeeded this run"
+          }
+        },
+        "required": [
+          "type",
+          "due",
+          "succeeded"
+        ]
+      },
       "AssetDto": {
         "type": "object",
         "properties": {
@@ -4701,13 +4770,36 @@
             "type": "string",
             "example": "clx1234567890"
           },
+          "source": {
+            "type": "string",
+            "enum": [
+              "UPLOAD",
+              "EXTERNAL_URL"
+            ],
+            "example": "UPLOAD"
+          },
           "key": {
             "type": "string",
-            "example": "uploads/clx1234567890/abc123.jpg"
+            "example": "uploads/clx1234567890/abc123.jpg",
+            "nullable": true
           },
           "publicUrl": {
             "type": "string",
             "example": "http://localhost:9010/hatohui-dev/uploads/clx1234567890/abc123.jpg"
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "example": "http://localhost:9010/hatohui-dev/art/assets/thumbnails/abc.webp",
+            "nullable": true
+          },
+          "thumbnailStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "READY",
+              "FAILED"
+            ],
+            "example": "READY"
           },
           "filename": {
             "type": "string",
@@ -4758,8 +4850,11 @@
         },
         "required": [
           "id",
+          "source",
           "key",
           "publicUrl",
+          "thumbnailUrl",
+          "thumbnailStatus",
           "filename",
           "contentType",
           "size",
@@ -4808,7 +4903,12 @@
           "key": {
             "type": "string",
             "example": "uploads/clx1234567890/abc123.jpg",
-            "description": "Object key returned by POST /images/sign"
+            "description": "Object key returned by POST /images/sign. Exactly one of key/externalUrl is required."
+          },
+          "externalUrl": {
+            "type": "string",
+            "example": "https://example.com/some-art.png",
+            "description": "Externally hosted image URL, as an alternative to uploading via key. Exactly one of key/externalUrl is required."
           },
           "filename": {
             "type": "string",
@@ -4840,13 +4940,7 @@
               "type": "string"
             }
           }
-        },
-        "required": [
-          "key",
-          "filename",
-          "contentType",
-          "size"
-        ]
+        }
       },
       "UpdateAssetDto": {
         "type": "object",
@@ -5456,15 +5550,20 @@
         "type": "object",
         "properties": {
           "keys": {
+            "description": "Object keys returned by POST /images/sign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "urls": {
+            "description": "Raw external links (e.g. a Google Drive reference sheet) — stored as-is, not validated as images",
             "type": "array",
             "items": {
               "type": "string"
             }
           }
-        },
-        "required": [
-          "keys"
-        ]
+        }
       },
       "CreateClientNoteDto": {
         "type": "object",

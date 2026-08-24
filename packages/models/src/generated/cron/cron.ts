@@ -18,7 +18,9 @@ import type {
 import type {
   BirthdayCleanupDto,
   BirthdayEvaluationDto,
-  BirthdayProcessingDto
+  BirthdayProcessingDto,
+  ProcessQueueParams,
+  ProcessQueueRunDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -273,4 +275,93 @@ export const useCleanupBirthdayReminders = <TError = unknown,
         TContext
       > => {
       return useMutation(getCleanupBirthdayRemindersMutationOptions(options), queryClient);
+    }
+    export type processQueueResponse200 = {
+  data: ProcessQueueRunDto
+  status: 200
+}
+
+export type processQueueResponseSuccess = (processQueueResponse200) & {
+  headers: Headers;
+};
+;
+
+export type processQueueResponse = (processQueueResponseSuccess)
+
+export const getProcessQueueUrl = (params?: ProcessQueueParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/cron/queue/process?${stringifiedParams}` : `/cron/queue/process`
+}
+
+/**
+ * @summary Retry due process-queue jobs, optionally scoped to one type. Idempotent.
+ */
+export const processQueue = async (params?: ProcessQueueParams, options?: RequestInit): Promise<processQueueResponse> => {
+
+  return customFetch<processQueueResponse>(getProcessQueueUrl(params),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getProcessQueueMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof processQueue>>, TError,{params?: ProcessQueueParams}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof processQueue>>, TError,{params?: ProcessQueueParams}, TContext> => {
+
+const mutationKey = ['processQueue'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof processQueue>>, {params?: ProcessQueueParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  processQueue(params,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ProcessQueueMutationResult = NonNullable<Awaited<ReturnType<typeof processQueue>>>
+
+    export type ProcessQueueMutationError = unknown
+
+    /**
+ * @summary Retry due process-queue jobs, optionally scoped to one type. Idempotent.
+ */
+export const useProcessQueue = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof processQueue>>, TError,{params?: ProcessQueueParams}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof processQueue>>,
+        TError,
+        {params?: ProcessQueueParams},
+        TContext
+      > => {
+      return useMutation(getProcessQueueMutationOptions(options), queryClient);
     }

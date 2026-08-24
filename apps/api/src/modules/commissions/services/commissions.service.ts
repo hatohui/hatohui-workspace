@@ -188,7 +188,8 @@ export class CommissionsService {
       data: {
         referenceAssets: [
           ...existing.referenceAssets,
-          ...dto.keys.map((key) => this.storage.getPublicUrl(key)),
+          ...(dto.keys ?? []).map((key) => this.storage.getPublicUrl(key)),
+          ...(dto.urls ?? []),
         ],
       },
     });

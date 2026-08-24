@@ -67,15 +67,16 @@ export class AssetsController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateAssetDto,
+    @CurrentUser() actor: User,
   ): Promise<AssetDto> {
-    return this.assetsService.update(id, dto);
+    return this.assetsService.update(id, dto, actor);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ operationId: 'deleteAsset', summary: 'Delete an asset' })
-  remove(@Param('id') id: string): Promise<void> {
-    return this.assetsService.remove(id);
+  remove(@Param('id') id: string, @CurrentUser() actor: User): Promise<void> {
+    return this.assetsService.remove(id, actor);
   }
 }

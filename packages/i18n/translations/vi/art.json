@@ -35,7 +35,12 @@
       "tagsLabel": "Thẻ (cách nhau bằng dấu phẩy)",
       "tagsHint": "Gắn thẻ theo loại hoặc kiểu vẽ (vd: \"full_body\", \"sketched\") để hiển thị làm ví dụ trên form đặt vẽ.",
       "save": "Lưu",
-      "cancel": "Hủy"
+      "cancel": "Hủy",
+      "modeFile": "Tải tệp lên",
+      "modeLink": "Dán liên kết",
+      "linkLabel": "URL ảnh",
+      "linkPlaceholder": "https://...",
+      "linkFilenameLabel": "Tên tệp (không bắt buộc)"
     },
     "card": {
       "delete": "Xóa",
@@ -63,7 +68,10 @@
     "codeLabel": "Hoặc nếu bạn được cấp mã",
     "codeGo": "Xem",
     "deliverables": "Tác phẩm hoàn thiện",
-    "existingReferences": "Ảnh tham khảo đã tải lên"
+    "existingReferences": "Ảnh tham khảo đã tải lên",
+    "addLinkLabel": "Hoặc dán liên kết (vd: thư mục Google Drive)",
+    "addLinkPlaceholder": "https://...",
+    "addLink": "Thêm liên kết"
   },
   "commission": {
     "form": {

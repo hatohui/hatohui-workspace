@@ -5,11 +5,18 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { AssetDtoSource } from './assetDtoSource';
+import type { AssetDtoThumbnailStatus } from './assetDtoThumbnailStatus';
 
 export interface AssetDto {
   id: string;
-  key: string;
+  source: AssetDtoSource;
+  /** @nullable */
+  key: string | null;
   publicUrl: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  thumbnailStatus: AssetDtoThumbnailStatus;
   filename: string;
   contentType: string;
   /** File size in bytes */

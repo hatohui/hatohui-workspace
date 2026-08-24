@@ -27,7 +27,7 @@ export function GalleryCard({
         className="block h-full w-full cursor-pointer"
       >
         <Image
-          src={asset.publicUrl}
+          src={asset.thumbnailUrl ?? asset.publicUrl}
           alt={asset.filename}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"

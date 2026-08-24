@@ -227,21 +227,55 @@ model EmailOutbox {
 /// dimensions, size and tags are captured client-side at upload time and
 /// sent along when the record is created, since the API never touches the
 /// file bytes.
+enum AssetSource {
+  UPLOAD
+  EXTERNAL_URL
+}
+
+enum AssetThumbnailStatus {
+  PENDING
+  READY
+  FAILED
+}
+
 model Asset {
-  id          String   @id @default(cuid())
-  key         String   @unique
+  id          String      @id @default(cuid())
+  source      AssetSource @default(UPLOAD)
+  key         String?     @unique
   publicUrl   String
   filename    String
   contentType String
   size        Int
   width       Int?
   height      Int?
-  tags        String[] @default([])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  tags        String[]    @default([])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  thumbnailKey    String?
+  thumbnailUrl    String?
+  thumbnailStatus AssetThumbnailStatus @default(PENDING)
 
   uploadedById String?
   uploadedBy   User?   @relation(fields: [uploadedById], references: [id])
+}
+
+enum ProcessType {
+  ASSET_THUMBNAIL
+}
+
+model ProcessQueue {
+  id            String      @id @default(cuid())
+  type          ProcessType
+  refId         String
+  attempts      Int         @default(0)
+  lastError     String?
+  nextAttemptAt DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([type, refId])
+  @@index([nextAttemptAt])
 }
 
 enum CommissionStatus {

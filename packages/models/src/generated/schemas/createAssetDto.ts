@@ -7,11 +7,13 @@
  */
 
 export interface CreateAssetDto {
-  /** Object key returned by POST /images/sign */
-  key: string;
-  filename: string;
-  contentType: string;
-  size: number;
+  /** Object key returned by POST /images/sign. Exactly one of key/externalUrl is required. */
+  key?: string;
+  /** Externally hosted image URL, as an alternative to uploading via key. Exactly one of key/externalUrl is required. */
+  externalUrl?: string;
+  filename?: string;
+  contentType?: string;
+  size?: number;
   width?: number;
   height?: number;
   tags?: string[];

@@ -36,7 +36,12 @@
       "tagsLabel": "标签（用逗号分隔）",
       "tagsHint": "使用委托类型或绘制方式的键（如 \"full_body\"、\"sketched\"）打标签，即可在委托表单中作为示例展示。",
       "save": "保存",
-      "cancel": "取消"
+      "cancel": "取消",
+      "modeFile": "上传文件",
+      "modeLink": "粘贴链接",
+      "linkLabel": "图片链接",
+      "linkPlaceholder": "https://...",
+      "linkFilenameLabel": "文件名（可选）"
     },
     "card": {
       "delete": "删除",
@@ -64,7 +69,10 @@
     "codeLabel": "或者，如果我给了你一个代码",
     "codeGo": "查看",
     "deliverables": "最终作品",
-    "existingReferences": "已上传的参考图"
+    "existingReferences": "已上传的参考图",
+    "addLinkLabel": "或粘贴链接（如 Google 云端硬盘文件夹）",
+    "addLinkPlaceholder": "https://...",
+    "addLink": "添加链接"
   },
   "commission": {
     "form": {

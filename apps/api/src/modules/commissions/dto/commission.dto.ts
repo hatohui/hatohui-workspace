@@ -355,8 +355,24 @@ export class AssignCommissionDto {
 }
 
 export class AddReferenceAssetsDto {
-  @ApiProperty({ type: [String] })
+  @ApiProperty({
+    type: [String],
+    required: false,
+    description: 'Object keys returned by POST /images/sign',
+  })
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  keys: string[];
+  keys?: string[];
+
+  @ApiProperty({
+    type: [String],
+    required: false,
+    description:
+      'Raw external links (e.g. a Google Drive reference sheet) — stored as-is, not validated as images',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  urls?: string[];
 }

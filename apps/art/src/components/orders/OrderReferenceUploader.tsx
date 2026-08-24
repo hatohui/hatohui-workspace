@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button } from '@hatohui/ui';
+import { Button, Input, Label } from '@hatohui/ui';
 import { MultiImageUploadField } from '@/components/shared/MultiImageUploadField';
 
 export function OrderReferenceUploader({
@@ -11,11 +11,12 @@ export function OrderReferenceUploader({
   isUploading,
 }: {
   references: string[];
-  onAdd: (files: File[]) => Promise<unknown>;
+  onAdd: (files: File[], urls?: string[]) => Promise<unknown>;
   isUploading: boolean;
 }) {
   const { t } = useTranslation('art');
   const [files, setFiles] = useState<File[]>([]);
+  const [linkUrl, setLinkUrl] = useState('');
 
   return (
     <div>
@@ -40,15 +41,30 @@ export function OrderReferenceUploader({
         onChange={setFiles}
         isUploading={isUploading}
       />
+
+      <div className="mt-3">
+        <Label htmlFor="reference-link">{t('orders.addLinkLabel')}</Label>
+        <Input
+          id="reference-link"
+          placeholder={t('orders.addLinkPlaceholder')}
+          value={linkUrl}
+          onChange={(event) => setLinkUrl(event.target.value)}
+        />
+      </div>
+
       <Button
         size="sm"
         className="mt-2"
-        disabled={files.length === 0 || isUploading}
+        disabled={(files.length === 0 && !linkUrl.trim()) || isUploading}
         onClick={() => {
-          void onAdd(files).then(() => setFiles([]));
+          const urls = linkUrl.trim() ? [linkUrl.trim()] : [];
+          void onAdd(files, urls).then(() => {
+            setFiles([]);
+            setLinkUrl('');
+          });
         }}
       >
-        {t('gallery.upload.save')}
+        {files.length > 0 ? t('gallery.upload.save') : t('orders.addLink')}
       </Button>
     </div>
   );

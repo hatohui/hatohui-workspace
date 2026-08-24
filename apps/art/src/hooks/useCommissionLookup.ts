@@ -50,13 +50,13 @@ export function useCommissionCodeLookup(code: string) {
     commission: detailQuery.data?.data,
     isLoading: detailQuery.isPending,
 
-    addReferenceAssets: async (files: File[]) => {
+    addReferenceAssets: async (files: File[], urls: string[] = []) => {
       const uploaded = await Promise.all(
         files.map((file) => uploadImage(file)),
       );
       return addReferenceAssets.mutateAsync({
         code,
-        data: { keys: uploaded.map((asset) => asset.key) },
+        data: { keys: uploaded.map((asset) => asset.key), urls },
       });
     },
     isUploadingReferences: isUploading || addReferenceAssets.isPending,

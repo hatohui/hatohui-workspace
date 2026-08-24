@@ -35,7 +35,12 @@
       "tagsLabel": "Tags (comma separated)",
       "tagsHint": "Tag with a commission type or option key (e.g. \"full_body\", \"sketched\") to show it as an example on the commission form.",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "modeFile": "Upload a file",
+      "modeLink": "Paste a link",
+      "linkLabel": "Image URL",
+      "linkPlaceholder": "https://...",
+      "linkFilenameLabel": "Filename (optional)"
     },
     "card": {
       "delete": "Delete",
@@ -63,7 +68,10 @@
     "codeLabel": "Or, if I gave you a code",
     "codeGo": "Go",
     "deliverables": "Final artwork",
-    "existingReferences": "Your uploaded references"
+    "existingReferences": "Your uploaded references",
+    "addLinkLabel": "Or paste a link (e.g. a Google Drive folder)",
+    "addLinkPlaceholder": "https://...",
+    "addLink": "Add link"
   },
   "commission": {
     "form": {

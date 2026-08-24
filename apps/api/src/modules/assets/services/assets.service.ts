@@ -1,6 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
+import { AuthService } from '@/modules/auth/services/auth.service';
+import { ProcessQueueService } from '@/modules/process-queue/services/process-queue.service';
+import { ProcessType } from '@/modules/process-queue/process-queue.constants';
+import { AssetThumbnailExecutor } from '@/modules/assets/services/asset-thumbnail-executor.service';
 import type { Prisma, Asset, User } from '@prisma/client';
 import type { AssetSortOption } from '@/modules/assets/assets.constants';
 import { PaginatedAssetsDto } from '@/modules/assets/dto/asset-query.dto';
@@ -22,9 +32,14 @@ const SORT_ORDER_BY: Record<
 
 @Injectable()
 export class AssetsService {
+  private readonly logger = new Logger(AssetsService.name);
+
   constructor(
     private readonly db: Database,
     private readonly storage: Storage,
+    private readonly auth: AuthService,
+    private readonly processQueue: ProcessQueueService,
+    private readonly thumbnailExecutor: AssetThumbnailExecutor,
   ) {}
 
   async list(
@@ -68,23 +83,62 @@ export class AssetsService {
   }
 
   async create(dto: CreateAssetDto, uploader: User): Promise<AssetDto> {
-    const asset = await this.db.asset.create({
+    await this.assertAdmin(uploader);
+
+    if (Boolean(dto.key) === Boolean(dto.externalUrl)) {
+      throw new BadRequestException(
+        'Provide exactly one of key or externalUrl',
+      );
+    }
+
+    const source = dto.key ? 'UPLOAD' : 'EXTERNAL_URL';
+    const publicUrl = dto.key
+      ? this.storage.getPublicUrl(dto.key)
+      : (dto.externalUrl as string);
+
+    const created = await this.db.asset.create({
       data: {
-        key: dto.key,
-        publicUrl: this.storage.getPublicUrl(dto.key),
-        filename: dto.filename,
-        contentType: dto.contentType,
-        size: dto.size,
+        source,
+        key: dto.key ?? null,
+        publicUrl,
+        filename: dto.filename ?? fallbackFilename(publicUrl),
+        contentType: dto.contentType ?? 'application/octet-stream',
+        size: dto.size ?? 0,
         width: dto.width ?? null,
         height: dto.height ?? null,
         tags: dto.tags ?? [],
         uploadedById: uploader.id,
+        thumbnailStatus: 'PENDING',
       },
+    });
+
+    try {
+      await this.thumbnailExecutor.execute(created.id);
+    } catch (err) {
+      this.logger.warn(`Thumbnail generation failed for ${created.id}: ${err}`);
+      await this.processQueue.enqueueFailure(
+        ProcessType.ASSET_THUMBNAIL,
+        created.id,
+        err,
+      );
+      await this.db.asset.update({
+        where: { id: created.id },
+        data: { thumbnailStatus: 'FAILED' },
+      });
+    }
+
+    const asset = await this.db.asset.findUniqueOrThrow({
+      where: { id: created.id },
     });
     return toAssetDto(asset);
   }
 
-  async update(id: string, dto: UpdateAssetDto): Promise<AssetDto> {
+  async update(
+    id: string,
+    dto: UpdateAssetDto,
+    actor: User,
+  ): Promise<AssetDto> {
+    await this.assertAdmin(actor);
     await this.findOrThrow(id);
     const asset = await this.db.asset.update({
       where: { id },
@@ -93,10 +147,23 @@ export class AssetsService {
     return toAssetDto(asset);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string, actor: User): Promise<void> {
+    await this.assertAdmin(actor);
     const existing = await this.findOrThrow(id);
     await this.db.asset.delete({ where: { id } });
-    await this.storage.deleteObject(existing.key).catch(() => {});
+    if (existing.key) {
+      await this.storage.deleteObject(existing.key).catch(() => {});
+    }
+    if (existing.thumbnailKey) {
+      await this.storage.deleteObject(existing.thumbnailKey).catch(() => {});
+    }
+    await this.processQueue.clearForRef(ProcessType.ASSET_THUMBNAIL, id);
+  }
+
+  private async assertAdmin(user: User): Promise<void> {
+    if (!(await this.auth.isAdmin(user))) {
+      throw new ForbiddenException('Admin access denied');
+    }
   }
 
   private async findOrThrow(id: string): Promise<Asset> {
@@ -108,11 +175,18 @@ export class AssetsService {
   }
 }
 
+function fallbackFilename(publicUrl: string): string {
+  return publicUrl.split('/').pop() || publicUrl;
+}
+
 function toAssetDto(asset: Asset): AssetDto {
   return {
     id: asset.id,
+    source: asset.source,
     key: asset.key,
     publicUrl: asset.publicUrl,
+    thumbnailUrl: asset.thumbnailUrl,
+    thumbnailStatus: asset.thumbnailStatus,
     filename: asset.filename,
     contentType: asset.contentType,
     size: asset.size,

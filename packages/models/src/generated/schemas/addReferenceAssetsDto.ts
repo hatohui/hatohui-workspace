@@ -7,5 +7,8 @@
  */
 
 export interface AddReferenceAssetsDto {
-  keys: string[];
+  /** Object keys returned by POST /images/sign */
+  keys?: string[];
+  /** Raw external links (e.g. a Google Drive reference sheet) — stored as-is, not validated as images */
+  urls?: string[];
 }

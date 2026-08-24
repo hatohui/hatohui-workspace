@@ -36,7 +36,12 @@
       "tagsLabel": "タグ（カンマ区切り）",
       "tagsHint": "コミッションタイプやオプションのキー（例: \"full_body\"、\"sketched\"）でタグ付けすると、依頼フォームの参考例として表示されます。",
       "save": "保存",
-      "cancel": "キャンセル"
+      "cancel": "キャンセル",
+      "modeFile": "ファイルをアップロード",
+      "modeLink": "リンクを貼り付け",
+      "linkLabel": "画像のURL",
+      "linkPlaceholder": "https://...",
+      "linkFilenameLabel": "ファイル名（任意）"
     },
     "card": {
       "delete": "削除",
@@ -64,7 +69,10 @@
     "codeLabel": "コードをお持ちの場合はこちら",
     "codeGo": "表示",
     "deliverables": "完成イラスト",
-    "existingReferences": "アップロード済みの参考画像"
+    "existingReferences": "アップロード済みの参考画像",
+    "addLinkLabel": "またはリンクを貼り付け（例: Google ドライブのフォルダ）",
+    "addLinkPlaceholder": "https://...",
+    "addLink": "リンクを追加"
   },
   "commission": {
     "form": {
