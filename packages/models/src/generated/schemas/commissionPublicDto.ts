@@ -5,7 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CommissionPublicDtoCommissionType } from './commissionPublicDtoCommissionType';
+import type { CommissionPublicDtoIdea } from './commissionPublicDtoIdea';
 import type { CommissionPublicDtoPaymentStatus } from './commissionPublicDtoPaymentStatus';
 import type { CommissionPublicDtoStatus } from './commissionPublicDtoStatus';
 
@@ -13,14 +13,19 @@ export interface CommissionPublicDto {
   id: string;
   /** Private code used to view/manage this commission */
   accessCode: string;
-  title: string;
-  description: string;
+  /** Tiptap/ProseMirror JSON document */
+  idea: CommissionPublicDtoIdea;
   /** @nullable */
   deadline: string | null;
   status: CommissionPublicDtoStatus;
   paymentStatus: CommissionPublicDtoPaymentStatus;
   /** @nullable */
-  commissionType: CommissionPublicDtoCommissionType;
+  commissionTypeId: string | null;
+  /**
+     * Also the i18n key: commission.type.<key>
+     * @nullable
+     */
+  commissionTypeKey: string | null;
   /** @nullable */
   quoteCents: number | null;
   referenceAssets: string[];

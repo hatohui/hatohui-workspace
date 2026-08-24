@@ -22,3 +22,4 @@ export { useStagedAvatar } from './onboarding/useStagedAvatar';
 export { default as VisibilityField } from './onboarding/VisibilityField';
 export { default as BirthdayFields } from './onboarding/BirthdayFields';
 export * from './onboarding/timezones';
+export * from './tiptap/tiptap';

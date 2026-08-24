@@ -21,23 +21,26 @@ export function CommissionTypeFields({
 }) {
   const { t } = useTranslation('art');
   const { types, options, addons } = form.pricing;
+  const selectedType = types.find(
+    (type) => type.commissionTypeId === form.state.commissionTypeId,
+  );
 
   return (
     <div className="space-y-3 rounded-lg border border-border p-4">
       <div>
         <div className="flex items-center gap-1.5">
           <Label>{t('commission.form.commissionTypeLabel')}</Label>
-          {form.state.commissionType && (
+          {selectedType && (
             <InfoTooltip
               content={t(
-                `commission.type.${form.state.commissionType}.description`,
+                `commission.type.${selectedType.commissionTypeKey}.description`,
               )}
             />
           )}
         </div>
         <Select
-          value={form.state.commissionType}
-          onValueChange={(value) => form.update('commissionType', value)}
+          value={form.state.commissionTypeId}
+          onValueChange={(value) => form.update('commissionTypeId', value)}
         >
           <SelectTrigger>
             <SelectValue
@@ -46,14 +49,17 @@ export function CommissionTypeFields({
           </SelectTrigger>
           <SelectContent>
             {types.map((type) => (
-              <SelectItem key={type.type} value={type.type}>
-                {t(`commission.type.${type.type}.label`)} ($
+              <SelectItem
+                key={type.commissionTypeId}
+                value={type.commissionTypeId}
+              >
+                {t(`commission.type.${type.commissionTypeKey}.label`)} ($
                 {(type.basePriceCents / 100).toFixed(0)})
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <CommissionReferenceExamples tag={form.state.commissionType} />
+        <CommissionReferenceExamples tag={selectedType?.tagName} />
       </div>
 
       <div>
@@ -85,7 +91,9 @@ export function CommissionTypeFields({
             ))}
           </SelectContent>
         </Select>
-        <CommissionReferenceExamples tag={form.state.optionKey} />
+        <CommissionReferenceExamples
+          tag={form.state.optionKey?.toLowerCase()}
+        />
       </div>
 
       {addons.length > 0 && (

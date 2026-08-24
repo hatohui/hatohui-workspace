@@ -1,7 +1,9 @@
 'use client';
 
 import { useTranslation } from '@hatohui/i18n';
+import { RichTextView } from '@hatohui/ui';
 import { useCommissionDetail } from '@/hooks/useCommissionDetail';
+import { useCommissionDisplayLabel } from '@/hooks/useCommissionDisplayLabel';
 import { CommissionStatusControl } from './CommissionStatusControl';
 import { CommissionStepChecklist } from './CommissionStepChecklist';
 import { CommissionQuoteEditor } from './CommissionQuoteEditor';
@@ -15,6 +17,7 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
   const { t } = useTranslation('art');
   const detail = useCommissionDetail(id);
   const commission = detail.commission;
+  const displayLabel = useCommissionDisplayLabel();
 
   if (detail.isLoading)
     return <p className="text-muted-foreground">{t('common:loading')}</p>;
@@ -27,7 +30,9 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif text-2xl">{commission.title}</h1>
+          <h1 className="font-serif text-2xl">
+            {displayLabel(commission.commissionTypeKey)}
+          </h1>
           <p className="text-muted-foreground">
             {commission.clientName} · {commission.clientEmail}
           </p>
@@ -38,7 +43,7 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
         />
       </div>
 
-      <p>{commission.description}</p>
+      <RichTextView value={commission.idea} />
 
       <CommissionStatusControl
         status={commission.status}

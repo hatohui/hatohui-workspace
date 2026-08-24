@@ -1,10 +1,10 @@
-import { CommissionType, type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 
-const TYPE_PRICING: { type: CommissionType; basePriceCents: number }[] = [
-  { type: CommissionType.ICON, basePriceCents: 3000 },
-  { type: CommissionType.HALF_BODY, basePriceCents: 6000 },
-  { type: CommissionType.FULL_BODY, basePriceCents: 10000 },
-  { type: CommissionType.SKETCH_PAGE, basePriceCents: 18000 },
+const TYPE_PRICING: { key: string; basePriceCents: number }[] = [
+  { key: 'ICON', basePriceCents: 3000 },
+  { key: 'HALF_BODY', basePriceCents: 6000 },
+  { key: 'FULL_BODY', basePriceCents: 10000 },
+  { key: 'SKETCH_PAGE', basePriceCents: 18000 },
 ];
 
 const OPTION_PRICING: { key: string; modifierPercent: number }[] = [
@@ -27,10 +27,17 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
   });
 
   for (const row of TYPE_PRICING) {
+    const commissionType = await prisma.commissionType.findUnique({
+      where: { key: row.key },
+    });
+    if (!commissionType) continue;
     await prisma.commissionTypePricing.upsert({
-      where: { type: row.type },
+      where: { commissionTypeId: commissionType.id },
       update: {},
-      create: row,
+      create: {
+        commissionTypeId: commissionType.id,
+        basePriceCents: row.basePriceCents,
+      },
     });
   }
 

@@ -11,7 +11,7 @@ import { AuthService } from '@/modules/auth/services/auth.service';
 import { ProcessQueueService } from '@/modules/process-queue/services/process-queue.service';
 import { ProcessType } from '@/modules/process-queue/process-queue.constants';
 import { AssetThumbnailExecutor } from '@/modules/assets/services/asset-thumbnail-executor.service';
-import type { Prisma, Asset, User } from '@prisma/client';
+import type { Prisma, Asset, Tag, User } from '@prisma/client';
 import type { AssetSortOption } from '@/modules/assets/assets.constants';
 import { PaginatedAssetsDto } from '@/modules/assets/dto/asset-query.dto';
 import {
@@ -55,17 +55,22 @@ export class AssetsService {
           ? {
               OR: [
                 { filename: { contains: query, mode: 'insensitive' } },
-                { tags: { has: query } },
+                {
+                  tags: {
+                    some: { name: { contains: query, mode: 'insensitive' } },
+                  },
+                },
               ],
             }
           : {},
-        tag ? { tags: { has: tag } } : {},
+        tag ? { tags: { some: { name: tag } } } : {},
       ],
     };
 
     const [items, total] = await Promise.all([
       this.db.asset.findMany({
         where,
+        include: { tags: true },
         orderBy: SORT_ORDER_BY[sort],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -96,6 +101,7 @@ export class AssetsService {
       ? this.storage.getPublicUrl(dto.key)
       : (dto.externalUrl as string);
 
+    const tagIds = await this.resolveTagIds(dto.tags ?? []);
     const created = await this.db.asset.create({
       data: {
         source,
@@ -106,7 +112,7 @@ export class AssetsService {
         size: dto.size ?? 0,
         width: dto.width ?? null,
         height: dto.height ?? null,
-        tags: dto.tags ?? [],
+        tags: { connect: tagIds.map((id) => ({ id })) },
         uploadedById: uploader.id,
         thumbnailStatus: 'PENDING',
       },
@@ -129,6 +135,7 @@ export class AssetsService {
 
     const asset = await this.db.asset.findUniqueOrThrow({
       where: { id: created.id },
+      include: { tags: true },
     });
     return toAssetDto(asset);
   }
@@ -140,11 +147,26 @@ export class AssetsService {
   ): Promise<AssetDto> {
     await this.assertAdmin(actor);
     await this.findOrThrow(id);
+    const tagIds = await this.resolveTagIds(dto.tags);
     const asset = await this.db.asset.update({
       where: { id },
-      data: { tags: dto.tags },
+      data: { tags: { set: tagIds.map((tagId) => ({ id: tagId })) } },
+      include: { tags: true },
     });
     return toAssetDto(asset);
+  }
+
+  private async resolveTagIds(names: string[]): Promise<string[]> {
+    const tags = await Promise.all(
+      names.map((name) =>
+        this.db.tag.upsert({
+          where: { name },
+          create: { name },
+          update: {},
+        }),
+      ),
+    );
+    return tags.map((tag) => tag.id);
   }
 
   async remove(id: string, actor: User): Promise<void> {
@@ -179,7 +201,7 @@ function fallbackFilename(publicUrl: string): string {
   return publicUrl.split('/').pop() || publicUrl;
 }
 
-function toAssetDto(asset: Asset): AssetDto {
+function toAssetDto(asset: Asset & { tags: Tag[] }): AssetDto {
   return {
     id: asset.id,
     source: asset.source,
@@ -192,7 +214,7 @@ function toAssetDto(asset: Asset): AssetDto {
     size: asset.size,
     width: asset.width,
     height: asset.height,
-    tags: asset.tags,
+    tags: asset.tags.map((tag) => tag.name),
     uploadedById: asset.uploadedById,
     createdAt: asset.createdAt.toISOString(),
     updatedAt: asset.updatedAt.toISOString(),

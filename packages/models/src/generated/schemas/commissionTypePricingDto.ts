@@ -5,12 +5,15 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CommissionTypePricingDtoType } from './commissionTypePricingDtoType';
 
 export interface CommissionTypePricingDto {
   id: string;
-  /** Also the i18n key: commission.type.<type> */
-  type: CommissionTypePricingDtoType;
+  /** Id of the priced CommissionType */
+  commissionTypeId: string;
+  /** Also the i18n key: commission.type.<key> */
+  commissionTypeKey: string;
+  /** Name of the linked Tag, used for gallery filtering */
+  tagName: string;
   /** Base price in USD cents */
   basePriceCents: number;
   active: boolean;

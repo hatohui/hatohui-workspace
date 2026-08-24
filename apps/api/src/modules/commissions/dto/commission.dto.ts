@@ -13,21 +13,17 @@ import {
 } from 'class-validator';
 import {
   CommissionStatus,
-  CommissionType,
   PaymentStatus,
   PreferredContactMethod,
 } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import {
   COMMISSION_STEP_KEYS,
   type CommissionStepKey,
 } from '@/modules/commissions/commissions.constants';
+import { IsTiptapDocument } from '@/common/validators/tiptap-document.validator';
 
-export {
-  CommissionStatus,
-  CommissionType,
-  PaymentStatus,
-  PreferredContactMethod,
-};
+export { CommissionStatus, PaymentStatus, PreferredContactMethod };
 
 export class CommissionStepsDto {
   @ApiProperty({ nullable: true })
@@ -53,11 +49,12 @@ export class CommissionDto {
   @ApiProperty({ example: 'clx1234567890' })
   id: string;
 
-  @ApiProperty({ example: 'Full-body character commission' })
-  title: string;
-
-  @ApiProperty({ example: 'Full color, one character, flat background.' })
-  description: string;
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: true,
+    description: 'Tiptap/ProseMirror JSON document',
+  })
+  idea: Prisma.JsonValue;
 
   @ApiProperty({ example: '2026-09-01T00:00:00.000Z', nullable: true })
   deadline: string | null;
@@ -76,8 +73,14 @@ export class CommissionDto {
   })
   isHidden: boolean;
 
-  @ApiProperty({ enum: CommissionType, nullable: true })
-  commissionType: CommissionType | null;
+  @ApiProperty({ nullable: true })
+  commissionTypeId: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Also the i18n key: commission.type.<key>',
+  })
+  commissionTypeKey: string | null;
 
   @ApiProperty({
     nullable: true,
@@ -140,11 +143,12 @@ export class CommissionPublicDto {
   })
   accessCode: string;
 
-  @ApiProperty({ example: 'Full-body character commission' })
-  title: string;
-
-  @ApiProperty({ example: 'Full color, one character, flat background.' })
-  description: string;
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: true,
+    description: 'Tiptap/ProseMirror JSON document',
+  })
+  idea: Prisma.JsonValue;
 
   @ApiProperty({ example: '2026-09-01T00:00:00.000Z', nullable: true })
   deadline: string | null;
@@ -158,8 +162,14 @@ export class CommissionPublicDto {
   @ApiProperty({ enum: PaymentStatus, example: PaymentStatus.NOT_YET })
   paymentStatus: PaymentStatus;
 
-  @ApiProperty({ enum: CommissionType, nullable: true })
-  commissionType: CommissionType | null;
+  @ApiProperty({ nullable: true })
+  commissionTypeId: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Also the i18n key: commission.type.<key>',
+  })
+  commissionTypeKey: string | null;
 
   @ApiProperty({ nullable: true })
   quoteCents: number | null;
@@ -181,25 +191,26 @@ export class CommissionPublicDto {
 }
 
 export class SubmitCommissionDto {
-  @ApiProperty({ example: 'Full-body character commission' })
-  @IsString()
-  @IsNotEmpty()
-  title: string;
-
-  @ApiProperty({ example: 'Full color, one character, flat background.' })
-  @IsString()
-  @IsNotEmpty()
-  description: string;
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: true,
+    description: 'Tiptap/ProseMirror JSON document describing the idea',
+  })
+  @IsTiptapDocument()
+  idea: Prisma.InputJsonValue;
 
   @ApiProperty({ example: '2026-09-01', required: false })
   @IsOptional()
   @IsDateString()
   deadline?: string;
 
-  @ApiProperty({ enum: CommissionType, required: false })
+  @ApiProperty({
+    required: false,
+    description: 'Id of a CommissionType',
+  })
   @IsOptional()
-  @IsEnum(CommissionType)
-  commissionType?: CommissionType;
+  @IsString()
+  commissionTypeId?: string;
 
   @ApiProperty({
     required: false,
@@ -252,7 +263,7 @@ export class SubmitCommissionDto {
     default: false,
     required: false,
     description:
-      'Whether this commission (title, status, type) should show in the public /queue',
+      'Whether this commission (status, type) should show in the public /queue',
   })
   @IsOptional()
   @IsBoolean()
@@ -289,10 +300,10 @@ export class UpdateCommissionStepDto {
 }
 
 export class UpdateCommissionQuoteDto {
-  @ApiProperty({ enum: CommissionType, nullable: true, required: false })
+  @ApiProperty({ nullable: true, required: false })
   @IsOptional()
-  @IsEnum(CommissionType)
-  commissionType?: CommissionType | null;
+  @IsString()
+  commissionTypeId?: string | null;
 
   @ApiProperty({ nullable: true, required: false })
   @IsOptional()

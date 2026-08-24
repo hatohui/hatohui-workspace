@@ -13,7 +13,6 @@ import {
   getCommissionQueryKey,
   type UpdateCommissionStatusDtoStatus,
   type UpdatePaymentStatusDtoPaymentStatus,
-  type UpdateCommissionQuoteDtoCommissionType,
   type CreateCommissionNoteDtoVisibility,
 } from '@hatohui/models';
 import { useQueryClient } from '@tanstack/react-query';
@@ -64,7 +63,7 @@ export function useCommissionDetail(id: string) {
       updateStep.mutateAsync({ id, data: { step, done } }),
 
     setQuote: (data: {
-      commissionType?: UpdateCommissionQuoteDtoCommissionType | null;
+      commissionTypeId?: string | null;
       optionKey?: string | null;
       addonKeys?: string[];
       quoteCents?: number | null;

@@ -3,7 +3,9 @@ import { Database } from '@/infra/db';
 import type {
   CommissionAddonPricing,
   CommissionOptionPricing,
+  CommissionType,
   CommissionTypePricing,
+  Tag,
 } from '@prisma/client';
 import {
   CommissionAddonPricingDto,
@@ -23,7 +25,10 @@ export class CommissionPricingService {
 
   async getActive(): Promise<CommissionPricingDto> {
     const [types, options, addons, rushFee] = await Promise.all([
-      this.db.commissionTypePricing.findMany({ where: { active: true } }),
+      this.db.commissionTypePricing.findMany({
+        where: { active: true },
+        include: { commissionType: { include: { tag: true } } },
+      }),
       this.db.commissionOptionPricing.findMany({ where: { active: true } }),
       this.db.commissionAddonPricing.findMany({ where: { active: true } }),
       this.getRushFee(),
@@ -52,7 +57,10 @@ export class CommissionPricingService {
 
   listTypes(): Promise<CommissionTypePricingDto[]> {
     return this.db.commissionTypePricing
-      .findMany({ orderBy: { basePriceCents: 'asc' } })
+      .findMany({
+        include: { commissionType: { include: { tag: true } } },
+        orderBy: { basePriceCents: 'asc' },
+      })
       .then((rows) => rows.map(toTypeDto));
   }
 
@@ -61,10 +69,11 @@ export class CommissionPricingService {
   ): Promise<CommissionTypePricingDto> {
     const row = await this.db.commissionTypePricing.create({
       data: {
-        type: dto.type,
+        commissionTypeId: dto.commissionTypeId,
         basePriceCents: dto.basePriceCents,
         active: dto.active ?? true,
       },
+      include: { commissionType: { include: { tag: true } } },
     });
     return toTypeDto(row);
   }
@@ -77,10 +86,11 @@ export class CommissionPricingService {
     const row = await this.db.commissionTypePricing.update({
       where: { id },
       data: {
-        type: dto.type,
+        commissionTypeId: dto.commissionTypeId,
         basePriceCents: dto.basePriceCents,
         active: dto.active ?? true,
       },
+      include: { commissionType: { include: { tag: true } } },
     });
     return toTypeDto(row);
   }
@@ -183,10 +193,18 @@ export class CommissionPricingService {
   }
 }
 
-function toTypeDto(row: CommissionTypePricing): CommissionTypePricingDto {
+type CommissionTypePricingWithType = CommissionTypePricing & {
+  commissionType: CommissionType & { tag: Tag };
+};
+
+function toTypeDto(
+  row: CommissionTypePricingWithType,
+): CommissionTypePricingDto {
   return {
     id: row.id,
-    type: row.type,
+    commissionTypeId: row.commissionTypeId,
+    commissionTypeKey: row.commissionType.key,
+    tagName: row.commissionType.tag.name,
     basePriceCents: row.basePriceCents,
     active: row.active,
     updatedAt: row.updatedAt.toISOString(),

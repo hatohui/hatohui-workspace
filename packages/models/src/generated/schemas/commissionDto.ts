@@ -5,7 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CommissionDtoCommissionType } from './commissionDtoCommissionType';
+import type { CommissionDtoIdea } from './commissionDtoIdea';
 import type { CommissionDtoPaymentStatus } from './commissionDtoPaymentStatus';
 import type { CommissionDtoPreferredContactMethod } from './commissionDtoPreferredContactMethod';
 import type { CommissionDtoStatus } from './commissionDtoStatus';
@@ -13,8 +13,8 @@ import type { CommissionStepsDto } from './commissionStepsDto';
 
 export interface CommissionDto {
   id: string;
-  title: string;
-  description: string;
+  /** Tiptap/ProseMirror JSON document */
+  idea: CommissionDtoIdea;
   /** @nullable */
   deadline: string | null;
   status: CommissionDtoStatus;
@@ -22,7 +22,12 @@ export interface CommissionDto {
   /** Whether this commission is hidden from any public showcase */
   isHidden: boolean;
   /** @nullable */
-  commissionType: CommissionDtoCommissionType;
+  commissionTypeId: string | null;
+  /**
+     * Also the i18n key: commission.type.<key>
+     * @nullable
+     */
+  commissionTypeKey: string | null;
   /**
      * Key of the selected CommissionOptionPricing
      * @nullable

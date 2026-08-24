@@ -6,12 +6,12 @@ import {
   Button,
   Input,
   Label,
+  RichTextField,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
 } from '@hatohui/ui';
 import { PREFERRED_CONTACT_METHODS } from '@/constants/commission';
 import { useCommissionForm } from '@/hooks/useCommissionForm';
@@ -54,24 +54,11 @@ export function CommissionForm() {
       )}
 
       <div>
-        <Label htmlFor="title">{t('commission.form.titleLabel')}</Label>
-        <Input
-          id="title"
-          required
-          value={form.state.title}
-          onChange={(event) => form.update('title', event.target.value)}
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="description">
-          {t('commission.form.descriptionLabel')}
-        </Label>
-        <Textarea
-          id="description"
-          required
-          value={form.state.description}
-          onChange={(event) => form.update('description', event.target.value)}
+        <Label htmlFor="idea">{t('commission.form.ideaLabel')}</Label>
+        <RichTextField
+          id="idea"
+          value={form.state.idea}
+          onChange={(value) => form.update('idea', value)}
         />
       </div>
 
@@ -162,7 +149,11 @@ export function CommissionForm() {
       />
 
       <div className="flex gap-2">
-        <Button type="submit" disabled={form.isSubmitting} className="flex-1">
+        <Button
+          type="submit"
+          disabled={form.isSubmitting || form.isIdeaEmpty}
+          className="flex-1"
+        >
           {form.isSubmitting
             ? t('commission.form.submitting')
             : t('commission.form.submit')}

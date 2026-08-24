@@ -1,26 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Min,
 } from 'class-validator';
-import { CommissionType } from '@prisma/client';
-
-export { CommissionType };
 
 export class CommissionTypePricingDto {
   @ApiProperty()
   id: string;
 
+  @ApiProperty({ description: 'Id of the priced CommissionType' })
+  commissionTypeId: string;
+
   @ApiProperty({
-    enum: CommissionType,
-    description: 'Also the i18n key: commission.type.<type>',
+    example: 'ICON',
+    description: 'Also the i18n key: commission.type.<key>',
   })
-  type: CommissionType;
+  commissionTypeKey: string;
+
+  @ApiProperty({
+    description: 'Name of the linked Tag, used for gallery filtering',
+  })
+  tagName: string;
 
   @ApiProperty({ example: 3000, description: 'Base price in USD cents' })
   basePriceCents: number;
@@ -33,9 +37,10 @@ export class CommissionTypePricingDto {
 }
 
 export class UpsertCommissionTypePricingDto {
-  @ApiProperty({ enum: CommissionType })
-  @IsEnum(CommissionType)
-  type: CommissionType;
+  @ApiProperty({ description: 'Id of the CommissionType to price' })
+  @IsString()
+  @IsNotEmpty()
+  commissionTypeId: string;
 
   @ApiProperty({ example: 3000 })
   @IsInt()

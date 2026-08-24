@@ -11,7 +11,7 @@ function daysUntil(dateString: string): number {
 }
 
 export function useCommissionPricingEstimate(
-  commissionType: string | undefined,
+  commissionTypeId: string | undefined,
   optionKey: string | undefined,
   addonKeys: string[],
   deadline?: string,
@@ -25,9 +25,11 @@ export function useCommissionPricingEstimate(
   }, [pricing, deadline]);
 
   const estimateCents = useMemo(() => {
-    if (!pricing || !commissionType) return null;
+    if (!pricing || !commissionTypeId) return null;
 
-    const type = pricing.types.find((row) => row.type === commissionType);
+    const type = pricing.types.find(
+      (row) => row.commissionTypeId === commissionTypeId,
+    );
     if (!type) return null;
 
     const option = pricing.options.find((row) => row.key === optionKey);
@@ -42,7 +44,7 @@ export function useCommissionPricingEstimate(
     const rushFee = isRush ? pricing.rushFee.feeCents : 0;
 
     return base + addonsMin + rushFee;
-  }, [pricing, commissionType, optionKey, addonKeys, isRush]);
+  }, [pricing, commissionTypeId, optionKey, addonKeys, isRush]);
 
   return {
     types: pricing?.types ?? [],

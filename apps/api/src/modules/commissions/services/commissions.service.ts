@@ -5,6 +5,7 @@ import { EmailService } from '@/infra/email';
 import {
   AppScope,
   type Commission,
+  type CommissionType,
   type Prisma,
   type User,
 } from '@prisma/client';
@@ -63,10 +64,9 @@ export class CommissionsService {
   async submit(dto: SubmitCommissionDto): Promise<CommissionDto> {
     const commission = await this.db.commission.create({
       data: {
-        title: dto.title,
-        description: dto.description,
+        idea: dto.idea,
         deadline: dto.deadline ? new Date(dto.deadline) : null,
-        commissionType: dto.commissionType ?? null,
+        commissionTypeId: dto.commissionTypeId ?? null,
         optionKey: dto.optionKey ?? null,
         addonKeys: dto.addonKeys ?? [],
         clientName: dto.clientName,
@@ -78,6 +78,7 @@ export class CommissionsService {
           [],
         isHidden: !dto.isPublic,
       },
+      include: { commissionType: true },
     });
 
     await this.notifyCommissionReceived(commission);
@@ -96,21 +97,14 @@ export class CommissionsService {
     const where: Prisma.CommissionWhereInput = {
       AND: [
         status ? { status } : {},
-        query
-          ? {
-              OR: [
-                { title: { contains: query, mode: 'insensitive' } },
-                { clientName: { contains: query, mode: 'insensitive' } },
-                { description: { contains: query, mode: 'insensitive' } },
-              ],
-            }
-          : {},
+        query ? { clientName: { contains: query, mode: 'insensitive' } } : {},
       ],
     };
 
     const [items, total] = await Promise.all([
       this.db.commission.findMany({
         where,
+        include: { commissionType: true },
         orderBy: { [SORT_FIELD[sort]]: direction },
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -147,6 +141,7 @@ export class CommissionsService {
   async findByEmail(email: string): Promise<CommissionPublicDto[]> {
     const commissions = await this.db.commission.findMany({
       where: { clientEmail: email },
+      include: { commissionType: true },
       orderBy: { createdAt: 'desc' },
     });
     return commissions.map(toPublicDto);
@@ -155,6 +150,7 @@ export class CommissionsService {
   async queue(): Promise<CommissionQueueDto> {
     const commissions = await this.db.commission.findMany({
       where: { isHidden: false, status: { in: QUEUE_STATUSES } },
+      include: { commissionType: true },
       orderBy: { createdAt: 'asc' },
     });
 
@@ -170,9 +166,8 @@ export class CommissionsService {
     return {
       items: sorted.map((commission) => ({
         id: commission.id,
-        title: commission.title,
         status: commission.status,
-        commissionType: commission.commissionType,
+        commissionTypeKey: commission.commissionType?.key ?? null,
         createdAt: commission.createdAt.toISOString(),
       })),
     };
@@ -192,6 +187,7 @@ export class CommissionsService {
           ...(dto.urls ?? []),
         ],
       },
+      include: { commissionType: true },
     });
     return toPublicDto(commission);
   }
@@ -220,6 +216,7 @@ export class CommissionsService {
       this.db.commission.update({
         where: { id },
         data: { status: dto.status },
+        include: { commissionType: true },
       }),
       this.db.commissionStatusHistory.create({
         data: {
@@ -243,6 +240,7 @@ export class CommissionsService {
     const commission = await this.db.commission.update({
       where: { id },
       data: { paymentStatus: dto.paymentStatus },
+      include: { commissionType: true },
     });
     return toCommissionDto(commission);
   }
@@ -255,6 +253,7 @@ export class CommissionsService {
     const commission = await this.db.commission.update({
       where: { id },
       data: { [dto.step]: dto.done ? new Date() : null },
+      include: { commissionType: true },
     });
     return toCommissionDto(commission);
   }
@@ -267,12 +266,13 @@ export class CommissionsService {
     const commission = await this.db.commission.update({
       where: { id },
       data: {
-        commissionType:
-          dto.commissionType === undefined ? undefined : dto.commissionType,
+        commissionTypeId:
+          dto.commissionTypeId === undefined ? undefined : dto.commissionTypeId,
         optionKey: dto.optionKey === undefined ? undefined : dto.optionKey,
         addonKeys: dto.addonKeys,
         quoteCents: dto.quoteCents === undefined ? undefined : dto.quoteCents,
       },
+      include: { commissionType: true },
     });
     return toCommissionDto(commission);
   }
@@ -285,6 +285,7 @@ export class CommissionsService {
     const commission = await this.db.commission.update({
       where: { id },
       data: { isHidden: dto.isHidden },
+      include: { commissionType: true },
     });
     return toCommissionDto(commission);
   }
@@ -299,6 +300,7 @@ export class CommissionsService {
         ),
         deliveredAt: new Date(),
       },
+      include: { commissionType: true },
     });
 
     const templateId = await this.getTemplateId(
@@ -309,7 +311,10 @@ export class CommissionsService {
         to: [{ email: existing.clientEmail, name: existing.clientName }],
         templateId,
         params: {
-          title: existing.title,
+          label: commissionDisplayLabel(
+            commission.commissionType,
+            existing.clientName,
+          ),
           deliverableAssets: commission.deliverableAssets,
         },
       });
@@ -323,6 +328,7 @@ export class CommissionsService {
     const commission = await this.db.commission.update({
       where: { id },
       data: { assignedToId: dto.assignedToId ?? null },
+      include: { commissionType: true },
     });
     return toCommissionDto(commission);
   }
@@ -335,6 +341,7 @@ export class CommissionsService {
     const commission = await this.db.commission.update({
       where: { id },
       data: { projectId: dto.projectId ?? null },
+      include: { commissionType: true },
     });
     return toCommissionDto(commission);
   }
@@ -357,7 +364,7 @@ export class CommissionsService {
   }
 
   private async withNotesAndHistory(
-    commission: Commission,
+    commission: CommissionWithType,
   ): Promise<CommissionDetailDto> {
     const [notes, history] = await Promise.all([
       this.db.commissionNote.findMany({
@@ -378,7 +385,7 @@ export class CommissionsService {
   }
 
   private async notifyCommissionReceived(
-    commission: Commission,
+    commission: CommissionWithType,
   ): Promise<void> {
     const config = await this.db.systemParameters.findUnique({
       where: {
@@ -400,7 +407,10 @@ export class CommissionsService {
       templateId,
       params: {
         commissionId: commission.id,
-        title: commission.title,
+        label: commissionDisplayLabel(
+          commission.commissionType ?? null,
+          commission.clientName,
+        ),
         clientName: commission.clientName,
         clientEmail: commission.clientEmail,
       },
@@ -415,17 +425,23 @@ export class CommissionsService {
     return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
   }
 
-  private async findOrThrow(id: string): Promise<Commission> {
-    const commission = await this.db.commission.findUnique({ where: { id } });
+  private async findOrThrow(id: string): Promise<CommissionWithType> {
+    const commission = await this.db.commission.findUnique({
+      where: { id },
+      include: { commissionType: true },
+    });
     if (!commission) {
       throw new NotFoundException(`Commission ${id} not found`);
     }
     return commission;
   }
 
-  private async findByAccessCodeOrThrow(code: string): Promise<Commission> {
+  private async findByAccessCodeOrThrow(
+    code: string,
+  ): Promise<CommissionWithType> {
     const commission = await this.db.commission.findUnique({
       where: { accessCode: code },
+      include: { commissionType: true },
     });
     if (!commission) {
       throw new NotFoundException('Commission not found');
@@ -434,16 +450,27 @@ export class CommissionsService {
   }
 }
 
-function toCommissionDto(commission: Commission): CommissionDto {
+type CommissionWithType = Commission & {
+  commissionType: CommissionType | null;
+};
+
+function commissionDisplayLabel(
+  commissionType: CommissionType | null,
+  clientName: string,
+): string {
+  return `${commissionType?.key ?? 'Commission'} — ${clientName}`;
+}
+
+function toCommissionDto(commission: CommissionWithType): CommissionDto {
   return {
     id: commission.id,
-    title: commission.title,
-    description: commission.description,
+    idea: commission.idea,
     deadline: commission.deadline?.toISOString() ?? null,
     status: commission.status,
     paymentStatus: commission.paymentStatus,
     isHidden: commission.isHidden,
-    commissionType: commission.commissionType,
+    commissionTypeId: commission.commissionTypeId,
+    commissionTypeKey: commission.commissionType?.key ?? null,
     optionKey: commission.optionKey,
     addonKeys: commission.addonKeys,
     quoteCents: commission.quoteCents,
@@ -469,16 +496,16 @@ function toCommissionDto(commission: Commission): CommissionDto {
   };
 }
 
-function toPublicDto(commission: Commission): CommissionPublicDto {
+function toPublicDto(commission: CommissionWithType): CommissionPublicDto {
   return {
     id: commission.id,
     accessCode: commission.accessCode,
-    title: commission.title,
-    description: commission.description,
+    idea: commission.idea,
     deadline: commission.deadline?.toISOString() ?? null,
     status: commission.status,
     paymentStatus: commission.paymentStatus,
-    commissionType: commission.commissionType,
+    commissionTypeId: commission.commissionTypeId,
+    commissionTypeKey: commission.commissionType?.key ?? null,
     quoteCents: commission.quoteCents,
     referenceAssets: commission.referenceAssets,
     deliverableAssets: commission.deliverableAssets,

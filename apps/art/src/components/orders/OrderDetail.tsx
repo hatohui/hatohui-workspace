@@ -1,7 +1,9 @@
 'use client';
 
 import { useTranslation } from '@hatohui/i18n';
+import { RichTextView } from '@hatohui/ui';
 import { useCommissionCodeLookup } from '@/hooks/useCommissionLookup';
+import { useCommissionDisplayLabel } from '@/hooks/useCommissionDisplayLabel';
 import { OrderReferenceUploader } from './OrderReferenceUploader';
 import { OrderNotesThread } from './OrderNotesThread';
 
@@ -9,6 +11,7 @@ export function OrderDetail({ code }: { code: string }) {
   const { t } = useTranslation('art');
   const lookup = useCommissionCodeLookup(code);
   const commission = lookup.commission;
+  const displayLabel = useCommissionDisplayLabel();
 
   if (lookup.isLoading)
     return <p className="text-muted-foreground">{t('common:loading')}</p>;
@@ -20,8 +23,13 @@ export function OrderDetail({ code }: { code: string }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-3xl">{commission.title}</h1>
-        <p className="text-muted-foreground">{commission.description}</p>
+        <h1 className="font-serif text-3xl">
+          {displayLabel(commission.commissionTypeKey)}
+        </h1>
+        <RichTextView
+          value={commission.idea}
+          className="text-muted-foreground"
+        />
       </div>
 
       <dl className="grid grid-cols-2 gap-3 rounded-lg border border-border p-4 text-sm">

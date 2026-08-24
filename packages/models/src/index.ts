@@ -10,6 +10,7 @@ export * from './generated/notifications/notifications';
 export * from './generated/admin/admin';
 export * from './generated/assets/assets';
 export * from './generated/commissions/commissions';
+export * from './generated/commission-types/commission-types';
 export * from './generated/commission-pricing/commission-pricing';
 export * from './generated/projects/projects';
 export * from './generated/schemas';

@@ -5,14 +5,15 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CommissionQueueItemDtoCommissionType } from './commissionQueueItemDtoCommissionType';
 import type { CommissionQueueItemDtoStatus } from './commissionQueueItemDtoStatus';
 
 export interface CommissionQueueItemDto {
   id: string;
-  title: string;
   status: CommissionQueueItemDtoStatus;
-  /** @nullable */
-  commissionType: CommissionQueueItemDtoCommissionType;
+  /**
+     * Also the i18n key: commission.type.<key>
+     * @nullable
+     */
+  commissionTypeKey: string | null;
   createdAt: string;
 }
