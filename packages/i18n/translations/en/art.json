@@ -77,8 +77,7 @@
     "form": {
       "title": "Request a commission",
       "subtitle": "Tell me about what you'd like made. I'll follow up by email.",
-      "titleLabel": "Title",
-      "descriptionLabel": "Description",
+      "ideaLabel": "Your idea",
       "commissionTypeLabel": "Commission type",
       "commissionTypePlaceholder": "Choose a type",
       "optionLabel": "Rendering option",
@@ -94,7 +93,7 @@
       "contactHandleLabel": "Contact handle",
       "attachmentsLabel": "Reference images (optional)",
       "isPublicLabel": "Show this commission in the public queue",
-      "isPublicTooltip": "If checked, your title, type, and current status will be visible on the public /queue page. Your name, email, contact info, description, and reference images always stay private.",
+      "isPublicTooltip": "If checked, your commission type and current status will be visible on the public /queue page. Your name, email, contact info, idea, and reference images always stay private.",
       "submit": "Submit request",
       "submitting": "Submitting...",
       "success": "Your request has been submitted. You'll hear back soon.",
@@ -165,8 +164,9 @@
     },
     "admin": {
       "title": "Commissions",
-      "searchPlaceholder": "Search by client, title, or keyword",
+      "searchPlaceholder": "Search by client name",
       "statusFilterAll": "All statuses",
+      "inactive": "inactive",
       "sort": {
         "createdAt": "Date created",
         "deadline": "Deadline",

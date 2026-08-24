@@ -20,7 +20,7 @@ import {
 export class CommissionQueryDto {
   @ApiProperty({
     required: false,
-    description: 'Match against client name, title, or description',
+    description: 'Match against client name',
   })
   @IsOptional()
   @IsString()

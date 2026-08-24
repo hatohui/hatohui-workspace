@@ -5,11 +5,10 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpdateCommissionQuoteDtoCommissionType } from './updateCommissionQuoteDtoCommissionType';
 
 export interface UpdateCommissionQuoteDto {
   /** @nullable */
-  commissionType?: UpdateCommissionQuoteDtoCommissionType;
+  commissionTypeId?: string | null;
   /** @nullable */
   optionKey?: string | null;
   addonKeys?: string[];

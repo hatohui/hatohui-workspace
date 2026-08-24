@@ -40,3 +40,8 @@ export const PREFERRED_CONTACT_METHODS = [
   'TWITTER',
   'OTHER',
 ] as const;
+
+export const EMPTY_COMMISSION_IDEA: { type: string; content: never[] } = {
+  type: 'doc',
+  content: [],
+};

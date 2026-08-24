@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useTranslation } from '@hatohui/i18n';
 import type { CommissionPublicDto } from '@hatohui/models';
 import { Card, CardContent } from '@hatohui/ui';
+import { useCommissionDisplayLabel } from '@/hooks/useCommissionDisplayLabel';
 
 export function OrderLookupResults({
   items,
@@ -13,6 +14,7 @@ export function OrderLookupResults({
   isLoading: boolean;
 }) {
   const { t } = useTranslation('art');
+  const displayLabel = useCommissionDisplayLabel();
 
   if (isLoading)
     return <p className="text-muted-foreground">{t('common:loading')}</p>;
@@ -25,7 +27,7 @@ export function OrderLookupResults({
         <Link key={item.id} href={`/queue/${item.accessCode}`}>
           <Card className="transition-colors hover:bg-card-hover">
             <CardContent className="flex items-center justify-between py-4">
-              <span>{item.title}</span>
+              <span>{displayLabel(item.commissionTypeKey)}</span>
               <span className="text-sm text-muted-foreground">
                 {t(`commission.status.${item.status}`)}
               </span>

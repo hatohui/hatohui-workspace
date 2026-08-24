@@ -78,8 +78,7 @@
     "form": {
       "title": "コミッション依頼",
       "subtitle": "ご希望の内容を教えてください。メールでご連絡します。",
-      "titleLabel": "タイトル",
-      "descriptionLabel": "詳細",
+      "ideaLabel": "アイデア",
       "commissionTypeLabel": "コミッションタイプ",
       "commissionTypePlaceholder": "タイプを選択",
       "optionLabel": "描画オプション",
@@ -95,7 +94,7 @@
       "contactHandleLabel": "連絡先アカウント",
       "attachmentsLabel": "参考画像（任意）",
       "isPublicLabel": "この依頼を公開キューに表示する",
-      "isPublicTooltip": "チェックすると、タイトル・タイプ・現在のステータスが公開の /queue ページに表示されます。お名前・メール・連絡先・詳細・参考画像は常に非公開です。",
+      "isPublicTooltip": "チェックすると、タイプと現在のステータスが公開の /queue ページに表示されます。お名前・メール・連絡先・アイデア・参考画像は常に非公開です。",
       "submit": "依頼を送信",
       "submitting": "送信中...",
       "success": "依頼を受け付けました。追ってご連絡します。",
@@ -166,8 +165,9 @@
     },
     "admin": {
       "title": "コミッション一覧",
-      "searchPlaceholder": "依頼者名・タイトル・キーワードで検索",
+      "searchPlaceholder": "依頼者名で検索",
       "statusFilterAll": "すべてのステータス",
+      "inactive": "無効",
       "sort": {
         "createdAt": "作成日",
         "deadline": "納期",

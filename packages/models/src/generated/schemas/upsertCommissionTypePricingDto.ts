@@ -5,10 +5,10 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { UpsertCommissionTypePricingDtoType } from './upsertCommissionTypePricingDtoType';
 
 export interface UpsertCommissionTypePricingDto {
-  type: UpsertCommissionTypePricingDtoType;
+  /** Id of the CommissionType to price */
+  commissionTypeId: string;
   basePriceCents: number;
   active?: boolean;
 }

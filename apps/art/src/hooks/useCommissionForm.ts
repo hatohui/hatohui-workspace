@@ -1,19 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { JSONContent } from '@tiptap/react';
 import {
   useSubmitCommission,
-  type SubmitCommissionDtoCommissionType,
   type SubmitCommissionDtoPreferredContactMethod,
 } from '@hatohui/models';
-import { useImageUpload } from '@hatohui/libs';
+import { useImageUpload, isTiptapDocEmpty } from '@hatohui/libs';
+import { EMPTY_COMMISSION_IDEA } from '@/constants/commission';
 import { useCommissionPricingEstimate } from './useCommissionPricingEstimate';
 
 export interface CommissionFormState {
-  title: string;
-  description: string;
+  idea: JSONContent;
   deadline: string;
-  commissionType: string;
+  commissionTypeId: string;
   optionKey: string;
   addonKeys: string[];
   clientName: string;
@@ -24,10 +24,9 @@ export interface CommissionFormState {
 }
 
 const INITIAL_STATE: CommissionFormState = {
-  title: '',
-  description: '',
+  idea: EMPTY_COMMISSION_IDEA,
   deadline: '',
-  commissionType: '',
+  commissionTypeId: '',
   optionKey: '',
   addonKeys: [],
   clientName: '',
@@ -79,11 +78,13 @@ export function useCommissionForm() {
   const submitCommission = useSubmitCommission();
   const { uploadImage, isUploading } = useImageUpload();
   const pricing = useCommissionPricingEstimate(
-    state.commissionType || undefined,
+    state.commissionTypeId || undefined,
     state.optionKey || undefined,
     state.addonKeys,
     state.deadline || undefined,
   );
+
+  const isIdeaEmpty = isTiptapDocEmpty(state.idea);
 
   const update = <K extends keyof CommissionFormState>(
     key: K,
@@ -91,15 +92,15 @@ export function useCommissionForm() {
   ) => setState((prev) => ({ ...prev, [key]: value }));
 
   const submit = async () => {
+    if (isIdeaEmpty) return;
+
     const uploaded = await Promise.all(files.map((file) => uploadImage(file)));
 
     await submitCommission.mutateAsync({
       data: {
-        title: state.title,
-        description: state.description,
+        idea: state.idea,
         deadline: state.deadline || undefined,
-        commissionType: (state.commissionType || undefined) as
-          SubmitCommissionDtoCommissionType | undefined,
+        commissionTypeId: state.commissionTypeId || undefined,
         optionKey: state.optionKey || undefined,
         addonKeys: state.addonKeys,
         clientName: state.clientName,
@@ -132,6 +133,7 @@ export function useCommissionForm() {
     isSubmitting: submitCommission.isPending || isUploading,
     isSubmitted,
     isDraftRestored,
+    isIdeaEmpty,
     pricing,
   };
 }

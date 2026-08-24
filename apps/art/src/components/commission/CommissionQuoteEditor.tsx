@@ -2,10 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import type {
-  CommissionDto,
-  UpdateCommissionQuoteDtoCommissionType,
-} from '@hatohui/models';
+import type { CommissionDto } from '@hatohui/models';
 import {
   Button,
   Input,
@@ -28,7 +25,7 @@ export function CommissionQuoteEditor({
   commission: CommissionDto;
   paymentStatus: CommissionDto['paymentStatus'];
   onSaveQuote: (data: {
-    commissionType?: UpdateCommissionQuoteDtoCommissionType | null;
+    commissionTypeId?: string | null;
     optionKey?: string | null;
     addonKeys?: string[];
     quoteCents?: number | null;
@@ -39,7 +36,7 @@ export function CommissionQuoteEditor({
 }) {
   const { t } = useTranslation('art');
   const pricing = useCommissionPricingEstimate(
-    commission.commissionType ?? undefined,
+    commission.commissionTypeId ?? undefined,
     commission.optionKey ?? undefined,
     commission.addonKeys,
   );
@@ -52,11 +49,9 @@ export function CommissionQuoteEditor({
       <div>
         <Label>{t('commission.form.commissionTypeLabel')}</Label>
         <Select
-          value={commission.commissionType ?? ''}
+          value={commission.commissionTypeId ?? ''}
           onValueChange={(value) =>
-            void onSaveQuote({
-              commissionType: value as UpdateCommissionQuoteDtoCommissionType,
-            })
+            void onSaveQuote({ commissionTypeId: value })
           }
         >
           <SelectTrigger>
@@ -66,8 +61,11 @@ export function CommissionQuoteEditor({
           </SelectTrigger>
           <SelectContent>
             {pricing.types.map((type) => (
-              <SelectItem key={type.type} value={type.type}>
-                {t(`commission.type.${type.type}.label`)}
+              <SelectItem
+                key={type.commissionTypeId}
+                value={type.commissionTypeId}
+              >
+                {t(`commission.type.${type.commissionTypeKey}.label`)}
               </SelectItem>
             ))}
           </SelectContent>

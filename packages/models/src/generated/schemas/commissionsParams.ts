@@ -11,7 +11,7 @@ import type { CommissionsStatus } from './commissionsStatus';
 
 export type CommissionsParams = {
 /**
- * Match against client name, title, or description
+ * Match against client name
  */
 query?: string;
 status?: CommissionsStatus;

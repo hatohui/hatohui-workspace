@@ -78,8 +78,7 @@
     "form": {
       "title": "委托绘画",
       "subtitle": "告诉我你想要什么，我会通过邮件与你联系。",
-      "titleLabel": "标题",
-      "descriptionLabel": "描述",
+      "ideaLabel": "你的想法",
       "commissionTypeLabel": "委托类型",
       "commissionTypePlaceholder": "选择类型",
       "optionLabel": "绘制方式",
@@ -95,7 +94,7 @@
       "contactHandleLabel": "联系账号",
       "attachmentsLabel": "参考图片（可选）",
       "isPublicLabel": "在公开队列中显示此委托",
-      "isPublicTooltip": "勾选后，标题、类型和当前状态将在公开的 /queue 页面显示。你的姓名、邮箱、联系方式、描述和参考图片始终保密。",
+      "isPublicTooltip": "勾选后，类型和当前状态将在公开的 /queue 页面显示。你的姓名、邮箱、联系方式、想法和参考图片始终保密。",
       "submit": "提交请求",
       "submitting": "正在提交...",
       "success": "你的请求已提交，我会尽快回复你。",
@@ -166,8 +165,9 @@
     },
     "admin": {
       "title": "委托订单",
-      "searchPlaceholder": "按客户、标题或关键词搜索",
+      "searchPlaceholder": "按客户姓名搜索",
       "statusFilterAll": "所有状态",
+      "inactive": "已停用",
       "sort": {
         "createdAt": "创建日期",
         "deadline": "截止日期",

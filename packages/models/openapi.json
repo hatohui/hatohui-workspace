@@ -2003,7 +2003,7 @@
             "name": "query",
             "required": false,
             "in": "query",
-            "description": "Match against client name, title, or description",
+            "description": "Match against client name",
             "schema": {
               "type": "string"
             }
@@ -2656,6 +2656,133 @@
         "summary": "Add an internal or client-facing note to a commission",
         "tags": [
           "commissions"
+        ]
+      }
+    },
+    "/commission-types": {
+      "get": {
+        "operationId": "commissionTypes",
+        "parameters": [
+          {
+            "name": "includeInactive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionTypeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List commission types (active only unless includeInactive=true)",
+        "tags": [
+          "commission-types"
+        ]
+      },
+      "post": {
+        "operationId": "createCommissionType",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a commission type (also creates its linked Tag)",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/{id}": {
+      "put": {
+        "operationId": "updateCommissionType",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a commission type",
+        "tags": [
+          "commission-types"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCommissionType",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a commission type",
+        "tags": [
+          "commission-types"
         ]
       }
     },
@@ -4963,26 +5090,18 @@
       "SubmitCommissionDto": {
         "type": "object",
         "properties": {
-          "title": {
-            "type": "string",
-            "example": "Full-body character commission"
-          },
-          "description": {
-            "type": "string",
-            "example": "Full color, one character, flat background."
+          "idea": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document describing the idea"
           },
           "deadline": {
             "type": "string",
             "example": "2026-09-01"
           },
-          "commissionType": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ]
+            "description": "Id of a CommissionType"
           },
           "optionKey": {
             "type": "string",
@@ -5026,12 +5145,11 @@
           "isPublic": {
             "type": "boolean",
             "default": false,
-            "description": "Whether this commission (title, status, type) should show in the public /queue"
+            "description": "Whether this commission (status, type) should show in the public /queue"
           }
         },
         "required": [
-          "title",
-          "description",
+          "idea",
           "clientName",
           "clientEmail"
         ]
@@ -5080,13 +5198,10 @@
             "type": "string",
             "example": "clx1234567890"
           },
-          "title": {
-            "type": "string",
-            "example": "Full-body character commission"
-          },
-          "description": {
-            "type": "string",
-            "example": "Full color, one character, flat background."
+          "idea": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document"
           },
           "deadline": {
             "type": "string",
@@ -5120,15 +5235,14 @@
             "type": "boolean",
             "description": "Whether this commission is hidden from any public showcase"
           },
-          "commissionType": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ],
             "nullable": true
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Also the i18n key: commission.type.<key>"
           },
           "optionKey": {
             "type": "string",
@@ -5207,13 +5321,13 @@
         },
         "required": [
           "id",
-          "title",
-          "description",
+          "idea",
           "deadline",
           "status",
           "paymentStatus",
           "isHidden",
-          "commissionType",
+          "commissionTypeId",
+          "commissionTypeKey",
           "optionKey",
           "addonKeys",
           "quoteCents",
@@ -5238,10 +5352,6 @@
             "type": "string",
             "example": "clx1234567890"
           },
-          "title": {
-            "type": "string",
-            "example": "Full-body character commission"
-          },
           "status": {
             "type": "string",
             "enum": [
@@ -5254,15 +5364,10 @@
               "CANCELLED"
             ]
           },
-          "commissionType": {
+          "commissionTypeKey": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ],
-            "nullable": true
+            "nullable": true,
+            "description": "Also the i18n key: commission.type.<key>"
           },
           "createdAt": {
             "type": "string",
@@ -5271,9 +5376,8 @@
         },
         "required": [
           "id",
-          "title",
           "status",
-          "commissionType",
+          "commissionTypeKey",
           "createdAt"
         ]
       },
@@ -5302,13 +5406,10 @@
             "type": "string",
             "description": "Private code used to view/manage this commission"
           },
-          "title": {
-            "type": "string",
-            "example": "Full-body character commission"
-          },
-          "description": {
-            "type": "string",
-            "example": "Full color, one character, flat background."
+          "idea": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document"
           },
           "deadline": {
             "type": "string",
@@ -5338,15 +5439,14 @@
             ],
             "example": "NOT_YET"
           },
-          "commissionType": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ],
             "nullable": true
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Also the i18n key: commission.type.<key>"
           },
           "quoteCents": {
             "type": "number",
@@ -5380,12 +5480,12 @@
         "required": [
           "id",
           "accessCode",
-          "title",
-          "description",
+          "idea",
           "deadline",
           "status",
           "paymentStatus",
-          "commissionType",
+          "commissionTypeId",
+          "commissionTypeKey",
           "quoteCents",
           "referenceAssets",
           "deliverableAssets",
@@ -5447,13 +5547,10 @@
             "type": "string",
             "description": "Private code used to view/manage this commission"
           },
-          "title": {
-            "type": "string",
-            "example": "Full-body character commission"
-          },
-          "description": {
-            "type": "string",
-            "example": "Full color, one character, flat background."
+          "idea": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document"
           },
           "deadline": {
             "type": "string",
@@ -5483,15 +5580,14 @@
             ],
             "example": "NOT_YET"
           },
-          "commissionType": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ],
             "nullable": true
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Also the i18n key: commission.type.<key>"
           },
           "quoteCents": {
             "type": "number",
@@ -5531,12 +5627,12 @@
         "required": [
           "id",
           "accessCode",
-          "title",
-          "description",
+          "idea",
           "deadline",
           "status",
           "paymentStatus",
-          "commissionType",
+          "commissionTypeId",
+          "commissionTypeKey",
           "quoteCents",
           "referenceAssets",
           "deliverableAssets",
@@ -5674,13 +5770,10 @@
             "type": "string",
             "example": "clx1234567890"
           },
-          "title": {
-            "type": "string",
-            "example": "Full-body character commission"
-          },
-          "description": {
-            "type": "string",
-            "example": "Full color, one character, flat background."
+          "idea": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document"
           },
           "deadline": {
             "type": "string",
@@ -5714,15 +5807,14 @@
             "type": "boolean",
             "description": "Whether this commission is hidden from any public showcase"
           },
-          "commissionType": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ],
             "nullable": true
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Also the i18n key: commission.type.<key>"
           },
           "optionKey": {
             "type": "string",
@@ -5813,13 +5905,13 @@
         },
         "required": [
           "id",
-          "title",
-          "description",
+          "idea",
           "deadline",
           "status",
           "paymentStatus",
           "isHidden",
-          "commissionType",
+          "commissionTypeId",
+          "commissionTypeKey",
           "optionKey",
           "addonKeys",
           "quoteCents",
@@ -5906,14 +5998,8 @@
       "UpdateCommissionQuoteDto": {
         "type": "object",
         "properties": {
-          "commissionType": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ],
             "nullable": true
           },
           "optionKey": {
@@ -6003,21 +6089,87 @@
           "visibility"
         ]
       },
+      "CommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "example": "ICON",
+            "description": "Also the i18n key: commission.type.<key>"
+          },
+          "no": {
+            "type": "number",
+            "description": "Display order, ascending"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "tagId": {
+            "type": "string"
+          },
+          "tagName": {
+            "type": "string",
+            "description": "Name of the linked Tag, used for gallery filtering"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "no",
+          "active",
+          "tagId",
+          "tagName",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpsertCommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "ICON"
+          },
+          "no": {
+            "type": "number",
+            "default": 0
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "key"
+        ]
+      },
       "CommissionTypePricingDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "type": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ],
-            "description": "Also the i18n key: commission.type.<type>"
+            "description": "Id of the priced CommissionType"
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "example": "ICON",
+            "description": "Also the i18n key: commission.type.<key>"
+          },
+          "tagName": {
+            "type": "string",
+            "description": "Name of the linked Tag, used for gallery filtering"
           },
           "basePriceCents": {
             "type": "number",
@@ -6033,7 +6185,9 @@
         },
         "required": [
           "id",
-          "type",
+          "commissionTypeId",
+          "commissionTypeKey",
+          "tagName",
           "basePriceCents",
           "active",
           "updatedAt"
@@ -6172,14 +6326,9 @@
       "UpsertCommissionTypePricingDto": {
         "type": "object",
         "properties": {
-          "type": {
+          "commissionTypeId": {
             "type": "string",
-            "enum": [
-              "ICON",
-              "HALF_BODY",
-              "FULL_BODY",
-              "SKETCH_PAGE"
-            ]
+            "description": "Id of the CommissionType to price"
           },
           "basePriceCents": {
             "type": "number",
@@ -6191,7 +6340,7 @@
           }
         },
         "required": [
-          "type",
+          "commissionTypeId",
           "basePriceCents"
         ]
       },

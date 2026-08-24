@@ -17,7 +17,7 @@ export function CommissionTypePriceRow({
 
   return (
     <li className="flex items-center justify-between gap-2 rounded-md bg-card p-2 text-sm">
-      <span>{t(`commission.type.${item.type}.label`)}</span>
+      <span>{t(`commission.type.${item.commissionTypeKey}.label`)}</span>
       <div className="flex items-center gap-2">
         <Input
           type="number"

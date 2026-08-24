@@ -248,7 +248,7 @@ model Asset {
   size        Int
   width       Int?
   height      Int?
-  tags        String[]    @default([])
+  tags        Tag[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -300,11 +300,35 @@ enum CommissionNoteVisibility {
   CLIENT
 }
 
-enum CommissionType {
-  ICON
-  HALF_BODY
-  FULL_BODY
-  SKETCH_PAGE
+/// A tag is a searchable label the public gallery filters on. A CommissionType
+/// always owns exactly one Tag (created alongside it); Assets can carry any
+/// number of Tags, including ones that happen to match a CommissionType's tag.
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assets         Asset[]
+  commissionType CommissionType?
+}
+
+/// Admin-manageable commission type (e.g. Icon, Full Body). Replaces the old
+/// fixed CommissionType enum so admins can add new types at runtime. `key` is
+/// also the i18n key suffix: commission.type.<key>.label.
+model CommissionType {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  no        Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tagId String @unique
+  tag   Tag    @relation(fields: [tagId], references: [id])
+
+  pricing     CommissionTypePricing?
+  commissions Commission[]
 }
 
 enum PreferredContactMethod {
@@ -317,11 +341,12 @@ enum PreferredContactMethod {
 
 /// Admin-configurable base price for a CommissionType, in USD cents.
 model CommissionTypePricing {
-  id             String         @id @default(cuid())
-  type           CommissionType @unique
-  basePriceCents Int
-  active         Boolean        @default(true)
-  updatedAt      DateTime       @updatedAt
+  id               String         @id @default(cuid())
+  commissionTypeId String         @unique
+  commissionType   CommissionType @relation(fields: [commissionTypeId], references: [id], onDelete: Cascade)
+  basePriceCents   Int
+  active           Boolean        @default(true)
+  updatedAt        DateTime       @updatedAt
 }
 
 /// Admin-configurable rendering option (e.g. "Sketched" at -40%), applied as
@@ -355,19 +380,19 @@ model CommissionRushFeeSetting {
 }
 
 model Commission {
-  id          String    @id @default(cuid())
-  title       String
-  description String
-  deadline    DateTime?
+  id       String    @id @default(cuid())
+  idea     Json
+  deadline DateTime?
 
   status        CommissionStatus @default(NOT_YET_STARTED)
   paymentStatus PaymentStatus    @default(NOT_YET)
   isHidden      Boolean          @default(false)
 
-  commissionType CommissionType?
-  optionKey      String?
-  addonKeys      String[]        @default([])
-  quoteCents     Int?
+  commissionTypeId String?
+  commissionType   CommissionType? @relation(fields: [commissionTypeId], references: [id], onDelete: SetNull)
+  optionKey        String?
+  addonKeys        String[]        @default([])
+  quoteCents       Int?
 
   clientName             String
   clientEmail            String

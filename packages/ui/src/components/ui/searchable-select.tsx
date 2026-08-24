@@ -69,10 +69,7 @@ function SearchableSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn(
-            'w-full justify-between gap-2 font-normal',
-            className,
-          )}
+          className={cn('w-full justify-between gap-2 font-normal', className)}
           onClick={() => setOpen((previous) => !previous)}
         >
           <span

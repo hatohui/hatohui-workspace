@@ -5,14 +5,15 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { SubmitCommissionDtoCommissionType } from './submitCommissionDtoCommissionType';
+import type { SubmitCommissionDtoIdea } from './submitCommissionDtoIdea';
 import type { SubmitCommissionDtoPreferredContactMethod } from './submitCommissionDtoPreferredContactMethod';
 
 export interface SubmitCommissionDto {
-  title: string;
-  description: string;
+  /** Tiptap/ProseMirror JSON document describing the idea */
+  idea: SubmitCommissionDtoIdea;
   deadline?: string;
-  commissionType?: SubmitCommissionDtoCommissionType;
+  /** Id of a CommissionType */
+  commissionTypeId?: string;
   /** Key of a CommissionOptionPricing */
   optionKey?: string;
   addonKeys?: string[];
@@ -22,6 +23,6 @@ export interface SubmitCommissionDto {
   contactHandle?: string;
   /** Object keys returned by POST /images/sign */
   referenceAssets?: string[];
-  /** Whether this commission (title, status, type) should show in the public /queue */
+  /** Whether this commission (status, type) should show in the public /queue */
   isPublic?: boolean;
 }

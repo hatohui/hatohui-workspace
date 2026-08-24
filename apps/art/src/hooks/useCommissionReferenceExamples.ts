@@ -7,7 +7,7 @@ const EXAMPLES_PAGE_SIZE = 6;
 export function useCommissionReferenceExamples(tag: string | undefined) {
   const query = useAssets(
     {
-      tag: tag?.toLowerCase(),
+      tag,
       sort: 'newest',
       page: 1,
       pageSize: EXAMPLES_PAGE_SIZE,

@@ -77,8 +77,7 @@
     "form": {
       "title": "Đặt vẽ tranh",
       "subtitle": "Kể cho Hato nghe bạn muốn vẽ gì nhé, Hato sẽ liên hệ lại qua email.",
-      "titleLabel": "Tiêu đề",
-      "descriptionLabel": "Mô tả",
+      "ideaLabel": "Ý tưởng của bạn",
       "commissionTypeLabel": "Loại tranh",
       "commissionTypePlaceholder": "Chọn loại",
       "optionLabel": "Kiểu vẽ",
@@ -94,7 +93,7 @@
       "contactHandleLabel": "Tên tài khoản liên hệ",
       "attachmentsLabel": "Ảnh tham khảo (không bắt buộc)",
       "isPublicLabel": "Hiển thị đơn này trong hàng đợi công khai",
-      "isPublicTooltip": "Nếu chọn, tiêu đề, loại tranh và trạng thái hiện tại sẽ hiển thị công khai trên trang /queue. Tên, email, thông tin liên hệ, mô tả và ảnh tham khảo của bạn luôn được giữ riêng tư.",
+      "isPublicTooltip": "Nếu chọn, loại tranh và trạng thái hiện tại sẽ hiển thị công khai trên trang /queue. Tên, email, thông tin liên hệ, ý tưởng và ảnh tham khảo của bạn luôn được giữ riêng tư.",
       "submit": "Gửi yêu cầu",
       "submitting": "Đang gửi...",
       "success": "Yêu cầu của bạn đã được gửi. Bạn sẽ sớm nhận được phản hồi.",
@@ -165,8 +164,9 @@
     },
     "admin": {
       "title": "Đơn đặt vẽ",
-      "searchPlaceholder": "Tìm theo khách hàng, tiêu đề hoặc từ khóa",
+      "searchPlaceholder": "Tìm theo tên khách hàng",
       "statusFilterAll": "Tất cả trạng thái",
+      "inactive": "ngừng dùng",
       "sort": {
         "createdAt": "Ngày tạo",
         "deadline": "Thời hạn",
