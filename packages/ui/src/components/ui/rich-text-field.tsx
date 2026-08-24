@@ -6,10 +6,23 @@ import {
 } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import { Bold, Italic, List, ListOrdered } from 'lucide-react';
+import {
+  Bold,
+  Code,
+  Heading2,
+  Italic,
+  List,
+  ListOrdered,
+  Quote,
+  Redo2,
+  Strikethrough,
+  Undo2,
+} from 'lucide-react';
 
 import { cn } from '../../lib/utils';
 import { Toggle } from './toggle';
+import { Button } from './button';
+import { RICH_TEXT_PROSE_CLASSES } from './rich-text-prose';
 
 export interface RichTextFieldProps {
   id?: string;
@@ -55,6 +68,7 @@ function RichTextField({
         editor={editor}
         className={cn(
           'min-h-20 w-full resize-y overflow-auto px-3 py-2 text-base md:text-sm',
+          RICH_TEXT_PROSE_CLASSES,
           '[&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0 [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-muted-foreground [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]',
         )}
       />
@@ -66,7 +80,7 @@ function RichTextToolbar({ editor }: { editor: Editor | null }) {
   if (!editor) return null;
 
   return (
-    <div className="flex items-center gap-1 border-b border-input px-1 py-1">
+    <div className="flex flex-wrap items-center gap-1 border-b border-input px-1 py-1">
       <Toggle
         size="sm"
         pressed={editor.isActive('bold')}
@@ -85,6 +99,24 @@ function RichTextToolbar({ editor }: { editor: Editor | null }) {
       </Toggle>
       <Toggle
         size="sm"
+        pressed={editor.isActive('strike')}
+        onPressedChange={() => editor.chain().focus().toggleStrike().run()}
+        aria-label="Strikethrough"
+      >
+        <Strikethrough />
+      </Toggle>
+      <Toggle
+        size="sm"
+        pressed={editor.isActive('heading', { level: 2 })}
+        onPressedChange={() =>
+          editor.chain().focus().toggleHeading({ level: 2 }).run()
+        }
+        aria-label="Heading"
+      >
+        <Heading2 />
+      </Toggle>
+      <Toggle
+        size="sm"
         pressed={editor.isActive('bulletList')}
         onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
         aria-label="Bullet list"
@@ -99,6 +131,43 @@ function RichTextToolbar({ editor }: { editor: Editor | null }) {
       >
         <ListOrdered />
       </Toggle>
+      <Toggle
+        size="sm"
+        pressed={editor.isActive('blockquote')}
+        onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
+        aria-label="Quote"
+      >
+        <Quote />
+      </Toggle>
+      <Toggle
+        size="sm"
+        pressed={editor.isActive('code')}
+        onPressedChange={() => editor.chain().focus().toggleCode().run()}
+        aria-label="Inline code"
+      >
+        <Code />
+      </Toggle>
+      <div className="mx-1 h-5 w-px bg-border" />
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        disabled={!editor.can().undo()}
+        onClick={() => editor.chain().focus().undo().run()}
+        aria-label="Undo"
+      >
+        <Undo2 />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        disabled={!editor.can().redo()}
+        onClick={() => editor.chain().focus().redo().run()}
+        aria-label="Redo"
+      >
+        <Redo2 />
+      </Button>
     </div>
   );
 }

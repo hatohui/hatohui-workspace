@@ -3,6 +3,7 @@ import { useEditor, EditorContent, type JSONContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 import { cn } from '../../lib/utils';
+import { RICH_TEXT_PROSE_CLASSES } from './rich-text-prose';
 
 export interface RichTextViewProps {
   value: JSONContent;
@@ -27,11 +28,7 @@ function RichTextView({ value, className }: RichTextViewProps) {
       data-slot="rich-text-view"
       className={cn(
         'text-sm leading-relaxed',
-        '[&_p]:mb-2 [&_p:last-child]:mb-0',
-        '[&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5',
-        '[&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5',
-        '[&_strong]:font-semibold [&_em]:italic',
-        '[&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5',
+        RICH_TEXT_PROSE_CLASSES,
         className,
       )}
     >
