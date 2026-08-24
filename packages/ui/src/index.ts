@@ -6,6 +6,7 @@ export * from './components/ui/rich-text-view';
 export * from './components/ui/label';
 export * from './components/ui/card';
 export * from './components/ui/checkbox';
+export * from './components/ui/toggle';
 export * from './components/ui/select';
 export * from './components/ui/searchable-select';
 export * from './components/ui/avatar';
