@@ -12,6 +12,7 @@ export function useConfirmLogout() {
     confirmLogout: async () => {
       setConfirming(false);
       await logout();
+      window.location.href = '/';
     },
   };
 }

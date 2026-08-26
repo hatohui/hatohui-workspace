@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Database } from '@/infra/db';
 import { AuthService } from '@/modules/auth/services/auth.service';
-import { type Project, type User } from '@prisma/client';
+import { type Project, type Prisma, type User } from '@prisma/client';
 import {
   CreateProjectDto,
   ProjectDto,
@@ -9,8 +9,15 @@ import {
   UpdateProjectVisibilityDto,
 } from '@/modules/projects/dto/project.dto';
 
-type ProjectWithCommissions = Project & {
-  commissions: { deliverableAssets: string[] }[];
+const artworksInclude = {
+  artworks: {
+    where: { isFinal: true },
+    select: { images: true },
+  },
+} satisfies Prisma.ProjectInclude;
+
+type ProjectWithArtworks = Project & {
+  artworks: { images: string[] }[];
 };
 
 @Injectable()
@@ -20,12 +27,15 @@ export class ProjectsService {
     private readonly auth: AuthService,
   ) {}
 
-  async list(viewer: User | null): Promise<ProjectDto[]> {
+  async list(viewer: User | null, artistId?: string): Promise<ProjectDto[]> {
     const isAdmin = await this.auth.isAdmin(viewer);
     const projects = await this.db.project.findMany({
-      where: isAdmin ? {} : { isHidden: false },
+      where: {
+        ...(artistId ? { artistId } : {}),
+        ...(isAdmin ? {} : { isHidden: false }),
+      },
       orderBy: { createdAt: 'desc' },
-      include: { commissions: { select: { deliverableAssets: true } } },
+      include: artworksInclude,
     });
     return projects.map(toProjectDto);
   }
@@ -38,46 +48,60 @@ export class ProjectsService {
     return toProjectDto(project);
   }
 
-  async create(dto: CreateProjectDto): Promise<ProjectDto> {
+  async create(artistId: string, dto: CreateProjectDto): Promise<ProjectDto> {
     const project = await this.db.project.create({
-      data: { title: dto.title, description: dto.description ?? null },
-      include: { commissions: { select: { deliverableAssets: true } } },
+      data: {
+        artistId,
+        title: dto.title,
+        description: dto.description ?? null,
+        brief: dto.brief ?? undefined,
+      },
+      include: artworksInclude,
     });
     return toProjectDto(project);
   }
 
-  async update(id: string, dto: UpdateProjectDto): Promise<ProjectDto> {
-    await this.assertExists(id);
+  async update(
+    artistId: string,
+    id: string,
+    dto: UpdateProjectDto,
+  ): Promise<ProjectDto> {
+    await this.assertOwned(artistId, id);
     const project = await this.db.project.update({
       where: { id },
-      data: { title: dto.title, description: dto.description ?? null },
-      include: { commissions: { select: { deliverableAssets: true } } },
+      data: {
+        title: dto.title,
+        description: dto.description ?? null,
+        brief: dto.brief ?? undefined,
+      },
+      include: artworksInclude,
     });
     return toProjectDto(project);
   }
 
   async updateVisibility(
+    artistId: string,
     id: string,
     dto: UpdateProjectVisibilityDto,
   ): Promise<ProjectDto> {
-    await this.assertExists(id);
+    await this.assertOwned(artistId, id);
     const project = await this.db.project.update({
       where: { id },
       data: { isHidden: dto.isHidden },
-      include: { commissions: { select: { deliverableAssets: true } } },
+      include: artworksInclude,
     });
     return toProjectDto(project);
   }
 
-  async remove(id: string): Promise<void> {
-    await this.assertExists(id);
+  async remove(artistId: string, id: string): Promise<void> {
+    await this.assertOwned(artistId, id);
     await this.db.project.delete({ where: { id } });
   }
 
-  private async findOrThrow(id: string): Promise<ProjectWithCommissions> {
+  private async findOrThrow(id: string): Promise<ProjectWithArtworks> {
     const project = await this.db.project.findUnique({
       where: { id },
-      include: { commissions: { select: { deliverableAssets: true } } },
+      include: artworksInclude,
     });
     if (!project) {
       throw new NotFoundException(`Project ${id} not found`);
@@ -85,26 +109,26 @@ export class ProjectsService {
     return project;
   }
 
-  private async assertExists(id: string): Promise<void> {
+  private async assertOwned(artistId: string, id: string): Promise<void> {
     const project = await this.db.project.findUnique({ where: { id } });
-    if (!project) {
+    if (!project || project.artistId !== artistId) {
       throw new NotFoundException(`Project ${id} not found`);
     }
   }
 }
 
-function toProjectDto(project: ProjectWithCommissions): ProjectDto {
-  const deliverableAssets = project.commissions.flatMap(
-    (commission) => commission.deliverableAssets,
-  );
+function toProjectDto(project: ProjectWithArtworks): ProjectDto {
+  const artworkImages = project.artworks.flatMap((artwork) => artwork.images);
   return {
     id: project.id,
+    artistId: project.artistId,
     title: project.title,
     description: project.description,
+    brief: project.brief,
     isHidden: project.isHidden,
-    coverAssetUrl: deliverableAssets[0] ?? null,
-    commissionCount: project.commissions.length,
-    deliverableAssets,
+    coverImageUrl: artworkImages[0] ?? null,
+    artworkCount: project.artworks.length,
+    artworkImages,
     createdAt: project.createdAt.toISOString(),
     updatedAt: project.updatedAt.toISOString(),
   };

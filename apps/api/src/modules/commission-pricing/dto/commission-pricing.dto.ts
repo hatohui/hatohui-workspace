@@ -1,67 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Min,
 } from 'class-validator';
+import { PriceMode } from '@prisma/client';
 
-export class CommissionTypePricingDto {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty({ description: 'Id of the priced CommissionType' })
-  commissionTypeId: string;
-
-  @ApiProperty({
-    example: 'ICON',
-    description: 'Also the i18n key: commission.type.<key>',
-  })
-  commissionTypeKey: string;
-
-  @ApiProperty({
-    description: 'Name of the linked Tag, used for gallery filtering',
-  })
-  tagName: string;
-
-  @ApiProperty({ example: 3000, description: 'Base price in USD cents' })
-  basePriceCents: number;
-
-  @ApiProperty()
-  active: boolean;
-
-  @ApiProperty()
-  updatedAt: string;
-}
-
-export class UpsertCommissionTypePricingDto {
-  @ApiProperty({ description: 'Id of the CommissionType to price' })
-  @IsString()
-  @IsNotEmpty()
-  commissionTypeId: string;
-
-  @ApiProperty({ example: 3000 })
-  @IsInt()
-  @Min(0)
-  basePriceCents: number;
-
-  @ApiProperty({ default: true, required: false })
-  @IsOptional()
-  @IsBoolean()
-  active?: boolean;
-}
+export { PriceMode };
 
 export class CommissionOptionPricingDto {
   @ApiProperty()
   id: string;
 
+  @ApiProperty()
+  artistId: string;
+
   @ApiProperty({
     example: 'SKETCHED',
-    description: 'Also the i18n key: commission.option.<key>',
+    description:
+      'Internal slug, derived from label at creation and never shown to the artist',
   })
   key: string;
+
+  @ApiProperty({ example: 'Sketched' })
+  label: string;
 
   @ApiProperty({
     example: -40,
@@ -77,10 +43,10 @@ export class CommissionOptionPricingDto {
 }
 
 export class UpsertCommissionOptionPricingDto {
-  @ApiProperty({ example: 'SKETCHED' })
+  @ApiProperty({ example: 'Sketched' })
   @IsString()
   @IsNotEmpty()
-  key: string;
+  label: string;
 
   @ApiProperty({ example: -40 })
   @IsInt()
@@ -96,17 +62,34 @@ export class CommissionAddonPricingDto {
   @ApiProperty()
   id: string;
 
+  @ApiProperty()
+  artistId: string;
+
   @ApiProperty({
     example: 'BACKGROUND',
-    description: 'Also the i18n key: commission.addon.<key>',
+    description:
+      'Internal slug, derived from label at creation and never shown to the artist',
   })
   key: string;
 
+  @ApiProperty({ example: 'Background' })
+  label: string;
+
+  @ApiProperty({ enum: PriceMode })
+  priceMode: PriceMode;
+
   @ApiProperty({
     example: 3000,
-    description: 'Minimum price in USD cents ("from $X")',
+    description:
+      'FIXED: the price. STARTING_FROM: the floor ("from X"). RANGE: the lower bound. In the artist\'s currency\'s smallest unit.',
   })
-  minPriceCents: number;
+  minPrice: number;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Upper bound — set only when priceMode is RANGE',
+  })
+  maxPrice: number | null;
 
   @ApiProperty()
   active: boolean;
@@ -116,15 +99,29 @@ export class CommissionAddonPricingDto {
 }
 
 export class UpsertCommissionAddonPricingDto {
-  @ApiProperty({ example: 'BACKGROUND' })
+  @ApiProperty({ example: 'Background' })
   @IsString()
   @IsNotEmpty()
-  key: string;
+  label: string;
+
+  @ApiProperty({ enum: PriceMode, default: PriceMode.STARTING_FROM })
+  @IsEnum(PriceMode)
+  priceMode: PriceMode;
 
   @ApiProperty({ example: 3000 })
   @IsInt()
   @Min(0)
-  minPriceCents: number;
+  minPrice: number;
+
+  @ApiProperty({
+    required: false,
+    nullable: true,
+    description: 'Required (and > minPrice) when priceMode is RANGE',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  maxPrice?: number | null;
 
   @ApiProperty({ default: true, required: false })
   @IsOptional()
@@ -139,8 +136,11 @@ export class CommissionRushFeeSettingDto {
   })
   thresholdDays: number;
 
-  @ApiProperty({ example: 2500, description: 'Rush fee in USD cents' })
-  feeCents: number;
+  @ApiProperty({
+    example: 2500,
+    description: "Rush fee, in the artist's currency's smallest unit",
+  })
+  feeAmount: number;
 }
 
 export class UpsertCommissionRushFeeSettingDto {
@@ -152,19 +152,19 @@ export class UpsertCommissionRushFeeSettingDto {
   @ApiProperty({ example: 2500 })
   @IsInt()
   @Min(0)
-  feeCents: number;
+  feeAmount: number;
 }
 
 export class CommissionPricingDto {
-  @ApiProperty({ type: CommissionTypePricingDto, isArray: true })
-  types: CommissionTypePricingDto[];
-
   @ApiProperty({ type: CommissionOptionPricingDto, isArray: true })
   options: CommissionOptionPricingDto[];
 
   @ApiProperty({ type: CommissionAddonPricingDto, isArray: true })
   addons: CommissionAddonPricingDto[];
 
-  @ApiProperty({ type: CommissionRushFeeSettingDto })
-  rushFee: CommissionRushFeeSettingDto;
+  @ApiProperty({ type: CommissionRushFeeSettingDto, nullable: true })
+  rushFee: CommissionRushFeeSettingDto | null;
+
+  @ApiProperty({ example: 'USD' })
+  currency: string;
 }

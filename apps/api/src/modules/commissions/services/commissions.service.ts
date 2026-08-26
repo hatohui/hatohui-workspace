@@ -2,9 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { EmailService } from '@/infra/email';
+import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
+import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
 import {
   AppScope,
+  Visibility,
+  type Client,
   type Commission,
+  type CommissionDetail,
   type CommissionType,
   type Prisma,
   type User,
@@ -16,16 +21,15 @@ import type {
 import { PaginatedCommissionsDto } from '@/modules/commissions/dto/commission-query.dto';
 import {
   AddReferenceAssetsDto,
-  AssignCommissionDto,
   CommissionDto,
   CommissionPublicDto,
+  CreatePrivateCommissionDto,
   DeliverCommissionDto,
   SubmitCommissionDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
   UpdateCommissionStepDto,
   UpdateCommissionVisibilityDto,
-  UpdateCommissionProjectDto,
   UpdatePaymentStatusDto,
 } from '@/modules/commissions/dto/commission.dto';
 import {
@@ -33,25 +37,29 @@ import {
   CommissionPublicDetailDto,
 } from '@/modules/commissions/dto/commission-detail.dto';
 import {
-  CommissionNoteDto,
-  CreateCommissionNoteDto,
-} from '@/modules/commissions/dto/commission-note.dto';
+  CommentDto,
+  CreateCommentDto,
+} from '@/modules/commissions/dto/comment.dto';
 import { CommissionStatusHistoryDto } from '@/modules/commissions/dto/commission-history.dto';
 import { CommissionQueueDto } from '@/modules/commissions/dto/commission-queue.dto';
-import { CommissionNoteVisibility } from '@prisma/client';
 import {
-  COMMISSION_RECEIVED_NOTIFICATION_CONFIG_TYPE,
   DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE,
   NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE,
   QUEUE_STATUSES,
   QUEUE_STATUS_RANK,
 } from '@/modules/commissions/commissions.constants';
 
-const SORT_FIELD: Record<CommissionSortOption, keyof Commission> = {
-  createdAt: 'createdAt',
-  deadline: 'deadline',
-  quote: 'quoteCents',
+const DEFAULT_CURRENCY = 'USD';
+
+type CommissionWithRelations = Commission & {
+  detail: (CommissionDetail & { commissionType: CommissionType | null }) | null;
+  client: Client;
 };
+
+const commissionInclude = {
+  detail: { include: { commissionType: true } },
+  client: true,
+} satisfies Prisma.CommissionInclude;
 
 @Injectable()
 export class CommissionsService {
@@ -59,26 +67,36 @@ export class CommissionsService {
     private readonly db: Database,
     private readonly storage: Storage,
     private readonly email: EmailService,
+    private readonly userSettings: UserSettingsService,
   ) {}
 
   async submit(dto: SubmitCommissionDto): Promise<CommissionDto> {
+    const currency = await this.currencyFor(dto.artistId);
+    const client = await this.resolveClient(dto);
+
     const commission = await this.db.commission.create({
       data: {
-        idea: dto.idea,
-        deadline: dto.deadline ? new Date(dto.deadline) : null,
-        commissionTypeId: dto.commissionTypeId ?? null,
-        optionKey: dto.optionKey ?? null,
-        addonKeys: dto.addonKeys ?? [],
-        clientName: dto.clientName,
-        clientEmail: dto.clientEmail,
-        preferredContactMethod: dto.preferredContactMethod ?? undefined,
-        contactHandle: dto.contactHandle ?? null,
-        referenceAssets:
-          dto.referenceAssets?.map((key) => this.storage.getPublicUrl(key)) ??
-          [],
-        isHidden: !dto.isPublic,
+        artistId: dto.artistId,
+        clientId: client.id,
+        commissionOpeningId: dto.commissionOpeningId ?? null,
+        status: 'PENDING',
+        detail: {
+          create: {
+            idea: dto.idea,
+            deadline: dto.deadline ? new Date(dto.deadline) : null,
+            commissionTypeId: dto.commissionTypeId ?? null,
+            optionKey: dto.optionKey ?? null,
+            addonKeys: dto.addonKeys ?? [],
+            currency,
+            referenceAssets:
+              dto.referenceAssets?.map((key) =>
+                this.storage.getPublicUrl(key),
+              ) ?? [],
+            isHiddenInQueue: !dto.isPublic,
+          },
+        },
       },
-      include: { commissionType: true },
+      include: commissionInclude,
     });
 
     await this.notifyCommissionReceived(commission);
@@ -86,7 +104,42 @@ export class CommissionsService {
     return toCommissionDto(commission);
   }
 
+  async createPrivate(
+    artistId: string,
+    dto: CreatePrivateCommissionDto,
+  ): Promise<CommissionDto> {
+    const currency = await this.currencyFor(artistId);
+    const client = await this.resolveClient(dto);
+
+    const commission = await this.db.commission.create({
+      data: {
+        artistId,
+        clientId: client.id,
+        status: 'NOT_YET_STARTED',
+        detail: {
+          create: {
+            idea: dto.idea,
+            deadline: dto.deadline ? new Date(dto.deadline) : null,
+            commissionTypeId: dto.commissionTypeId ?? null,
+            optionKey: dto.optionKey ?? null,
+            addonKeys: dto.addonKeys ?? [],
+            currency,
+            referenceAssets:
+              dto.referenceAssets?.map((key) =>
+                this.storage.getPublicUrl(key),
+              ) ?? [],
+            isHiddenInQueue: !dto.isPublic,
+          },
+        },
+      },
+      include: commissionInclude,
+    });
+
+    return toCommissionDto(commission);
+  }
+
   async list(
+    artistId: string,
     query: string | undefined,
     status: Commission['status'] | undefined,
     sort: CommissionSortOption,
@@ -95,17 +148,27 @@ export class CommissionsService {
     pageSize: number,
   ): Promise<PaginatedCommissionsDto> {
     const where: Prisma.CommissionWhereInput = {
+      artistId,
       AND: [
         status ? { status } : {},
-        query ? { clientName: { contains: query, mode: 'insensitive' } } : {},
+        query
+          ? { client: { name: { contains: query, mode: 'insensitive' } } }
+          : {},
       ],
     };
+
+    const orderBy: Prisma.CommissionOrderByWithRelationInput =
+      sort === 'quote'
+        ? { detail: { quote: direction } }
+        : sort === 'deadline'
+          ? { detail: { deadline: direction } }
+          : { createdAt: direction };
 
     const [items, total] = await Promise.all([
       this.db.commission.findMany({
         where,
-        include: { commissionType: true },
-        orderBy: { [SORT_FIELD[sort]]: direction },
+        include: commissionInclude,
+        orderBy,
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -121,36 +184,37 @@ export class CommissionsService {
     };
   }
 
-  async findOne(id: string): Promise<CommissionDetailDto> {
-    const commission = await this.findOrThrow(id);
-    return this.withNotesAndHistory(commission);
+  async findOne(artistId: string, id: string): Promise<CommissionDetailDto> {
+    const commission = await this.findOwnedOrThrow(artistId, id);
+    return this.withCommentsAndHistory(commission);
   }
 
   async findByAccessCode(code: string): Promise<CommissionPublicDetailDto> {
     const commission = await this.findByAccessCodeOrThrow(code);
-    const notes = await this.db.commissionNote.findMany({
-      where: {
-        commissionId: commission.id,
-        visibility: CommissionNoteVisibility.CLIENT,
-      },
+    const comments = await this.db.comment.findMany({
+      where: { commissionId: commission.id, visibility: Visibility.CLIENT },
       orderBy: { createdAt: 'desc' },
     });
-    return { ...toPublicDto(commission), notes: notes.map(toNoteDto) };
+    return { ...toPublicDto(commission), comments: comments.map(toCommentDto) };
   }
 
   async findByEmail(email: string): Promise<CommissionPublicDto[]> {
     const commissions = await this.db.commission.findMany({
-      where: { clientEmail: email },
-      include: { commissionType: true },
+      where: { client: { email } },
+      include: commissionInclude,
       orderBy: { createdAt: 'desc' },
     });
     return commissions.map(toPublicDto);
   }
 
-  async queue(): Promise<CommissionQueueDto> {
+  async queue(artistId: string): Promise<CommissionQueueDto> {
     const commissions = await this.db.commission.findMany({
-      where: { isHidden: false, status: { in: QUEUE_STATUSES } },
-      include: { commissionType: true },
+      where: {
+        artistId,
+        status: { in: QUEUE_STATUSES },
+        detail: { isHiddenInQueue: false },
+      },
+      include: commissionInclude,
       orderBy: { createdAt: 'asc' },
     });
 
@@ -167,7 +231,7 @@ export class CommissionsService {
       items: sorted.map((commission) => ({
         id: commission.id,
         status: commission.status,
-        commissionTypeKey: commission.commissionType?.key ?? null,
+        commissionTypeKey: commission.detail?.commissionType?.key ?? null,
         createdAt: commission.createdAt.toISOString(),
       })),
     };
@@ -178,45 +242,48 @@ export class CommissionsService {
     dto: AddReferenceAssetsDto,
   ): Promise<CommissionPublicDto> {
     const existing = await this.findByAccessCodeOrThrow(code);
-    const commission = await this.db.commission.update({
-      where: { id: existing.id },
+    const detail = requireDetail(existing);
+    await this.db.commissionDetail.update({
+      where: { commissionId: existing.id },
       data: {
         referenceAssets: [
-          ...existing.referenceAssets,
+          ...detail.referenceAssets,
           ...(dto.keys ?? []).map((key) => this.storage.getPublicUrl(key)),
           ...(dto.urls ?? []),
         ],
       },
-      include: { commissionType: true },
     });
+    const commission = await this.findByAccessCodeOrThrow(code);
     return toPublicDto(commission);
   }
 
-  async addClientNote(code: string, body: string): Promise<CommissionNoteDto> {
+  async addClientNote(code: string, body: string): Promise<CommentDto> {
     const existing = await this.findByAccessCodeOrThrow(code);
-    const note = await this.db.commissionNote.create({
+    const comment = await this.db.comment.create({
       data: {
         commissionId: existing.id,
-        authorId: null,
-        visibility: CommissionNoteVisibility.CLIENT,
+        authorRole: 'CLIENT',
+        authorClientId: existing.clientId,
+        visibility: Visibility.CLIENT,
         body,
       },
     });
-    return toNoteDto(note);
+    return toCommentDto(comment);
   }
 
   async updateStatus(
+    artistId: string,
     id: string,
     dto: UpdateCommissionStatusDto,
     viewer: User,
   ): Promise<CommissionDto> {
-    const existing = await this.findOrThrow(id);
+    const existing = await this.findOwnedOrThrow(artistId, id);
 
     const [commission] = await this.db.$transaction([
       this.db.commission.update({
         where: { id },
         data: { status: dto.status },
-        include: { commissionType: true },
+        include: commissionInclude,
       }),
       this.db.commissionStatusHistory.create({
         data: {
@@ -233,89 +300,105 @@ export class CommissionsService {
   }
 
   async updatePaymentStatus(
+    artistId: string,
     id: string,
     dto: UpdatePaymentStatusDto,
   ): Promise<CommissionDto> {
-    await this.findOrThrow(id);
-    const commission = await this.db.commission.update({
-      where: { id },
+    await this.findOwnedOrThrow(artistId, id);
+    await this.db.commissionDetail.update({
+      where: { commissionId: id },
       data: { paymentStatus: dto.paymentStatus },
-      include: { commissionType: true },
     });
+    const commission = await this.findOwnedOrThrow(artistId, id);
     return toCommissionDto(commission);
   }
 
   async updateStep(
+    artistId: string,
     id: string,
     dto: UpdateCommissionStepDto,
   ): Promise<CommissionDto> {
-    await this.findOrThrow(id);
-    const commission = await this.db.commission.update({
-      where: { id },
+    await this.findOwnedOrThrow(artistId, id);
+    await this.db.commissionDetail.update({
+      where: { commissionId: id },
       data: { [dto.step]: dto.done ? new Date() : null },
-      include: { commissionType: true },
     });
+    const commission = await this.findOwnedOrThrow(artistId, id);
     return toCommissionDto(commission);
   }
 
   async updateQuote(
+    artistId: string,
     id: string,
     dto: UpdateCommissionQuoteDto,
   ): Promise<CommissionDto> {
-    await this.findOrThrow(id);
-    const commission = await this.db.commission.update({
-      where: { id },
+    await this.findOwnedOrThrow(artistId, id);
+    await this.db.commissionDetail.update({
+      where: { commissionId: id },
       data: {
         commissionTypeId:
           dto.commissionTypeId === undefined ? undefined : dto.commissionTypeId,
         optionKey: dto.optionKey === undefined ? undefined : dto.optionKey,
         addonKeys: dto.addonKeys,
-        quoteCents: dto.quoteCents === undefined ? undefined : dto.quoteCents,
+        quote: dto.quote === undefined ? undefined : dto.quote,
       },
-      include: { commissionType: true },
     });
+    const commission = await this.findOwnedOrThrow(artistId, id);
     return toCommissionDto(commission);
   }
 
   async updateVisibility(
+    artistId: string,
     id: string,
     dto: UpdateCommissionVisibilityDto,
   ): Promise<CommissionDto> {
-    await this.findOrThrow(id);
-    const commission = await this.db.commission.update({
-      where: { id },
-      data: { isHidden: dto.isHidden },
-      include: { commissionType: true },
+    await this.findOwnedOrThrow(artistId, id);
+    await this.db.commissionDetail.update({
+      where: { commissionId: id },
+      data: { isHiddenInQueue: dto.isHiddenInQueue },
     });
+    const commission = await this.findOwnedOrThrow(artistId, id);
     return toCommissionDto(commission);
   }
 
-  async deliver(id: string, dto: DeliverCommissionDto): Promise<CommissionDto> {
-    const existing = await this.findOrThrow(id);
-    const commission = await this.db.commission.update({
-      where: { id },
-      data: {
-        deliverableAssets: dto.deliverableAssets.map((key) =>
-          this.storage.getPublicUrl(key),
-        ),
-        deliveredAt: new Date(),
-      },
-      include: { commissionType: true },
-    });
+  async deliver(
+    artistId: string,
+    id: string,
+    dto: DeliverCommissionDto,
+  ): Promise<CommissionDto> {
+    const existing = await this.findOwnedOrThrow(artistId, id);
+    const images = dto.images.map((key) => this.storage.getPublicUrl(key));
+
+    await this.db.$transaction([
+      this.db.commissionProgress.create({
+        data: {
+          commissionId: id,
+          images,
+          isFinal: true,
+          visibility: Visibility.CLIENT,
+        },
+      }),
+      this.db.commissionDetail.update({
+        where: { commissionId: id },
+        data: { deliveredAt: new Date() },
+      }),
+    ]);
+
+    const commission = await this.findOwnedOrThrow(artistId, id);
 
     const templateId = await this.getTemplateId(
       DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE,
     );
     if (templateId) {
       await this.email.sendTemplateEmail({
-        to: [{ email: existing.clientEmail, name: existing.clientName }],
+        to: [{ email: existing.client.email, name: existing.client.name }],
         templateId,
         params: {
           label: commissionDisplayLabel(
-            commission.commissionType,
-            existing.clientName,
+            commission.detail?.commissionType ?? null,
+            existing.client.name,
           ),
-          deliverableAssets: commission.deliverableAssets,
+          images,
         },
       });
     }
@@ -323,51 +406,76 @@ export class CommissionsService {
     return toCommissionDto(commission);
   }
 
-  async assign(id: string, dto: AssignCommissionDto): Promise<CommissionDto> {
-    await this.findOrThrow(id);
-    const commission = await this.db.commission.update({
-      where: { id },
-      data: { assignedToId: dto.assignedToId ?? null },
-      include: { commissionType: true },
-    });
-    return toCommissionDto(commission);
-  }
-
-  async updateProject(
-    id: string,
-    dto: UpdateCommissionProjectDto,
-  ): Promise<CommissionDto> {
-    await this.findOrThrow(id);
-    const commission = await this.db.commission.update({
-      where: { id },
-      data: { projectId: dto.projectId ?? null },
-      include: { commissionType: true },
-    });
-    return toCommissionDto(commission);
-  }
-
   async addNote(
+    artistId: string,
     id: string,
-    dto: CreateCommissionNoteDto,
-    author: User,
-  ): Promise<CommissionNoteDto> {
-    await this.findOrThrow(id);
-    const note = await this.db.commissionNote.create({
+    dto: CreateCommentDto,
+  ): Promise<CommentDto> {
+    await this.findOwnedOrThrow(artistId, id);
+    const comment = await this.db.comment.create({
       data: {
         commissionId: id,
-        authorId: author.id,
+        authorRole: 'ARTIST',
         visibility: dto.visibility,
         body: dto.body,
       },
     });
-    return toNoteDto(note);
+    return toCommentDto(comment);
   }
 
-  private async withNotesAndHistory(
-    commission: CommissionWithType,
+  private async currencyFor(artistId: string): Promise<string> {
+    const setting = USER_SETTING_TYPES.commissionCurrency;
+    const value = await this.userSettings.get(
+      artistId,
+      setting.scope,
+      setting.type,
+    );
+    return value ?? DEFAULT_CURRENCY;
+  }
+
+  private async notificationEmailFor(artistId: string): Promise<string | null> {
+    const setting = USER_SETTING_TYPES.commissionNotificationEmail;
+    const configured = await this.userSettings.get(
+      artistId,
+      setting.scope,
+      setting.type,
+    );
+    if (configured) return configured;
+
+    const artist = await this.db.user.findUnique({
+      where: { id: artistId },
+      select: { email: true },
+    });
+    return artist?.email ?? null;
+  }
+
+  private async resolveClient(dto: {
+    clientName: string;
+    clientEmail: string;
+    preferredContactMethod?: SubmitCommissionDto['preferredContactMethod'];
+    contactHandle?: string;
+  }): Promise<Client> {
+    return this.db.client.upsert({
+      where: { email: dto.clientEmail },
+      update: {
+        name: dto.clientName,
+        preferredContactMethod: dto.preferredContactMethod ?? undefined,
+        contactHandle: dto.contactHandle ?? undefined,
+      },
+      create: {
+        email: dto.clientEmail,
+        name: dto.clientName,
+        preferredContactMethod: dto.preferredContactMethod ?? undefined,
+        contactHandle: dto.contactHandle ?? null,
+      },
+    });
+  }
+
+  private async withCommentsAndHistory(
+    commission: CommissionWithRelations,
   ): Promise<CommissionDetailDto> {
-    const [notes, history] = await Promise.all([
-      this.db.commissionNote.findMany({
+    const [comments, history] = await Promise.all([
+      this.db.comment.findMany({
         where: { commissionId: commission.id },
         orderBy: { createdAt: 'desc' },
       }),
@@ -379,23 +487,16 @@ export class CommissionsService {
 
     return {
       ...toCommissionDto(commission),
-      notes: notes.map(toNoteDto),
+      comments: comments.map(toCommentDto),
       history: history.map(toHistoryDto),
     };
   }
 
   private async notifyCommissionReceived(
-    commission: CommissionWithType,
+    commission: CommissionWithRelations,
   ): Promise<void> {
-    const config = await this.db.systemParameters.findUnique({
-      where: {
-        type_scope: {
-          type: COMMISSION_RECEIVED_NOTIFICATION_CONFIG_TYPE,
-          scope: AppScope.ART,
-        },
-      },
-    });
-    if (!config) return;
+    const notifyEmail = await this.notificationEmailFor(commission.artistId);
+    if (!notifyEmail) return;
 
     const templateId = await this.getTemplateId(
       NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE,
@@ -403,16 +504,16 @@ export class CommissionsService {
     if (!templateId) return;
 
     await this.email.sendTemplateEmail({
-      to: [{ email: config.value }],
+      to: [{ email: notifyEmail }],
       templateId,
       params: {
         commissionId: commission.id,
         label: commissionDisplayLabel(
-          commission.commissionType ?? null,
-          commission.clientName,
+          commission.detail?.commissionType ?? null,
+          commission.client.name,
         ),
-        clientName: commission.clientName,
-        clientEmail: commission.clientEmail,
+        clientName: commission.client.name,
+        clientEmail: commission.client.email,
       },
     });
   }
@@ -425,12 +526,15 @@ export class CommissionsService {
     return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
   }
 
-  private async findOrThrow(id: string): Promise<CommissionWithType> {
+  private async findOwnedOrThrow(
+    artistId: string,
+    id: string,
+  ): Promise<CommissionWithRelations> {
     const commission = await this.db.commission.findUnique({
       where: { id },
-      include: { commissionType: true },
+      include: commissionInclude,
     });
-    if (!commission) {
+    if (!commission || commission.artistId !== artistId) {
       throw new NotFoundException(`Commission ${id} not found`);
     }
     return commission;
@@ -438,10 +542,10 @@ export class CommissionsService {
 
   private async findByAccessCodeOrThrow(
     code: string,
-  ): Promise<CommissionWithType> {
+  ): Promise<CommissionWithRelations> {
     const commission = await this.db.commission.findUnique({
       where: { accessCode: code },
-      include: { commissionType: true },
+      include: commissionInclude,
     });
     if (!commission) {
       throw new NotFoundException('Commission not found');
@@ -450,9 +554,16 @@ export class CommissionsService {
   }
 }
 
-type CommissionWithType = Commission & {
-  commissionType: CommissionType | null;
-};
+function requireDetail(
+  commission: CommissionWithRelations,
+): CommissionDetail & { commissionType: CommissionType | null } {
+  if (!commission.detail) {
+    throw new NotFoundException(
+      `Commission ${commission.id} has no detail row`,
+    );
+  }
+  return commission.detail;
+}
 
 function commissionDisplayLabel(
   commissionType: CommissionType | null,
@@ -461,75 +572,86 @@ function commissionDisplayLabel(
   return `${commissionType?.key ?? 'Commission'} — ${clientName}`;
 }
 
-function toCommissionDto(commission: CommissionWithType): CommissionDto {
+function toCommissionDto(commission: CommissionWithRelations): CommissionDto {
+  const detail = requireDetail(commission);
   return {
     id: commission.id,
-    idea: commission.idea,
-    deadline: commission.deadline?.toISOString() ?? null,
+    artistId: commission.artistId,
+    clientId: commission.clientId,
+    commissionOpeningId: commission.commissionOpeningId,
+    groupId: commission.groupId,
+    paymentMethodId: commission.paymentMethodId,
     status: commission.status,
-    paymentStatus: commission.paymentStatus,
-    isHidden: commission.isHidden,
-    commissionTypeId: commission.commissionTypeId,
-    commissionTypeKey: commission.commissionType?.key ?? null,
-    optionKey: commission.optionKey,
-    addonKeys: commission.addonKeys,
-    quoteCents: commission.quoteCents,
-    clientName: commission.clientName,
-    clientEmail: commission.clientEmail,
-    preferredContactMethod: commission.preferredContactMethod,
-    contactHandle: commission.contactHandle,
-    referenceAssets: commission.referenceAssets,
-    deliverableAssets: commission.deliverableAssets,
-    deliveredAt: commission.deliveredAt?.toISOString() ?? null,
+    priority: commission.priority,
+    idea: detail.idea,
+    deadline: detail.deadline?.toISOString() ?? null,
+    paymentStatus: detail.paymentStatus,
+    isHiddenInQueue: detail.isHiddenInQueue,
+    commissionTypeId: detail.commissionTypeId,
+    commissionTypeKey: detail.commissionType?.key ?? null,
+    optionKey: detail.optionKey,
+    addonKeys: detail.addonKeys,
+    currency: detail.currency,
+    quote: detail.quote,
+    originalQuote: detail.originalQuote,
+    clientName: commission.client.name,
+    clientEmail: commission.client.email,
+    preferredContactMethod: commission.client.preferredContactMethod,
+    contactHandle: commission.client.contactHandle,
+    referenceAssets: detail.referenceAssets,
+    deliveredAt: detail.deliveredAt?.toISOString() ?? null,
     steps: {
-      ideaConfirmedAt: commission.ideaConfirmedAt?.toISOString() ?? null,
-      sketchConfirmedAt: commission.sketchConfirmedAt?.toISOString() ?? null,
-      paymentConfirmedAt: commission.paymentConfirmedAt?.toISOString() ?? null,
-      lineDoneAt: commission.lineDoneAt?.toISOString() ?? null,
-      coloringDoneAt: commission.coloringDoneAt?.toISOString() ?? null,
-      finishedAt: commission.finishedAt?.toISOString() ?? null,
+      ideaConfirmedAt: detail.ideaConfirmedAt?.toISOString() ?? null,
+      sketchConfirmedAt: detail.sketchConfirmedAt?.toISOString() ?? null,
+      paymentConfirmedAt: detail.paymentConfirmedAt?.toISOString() ?? null,
+      lineDoneAt: detail.lineDoneAt?.toISOString() ?? null,
+      coloringDoneAt: detail.coloringDoneAt?.toISOString() ?? null,
+      finishedAt: detail.finishedAt?.toISOString() ?? null,
     },
-    assignedToId: commission.assignedToId,
-    projectId: commission.projectId,
     createdAt: commission.createdAt.toISOString(),
     updatedAt: commission.updatedAt.toISOString(),
   };
 }
 
-function toPublicDto(commission: CommissionWithType): CommissionPublicDto {
+function toPublicDto(commission: CommissionWithRelations): CommissionPublicDto {
+  const detail = requireDetail(commission);
   return {
     id: commission.id,
     accessCode: commission.accessCode,
-    idea: commission.idea,
-    deadline: commission.deadline?.toISOString() ?? null,
+    idea: detail.idea,
+    deadline: detail.deadline?.toISOString() ?? null,
     status: commission.status,
-    paymentStatus: commission.paymentStatus,
-    commissionTypeId: commission.commissionTypeId,
-    commissionTypeKey: commission.commissionType?.key ?? null,
-    quoteCents: commission.quoteCents,
-    referenceAssets: commission.referenceAssets,
-    deliverableAssets: commission.deliverableAssets,
-    deliveredAt: commission.deliveredAt?.toISOString() ?? null,
+    paymentStatus: detail.paymentStatus,
+    commissionTypeId: detail.commissionTypeId,
+    commissionTypeKey: detail.commissionType?.key ?? null,
+    currency: detail.currency,
+    quote: detail.quote,
+    referenceAssets: detail.referenceAssets,
+    deliveredAt: detail.deliveredAt?.toISOString() ?? null,
     createdAt: commission.createdAt.toISOString(),
     updatedAt: commission.updatedAt.toISOString(),
   };
 }
 
-function toNoteDto(note: {
+function toCommentDto(comment: {
   id: string;
-  commissionId: string;
-  authorId: string | null;
-  visibility: CommissionNoteDto['visibility'];
+  commissionId: string | null;
+  progressId: string | null;
+  authorClientId: string | null;
+  authorRole: CommentDto['authorRole'];
+  visibility: Visibility;
   body: string;
   createdAt: Date;
-}): CommissionNoteDto {
+}): CommentDto {
   return {
-    id: note.id,
-    commissionId: note.commissionId,
-    authorId: note.authorId,
-    visibility: note.visibility,
-    body: note.body,
-    createdAt: note.createdAt.toISOString(),
+    id: comment.id,
+    commissionId: comment.commissionId,
+    progressId: comment.progressId,
+    authorClientId: comment.authorClientId,
+    authorRole: comment.authorRole,
+    visibility: comment.visibility,
+    body: comment.body,
+    createdAt: comment.createdAt.toISOString(),
   };
 }
 

@@ -12,6 +12,7 @@ import OnboardingTimezoneStep from './OnboardingTimezoneStep';
 import { detectTimezone } from './timezones';
 import OnboardingConnectionsStep from './OnboardingConnectionsStep';
 import OnboardingCompleteStep from './OnboardingCompleteStep';
+import OnboardingLanguageSwitcher from './OnboardingLanguageSwitcher';
 
 type Props = {
   mode?: OnboardingMode;
@@ -37,11 +38,14 @@ function OnboardingWizard({ mode = 'full', onEntityChanged }: Props) {
         <DialogTitle className="text-2xl">
           {t('common:onboarding.title')}
         </DialogTitle>
-        {wizard.step !== 'complete' && (
-          <Button variant="ghost" size="sm" onClick={wizard.submitSkip}>
-            {t('common:onboarding.skip')}
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          <OnboardingLanguageSwitcher />
+          {wizard.step !== 'complete' && (
+            <Button variant="ghost" size="sm" onClick={wizard.submitSkip}>
+              {t('common:onboarding.skip')}
+            </Button>
+          )}
+        </div>
       </div>
 
       {wizard.step === 'optIn' && (

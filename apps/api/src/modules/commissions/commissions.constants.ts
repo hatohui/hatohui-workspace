@@ -32,8 +32,6 @@ export const QUEUE_STATUS_RANK = new Map(
   QUEUE_STATUSES.map((status, index) => [status, index]),
 );
 
-export const COMMISSION_RECEIVED_NOTIFICATION_CONFIG_TYPE =
-  'art.commissionreceived.notification';
 export const NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissionreceived.templateid';
 export const DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE =

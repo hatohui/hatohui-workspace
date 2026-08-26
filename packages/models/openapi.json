@@ -60,7 +60,7 @@
         "operationId": "logout",
         "parameters": [],
         "responses": {
-          "201": {
+          "204": {
             "description": ""
           }
         },
@@ -1991,7 +1991,7 @@
             }
           }
         },
-        "summary": "Submit a new commission request",
+        "summary": "Submit a new commission request to an artist",
         "tags": [
           "commissions"
         ]
@@ -2015,6 +2015,9 @@
             "schema": {
               "type": "string",
               "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "DECLINED",
                 "NOT_YET_STARTED",
                 "QUEUED",
                 "SKETCH",
@@ -2083,7 +2086,39 @@
             }
           }
         },
-        "summary": "List commission requests",
+        "summary": "List your own commission requests",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/private": {
+      "post": {
+        "operationId": "createPrivateCommission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePrivateCommissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Artist creates a commission directly, without going through an opening",
         "tags": [
           "commissions"
         ]
@@ -2092,7 +2127,16 @@
     "/commissions/queue": {
       "get": {
         "operationId": "commissionQueue",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "artistId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -2105,7 +2149,7 @@
             }
           }
         },
-        "summary": "Public timeline of non-hidden, active commissions",
+        "summary": "Public timeline of an artist's non-hidden, active commissions",
         "tags": [
           "commissions"
         ]
@@ -2247,7 +2291,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CommissionNoteDto"
+                  "$ref": "#/components/schemas/CommentDto"
                 }
               }
             }
@@ -2284,7 +2328,7 @@
             }
           }
         },
-        "summary": "Get a commission request with its notes and status history",
+        "summary": "Get one of your own commissions with its notes and status history",
         "tags": [
           "commissions"
         ]
@@ -2530,89 +2574,7 @@
             }
           }
         },
-        "summary": "Attach the final artwork and email it to the client",
-        "tags": [
-          "commissions"
-        ]
-      }
-    },
-    "/commissions/{id}/assign": {
-      "patch": {
-        "operationId": "assignCommission",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AssignCommissionDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommissionDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Assign or unassign a team member to a commission",
-        "tags": [
-          "commissions"
-        ]
-      }
-    },
-    "/commissions/{id}/project": {
-      "patch": {
-        "operationId": "updateCommissionProject",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateCommissionProjectDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommissionDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Attach or detach a commission from a project",
+        "summary": "Attach the final artwork as a progress entry and email it to the client",
         "tags": [
           "commissions"
         ]
@@ -2636,7 +2598,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCommissionNoteDto"
+                "$ref": "#/components/schemas/CreateCommentDto"
               }
             }
           }
@@ -2647,7 +2609,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CommissionNoteDto"
+                  "$ref": "#/components/schemas/CommentDto"
                 }
               }
             }
@@ -2663,6 +2625,14 @@
       "get": {
         "operationId": "commissionTypes",
         "parameters": [
+          {
+            "name": "artistId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "includeInactive",
             "required": false,
@@ -2687,7 +2657,7 @@
             }
           }
         },
-        "summary": "List commission types (active only unless includeInactive=true)",
+        "summary": "List an artist's commission types (active only unless includeInactive=true)",
         "tags": [
           "commission-types"
         ]
@@ -2717,7 +2687,7 @@
             }
           }
         },
-        "summary": "Create a commission type (also creates its linked Tag)",
+        "summary": "Create a commission type (also creates/reuses its linked Tag)",
         "tags": [
           "commission-types"
         ]
@@ -2758,7 +2728,7 @@
             }
           }
         },
-        "summary": "Update a commission type",
+        "summary": "Update one of your own commission types",
         "tags": [
           "commission-types"
         ]
@@ -2780,7 +2750,7 @@
             "description": ""
           }
         },
-        "summary": "Delete a commission type",
+        "summary": "Delete one of your own commission types",
         "tags": [
           "commission-types"
         ]
@@ -2789,7 +2759,16 @@
     "/commission-pricing": {
       "get": {
         "operationId": "commissionPricing",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "artistId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -2802,7 +2781,7 @@
             }
           }
         },
-        "summary": "Active pricing config used by the commission request form",
+        "summary": "An artist's active options/addons/rush-fee/currency, for the commission request form",
         "tags": [
           "commission-pricing"
         ]
@@ -2834,125 +2813,7 @@
             }
           }
         },
-        "summary": "Update the rush-fee surcharge settings",
-        "tags": [
-          "commission-pricing"
-        ]
-      }
-    },
-    "/commission-pricing/types": {
-      "get": {
-        "operationId": "commissionTypePricings",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CommissionTypePricingDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List commission type pricing rows",
-        "tags": [
-          "commission-pricing"
-        ]
-      },
-      "post": {
-        "operationId": "createCommissionTypePricing",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpsertCommissionTypePricingDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommissionTypePricingDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create a commission type pricing row",
-        "tags": [
-          "commission-pricing"
-        ]
-      }
-    },
-    "/commission-pricing/types/{id}": {
-      "put": {
-        "operationId": "updateCommissionTypePricing",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpsertCommissionTypePricingDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommissionTypePricingDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update a commission type pricing row",
-        "tags": [
-          "commission-pricing"
-        ]
-      },
-      "delete": {
-        "operationId": "deleteCommissionTypePricing",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "summary": "Delete a commission type pricing row",
+        "summary": "Update your own rush-fee surcharge setting",
         "tags": [
           "commission-pricing"
         ]
@@ -2977,7 +2838,7 @@
             }
           }
         },
-        "summary": "List commission option pricing rows",
+        "summary": "List your own commission option pricing rows",
         "tags": [
           "commission-pricing"
         ]
@@ -3048,7 +2909,7 @@
             }
           }
         },
-        "summary": "Update a commission option pricing row",
+        "summary": "Update one of your own commission option pricing rows",
         "tags": [
           "commission-pricing"
         ]
@@ -3070,7 +2931,7 @@
             "description": ""
           }
         },
-        "summary": "Delete a commission option pricing row",
+        "summary": "Delete one of your own commission option pricing rows",
         "tags": [
           "commission-pricing"
         ]
@@ -3095,7 +2956,7 @@
             }
           }
         },
-        "summary": "List commission add-on pricing rows",
+        "summary": "List your own commission add-on pricing rows",
         "tags": [
           "commission-pricing"
         ]
@@ -3166,7 +3027,7 @@
             }
           }
         },
-        "summary": "Update a commission add-on pricing row",
+        "summary": "Update one of your own commission add-on pricing rows",
         "tags": [
           "commission-pricing"
         ]
@@ -3188,7 +3049,7 @@
             "description": ""
           }
         },
-        "summary": "Delete a commission add-on pricing row",
+        "summary": "Delete one of your own commission add-on pricing rows",
         "tags": [
           "commission-pricing"
         ]
@@ -3197,7 +3058,16 @@
     "/projects": {
       "get": {
         "operationId": "projects",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "artistId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -3471,7 +3341,11 @@
           },
           "isAdmin": {
             "type": "boolean",
-            "description": "Whether this account is the configured admin. Cosmetic only — admin routes enforce their own check and also require the admin key."
+            "description": "Whether this account holds the admin role. Cosmetic only — admin routes enforce their own check and also require the admin key."
+          },
+          "isArtist": {
+            "type": "boolean",
+            "description": "Whether this account holds the artist role — can own commissions, openings and projects."
           },
           "onboardingStatus": {
             "type": "string",
@@ -3522,6 +3396,7 @@
           "handle",
           "avatarUrl",
           "isAdmin",
+          "isArtist",
           "onboardingStatus",
           "timezone",
           "birthdayReminderLeadDays",
@@ -5090,6 +4965,14 @@
       "SubmitCommissionDto": {
         "type": "object",
         "properties": {
+          "artistId": {
+            "type": "string",
+            "description": "Id of the artist being commissioned"
+          },
+          "commissionOpeningId": {
+            "type": "string",
+            "description": "Id of the CommissionOpening this is submitted through, if any"
+          },
           "idea": {
             "type": "object",
             "additionalProperties": true,
@@ -5105,7 +4988,7 @@
           },
           "optionKey": {
             "type": "string",
-            "description": "Key of a CommissionOptionPricing"
+            "description": "Key of a CommissionOption"
           },
           "addonKeys": {
             "type": "array",
@@ -5149,6 +5032,7 @@
           }
         },
         "required": [
+          "artistId",
           "idea",
           "clientName",
           "clientEmail"
@@ -5198,6 +5082,45 @@
             "type": "string",
             "example": "clx1234567890"
           },
+          "artistId": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "commissionOpeningId": {
+            "type": "string",
+            "nullable": true
+          },
+          "groupId": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethodId": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          },
+          "priority": {
+            "type": "number",
+            "nullable": true,
+            "description": "Custom triage ordering"
+          },
           "idea": {
             "type": "object",
             "additionalProperties": true,
@@ -5207,19 +5130,6 @@
             "type": "string",
             "example": "2026-09-01T00:00:00.000Z",
             "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "NOT_YET_STARTED",
-              "QUEUED",
-              "SKETCH",
-              "CONFIRMED",
-              "ONGOING",
-              "COMPLETED",
-              "CANCELLED"
-            ],
-            "example": "NOT_YET_STARTED"
           },
           "paymentStatus": {
             "type": "string",
@@ -5231,9 +5141,9 @@
             ],
             "example": "NOT_YET"
           },
-          "isHidden": {
+          "isHiddenInQueue": {
             "type": "boolean",
-            "description": "Whether this commission is hidden from any public showcase"
+            "description": "Whether this commission is hidden from the public /queue"
           },
           "commissionTypeId": {
             "type": "string",
@@ -5247,19 +5157,28 @@
           "optionKey": {
             "type": "string",
             "nullable": true,
-            "description": "Key of the selected CommissionOptionPricing"
+            "description": "Key of the selected CommissionOption"
           },
           "addonKeys": {
-            "description": "Keys of selected CommissionAddonPricing rows",
+            "description": "Keys of selected CommissionAddon rows",
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "quoteCents": {
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "quote": {
             "type": "number",
             "nullable": true,
-            "description": "Quote in USD cents"
+            "description": "Quote, in currency's smallest unit"
+          },
+          "originalQuote": {
+            "type": "number",
+            "nullable": true,
+            "description": "Quote snapshotted at accept time, to detect later changes"
           },
           "clientName": {
             "type": "string",
@@ -5289,26 +5208,12 @@
               "type": "string"
             }
           },
-          "deliverableAssets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "deliveredAt": {
             "type": "string",
             "nullable": true
           },
           "steps": {
             "$ref": "#/components/schemas/CommissionStepsDto"
-          },
-          "assignedToId": {
-            "type": "string",
-            "nullable": true
-          },
-          "projectId": {
-            "type": "string",
-            "nullable": true
           },
           "createdAt": {
             "type": "string",
@@ -5321,28 +5226,109 @@
         },
         "required": [
           "id",
+          "artistId",
+          "clientId",
+          "commissionOpeningId",
+          "groupId",
+          "paymentMethodId",
+          "status",
+          "priority",
           "idea",
           "deadline",
-          "status",
           "paymentStatus",
-          "isHidden",
+          "isHiddenInQueue",
           "commissionTypeId",
           "commissionTypeKey",
           "optionKey",
           "addonKeys",
-          "quoteCents",
+          "currency",
+          "quote",
+          "originalQuote",
           "clientName",
           "clientEmail",
           "preferredContactMethod",
           "contactHandle",
           "referenceAssets",
-          "deliverableAssets",
           "deliveredAt",
           "steps",
-          "assignedToId",
-          "projectId",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "CreatePrivateCommissionDto": {
+        "type": "object",
+        "properties": {
+          "artistId": {
+            "type": "string",
+            "description": "Id of the artist being commissioned"
+          },
+          "commissionOpeningId": {
+            "type": "string",
+            "description": "Id of the CommissionOpening this is submitted through, if any"
+          },
+          "idea": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document describing the idea"
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2026-09-01"
+          },
+          "commissionTypeId": {
+            "type": "string",
+            "description": "Id of a CommissionType"
+          },
+          "optionKey": {
+            "type": "string",
+            "description": "Key of a CommissionOption"
+          },
+          "addonKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "clientName": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "clientEmail": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ],
+            "default": "EMAIL"
+          },
+          "contactHandle": {
+            "type": "string"
+          },
+          "referenceAssets": {
+            "description": "Object keys returned by POST /images/sign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isPublic": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this commission (status, type) should show in the public /queue"
+          }
+        },
+        "required": [
+          "artistId",
+          "idea",
+          "clientName",
+          "clientEmail"
         ]
       },
       "CommissionQueueItemDto": {
@@ -5355,6 +5341,9 @@
           "status": {
             "type": "string",
             "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
               "NOT_YET_STARTED",
               "QUEUED",
               "SKETCH",
@@ -5419,6 +5408,9 @@
           "status": {
             "type": "string",
             "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
               "NOT_YET_STARTED",
               "QUEUED",
               "SKETCH",
@@ -5427,7 +5419,7 @@
               "COMPLETED",
               "CANCELLED"
             ],
-            "example": "NOT_YET_STARTED"
+            "example": "PENDING"
           },
           "paymentStatus": {
             "type": "string",
@@ -5448,17 +5440,15 @@
             "nullable": true,
             "description": "Also the i18n key: commission.type.<key>"
           },
-          "quoteCents": {
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "quote": {
             "type": "number",
             "nullable": true
           },
           "referenceAssets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "deliverableAssets": {
             "type": "array",
             "items": {
               "type": "string"
@@ -5486,15 +5476,15 @@
           "paymentStatus",
           "commissionTypeId",
           "commissionTypeKey",
-          "quoteCents",
+          "currency",
+          "quote",
           "referenceAssets",
-          "deliverableAssets",
           "deliveredAt",
           "createdAt",
           "updatedAt"
         ]
       },
-      "CommissionNoteDto": {
+      "CommentDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -5503,13 +5493,25 @@
           },
           "commissionId": {
             "type": "string",
-            "example": "clx1234567890"
+            "nullable": true
           },
-          "authorId": {
+          "progressId": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorClientId": {
             "type": "string",
             "example": "clx1234567890",
             "nullable": true,
-            "description": "Null when submitted by a client via their access link"
+            "description": "Set only when authorRole is CLIENT"
+          },
+          "authorRole": {
+            "type": "string",
+            "enum": [
+              "ARTIST",
+              "CLIENT"
+            ],
+            "description": "Who wrote the comment"
           },
           "visibility": {
             "type": "string",
@@ -5530,7 +5532,9 @@
         "required": [
           "id",
           "commissionId",
-          "authorId",
+          "progressId",
+          "authorClientId",
+          "authorRole",
           "visibility",
           "body",
           "createdAt"
@@ -5560,6 +5564,9 @@
           "status": {
             "type": "string",
             "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
               "NOT_YET_STARTED",
               "QUEUED",
               "SKETCH",
@@ -5568,7 +5575,7 @@
               "COMPLETED",
               "CANCELLED"
             ],
-            "example": "NOT_YET_STARTED"
+            "example": "PENDING"
           },
           "paymentStatus": {
             "type": "string",
@@ -5589,17 +5596,15 @@
             "nullable": true,
             "description": "Also the i18n key: commission.type.<key>"
           },
-          "quoteCents": {
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "quote": {
             "type": "number",
             "nullable": true
           },
           "referenceAssets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "deliverableAssets": {
             "type": "array",
             "items": {
               "type": "string"
@@ -5617,10 +5622,10 @@
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
           },
-          "notes": {
+          "comments": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CommissionNoteDto"
+              "$ref": "#/components/schemas/CommentDto"
             }
           }
         },
@@ -5633,13 +5638,13 @@
           "paymentStatus",
           "commissionTypeId",
           "commissionTypeKey",
-          "quoteCents",
+          "currency",
+          "quote",
           "referenceAssets",
-          "deliverableAssets",
           "deliveredAt",
           "createdAt",
           "updatedAt",
-          "notes"
+          "comments"
         ]
       },
       "AddReferenceAssetsDto": {
@@ -5718,6 +5723,9 @@
           "fromStatus": {
             "type": "string",
             "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
               "NOT_YET_STARTED",
               "QUEUED",
               "SKETCH",
@@ -5731,6 +5739,9 @@
           "toStatus": {
             "type": "string",
             "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
               "NOT_YET_STARTED",
               "QUEUED",
               "SKETCH",
@@ -5770,6 +5781,45 @@
             "type": "string",
             "example": "clx1234567890"
           },
+          "artistId": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "commissionOpeningId": {
+            "type": "string",
+            "nullable": true
+          },
+          "groupId": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethodId": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          },
+          "priority": {
+            "type": "number",
+            "nullable": true,
+            "description": "Custom triage ordering"
+          },
           "idea": {
             "type": "object",
             "additionalProperties": true,
@@ -5779,19 +5829,6 @@
             "type": "string",
             "example": "2026-09-01T00:00:00.000Z",
             "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "NOT_YET_STARTED",
-              "QUEUED",
-              "SKETCH",
-              "CONFIRMED",
-              "ONGOING",
-              "COMPLETED",
-              "CANCELLED"
-            ],
-            "example": "NOT_YET_STARTED"
           },
           "paymentStatus": {
             "type": "string",
@@ -5803,9 +5840,9 @@
             ],
             "example": "NOT_YET"
           },
-          "isHidden": {
+          "isHiddenInQueue": {
             "type": "boolean",
-            "description": "Whether this commission is hidden from any public showcase"
+            "description": "Whether this commission is hidden from the public /queue"
           },
           "commissionTypeId": {
             "type": "string",
@@ -5819,19 +5856,28 @@
           "optionKey": {
             "type": "string",
             "nullable": true,
-            "description": "Key of the selected CommissionOptionPricing"
+            "description": "Key of the selected CommissionOption"
           },
           "addonKeys": {
-            "description": "Keys of selected CommissionAddonPricing rows",
+            "description": "Keys of selected CommissionAddon rows",
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "quoteCents": {
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "quote": {
             "type": "number",
             "nullable": true,
-            "description": "Quote in USD cents"
+            "description": "Quote, in currency's smallest unit"
+          },
+          "originalQuote": {
+            "type": "number",
+            "nullable": true,
+            "description": "Quote snapshotted at accept time, to detect later changes"
           },
           "clientName": {
             "type": "string",
@@ -5861,26 +5907,12 @@
               "type": "string"
             }
           },
-          "deliverableAssets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "deliveredAt": {
             "type": "string",
             "nullable": true
           },
           "steps": {
             "$ref": "#/components/schemas/CommissionStepsDto"
-          },
-          "assignedToId": {
-            "type": "string",
-            "nullable": true
-          },
-          "projectId": {
-            "type": "string",
-            "nullable": true
           },
           "createdAt": {
             "type": "string",
@@ -5890,10 +5922,10 @@
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
           },
-          "notes": {
+          "comments": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CommissionNoteDto"
+              "$ref": "#/components/schemas/CommentDto"
             }
           },
           "history": {
@@ -5905,29 +5937,34 @@
         },
         "required": [
           "id",
+          "artistId",
+          "clientId",
+          "commissionOpeningId",
+          "groupId",
+          "paymentMethodId",
+          "status",
+          "priority",
           "idea",
           "deadline",
-          "status",
           "paymentStatus",
-          "isHidden",
+          "isHiddenInQueue",
           "commissionTypeId",
           "commissionTypeKey",
           "optionKey",
           "addonKeys",
-          "quoteCents",
+          "currency",
+          "quote",
+          "originalQuote",
           "clientName",
           "clientEmail",
           "preferredContactMethod",
           "contactHandle",
           "referenceAssets",
-          "deliverableAssets",
           "deliveredAt",
           "steps",
-          "assignedToId",
-          "projectId",
           "createdAt",
           "updatedAt",
-          "notes",
+          "comments",
           "history"
         ]
       },
@@ -5937,6 +5974,9 @@
           "status": {
             "type": "string",
             "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
               "NOT_YET_STARTED",
               "QUEUED",
               "SKETCH",
@@ -6012,28 +6052,28 @@
               "type": "string"
             }
           },
-          "quoteCents": {
+          "quote": {
             "type": "number",
             "nullable": true,
-            "description": "Final quote in USD cents"
+            "description": "Quote, in currency's smallest unit"
           }
         }
       },
       "UpdateCommissionVisibilityDto": {
         "type": "object",
         "properties": {
-          "isHidden": {
+          "isHiddenInQueue": {
             "type": "boolean"
           }
         },
         "required": [
-          "isHidden"
+          "isHiddenInQueue"
         ]
       },
       "DeliverCommissionDto": {
         "type": "object",
         "properties": {
-          "deliverableAssets": {
+          "images": {
             "description": "Object keys of the final artwork, returned by POST /images/sign",
             "type": "array",
             "items": {
@@ -6042,33 +6082,10 @@
           }
         },
         "required": [
-          "deliverableAssets"
+          "images"
         ]
       },
-      "AssignCommissionDto": {
-        "type": "object",
-        "properties": {
-          "assignedToId": {
-            "type": "string",
-            "nullable": true,
-            "description": "User id to assign, or null to unassign"
-          }
-        }
-      },
-      "UpdateCommissionProjectDto": {
-        "type": "object",
-        "properties": {
-          "projectId": {
-            "type": "string",
-            "nullable": true,
-            "description": "Project id to attach, or null to detach"
-          }
-        },
-        "required": [
-          "projectId"
-        ]
-      },
-      "CreateCommissionNoteDto": {
+      "CreateCommentDto": {
         "type": "object",
         "properties": {
           "body": {
@@ -6095,10 +6112,21 @@
           "id": {
             "type": "string"
           },
+          "artistId": {
+            "type": "string"
+          },
           "key": {
             "type": "string",
             "example": "ICON",
             "description": "Also the i18n key: commission.type.<key>"
+          },
+          "label": {
+            "type": "string",
+            "example": "Icon"
+          },
+          "basePrice": {
+            "type": "number",
+            "description": "Base price, in the artist's currency's smallest unit"
           },
           "no": {
             "type": "number",
@@ -6108,10 +6136,12 @@
             "type": "boolean"
           },
           "tagId": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "tagName": {
             "type": "string",
+            "nullable": true,
             "description": "Name of the linked Tag, used for gallery filtering"
           },
           "createdAt": {
@@ -6123,7 +6153,10 @@
         },
         "required": [
           "id",
+          "artistId",
           "key",
+          "label",
+          "basePrice",
           "no",
           "active",
           "tagId",
@@ -6139,6 +6172,14 @@
             "type": "string",
             "example": "ICON"
           },
+          "label": {
+            "type": "string",
+            "example": "Icon"
+          },
+          "basePrice": {
+            "type": "number",
+            "description": "Base price, in the artist's currency's smallest unit"
+          },
           "no": {
             "type": "number",
             "default": 0
@@ -6149,48 +6190,9 @@
           }
         },
         "required": [
-          "key"
-        ]
-      },
-      "CommissionTypePricingDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "commissionTypeId": {
-            "type": "string",
-            "description": "Id of the priced CommissionType"
-          },
-          "commissionTypeKey": {
-            "type": "string",
-            "example": "ICON",
-            "description": "Also the i18n key: commission.type.<key>"
-          },
-          "tagName": {
-            "type": "string",
-            "description": "Name of the linked Tag, used for gallery filtering"
-          },
-          "basePriceCents": {
-            "type": "number",
-            "example": 3000,
-            "description": "Base price in USD cents"
-          },
-          "active": {
-            "type": "boolean"
-          },
-          "updatedAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "commissionTypeId",
-          "commissionTypeKey",
-          "tagName",
-          "basePriceCents",
-          "active",
-          "updatedAt"
+          "key",
+          "label",
+          "basePrice"
         ]
       },
       "CommissionOptionPricingDto": {
@@ -6199,10 +6201,17 @@
           "id": {
             "type": "string"
           },
+          "artistId": {
+            "type": "string"
+          },
           "key": {
             "type": "string",
             "example": "SKETCHED",
             "description": "Also the i18n key: commission.option.<key>"
+          },
+          "label": {
+            "type": "string",
+            "example": "Sketched"
           },
           "modifierPercent": {
             "type": "number",
@@ -6218,7 +6227,9 @@
         },
         "required": [
           "id",
+          "artistId",
           "key",
+          "label",
           "modifierPercent",
           "active",
           "updatedAt"
@@ -6230,15 +6241,35 @@
           "id": {
             "type": "string"
           },
+          "artistId": {
+            "type": "string"
+          },
           "key": {
             "type": "string",
             "example": "BACKGROUND",
             "description": "Also the i18n key: commission.addon.<key>"
           },
-          "minPriceCents": {
+          "label": {
+            "type": "string",
+            "example": "Background"
+          },
+          "priceMode": {
+            "type": "string",
+            "enum": [
+              "FIXED",
+              "STARTING_FROM",
+              "RANGE"
+            ]
+          },
+          "minPrice": {
             "type": "number",
             "example": 3000,
-            "description": "Minimum price in USD cents (\"from $X\")"
+            "description": "FIXED: the price. STARTING_FROM: the floor (\"from X\"). RANGE: the lower bound. In the artist's currency's smallest unit."
+          },
+          "maxPrice": {
+            "type": "number",
+            "nullable": true,
+            "description": "Upper bound — set only when priceMode is RANGE"
           },
           "active": {
             "type": "boolean"
@@ -6249,8 +6280,12 @@
         },
         "required": [
           "id",
+          "artistId",
           "key",
-          "minPriceCents",
+          "label",
+          "priceMode",
+          "minPrice",
+          "maxPrice",
           "active",
           "updatedAt"
         ]
@@ -6263,26 +6298,20 @@
             "example": 10,
             "description": "Deadlines within this many days trigger the rush fee"
           },
-          "feeCents": {
+          "feeAmount": {
             "type": "number",
             "example": 2500,
-            "description": "Rush fee in USD cents"
+            "description": "Rush fee, in the artist's currency's smallest unit"
           }
         },
         "required": [
           "thresholdDays",
-          "feeCents"
+          "feeAmount"
         ]
       },
       "CommissionPricingDto": {
         "type": "object",
         "properties": {
-          "types": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CommissionTypePricingDto"
-            }
-          },
           "options": {
             "type": "array",
             "items": {
@@ -6296,14 +6325,24 @@
             }
           },
           "rushFee": {
-            "$ref": "#/components/schemas/CommissionRushFeeSettingDto"
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommissionRushFeeSettingDto"
+              }
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
           }
         },
         "required": [
-          "types",
           "options",
           "addons",
-          "rushFee"
+          "rushFee",
+          "currency"
         ]
       },
       "UpsertCommissionRushFeeSettingDto": {
@@ -6313,35 +6352,14 @@
             "type": "number",
             "example": 10
           },
-          "feeCents": {
+          "feeAmount": {
             "type": "number",
             "example": 2500
           }
         },
         "required": [
           "thresholdDays",
-          "feeCents"
-        ]
-      },
-      "UpsertCommissionTypePricingDto": {
-        "type": "object",
-        "properties": {
-          "commissionTypeId": {
-            "type": "string",
-            "description": "Id of the CommissionType to price"
-          },
-          "basePriceCents": {
-            "type": "number",
-            "example": 3000
-          },
-          "active": {
-            "type": "boolean",
-            "default": true
-          }
-        },
-        "required": [
-          "commissionTypeId",
-          "basePriceCents"
+          "feeAmount"
         ]
       },
       "UpsertCommissionOptionPricingDto": {
@@ -6350,6 +6368,10 @@
           "key": {
             "type": "string",
             "example": "SKETCHED"
+          },
+          "label": {
+            "type": "string",
+            "example": "Sketched"
           },
           "modifierPercent": {
             "type": "number",
@@ -6362,6 +6384,7 @@
         },
         "required": [
           "key",
+          "label",
           "modifierPercent"
         ]
       },
@@ -6372,9 +6395,27 @@
             "type": "string",
             "example": "BACKGROUND"
           },
-          "minPriceCents": {
+          "label": {
+            "type": "string",
+            "example": "Background"
+          },
+          "priceMode": {
+            "type": "string",
+            "enum": [
+              "FIXED",
+              "STARTING_FROM",
+              "RANGE"
+            ],
+            "default": "STARTING_FROM"
+          },
+          "minPrice": {
             "type": "number",
             "example": 3000
+          },
+          "maxPrice": {
+            "type": "number",
+            "nullable": true,
+            "description": "Required (and > minPrice) when priceMode is RANGE"
           },
           "active": {
             "type": "boolean",
@@ -6383,7 +6424,9 @@
         },
         "required": [
           "key",
-          "minPriceCents"
+          "label",
+          "priceMode",
+          "minPrice"
         ]
       },
       "ProjectDto": {
@@ -6393,6 +6436,9 @@
             "type": "string",
             "example": "clx1234567890"
           },
+          "artistId": {
+            "type": "string"
+          },
           "title": {
             "type": "string",
             "example": "Genshin Impact character set"
@@ -6401,19 +6447,26 @@
             "type": "string",
             "nullable": true
           },
+          "brief": {
+            "type": "object",
+            "additionalProperties": true,
+            "nullable": true,
+            "description": "Tiptap/ProseMirror JSON document describing the brief"
+          },
           "isHidden": {
             "type": "boolean",
             "description": "Whether this project is hidden from the public gallery"
           },
-          "coverAssetUrl": {
+          "coverImageUrl": {
             "type": "string",
             "nullable": true,
-            "description": "First deliverable asset URL from the project's commissions"
+            "description": "First final artwork image from this project's artworks"
           },
-          "commissionCount": {
-            "type": "number"
+          "artworkCount": {
+            "type": "number",
+            "description": "Number of final artworks attached to this project"
           },
-          "deliverableAssets": {
+          "artworkImages": {
             "type": "array",
             "items": {
               "type": "string"
@@ -6430,12 +6483,14 @@
         },
         "required": [
           "id",
+          "artistId",
           "title",
           "description",
+          "brief",
           "isHidden",
-          "coverAssetUrl",
-          "commissionCount",
-          "deliverableAssets",
+          "coverImageUrl",
+          "artworkCount",
+          "artworkImages",
           "createdAt",
           "updatedAt"
         ]
@@ -6449,10 +6504,16 @@
           },
           "description": {
             "type": "string"
+          },
+          "brief": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document describing the brief"
           }
         },
         "required": [
-          "title"
+          "title",
+          "brief"
         ]
       },
       "UpdateProjectDto": {
@@ -6464,10 +6525,16 @@
           },
           "description": {
             "type": "string"
+          },
+          "brief": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document describing the brief"
           }
         },
         "required": [
-          "title"
+          "title",
+          "brief"
         ]
       },
       "UpdateProjectVisibilityDto": {

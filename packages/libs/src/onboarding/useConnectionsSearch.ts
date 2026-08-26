@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { keepPreviousData } from '@tanstack/react-query';
 import { useSearchUsers } from '@hatohui/models';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import {
@@ -23,11 +24,16 @@ export function useConnectionsSearch() {
   // Connections are between accounts, so this searches accounts — unclaimed
   // directory entries have nobody to send a request to. Empty query browses
   // everyone rather than requiring a typed guess.
-  const searchQuery = useSearchUsers({
-    query: debouncedQuery.trim() || undefined,
-    page,
-    pageSize: CONNECTIONS_PAGE_SIZE,
-  });
+  const searchQuery = useSearchUsers(
+    {
+      query: debouncedQuery.trim() || undefined,
+      page,
+      pageSize: CONNECTIONS_PAGE_SIZE,
+    },
+    // Keeps showing the previous page's results while the next query is in
+    // flight, instead of clearing the list back to empty on every keystroke.
+    { query: { placeholderData: keepPreviousData } },
+  );
 
   const total = searchQuery.data?.data.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / CONNECTIONS_PAGE_SIZE));

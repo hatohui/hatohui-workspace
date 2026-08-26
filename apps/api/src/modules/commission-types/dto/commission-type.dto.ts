@@ -12,11 +12,23 @@ export class CommissionTypeDto {
   @ApiProperty()
   id: string;
 
+  @ApiProperty()
+  artistId: string;
+
   @ApiProperty({
     example: 'ICON',
-    description: 'Also the i18n key: commission.type.<key>',
+    description:
+      'Internal slug, derived from label at creation and never shown to the artist',
   })
   key: string;
+
+  @ApiProperty({ example: 'Icon' })
+  label: string;
+
+  @ApiProperty({
+    description: "Base price, in the artist's currency's smallest unit",
+  })
+  basePrice: number;
 
   @ApiProperty({ description: 'Display order, ascending' })
   no: number;
@@ -24,13 +36,15 @@ export class CommissionTypeDto {
   @ApiProperty()
   active: boolean;
 
-  @ApiProperty()
-  tagId: string;
+  @ApiProperty({ nullable: true, type: String })
+  tagId: string | null;
 
   @ApiProperty({
+    nullable: true,
+    type: String,
     description: 'Name of the linked Tag, used for gallery filtering',
   })
-  tagName: string;
+  tagName: string | null;
 
   @ApiProperty()
   createdAt: string;
@@ -40,10 +54,17 @@ export class CommissionTypeDto {
 }
 
 export class UpsertCommissionTypeDto {
-  @ApiProperty({ example: 'ICON' })
+  @ApiProperty({ example: 'Icon' })
   @IsString()
   @IsNotEmpty()
-  key: string;
+  label: string;
+
+  @ApiProperty({
+    description: "Base price, in the artist's currency's smallest unit",
+  })
+  @IsInt()
+  @Min(0)
+  basePrice: number;
 
   @ApiProperty({ required: false, default: 0 })
   @IsOptional()

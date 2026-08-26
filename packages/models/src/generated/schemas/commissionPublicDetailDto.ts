@@ -5,7 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CommissionNoteDto } from './commissionNoteDto';
+import type { CommentDto } from './commentDto';
 import type { CommissionPublicDetailDtoIdea } from './commissionPublicDetailDtoIdea';
 import type { CommissionPublicDetailDtoPaymentStatus } from './commissionPublicDetailDtoPaymentStatus';
 import type { CommissionPublicDetailDtoStatus } from './commissionPublicDetailDtoStatus';
@@ -27,13 +27,13 @@ export interface CommissionPublicDetailDto {
      * @nullable
      */
   commissionTypeKey: string | null;
+  currency: string;
   /** @nullable */
-  quoteCents: number | null;
+  quote: number | null;
   referenceAssets: string[];
-  deliverableAssets: string[];
   /** @nullable */
   deliveredAt: string | null;
   createdAt: string;
   updatedAt: string;
-  notes: CommissionNoteDto[];
+  comments: CommentDto[];
 }

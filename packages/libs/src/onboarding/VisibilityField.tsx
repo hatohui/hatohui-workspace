@@ -22,7 +22,10 @@ function VisibilityField({ value, onChange, helperText }: Props) {
     <div className="flex flex-col gap-1.5">
       <Label htmlFor="visibility">{t('friendForm.visibilityLabel')}</Label>
       <Select value={value} onValueChange={(v) => onChange(v as Visibility)}>
-        <SelectTrigger id="visibility">
+        <SelectTrigger
+          id="visibility"
+          className="border-input/80 bg-background font-medium text-foreground shadow-sm"
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

@@ -8,11 +8,11 @@
 import type { CommissionAddonPricingDto } from './commissionAddonPricingDto';
 import type { CommissionOptionPricingDto } from './commissionOptionPricingDto';
 import type { CommissionRushFeeSettingDto } from './commissionRushFeeSettingDto';
-import type { CommissionTypePricingDto } from './commissionTypePricingDto';
 
 export interface CommissionPricingDto {
-  types: CommissionTypePricingDto[];
   options: CommissionOptionPricingDto[];
   addons: CommissionAddonPricingDto[];
-  rushFee: CommissionRushFeeSettingDto;
+  /** @nullable */
+  rushFee: CommissionRushFeeSettingDto | null;
+  currency: string;
 }

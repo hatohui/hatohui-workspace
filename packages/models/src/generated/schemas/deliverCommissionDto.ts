@@ -8,5 +8,5 @@
 
 export interface DeliverCommissionDto {
   /** Object keys of the final artwork, returned by POST /images/sign */
-  deliverableAssets: string[];
+  images: string[];
 }

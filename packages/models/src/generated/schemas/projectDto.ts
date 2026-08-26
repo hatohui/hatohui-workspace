@@ -5,21 +5,29 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { ProjectDtoBrief } from './projectDtoBrief';
 
 export interface ProjectDto {
   id: string;
+  artistId: string;
   title: string;
   /** @nullable */
   description: string | null;
+  /**
+     * Tiptap/ProseMirror JSON document describing the brief
+     * @nullable
+     */
+  brief: ProjectDtoBrief;
   /** Whether this project is hidden from the public gallery */
   isHidden: boolean;
   /**
-     * First deliverable asset URL from the project's commissions
+     * First final artwork image from this project's artworks
      * @nullable
      */
-  coverAssetUrl: string | null;
-  commissionCount: number;
-  deliverableAssets: string[];
+  coverImageUrl: string | null;
+  /** Number of final artworks attached to this project */
+  artworkCount: number;
+  artworkImages: string[];
   createdAt: string;
   updatedAt: string;
 }

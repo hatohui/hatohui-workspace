@@ -8,8 +8,10 @@
 
 export interface CommissionOptionPricingDto {
   id: string;
+  artistId: string;
   /** Also the i18n key: commission.option.<key> */
   key: string;
+  label: string;
   /** Percent modifier on the base price */
   modifierPercent: number;
   active: boolean;

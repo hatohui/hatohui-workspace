@@ -28,12 +28,11 @@ import type {
   CommissionAddonPricingDto,
   CommissionOptionPricingDto,
   CommissionPricingDto,
+  CommissionPricingParams,
   CommissionRushFeeSettingDto,
-  CommissionTypePricingDto,
   UpsertCommissionAddonPricingDto,
   UpsertCommissionOptionPricingDto,
-  UpsertCommissionRushFeeSettingDto,
-  UpsertCommissionTypePricingDto
+  UpsertCommissionRushFeeSettingDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -70,20 +69,27 @@ export type commissionPricingResponseSuccess = (commissionPricingResponse200) & 
 
 export type commissionPricingResponse = (commissionPricingResponseSuccess)
 
-export const getCommissionPricingUrl = () => {
+export const getCommissionPricingUrl = (params: CommissionPricingParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/commission-pricing`
+  return stringifiedParams.length > 0 ? `/commission-pricing?${stringifiedParams}` : `/commission-pricing`
 }
 
 /**
- * @summary Active pricing config used by the commission request form
+ * @summary An artist's active options/addons/rush-fee/currency, for the commission request form
  */
-export const commissionPricing = async ( options?: RequestInit): Promise<commissionPricingResponse> => {
+export const commissionPricing = async (params: CommissionPricingParams, options?: RequestInit): Promise<commissionPricingResponse> => {
 
-  return customFetch<commissionPricingResponse>(getCommissionPricingUrl(),
+  return customFetch<commissionPricingResponse>(getCommissionPricingUrl(params),
   {
     ...options,
     method: 'GET'
@@ -96,23 +102,23 @@ export const commissionPricing = async ( options?: RequestInit): Promise<commiss
 
 
 
-export const getCommissionPricingQueryKey = () => {
+export const getCommissionPricingQueryKey = (params?: CommissionPricingParams,) => {
     return [
-    `/commission-pricing`
+    `/commission-pricing`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getCommissionPricingQueryOptions = <TData = Awaited<ReturnType<typeof commissionPricing>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCommissionPricingQueryOptions = <TData = Awaited<ReturnType<typeof commissionPricing>>, TError = unknown>(params: CommissionPricingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommissionPricingQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getCommissionPricingQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionPricing>>> = ({ signal }) => commissionPricing({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionPricing>>> = ({ signal }) => commissionPricing(params, { signal, ...requestOptions });
 
 
 
@@ -126,7 +132,7 @@ export type CommissionPricingQueryError = unknown
 
 
 export function useCommissionPricing<TData = Awaited<ReturnType<typeof commissionPricing>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>> & Pick<
+ params: CommissionPricingParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionPricing>>,
           TError,
@@ -136,7 +142,7 @@ export function useCommissionPricing<TData = Awaited<ReturnType<typeof commissio
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionPricing<TData = Awaited<ReturnType<typeof commissionPricing>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>> & Pick<
+ params: CommissionPricingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionPricing>>,
           TError,
@@ -146,19 +152,19 @@ export function useCommissionPricing<TData = Awaited<ReturnType<typeof commissio
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionPricing<TData = Awaited<ReturnType<typeof commissionPricing>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params: CommissionPricingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Active pricing config used by the commission request form
+ * @summary An artist's active options/addons/rush-fee/currency, for the commission request form
  */
 
 export function useCommissionPricing<TData = Awaited<ReturnType<typeof commissionPricing>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params: CommissionPricingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionPricing>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getCommissionPricingQueryOptions(options)
+  const queryOptions = getCommissionPricingQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -191,7 +197,7 @@ export const getUpdateCommissionRushFeeUrl = () => {
 }
 
 /**
- * @summary Update the rush-fee surcharge settings
+ * @summary Update your own rush-fee surcharge setting
  */
 export const updateCommissionRushFee = async (upsertCommissionRushFeeSettingDto: UpsertCommissionRushFeeSettingDto, options?: RequestInit): Promise<updateCommissionRushFeeResponse> => {
 
@@ -240,7 +246,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateCommissionRushFeeMutationError = unknown
 
     /**
- * @summary Update the rush-fee surcharge settings
+ * @summary Update your own rush-fee surcharge setting
  */
 export const useUpdateCommissionRushFee = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionRushFee>>, TError,{data: UpsertCommissionRushFeeSettingDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -251,365 +257,6 @@ export const useUpdateCommissionRushFee = <TError = unknown,
         TContext
       > => {
       return useMutation(getUpdateCommissionRushFeeMutationOptions(options), queryClient);
-    }
-    export type commissionTypePricingsResponse200 = {
-  data: CommissionTypePricingDto[]
-  status: 200
-}
-
-export type commissionTypePricingsResponseSuccess = (commissionTypePricingsResponse200) & {
-  headers: Headers;
-};
-;
-
-export type commissionTypePricingsResponse = (commissionTypePricingsResponseSuccess)
-
-export const getCommissionTypePricingsUrl = () => {
-
-
-
-
-  return `/commission-pricing/types`
-}
-
-/**
- * @summary List commission type pricing rows
- */
-export const commissionTypePricings = async ( options?: RequestInit): Promise<commissionTypePricingsResponse> => {
-
-  return customFetch<commissionTypePricingsResponse>(getCommissionTypePricingsUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommissionTypePricingsQueryKey = () => {
-    return [
-    `/commission-pricing/types`
-    ] as const;
-    }
-
-
-export const getCommissionTypePricingsQueryOptions = <TData = Awaited<ReturnType<typeof commissionTypePricings>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypePricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getCommissionTypePricingsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionTypePricings>>> = ({ signal }) => commissionTypePricings({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof commissionTypePricings>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommissionTypePricingsQueryResult = NonNullable<Awaited<ReturnType<typeof commissionTypePricings>>>
-export type CommissionTypePricingsQueryError = unknown
-
-
-export function useCommissionTypePricings<TData = Awaited<ReturnType<typeof commissionTypePricings>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypePricings>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commissionTypePricings>>,
-          TError,
-          Awaited<ReturnType<typeof commissionTypePricings>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommissionTypePricings<TData = Awaited<ReturnType<typeof commissionTypePricings>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypePricings>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commissionTypePricings>>,
-          TError,
-          Awaited<ReturnType<typeof commissionTypePricings>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommissionTypePricings<TData = Awaited<ReturnType<typeof commissionTypePricings>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypePricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary List commission type pricing rows
- */
-
-export function useCommissionTypePricings<TData = Awaited<ReturnType<typeof commissionTypePricings>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypePricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getCommissionTypePricingsQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-export type createCommissionTypePricingResponse200 = {
-  data: CommissionTypePricingDto
-  status: 200
-}
-
-export type createCommissionTypePricingResponseSuccess = (createCommissionTypePricingResponse200) & {
-  headers: Headers;
-};
-;
-
-export type createCommissionTypePricingResponse = (createCommissionTypePricingResponseSuccess)
-
-export const getCreateCommissionTypePricingUrl = () => {
-
-
-
-
-  return `/commission-pricing/types`
-}
-
-/**
- * @summary Create a commission type pricing row
- */
-export const createCommissionTypePricing = async (upsertCommissionTypePricingDto: UpsertCommissionTypePricingDto, options?: RequestInit): Promise<createCommissionTypePricingResponse> => {
-
-  return customFetch<createCommissionTypePricingResponse>(getCreateCommissionTypePricingUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(upsertCommissionTypePricingDto)
-  }
-);}
-
-
-
-
-
-export const getCreateCommissionTypePricingMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCommissionTypePricing>>, TError,{data: UpsertCommissionTypePricingDto}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createCommissionTypePricing>>, TError,{data: UpsertCommissionTypePricingDto}, TContext> => {
-
-const mutationKey = ['createCommissionTypePricing'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createCommissionTypePricing>>, {data: UpsertCommissionTypePricingDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createCommissionTypePricing(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateCommissionTypePricingMutationResult = NonNullable<Awaited<ReturnType<typeof createCommissionTypePricing>>>
-    export type CreateCommissionTypePricingMutationBody = UpsertCommissionTypePricingDto
-    export type CreateCommissionTypePricingMutationError = unknown
-
-    /**
- * @summary Create a commission type pricing row
- */
-export const useCreateCommissionTypePricing = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCommissionTypePricing>>, TError,{data: UpsertCommissionTypePricingDto}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createCommissionTypePricing>>,
-        TError,
-        {data: UpsertCommissionTypePricingDto},
-        TContext
-      > => {
-      return useMutation(getCreateCommissionTypePricingMutationOptions(options), queryClient);
-    }
-    export type updateCommissionTypePricingResponse200 = {
-  data: CommissionTypePricingDto
-  status: 200
-}
-
-export type updateCommissionTypePricingResponseSuccess = (updateCommissionTypePricingResponse200) & {
-  headers: Headers;
-};
-;
-
-export type updateCommissionTypePricingResponse = (updateCommissionTypePricingResponseSuccess)
-
-export const getUpdateCommissionTypePricingUrl = (id: string,) => {
-
-
-
-
-  return `/commission-pricing/types/${id}`
-}
-
-/**
- * @summary Update a commission type pricing row
- */
-export const updateCommissionTypePricing = async (id: string,
-    upsertCommissionTypePricingDto: UpsertCommissionTypePricingDto, options?: RequestInit): Promise<updateCommissionTypePricingResponse> => {
-
-  return customFetch<updateCommissionTypePricingResponse>(getUpdateCommissionTypePricingUrl(id),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(upsertCommissionTypePricingDto)
-  }
-);}
-
-
-
-
-
-export const getUpdateCommissionTypePricingMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionTypePricing>>, TError,{id: string;data: UpsertCommissionTypePricingDto}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateCommissionTypePricing>>, TError,{id: string;data: UpsertCommissionTypePricingDto}, TContext> => {
-
-const mutationKey = ['updateCommissionTypePricing'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCommissionTypePricing>>, {id: string;data: UpsertCommissionTypePricingDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  updateCommissionTypePricing(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateCommissionTypePricingMutationResult = NonNullable<Awaited<ReturnType<typeof updateCommissionTypePricing>>>
-    export type UpdateCommissionTypePricingMutationBody = UpsertCommissionTypePricingDto
-    export type UpdateCommissionTypePricingMutationError = unknown
-
-    /**
- * @summary Update a commission type pricing row
- */
-export const useUpdateCommissionTypePricing = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionTypePricing>>, TError,{id: string;data: UpsertCommissionTypePricingDto}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateCommissionTypePricing>>,
-        TError,
-        {id: string;data: UpsertCommissionTypePricingDto},
-        TContext
-      > => {
-      return useMutation(getUpdateCommissionTypePricingMutationOptions(options), queryClient);
-    }
-    export type deleteCommissionTypePricingResponse204 = {
-  data: void
-  status: 204
-}
-
-export type deleteCommissionTypePricingResponseSuccess = (deleteCommissionTypePricingResponse204) & {
-  headers: Headers;
-};
-;
-
-export type deleteCommissionTypePricingResponse = (deleteCommissionTypePricingResponseSuccess)
-
-export const getDeleteCommissionTypePricingUrl = (id: string,) => {
-
-
-
-
-  return `/commission-pricing/types/${id}`
-}
-
-/**
- * @summary Delete a commission type pricing row
- */
-export const deleteCommissionTypePricing = async (id: string, options?: RequestInit): Promise<deleteCommissionTypePricingResponse> => {
-
-  return customFetch<deleteCommissionTypePricingResponse>(getDeleteCommissionTypePricingUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
-
-
-
-export const getDeleteCommissionTypePricingMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCommissionTypePricing>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteCommissionTypePricing>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['deleteCommissionTypePricing'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCommissionTypePricing>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  deleteCommissionTypePricing(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteCommissionTypePricingMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCommissionTypePricing>>>
-
-    export type DeleteCommissionTypePricingMutationError = unknown
-
-    /**
- * @summary Delete a commission type pricing row
- */
-export const useDeleteCommissionTypePricing = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCommissionTypePricing>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteCommissionTypePricing>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getDeleteCommissionTypePricingMutationOptions(options), queryClient);
     }
     export type commissionOptionPricingsResponse200 = {
   data: CommissionOptionPricingDto[]
@@ -632,7 +279,7 @@ export const getCommissionOptionPricingsUrl = () => {
 }
 
 /**
- * @summary List commission option pricing rows
+ * @summary List your own commission option pricing rows
  */
 export const commissionOptionPricings = async ( options?: RequestInit): Promise<commissionOptionPricingsResponse> => {
 
@@ -703,7 +350,7 @@ export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof co
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List commission option pricing rows
+ * @summary List your own commission option pricing rows
  */
 
 export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof commissionOptionPricings>>, TError = unknown>(
@@ -826,7 +473,7 @@ export const getUpdateCommissionOptionPricingUrl = (id: string,) => {
 }
 
 /**
- * @summary Update a commission option pricing row
+ * @summary Update one of your own commission option pricing rows
  */
 export const updateCommissionOptionPricing = async (id: string,
     upsertCommissionOptionPricingDto: UpsertCommissionOptionPricingDto, options?: RequestInit): Promise<updateCommissionOptionPricingResponse> => {
@@ -876,7 +523,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateCommissionOptionPricingMutationError = unknown
 
     /**
- * @summary Update a commission option pricing row
+ * @summary Update one of your own commission option pricing rows
  */
 export const useUpdateCommissionOptionPricing = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionOptionPricing>>, TError,{id: string;data: UpsertCommissionOptionPricingDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -909,7 +556,7 @@ export const getDeleteCommissionOptionPricingUrl = (id: string,) => {
 }
 
 /**
- * @summary Delete a commission option pricing row
+ * @summary Delete one of your own commission option pricing rows
  */
 export const deleteCommissionOptionPricing = async (id: string, options?: RequestInit): Promise<deleteCommissionOptionPricingResponse> => {
 
@@ -958,7 +605,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeleteCommissionOptionPricingMutationError = unknown
 
     /**
- * @summary Delete a commission option pricing row
+ * @summary Delete one of your own commission option pricing rows
  */
 export const useDeleteCommissionOptionPricing = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCommissionOptionPricing>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -991,7 +638,7 @@ export const getCommissionAddonPricingsUrl = () => {
 }
 
 /**
- * @summary List commission add-on pricing rows
+ * @summary List your own commission add-on pricing rows
  */
 export const commissionAddonPricings = async ( options?: RequestInit): Promise<commissionAddonPricingsResponse> => {
 
@@ -1062,7 +709,7 @@ export function useCommissionAddonPricings<TData = Awaited<ReturnType<typeof com
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List commission add-on pricing rows
+ * @summary List your own commission add-on pricing rows
  */
 
 export function useCommissionAddonPricings<TData = Awaited<ReturnType<typeof commissionAddonPricings>>, TError = unknown>(
@@ -1185,7 +832,7 @@ export const getUpdateCommissionAddonPricingUrl = (id: string,) => {
 }
 
 /**
- * @summary Update a commission add-on pricing row
+ * @summary Update one of your own commission add-on pricing rows
  */
 export const updateCommissionAddonPricing = async (id: string,
     upsertCommissionAddonPricingDto: UpsertCommissionAddonPricingDto, options?: RequestInit): Promise<updateCommissionAddonPricingResponse> => {
@@ -1235,7 +882,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateCommissionAddonPricingMutationError = unknown
 
     /**
- * @summary Update a commission add-on pricing row
+ * @summary Update one of your own commission add-on pricing rows
  */
 export const useUpdateCommissionAddonPricing = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionAddonPricing>>, TError,{id: string;data: UpsertCommissionAddonPricingDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -1268,7 +915,7 @@ export const getDeleteCommissionAddonPricingUrl = (id: string,) => {
 }
 
 /**
- * @summary Delete a commission add-on pricing row
+ * @summary Delete one of your own commission add-on pricing rows
  */
 export const deleteCommissionAddonPricing = async (id: string, options?: RequestInit): Promise<deleteCommissionAddonPricingResponse> => {
 
@@ -1317,7 +964,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeleteCommissionAddonPricingMutationError = unknown
 
     /**
- * @summary Delete a commission add-on pricing row
+ * @summary Delete one of your own commission add-on pricing rows
  */
 export const useDeleteCommissionAddonPricing = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCommissionAddonPricing>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}

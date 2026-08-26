@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
@@ -11,6 +12,7 @@ import {
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/modules/auth/guards/auth.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { AuthService } from '@/modules/auth/services/auth.service';
 import type { User } from '@prisma/client';
 import { CommissionsService } from '@/modules/commissions/services/commissions.service';
 import {
@@ -23,16 +25,15 @@ import {
 } from '@/modules/commissions/dto/commission-query.dto';
 import {
   AddReferenceAssetsDto,
-  AssignCommissionDto,
   CommissionDto,
   CommissionPublicDto,
+  CreatePrivateCommissionDto,
   DeliverCommissionDto,
   SubmitCommissionDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
   UpdateCommissionStepDto,
   UpdateCommissionVisibilityDto,
-  UpdateCommissionProjectDto,
   UpdatePaymentStatusDto,
 } from '@/modules/commissions/dto/commission.dto';
 import {
@@ -40,34 +41,53 @@ import {
   CommissionPublicDetailDto,
 } from '@/modules/commissions/dto/commission-detail.dto';
 import {
-  CommissionNoteDto,
-  CreateCommissionNoteDto,
-} from '@/modules/commissions/dto/commission-note.dto';
+  CommentDto,
+  CreateCommentDto,
+} from '@/modules/commissions/dto/comment.dto';
 import { CommissionQueueDto } from '@/modules/commissions/dto/commission-queue.dto';
 
 @ApiTags('commissions')
 @Controller('commissions')
 export class CommissionsController {
-  constructor(private readonly commissionsService: CommissionsService) {}
+  constructor(
+    private readonly commissionsService: CommissionsService,
+    private readonly auth: AuthService,
+  ) {}
 
   @Post()
   @ApiOperation({
     operationId: 'submitCommission',
-    summary: 'Submit a new commission request',
+    summary: 'Submit a new commission request to an artist',
   })
   @ApiOkResponse({ type: CommissionDto })
   submit(@Body() dto: SubmitCommissionDto): Promise<CommissionDto> {
     return this.commissionsService.submit(dto);
   }
 
+  @Post('private')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'createPrivateCommission',
+    summary:
+      'Artist creates a commission directly, without going through an opening',
+  })
+  @ApiOkResponse({ type: CommissionDto })
+  async createPrivate(
+    @Body() dto: CreatePrivateCommissionDto,
+    @CurrentUser() user: User,
+  ): Promise<CommissionDto> {
+    await this.assertArtist(user);
+    return this.commissionsService.createPrivate(user.id, dto);
+  }
+
   @Get('queue')
   @ApiOperation({
     operationId: 'commissionQueue',
-    summary: 'Public timeline of non-hidden, active commissions',
+    summary: "Public timeline of an artist's non-hidden, active commissions",
   })
   @ApiOkResponse({ type: CommissionQueueDto })
-  queue(): Promise<CommissionQueueDto> {
-    return this.commissionsService.queue();
+  queue(@Query('artistId') artistId: string): Promise<CommissionQueueDto> {
+    return this.commissionsService.queue(artistId);
   }
 
   @Get('lookup')
@@ -112,11 +132,11 @@ export class CommissionsController {
     operationId: 'addClientCommissionNote',
     summary: 'Client leaves a note (e.g. confirming a sketch)',
   })
-  @ApiOkResponse({ type: CommissionNoteDto })
+  @ApiOkResponse({ type: CommentDto })
   addClientNote(
     @Param('code') code: string,
     @Body() dto: CreateClientNoteDto,
-  ): Promise<CommissionNoteDto> {
+  ): Promise<CommentDto> {
     return this.commissionsService.addClientNote(code, dto.body);
   }
 
@@ -124,11 +144,15 @@ export class CommissionsController {
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'commissions',
-    summary: 'List commission requests',
+    summary: 'List your own commission requests',
   })
   @ApiOkResponse({ type: PaginatedCommissionsDto })
-  list(@Query() query: CommissionQueryDto): Promise<PaginatedCommissionsDto> {
+  list(
+    @Query() query: CommissionQueryDto,
+    @CurrentUser() user: User,
+  ): Promise<PaginatedCommissionsDto> {
     return this.commissionsService.list(
+      user.id,
       query.query,
       query.status,
       query.sort ?? 'createdAt',
@@ -142,11 +166,15 @@ export class CommissionsController {
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'commission',
-    summary: 'Get a commission request with its notes and status history',
+    summary:
+      'Get one of your own commissions with its notes and status history',
   })
   @ApiOkResponse({ type: CommissionDetailDto })
-  findOne(@Param('id') id: string): Promise<CommissionDetailDto> {
-    return this.commissionsService.findOne(id);
+  findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<CommissionDetailDto> {
+    return this.commissionsService.findOne(user.id, id);
   }
 
   @Patch(':id/status')
@@ -159,9 +187,9 @@ export class CommissionsController {
   updateStatus(
     @Param('id') id: string,
     @Body() dto: UpdateCommissionStatusDto,
-    @CurrentUser() viewer: User,
+    @CurrentUser() user: User,
   ): Promise<CommissionDto> {
-    return this.commissionsService.updateStatus(id, dto, viewer);
+    return this.commissionsService.updateStatus(user.id, id, dto, user);
   }
 
   @Patch(':id/payment-status')
@@ -174,8 +202,9 @@ export class CommissionsController {
   updatePaymentStatus(
     @Param('id') id: string,
     @Body() dto: UpdatePaymentStatusDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionDto> {
-    return this.commissionsService.updatePaymentStatus(id, dto);
+    return this.commissionsService.updatePaymentStatus(user.id, id, dto);
   }
 
   @Patch(':id/step')
@@ -188,8 +217,9 @@ export class CommissionsController {
   updateStep(
     @Param('id') id: string,
     @Body() dto: UpdateCommissionStepDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionDto> {
-    return this.commissionsService.updateStep(id, dto);
+    return this.commissionsService.updateStep(user.id, id, dto);
   }
 
   @Patch(':id/quote')
@@ -202,8 +232,9 @@ export class CommissionsController {
   updateQuote(
     @Param('id') id: string,
     @Body() dto: UpdateCommissionQuoteDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionDto> {
-    return this.commissionsService.updateQuote(id, dto);
+    return this.commissionsService.updateQuote(user.id, id, dto);
   }
 
   @Patch(':id/visibility')
@@ -216,50 +247,25 @@ export class CommissionsController {
   updateVisibility(
     @Param('id') id: string,
     @Body() dto: UpdateCommissionVisibilityDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionDto> {
-    return this.commissionsService.updateVisibility(id, dto);
+    return this.commissionsService.updateVisibility(user.id, id, dto);
   }
 
   @Post(':id/deliver')
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'deliverCommission',
-    summary: 'Attach the final artwork and email it to the client',
+    summary:
+      'Attach the final artwork as a progress entry and email it to the client',
   })
   @ApiOkResponse({ type: CommissionDto })
   deliver(
     @Param('id') id: string,
     @Body() dto: DeliverCommissionDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionDto> {
-    return this.commissionsService.deliver(id, dto);
-  }
-
-  @Patch(':id/assign')
-  @UseGuards(AuthGuard)
-  @ApiOperation({
-    operationId: 'assignCommission',
-    summary: 'Assign or unassign a team member to a commission',
-  })
-  @ApiOkResponse({ type: CommissionDto })
-  assign(
-    @Param('id') id: string,
-    @Body() dto: AssignCommissionDto,
-  ): Promise<CommissionDto> {
-    return this.commissionsService.assign(id, dto);
-  }
-
-  @Patch(':id/project')
-  @UseGuards(AuthGuard)
-  @ApiOperation({
-    operationId: 'updateCommissionProject',
-    summary: 'Attach or detach a commission from a project',
-  })
-  @ApiOkResponse({ type: CommissionDto })
-  updateProject(
-    @Param('id') id: string,
-    @Body() dto: UpdateCommissionProjectDto,
-  ): Promise<CommissionDto> {
-    return this.commissionsService.updateProject(id, dto);
+    return this.commissionsService.deliver(user.id, id, dto);
   }
 
   @Post(':id/notes')
@@ -268,12 +274,18 @@ export class CommissionsController {
     operationId: 'createCommissionNote',
     summary: 'Add an internal or client-facing note to a commission',
   })
-  @ApiOkResponse({ type: CommissionNoteDto })
+  @ApiOkResponse({ type: CommentDto })
   addNote(
     @Param('id') id: string,
-    @Body() dto: CreateCommissionNoteDto,
-    @CurrentUser() author: User,
-  ): Promise<CommissionNoteDto> {
-    return this.commissionsService.addNote(id, dto, author);
+    @Body() dto: CreateCommentDto,
+    @CurrentUser() user: User,
+  ): Promise<CommentDto> {
+    return this.commissionsService.addNote(user.id, id, dto);
+  }
+
+  private async assertArtist(user: User): Promise<void> {
+    if (!(await this.auth.isArtist(user))) {
+      throw new ForbiddenException('Artist access denied');
+    }
   }
 }

@@ -13,14 +13,27 @@ import type { CommissionStepsDto } from './commissionStepsDto';
 
 export interface CommissionDto {
   id: string;
+  artistId: string;
+  clientId: string;
+  /** @nullable */
+  commissionOpeningId: string | null;
+  /** @nullable */
+  groupId: string | null;
+  /** @nullable */
+  paymentMethodId: string | null;
+  status: CommissionDtoStatus;
+  /**
+     * Custom triage ordering
+     * @nullable
+     */
+  priority: number | null;
   /** Tiptap/ProseMirror JSON document */
   idea: CommissionDtoIdea;
   /** @nullable */
   deadline: string | null;
-  status: CommissionDtoStatus;
   paymentStatus: CommissionDtoPaymentStatus;
-  /** Whether this commission is hidden from any public showcase */
-  isHidden: boolean;
+  /** Whether this commission is hidden from the public /queue */
+  isHiddenInQueue: boolean;
   /** @nullable */
   commissionTypeId: string | null;
   /**
@@ -29,31 +42,32 @@ export interface CommissionDto {
      */
   commissionTypeKey: string | null;
   /**
-     * Key of the selected CommissionOptionPricing
+     * Key of the selected CommissionOption
      * @nullable
      */
   optionKey: string | null;
-  /** Keys of selected CommissionAddonPricing rows */
+  /** Keys of selected CommissionAddon rows */
   addonKeys: string[];
+  currency: string;
   /**
-     * Quote in USD cents
+     * Quote, in currency's smallest unit
      * @nullable
      */
-  quoteCents: number | null;
+  quote: number | null;
+  /**
+     * Quote snapshotted at accept time, to detect later changes
+     * @nullable
+     */
+  originalQuote: number | null;
   clientName: string;
   clientEmail: string;
   preferredContactMethod: CommissionDtoPreferredContactMethod;
   /** @nullable */
   contactHandle: string | null;
   referenceAssets: string[];
-  deliverableAssets: string[];
   /** @nullable */
   deliveredAt: string | null;
   steps: CommissionStepsDto;
-  /** @nullable */
-  assignedToId: string | null;
-  /** @nullable */
-  projectId: string | null;
   createdAt: string;
   updatedAt: string;
 }

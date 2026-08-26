@@ -245,12 +245,12 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
 
 
 
-export type logoutResponse201 = {
+export type logoutResponse204 = {
   data: void
-  status: 201
+  status: 204
 }
 
-export type logoutResponseSuccess = (logoutResponse201) & {
+export type logoutResponseSuccess = (logoutResponse204) & {
   headers: Headers;
 };
 ;

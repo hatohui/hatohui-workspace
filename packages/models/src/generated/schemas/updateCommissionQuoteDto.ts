@@ -13,8 +13,8 @@ export interface UpdateCommissionQuoteDto {
   optionKey?: string | null;
   addonKeys?: string[];
   /**
-     * Final quote in USD cents
+     * Quote, in currency's smallest unit
      * @nullable
      */
-  quoteCents?: number | null;
+  quote?: number | null;
 }

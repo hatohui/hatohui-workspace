@@ -9,12 +9,16 @@ import type { SubmitCommissionDtoIdea } from './submitCommissionDtoIdea';
 import type { SubmitCommissionDtoPreferredContactMethod } from './submitCommissionDtoPreferredContactMethod';
 
 export interface SubmitCommissionDto {
+  /** Id of the artist being commissioned */
+  artistId: string;
+  /** Id of the CommissionOpening this is submitted through, if any */
+  commissionOpeningId?: string;
   /** Tiptap/ProseMirror JSON document describing the idea */
   idea: SubmitCommissionDtoIdea;
   deadline?: string;
   /** Id of a CommissionType */
   commissionTypeId?: string;
-  /** Key of a CommissionOptionPricing */
+  /** Key of a CommissionOption */
   optionKey?: string;
   addonKeys?: string[];
   clientName: string;

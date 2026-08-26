@@ -13,10 +13,11 @@ import { BirthdayConfigService } from '@/modules/cron/services/birthday-config.s
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
 import type { Env } from '@/config/env';
-import { AppScope, type User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import {
-  ADMIN_EMAIL_CONFIG_TYPE,
-  ADMIN_EMAIL_TTL_SECONDS,
+  ROLE_CACHE_TTL_SECONDS,
+  ROLE_KEYS,
+  type RoleKey,
 } from '@/modules/auth/auth.constants';
 
 @Injectable()
@@ -36,12 +37,32 @@ export class AuthService {
     );
   }
 
-  /// Derived per request instead of cached on the row, so it can't drift from
-  /// the config the way the old `User.role` column did.
   async isAdmin(user: User | null): Promise<boolean> {
+    return this.hasRole(user, ROLE_KEYS.admin);
+  }
+
+  async isArtist(user: User | null): Promise<boolean> {
+    return this.hasRole(user, ROLE_KEYS.artist);
+  }
+
+  async hasRole(user: User | null, roleKey: RoleKey): Promise<boolean> {
     if (!user) return false;
-    const email = await this.adminEmail();
-    return email !== null && email === user.email.toLowerCase();
+    const roles = await this.rolesFor(user.id);
+    return roles.includes(roleKey);
+  }
+
+  private rolesFor(userId: string): Promise<RoleKey[]> {
+    return this.cache.getOrSet(
+      CACHE_KEYS.userRoles(userId),
+      ROLE_CACHE_TTL_SECONDS,
+      async () => {
+        const rows = await this.db.userRole.findMany({
+          where: { userId },
+          select: { role: { select: { key: true } } },
+        });
+        return rows.map((row) => row.role.key as RoleKey);
+      },
+    );
   }
 
   /// Everything displayable comes from the profile, resolved here so callers
@@ -49,7 +70,7 @@ export class AuthService {
   async toUserDto(user: User): Promise<UserDto> {
     const setting = USER_SETTING_TYPES.birthdayReminderLeadDays;
     const enabledSetting = USER_SETTING_TYPES.birthdayRemindersEnabled;
-    const [profile, storedLeadDays, storedEnabled, birthdayConfig] =
+    const [profile, storedLeadDays, storedEnabled, birthdayConfig, roles] =
       await Promise.all([
         this.db.profile.findUnique({
           where: { userId: user.id },
@@ -62,6 +83,7 @@ export class AuthService {
           enabledSetting.type,
         ),
         this.birthdayConfig.load(),
+        this.rolesFor(user.id),
       ]);
 
     const leadDays = resolveLeadDays(
@@ -75,7 +97,8 @@ export class AuthService {
       name: profile?.displayName ?? user.name,
       handle: profile?.handle ?? null,
       avatarUrl: profile?.avatarUrl ?? user.avatarUrl,
-      isAdmin: await this.isAdmin(user),
+      isAdmin: roles.includes(ROLE_KEYS.admin),
+      isArtist: roles.includes(ROLE_KEYS.artist),
       onboardingStatus: user.onboardingStatus,
       timezone: user.timezone,
       birthdayReminderLeadDays: leadDays,
@@ -86,22 +109,6 @@ export class AuthService {
       birthdayReminderDaysBefore: offsets.daysBefore,
       birthdayReminderWeeksBefore: offsets.weeksBefore,
     };
-  }
-
-  private adminEmail(): Promise<string | null> {
-    return this.cache.getOrSet(
-      CACHE_KEYS.adminEmail(),
-      ADMIN_EMAIL_TTL_SECONDS,
-      async () => {
-        const config = await this.db.systemParameters.findUnique({
-          where: {
-            type_scope: { type: ADMIN_EMAIL_CONFIG_TYPE, scope: AppScope.ALL },
-          },
-          select: { value: true },
-        });
-        return config?.value ? config.value.toLowerCase() : null;
-      },
-    );
   }
 
   async loginWithGoogle(code: string): Promise<User> {

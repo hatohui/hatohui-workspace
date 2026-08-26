@@ -5,11 +5,22 @@ export class ProjectDto {
   @ApiProperty({ example: 'clx1234567890' })
   id: string;
 
+  @ApiProperty()
+  artistId: string;
+
   @ApiProperty({ example: 'Genshin Impact character set' })
   title: string;
 
   @ApiProperty({ nullable: true })
   description: string | null;
+
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: true,
+    nullable: true,
+    description: 'Tiptap/ProseMirror JSON document describing the brief',
+  })
+  brief: unknown;
 
   @ApiProperty({
     description: 'Whether this project is hidden from the public gallery',
@@ -18,15 +29,17 @@ export class ProjectDto {
 
   @ApiProperty({
     nullable: true,
-    description: "First deliverable asset URL from the project's commissions",
+    description: "First final artwork image from this project's artworks",
   })
-  coverAssetUrl: string | null;
+  coverImageUrl: string | null;
 
-  @ApiProperty()
-  commissionCount: number;
+  @ApiProperty({
+    description: 'Number of final artworks attached to this project',
+  })
+  artworkCount: number;
 
   @ApiProperty({ type: [String] })
-  deliverableAssets: string[];
+  artworkImages: string[];
 
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   createdAt: string;
@@ -45,6 +58,14 @@ export class CreateProjectDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: true,
+    description: 'Tiptap/ProseMirror JSON document describing the brief',
+  })
+  @IsOptional()
+  brief?: object;
 }
 
 export class UpdateProjectDto {
@@ -57,6 +78,14 @@ export class UpdateProjectDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: true,
+    description: 'Tiptap/ProseMirror JSON document describing the brief',
+  })
+  @IsOptional()
+  brief?: object;
 }
 
 export class UpdateProjectVisibilityDto {

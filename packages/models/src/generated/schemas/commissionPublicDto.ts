@@ -26,10 +26,10 @@ export interface CommissionPublicDto {
      * @nullable
      */
   commissionTypeKey: string | null;
+  currency: string;
   /** @nullable */
-  quoteCents: number | null;
+  quote: number | null;
   referenceAssets: string[];
-  deliverableAssets: string[];
   /** @nullable */
   deliveredAt: string | null;
   createdAt: string;

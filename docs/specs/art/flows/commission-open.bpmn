@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="b349182" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:collaboration id="Collaboration_1q03685" name="commission-opening">
+    <bpmn:participant id="Participant_0xe5z9f" name="Commission Open Flow" processRef="Process_18w3b1g" />
+    <bpmn:textAnnotation id="TextAnnotation_1aaddhw">
+      <bpmn:text>- End by manual toggle
+
+- End by slots: Accepts as many as can, Once the amount of slot is filled up it closes, optionally select time duration for the comm open
+
+- Indefinite: You don't close the opening</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1v2o9zw">
+      <bpmn:text>Form:
+- Open now, or when?
+
+// planned only:
+- Post on any platform? Twitter? Facebook? etc
+
+- Edit the post, like attachments, texts, etc</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0sm51yv">
+      <bpmn:text>We still saves the commissions requests here, in case accepted slots don't want to continue with the commission after hearing the quote</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1cxyc94" associationDirection="None" sourceRef="Event_0844qxa" targetRef="TextAnnotation_0sm51yv" />
+    <bpmn:textAnnotation id="TextAnnotation_1slorr9">
+      <bpmn:text>Usually the artists will reach out to the client via DM, and confirm with them, so this is preference based, we should allow both.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1ciifoy" associationDirection="None" sourceRef="Activity_1mdvoc6" targetRef="TextAnnotation_1slorr9" />
+    <bpmn:textAnnotation id="TextAnnotation_09amkym">
+      <bpmn:text>2 view modes:
+Card
+The card:
+
+[Name]
+[ContactMethod in the form of handle]
+[Image] - fall back to url image, with tooltip showing the url if they sent an URL instead of uploading a reference
+[Idea]
+[Price]
+[Action buttons]
+
+for each card, shown in grid.
+
+Table:
+Shown in table form, let artist select which one they wanna do. the table is
+This is a table of x slots
+Including:
+
+1. name
+2. prefered reach out method
+3. deadline
+4. price
+5. status (CONFIRMED - NOT CONFIRMED)
+6. idea
+7. reference image (click in to view or external link)
+8. action buttons (Confirm - Replace - Send Confirmation Email - Delete)
+
+Caviets:
+- The list should be able to show in 3 modes: first come first serve, custom priority (support this, let user set their priority), by deadline (those without deadlines should be shown by submission time.
+- 1 and 6 is read only
+- 5 is editable by hand,
+- 7, replace button is to replace that accepted slot with someone else in the pending or rejected list, once accepted they can either send 
+
+- 4 is editable, and when you edit this, the send email button at 7 should show a modal asking "You modified the original price, let them know why" with a note box, make them input before sending. 
+
+- You don't force send email everytime 4 is edited, they only send email if user specifically want to send the confirmation email
+
+- There should be three tabs, pending, accepted, declined, when accept or reject, they should disappear from this list to go to the other lists for both views
+
+- The send email button is disabled when user status is changed to confirmed. but for UX still let user replace and delete. (Since the purpose of the send email button is to ask for confirmation)
+
+There should be an undo button feature as well, since we don't confirm again whether they want to delete something, an undo button would be good
+
+Once users are done, they can click continue.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1dfoyq1">
+      <bpmn:text>The followers here are those who are interested in the slots of someone in the platform</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_18y4yt2" associationDirection="None" sourceRef="Activity_0b6qzfx" targetRef="TextAnnotation_1dfoyq1" />
+    <bpmn:association id="Association_09wt7ao" associationDirection="None" sourceRef="Activity_02q772b" targetRef="TextAnnotation_09amkym" />
+    <bpmn:association id="Association_0nqu677" associationDirection="None" sourceRef="Activity_1fpomes" targetRef="TextAnnotation_1v2o9zw" />
+    <bpmn:textAnnotation id="TextAnnotation_1at1fe3">
+      <bpmn:text>2 view modes:
+Card
+The card:
+
+[Name]
+[ContactMethod in the form of handle]
+[Image] - fall back to url image, with tooltip showing the url if they sent an URL instead of uploading a reference
+[Idea]
+[Price]
+[Action buttons]
+
+for each card, shown in grid.
+
+Table:
+Shown in table form, let artist select which one they wanna do. the table is
+
+1. name
+2. prefered contact method
+3. deadline
+4. price
+5. idea
+6. reference image (click in to view or external link)
+7. action button (Accept, Reject)
+
+- The list should be able to show in 3 modes: first come first serve, custom priority (support this, let user set their priority), by deadline (those without deadlines should be shown by submission time.
+
+- There should be three tabs, pending, accepted, declined, when accept or reject, they should disappear from this list to go to the other lists for both views
+
+- There should be an undo button feature as well, since we don't confirm again whether they want to decline or accept something, an undo button would be good</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_11xk1p7" associationDirection="None" sourceRef="Gateway_12c13rq" targetRef="TextAnnotation_1at1fe3" />
+    <bpmn:textAnnotation id="TextAnnotation_1l8snqk">
+      <bpmn:text>User settings:
+auto-accept-commission/indefinite</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1uotmdo" associationDirection="None" sourceRef="Activity_1ed7y2j" targetRef="TextAnnotation_1l8snqk" />
+    <bpmn:textAnnotation id="TextAnnotation_0xf88fu">
+      <bpmn:text>auto-accept-commission/indefinite won't trigger this</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1vmxzks" associationDirection="None" sourceRef="Activity_1mdvoc6" targetRef="TextAnnotation_0xf88fu" />
+    <bpmn:textAnnotation id="TextAnnotation_0e2by2x">
+      <bpmn:text>indefinite will have a different UI</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1c846y7" associationDirection="None" sourceRef="Activity_1wweeay" targetRef="TextAnnotation_0e2by2x" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_18w3b1g" name="create-commission" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_10bjvdv">
+      <bpmn:lane id="Lane_1f84h6a" name="Artist">
+        <bpmn:flowNodeRef>Activity_02q772b</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0o64jhz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_04mybts</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_14jyqpp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1fpomes</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_12c13rq</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1ed7y2j</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1wweeay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_022f1xp</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1eck7rp" name="System">
+        <bpmn:flowNodeRef>Activity_1mdvoc6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_19a7taj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0b6qzfx</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0md7jhu" name="Client">
+        <bpmn:flowNodeRef>Event_0844qxa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0ji7jm6</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_0sb6g3o" name="Accept" sourceRef="Gateway_12c13rq" targetRef="Activity_1mdvoc6" />
+    <bpmn:sequenceFlow id="Flow_1c5ff5x" sourceRef="Activity_19a7taj" targetRef="Activity_1ed7y2j" />
+    <bpmn:sequenceFlow id="Flow_0m09irx" sourceRef="Activity_0ji7jm6" targetRef="Activity_19a7taj" />
+    <bpmn:serviceTask id="Activity_1mdvoc6" name="Notify Customer">
+      <bpmn:incoming>Flow_0sb6g3o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s5dwyt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_19a7taj" name="Notify Artist">
+      <bpmn:incoming>Flow_0m09irx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c5ff5x</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0wvtudr" name="Decline" sourceRef="Gateway_12c13rq" targetRef="Event_0844qxa" />
+    <bpmn:sequenceFlow id="Flow_1fabcjc" sourceRef="Activity_0b6qzfx" targetRef="Activity_0ji7jm6" />
+    <bpmn:sequenceFlow id="Flow_1al0fyv" sourceRef="Activity_1fpomes" targetRef="Activity_0b6qzfx" />
+    <bpmn:serviceTask id="Activity_0b6qzfx" name="Notify Followers">
+      <bpmn:incoming>Flow_1al0fyv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fabcjc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0s5dwyt" sourceRef="Activity_1mdvoc6" targetRef="Activity_02q772b" />
+    <bpmn:endEvent id="Event_0844qxa" name="End">
+      <bpmn:incoming>Flow_0wvtudr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_02q772b" name="Configure Accepted Slots">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s5dwyt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j7jkh8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="Event_0o64jhz">
+      <bpmn:outgoing>Flow_05mtg8w</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_04mybts" name="Set Commission Open">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05mtg8w</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jjov65</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_14jyqpp" name="Select End Mode">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jjov65</bpmn:incoming>
+      <bpmn:outgoing>Flow_05l0jzd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1fpomes" name="Schedule Open &#38; Post &#38; Platform">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05l0jzd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1al0fyv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_05mtg8w" sourceRef="Event_0o64jhz" targetRef="Activity_04mybts" />
+    <bpmn:sequenceFlow id="Flow_0jjov65" sourceRef="Activity_04mybts" targetRef="Activity_14jyqpp" />
+    <bpmn:sequenceFlow id="Flow_05l0jzd" sourceRef="Activity_14jyqpp" targetRef="Activity_1fpomes" />
+    <bpmn:exclusiveGateway id="Gateway_12c13rq">
+      <bpmn:incoming>Flow_15yblcv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0sb6g3o</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0wvtudr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_1ed7y2j" name="Accept/Decline Commission Slot">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1c5ff5x</bpmn:incoming>
+      <bpmn:outgoing>Flow_15yblcv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_15yblcv" sourceRef="Activity_1ed7y2j" targetRef="Gateway_12c13rq" />
+    <bpmn:sequenceFlow id="Flow_0j7jkh8" sourceRef="Activity_02q772b" targetRef="Activity_1wweeay" />
+    <bpmn:userTask id="Activity_1wweeay" name="Review and Close Commission Open">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0j7jkh8</bpmn:incoming>
+      <bpmn:outgoing>Flow_12tnlcg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_022f1xp" name="End, delete all those applications that&#39;s not selected.">
+      <bpmn:incoming>Flow_12tnlcg</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_12tnlcg" sourceRef="Activity_1wweeay" targetRef="Event_022f1xp" />
+    <bpmn:userTask id="Activity_0ji7jm6" name="Enter Commission Details">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fabcjc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m09irx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:association id="Association_1uuwh33" associationDirection="None" sourceRef="Activity_14jyqpp" targetRef="TextAnnotation_1aaddhw" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1q03685">
+      <bpmndi:BPMNShape id="BPMNShape_063ca7y" bpmnElement="Participant_0xe5z9f" isHorizontal="true">
+        <dc:Bounds x="-520" y="1140" width="2378" height="440" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0md7jhu_di" bpmnElement="Lane_0md7jhu" isHorizontal="true" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <dc:Bounds x="-490" y="1140" width="2348" height="147" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1eck7rp_di" bpmnElement="Lane_1eck7rp" isHorizontal="true" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
+        <dc:Bounds x="-490" y="1287" width="2348" height="147" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1f84h6a_di" bpmnElement="Lane_1f84h6a" isHorizontal="true" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <dc:Bounds x="-490" y="1434" width="2348" height="146" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ti99nb_di" bpmnElement="Activity_1mdvoc6">
+        <dc:Bounds x="1150" y="1320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u0up14_di" bpmnElement="Activity_19a7taj">
+        <dc:Bounds x="530" y="1320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1g7f277_di" bpmnElement="Activity_0b6qzfx">
+        <dc:Bounds x="160" y="1320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0844qxa_di" bpmnElement="Event_0844qxa">
+        <dc:Bounds x="882" y="1202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="890" y="1178" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zy4yj2_di" bpmnElement="Activity_02q772b">
+        <dc:Bounds x="1340" y="1470" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0o64jhz_di" bpmnElement="Event_0o64jhz">
+        <dc:Bounds x="-408" y="1492" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19ah421_di" bpmnElement="Activity_04mybts">
+        <dc:Bounds x="-320" y="1470" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h98t8j_di" bpmnElement="Activity_14jyqpp">
+        <dc:Bounds x="-160" y="1470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15maj8c_di" bpmnElement="Activity_1fpomes">
+        <dc:Bounds x="0" y="1470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_12c13rq_di" bpmnElement="Gateway_12c13rq" isMarkerVisible="true">
+        <dc:Bounds x="875" y="1485" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0july6u_di" bpmnElement="Activity_1ed7y2j">
+        <dc:Bounds x="700" y="1470" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pqf2yk_di" bpmnElement="Activity_1wweeay">
+        <dc:Bounds x="1530" y="1470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_022f1xp_di" bpmnElement="Event_022f1xp">
+        <dc:Bounds x="1722" y="1492" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1670" y="1535" width="140" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_14dolxt" bpmnElement="Activity_0ji7jm6">
+        <dc:Bounds x="350" y="1170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0sb6g3o_di" bpmnElement="Flow_0sb6g3o">
+        <di:waypoint x="925" y="1510" />
+        <di:waypoint x="1200" y="1510" />
+        <di:waypoint x="1200" y="1400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1046" y="1492" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c5ff5x_di" bpmnElement="Flow_1c5ff5x">
+        <di:waypoint x="630" y="1360" />
+        <di:waypoint x="665" y="1360" />
+        <di:waypoint x="665" y="1510" />
+        <di:waypoint x="700" y="1510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m09irx_di" bpmnElement="Flow_0m09irx">
+        <di:waypoint x="450" y="1210" />
+        <di:waypoint x="495" y="1210" />
+        <di:waypoint x="495" y="1360" />
+        <di:waypoint x="530" y="1360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wvtudr_di" bpmnElement="Flow_0wvtudr">
+        <di:waypoint x="900" y="1485" />
+        <di:waypoint x="900" y="1238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="851" y="1363" width="37" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fabcjc_di" bpmnElement="Flow_1fabcjc">
+        <di:waypoint x="260" y="1360" />
+        <di:waypoint x="300" y="1360" />
+        <di:waypoint x="300" y="1210" />
+        <di:waypoint x="350" y="1210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1al0fyv_di" bpmnElement="Flow_1al0fyv">
+        <di:waypoint x="100" y="1510" />
+        <di:waypoint x="130" y="1510" />
+        <di:waypoint x="130" y="1360" />
+        <di:waypoint x="160" y="1360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s5dwyt_di" bpmnElement="Flow_0s5dwyt">
+        <di:waypoint x="1250" y="1360" />
+        <di:waypoint x="1390" y="1360" />
+        <di:waypoint x="1390" y="1470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05mtg8w_di" bpmnElement="Flow_05mtg8w">
+        <di:waypoint x="-372" y="1510" />
+        <di:waypoint x="-320" y="1510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jjov65_di" bpmnElement="Flow_0jjov65">
+        <di:waypoint x="-220" y="1510" />
+        <di:waypoint x="-160" y="1510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05l0jzd_di" bpmnElement="Flow_05l0jzd">
+        <di:waypoint x="-60" y="1510" />
+        <di:waypoint x="0" y="1510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15yblcv_di" bpmnElement="Flow_15yblcv">
+        <di:waypoint x="800" y="1510" />
+        <di:waypoint x="875" y="1510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j7jkh8_di" bpmnElement="Flow_0j7jkh8">
+        <di:waypoint x="1440" y="1510" />
+        <di:waypoint x="1530" y="1510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12tnlcg_di" bpmnElement="Flow_12tnlcg">
+        <di:waypoint x="1630" y="1510" />
+        <di:waypoint x="1722" y="1510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1uuwh33_di" bpmnElement="Association_1uuwh33">
+        <di:waypoint x="-139" y="1550" />
+        <di:waypoint x="-246" y="1699" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1aaddhw_di" bpmnElement="TextAnnotation_1aaddhw">
+        <dc:Bounds x="-310" y="1699" width="331.15625" height="115" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1v2o9zw_di" bpmnElement="TextAnnotation_1v2o9zw">
+        <dc:Bounds x="120" y="1659" width="249.484375" height="129" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0sm51yv_di" bpmnElement="TextAnnotation_0sm51yv">
+        <dc:Bounds x="990" y="1166" width="202.30836236933797" height="86" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1slorr9_di" bpmnElement="TextAnnotation_1slorr9">
+        <dc:Bounds x="1270" y="1180" width="281" height="57" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_09amkym_di" bpmnElement="TextAnnotation_09amkym">
+        <dc:Bounds x="1251" y="1630" width="315.03125" height="950" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1dfoyq1_di" bpmnElement="TextAnnotation_1dfoyq1">
+        <dc:Bounds x="-50" y="1166" width="199.2777293844367" height="57" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1at1fe3_di" bpmnElement="TextAnnotation_1at1fe3">
+        <dc:Bounds x="730" y="1673" width="378.19192751235585" height="576" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1l8snqk_di" bpmnElement="TextAnnotation_1l8snqk">
+        <dc:Bounds x="470" y="1650" width="152" height="57" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0xf88fu_di" bpmnElement="TextAnnotation_0xf88fu">
+        <dc:Bounds x="1466" y="1300" width="104" height="72" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0e2by2x_di" bpmnElement="TextAnnotation_0e2by2x">
+        <dc:Bounds x="1700" y="1350" width="102" height="57" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1cxyc94_di" bpmnElement="Association_1cxyc94">
+        <di:waypoint x="917" y="1216" />
+        <di:waypoint x="990" y="1198" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1ciifoy_di" bpmnElement="Association_1ciifoy">
+        <di:waypoint x="1230" y="1320" />
+        <di:waypoint x="1292" y="1237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_18y4yt2_di" bpmnElement="Association_18y4yt2">
+        <di:waypoint x="164" y="1322" />
+        <di:waypoint x="45" y="1223" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_09wt7ao_di" bpmnElement="Association_09wt7ao">
+        <di:waypoint x="1368" y="1550" />
+        <di:waypoint x="1322" y="1630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0nqu677_di" bpmnElement="Association_0nqu677">
+        <di:waypoint x="78" y="1550" />
+        <di:waypoint x="156" y="1659" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_11xk1p7_di" bpmnElement="Association_11xk1p7">
+        <di:waypoint x="894" y="1529" />
+        <di:waypoint x="843" y="1673" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1uotmdo_di" bpmnElement="Association_1uotmdo">
+        <di:waypoint x="701" y="1544" />
+        <di:waypoint x="549" y="1650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1vmxzks_di" bpmnElement="Association_1vmxzks">
+        <di:waypoint x="1250" y="1354" />
+        <di:waypoint x="1466" y="1326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1c846y7_di" bpmnElement="Association_1c846y7">
+        <di:waypoint x="1626" y="1472" />
+        <di:waypoint x="1705" y="1407" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

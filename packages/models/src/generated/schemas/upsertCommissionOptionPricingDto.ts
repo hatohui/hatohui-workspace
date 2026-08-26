@@ -8,6 +8,7 @@
 
 export interface UpsertCommissionOptionPricingDto {
   key: string;
+  label: string;
   modifierPercent: number;
   active?: boolean;
 }

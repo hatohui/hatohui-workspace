@@ -103,7 +103,13 @@ function SearchableSelect({
               className="h-8 border-0 shadow-none focus-visible:ring-0"
             />
           </div>
-          <div ref={listRef} className="max-h-48 overflow-y-auto">
+          <div
+            ref={listRef}
+            className="max-h-48 overflow-y-auto"
+            onWheel={(event) => {
+              event.currentTarget.scrollTop += event.deltaY;
+            }}
+          >
             {filtered.length === 0 ? (
               <p className="py-4 text-center text-sm text-muted-foreground">
                 {emptyLabel}

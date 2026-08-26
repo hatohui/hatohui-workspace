@@ -10,6 +10,9 @@ export type CommissionStatusHistoryDtoToStatus = typeof CommissionStatusHistoryD
 
 
 export const CommissionStatusHistoryDtoToStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
   NOT_YET_STARTED: 'NOT_YET_STARTED',
   QUEUED: 'QUEUED',
   SKETCH: 'SKETCH',

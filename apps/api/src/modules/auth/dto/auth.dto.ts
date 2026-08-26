@@ -39,9 +39,15 @@ export class UserDto {
 
   @ApiProperty({
     description:
-      'Whether this account is the configured admin. Cosmetic only — admin routes enforce their own check and also require the admin key.',
+      'Whether this account holds the admin role. Cosmetic only — admin routes enforce their own check and also require the admin key.',
   })
   isAdmin!: boolean;
+
+  @ApiProperty({
+    description:
+      'Whether this account holds the artist role — can own commissions, openings and projects.',
+  })
+  isArtist!: boolean;
 
   @ApiProperty({ enum: OnboardingStatus })
   onboardingStatus!: OnboardingStatus;

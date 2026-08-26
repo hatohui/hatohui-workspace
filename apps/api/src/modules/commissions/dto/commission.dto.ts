@@ -49,6 +49,30 @@ export class CommissionDto {
   @ApiProperty({ example: 'clx1234567890' })
   id: string;
 
+  @ApiProperty()
+  artistId: string;
+
+  @ApiProperty()
+  clientId: string;
+
+  @ApiProperty({ nullable: true })
+  commissionOpeningId: string | null;
+
+  @ApiProperty({ nullable: true })
+  groupId: string | null;
+
+  @ApiProperty({ nullable: true })
+  paymentMethodId: string | null;
+
+  @ApiProperty({
+    enum: CommissionStatus,
+    example: CommissionStatus.PENDING,
+  })
+  status: CommissionStatus;
+
+  @ApiProperty({ nullable: true, description: 'Custom triage ordering' })
+  priority: number | null;
+
   @ApiProperty({
     type: 'object',
     additionalProperties: true,
@@ -59,19 +83,13 @@ export class CommissionDto {
   @ApiProperty({ example: '2026-09-01T00:00:00.000Z', nullable: true })
   deadline: string | null;
 
-  @ApiProperty({
-    enum: CommissionStatus,
-    example: CommissionStatus.NOT_YET_STARTED,
-  })
-  status: CommissionStatus;
-
   @ApiProperty({ enum: PaymentStatus, example: PaymentStatus.NOT_YET })
   paymentStatus: PaymentStatus;
 
   @ApiProperty({
-    description: 'Whether this commission is hidden from any public showcase',
+    description: 'Whether this commission is hidden from the public /queue',
   })
-  isHidden: boolean;
+  isHiddenInQueue: boolean;
 
   @ApiProperty({ nullable: true })
   commissionTypeId: string | null;
@@ -84,18 +102,30 @@ export class CommissionDto {
 
   @ApiProperty({
     nullable: true,
-    description: 'Key of the selected CommissionOptionPricing',
+    description: 'Key of the selected CommissionOption',
   })
   optionKey: string | null;
 
   @ApiProperty({
     type: [String],
-    description: 'Keys of selected CommissionAddonPricing rows',
+    description: 'Keys of selected CommissionAddon rows',
   })
   addonKeys: string[];
 
-  @ApiProperty({ nullable: true, description: 'Quote in USD cents' })
-  quoteCents: number | null;
+  @ApiProperty({ example: 'USD' })
+  currency: string;
+
+  @ApiProperty({
+    nullable: true,
+    description: "Quote, in currency's smallest unit",
+  })
+  quote: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Quote snapshotted at accept time, to detect later changes',
+  })
+  originalQuote: number | null;
 
   @ApiProperty({ example: 'Jane Doe' })
   clientName: string;
@@ -112,20 +142,11 @@ export class CommissionDto {
   @ApiProperty({ type: [String] })
   referenceAssets: string[];
 
-  @ApiProperty({ type: [String] })
-  deliverableAssets: string[];
-
   @ApiProperty({ nullable: true })
   deliveredAt: string | null;
 
   @ApiProperty({ type: CommissionStepsDto })
   steps: CommissionStepsDto;
-
-  @ApiProperty({ nullable: true })
-  assignedToId: string | null;
-
-  @ApiProperty({ nullable: true })
-  projectId: string | null;
 
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   createdAt: string;
@@ -155,7 +176,7 @@ export class CommissionPublicDto {
 
   @ApiProperty({
     enum: CommissionStatus,
-    example: CommissionStatus.NOT_YET_STARTED,
+    example: CommissionStatus.PENDING,
   })
   status: CommissionStatus;
 
@@ -171,14 +192,14 @@ export class CommissionPublicDto {
   })
   commissionTypeKey: string | null;
 
+  @ApiProperty({ example: 'USD' })
+  currency: string;
+
   @ApiProperty({ nullable: true })
-  quoteCents: number | null;
+  quote: number | null;
 
   @ApiProperty({ type: [String] })
   referenceAssets: string[];
-
-  @ApiProperty({ type: [String] })
-  deliverableAssets: string[];
 
   @ApiProperty({ nullable: true })
   deliveredAt: string | null;
@@ -191,6 +212,20 @@ export class CommissionPublicDto {
 }
 
 export class SubmitCommissionDto {
+  @ApiProperty({ description: 'Id of the artist being commissioned' })
+  @IsString()
+  @IsNotEmpty()
+  artistId: string;
+
+  @ApiProperty({
+    required: false,
+    description:
+      'Id of the CommissionOpening this is submitted through, if any',
+  })
+  @IsOptional()
+  @IsString()
+  commissionOpeningId?: string;
+
   @ApiProperty({
     type: 'object',
     additionalProperties: true,
@@ -214,7 +249,7 @@ export class SubmitCommissionDto {
 
   @ApiProperty({
     required: false,
-    description: 'Key of a CommissionOptionPricing',
+    description: 'Key of a CommissionOption',
   })
   @IsOptional()
   @IsString()
@@ -270,6 +305,8 @@ export class SubmitCommissionDto {
   isPublic?: boolean;
 }
 
+export class CreatePrivateCommissionDto extends SubmitCommissionDto {}
+
 export class UpdateCommissionStatusDto {
   @ApiProperty({ enum: CommissionStatus })
   @IsEnum(CommissionStatus)
@@ -319,28 +356,18 @@ export class UpdateCommissionQuoteDto {
   @ApiProperty({
     nullable: true,
     required: false,
-    description: 'Final quote in USD cents',
+    description: "Quote, in currency's smallest unit",
   })
   @IsOptional()
   @IsInt()
   @Min(0)
-  quoteCents?: number | null;
+  quote?: number | null;
 }
 
 export class UpdateCommissionVisibilityDto {
   @ApiProperty()
   @IsBoolean()
-  isHidden: boolean;
-}
-
-export class UpdateCommissionProjectDto {
-  @ApiProperty({
-    nullable: true,
-    description: 'Project id to attach, or null to detach',
-  })
-  @IsOptional()
-  @IsString()
-  projectId?: string | null;
+  isHiddenInQueue: boolean;
 }
 
 export class DeliverCommissionDto {
@@ -351,18 +378,7 @@ export class DeliverCommissionDto {
   })
   @IsArray()
   @IsString({ each: true })
-  deliverableAssets: string[];
-}
-
-export class AssignCommissionDto {
-  @ApiProperty({
-    nullable: true,
-    required: false,
-    description: 'User id to assign, or null to unassign',
-  })
-  @IsOptional()
-  @IsString()
-  assignedToId?: string | null;
+  images: string[];
 }
 
 export class AddReferenceAssetsDto {

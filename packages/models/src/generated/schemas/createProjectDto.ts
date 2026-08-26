@@ -5,8 +5,11 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { CreateProjectDtoBrief } from './createProjectDtoBrief';
 
 export interface CreateProjectDto {
   title: string;
   description?: string;
+  /** Tiptap/ProseMirror JSON document describing the brief */
+  brief: CreateProjectDtoBrief;
 }

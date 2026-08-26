@@ -38,7 +38,7 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
           </p>
         </div>
         <CommissionVisibilityToggle
-          isHidden={commission.isHidden}
+          isHiddenInQueue={commission.isHiddenInQueue}
           onChange={detail.setVisibility}
         />
       </div>

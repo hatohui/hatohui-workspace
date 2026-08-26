@@ -69,8 +69,8 @@ export function useCommissionDetail(id: string) {
       quoteCents?: number | null;
     }) => updateQuote.mutateAsync({ id, data }),
 
-    setVisibility: (isHidden: boolean) =>
-      updateVisibility.mutateAsync({ id, data: { isHidden } }),
+    setVisibility: (isHiddenInQueue: boolean) =>
+      updateVisibility.mutateAsync({ id, data: { isHiddenInQueue } }),
 
     setProject: (projectId: string | null) =>
       updateProject.mutateAsync({ id, data: { projectId } }),

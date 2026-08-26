@@ -10,6 +10,9 @@ export type CommissionDetailDtoStatus = typeof CommissionDetailDtoStatus[keyof t
 
 
 export const CommissionDetailDtoStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
   NOT_YET_STARTED: 'NOT_YET_STARTED',
   QUEUED: 'QUEUED',
   SKETCH: 'SKETCH',

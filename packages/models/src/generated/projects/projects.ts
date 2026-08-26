@@ -27,6 +27,7 @@ import type {
 import type {
   CreateProjectDto,
   ProjectDto,
+  ProjectsParams,
   UpdateProjectDto,
   UpdateProjectVisibilityDto
 } from '../schemas';
@@ -65,20 +66,27 @@ export type projectsResponseSuccess = (projectsResponse200) & {
 
 export type projectsResponse = (projectsResponseSuccess)
 
-export const getProjectsUrl = () => {
+export const getProjectsUrl = (params?: ProjectsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/projects`
+  return stringifiedParams.length > 0 ? `/projects?${stringifiedParams}` : `/projects`
 }
 
 /**
  * @summary List projects (hidden ones only visible to admins)
  */
-export const projects = async ( options?: RequestInit): Promise<projectsResponse> => {
+export const projects = async (params?: ProjectsParams, options?: RequestInit): Promise<projectsResponse> => {
 
-  return customFetch<projectsResponse>(getProjectsUrl(),
+  return customFetch<projectsResponse>(getProjectsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -91,23 +99,23 @@ export const projects = async ( options?: RequestInit): Promise<projectsResponse
 
 
 
-export const getProjectsQueryKey = () => {
+export const getProjectsQueryKey = (params?: ProjectsParams,) => {
     return [
-    `/projects`
+    `/projects`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getProjectsQueryOptions = <TData = Awaited<ReturnType<typeof projects>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getProjectsQueryOptions = <TData = Awaited<ReturnType<typeof projects>>, TError = unknown>(params?: ProjectsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getProjectsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getProjectsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof projects>>> = ({ signal }) => projects({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof projects>>> = ({ signal }) => projects(params, { signal, ...requestOptions });
 
 
 
@@ -121,7 +129,7 @@ export type ProjectsQueryError = unknown
 
 
 export function useProjects<TData = Awaited<ReturnType<typeof projects>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>> & Pick<
+ params: undefined |  ProjectsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof projects>>,
           TError,
@@ -131,7 +139,7 @@ export function useProjects<TData = Awaited<ReturnType<typeof projects>>, TError
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProjects<TData = Awaited<ReturnType<typeof projects>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>> & Pick<
+ params?: ProjectsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof projects>>,
           TError,
@@ -141,7 +149,7 @@ export function useProjects<TData = Awaited<ReturnType<typeof projects>>, TError
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProjects<TData = Awaited<ReturnType<typeof projects>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: ProjectsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -149,11 +157,11 @@ export function useProjects<TData = Awaited<ReturnType<typeof projects>>, TError
  */
 
 export function useProjects<TData = Awaited<ReturnType<typeof projects>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: ProjectsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof projects>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getProjectsQueryOptions(options)
+  const queryOptions = getProjectsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

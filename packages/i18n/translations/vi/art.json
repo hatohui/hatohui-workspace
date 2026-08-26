@@ -213,8 +213,45 @@
         "title": "Bảng giá",
         "rushFee": "Phụ phí gấp",
         "rushFeeDays": "Ngưỡng (ngày)",
-        "rushFeeAmount": "Phí ($)"
+        "rushFeeAmount": "Phí ($)",
+        "priceMode": {
+          "FIXED": "Giá cố định",
+          "STARTING_FROM": "Bắt đầu từ",
+          "RANGE": "Khoảng giá"
+        },
+        "typesTable": {
+          "addRow": "Thêm loại commission",
+          "columns": {
+            "key": "Khóa",
+            "label": "Tên hiển thị",
+            "basePrice": "Giá cơ bản ($)",
+            "active": "Trạng thái",
+            "tag": "Thẻ thư viện"
+          },
+          "active": "Đang bật",
+          "inactive": "Đã tắt"
+        }
       }
+    }
+  },
+  "app": {
+    "nav": {
+      "toggle": "Thu gọn thanh bên",
+      "dashboard": "Bảng điều khiển",
+      "commissionSettings": "Cài đặt commission",
+      "openLabel": "Ứng dụng",
+      "backToSite": "Về trang chính"
+    },
+    "commissionSettings": {
+      "title": "Cài đặt commission",
+      "types": "Loại commission",
+      "options": "Tùy chọn",
+      "addons": "Dịch vụ thêm",
+      "rushFee": "Phụ phí gấp"
+    },
+    "dashboard": {
+      "title": "Bảng điều khiển",
+      "welcome": "Chào mừng trở lại, {{name}}."
     }
   }
 }

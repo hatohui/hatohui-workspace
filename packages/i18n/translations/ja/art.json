@@ -212,8 +212,45 @@
         "title": "料金設定",
         "rushFee": "特急料金",
         "rushFeeDays": "しきい値（日）",
-        "rushFeeAmount": "料金（$）"
+        "rushFeeAmount": "料金（$）",
+        "priceMode": {
+          "FIXED": "固定料金",
+          "STARTING_FROM": "この価格から",
+          "RANGE": "価格帯"
+        },
+        "typesTable": {
+          "addRow": "コミッション種別を追加",
+          "columns": {
+            "key": "キー",
+            "label": "表示名",
+            "basePrice": "基本料金（$）",
+            "active": "ステータス",
+            "tag": "ギャラリータグ"
+          },
+          "active": "有効",
+          "inactive": "無効"
+        }
       }
+    }
+  },
+  "app": {
+    "nav": {
+      "toggle": "サイドバーを切り替え",
+      "dashboard": "ダッシュボード",
+      "commissionSettings": "コミッション設定",
+      "openLabel": "アプリ",
+      "backToSite": "サイトに戻る"
+    },
+    "commissionSettings": {
+      "title": "コミッション設定",
+      "types": "コミッション種別",
+      "options": "オプション",
+      "addons": "追加オプション",
+      "rushFee": "特急料金"
+    },
+    "dashboard": {
+      "title": "ダッシュボード",
+      "welcome": "おかえりなさい、{{name}}さん。"
     }
   }
 }

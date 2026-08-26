@@ -8,5 +8,5 @@
 
 export interface UpsertCommissionRushFeeSettingDto {
   thresholdDays: number;
-  feeCents: number;
+  feeAmount: number;
 }

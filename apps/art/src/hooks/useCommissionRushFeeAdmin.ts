@@ -6,13 +6,18 @@ import {
   useUpdateCommissionRushFee,
   getCommissionPricingQueryKey,
 } from '@hatohui/models';
+import type { CommissionRushFeeSettingDto } from '@hatohui/models';
 
-export function useCommissionRushFeeAdmin() {
+export type RushFeeSetting = CommissionRushFeeSettingDto;
+
+export function useCommissionRushFeeAdmin(artistId: string) {
   const queryClient = useQueryClient();
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: getCommissionPricingQueryKey() });
+    queryClient.invalidateQueries({
+      queryKey: getCommissionPricingQueryKey({ artistId }),
+    });
 
-  const pricingQuery = useCommissionPricing();
+  const pricingQuery = useCommissionPricing({ artistId });
   const update = useUpdateCommissionRushFee({
     mutation: { onSuccess: invalidate },
   });

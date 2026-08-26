@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AuthGuard } from '@/modules/auth/guards/auth.guard';
@@ -45,6 +53,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @HttpCode(204)
   @ApiOperation({ operationId: 'logout', summary: 'Clear the current session' })
   logout(@Res({ passthrough: true }) response: Response): void {
     response.clearCookie(SESSION_COOKIE_NAME, this.session.cookieOptions());

@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  DIRS_TO_INIT: ['apps/api', 'apps/www', 'apps/friends']
+  DIRS_TO_INIT: ['apps/api', 'apps/www', 'apps/friends', 'apps/art']
 
 tasks:
   install:
@@ -9,6 +9,11 @@ tasks:
     internal: true
     cmds:
       - bun install
+
+  sync:
+    desc: 'Re-sync workspace dependencies (bun install) — run this after pulling changes that touch a package.json or bun.lock, or when a workspace package (e.g. packages/libs) fails to resolve a dependency it declares'
+    cmds:
+      - task: install
 
   install-bun:
     internal: true

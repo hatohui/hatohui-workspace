@@ -61,13 +61,17 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
         placeholder={t('common:onboarding.connections.searchPlaceholder')}
       />
 
-      {/* Result list — fixed height so it never overflows the modal */}
+      {/* Result list — fixed height (room for CONNECTIONS_PAGE_SIZE rows) so
+          it never resizes between loading, empty, and partial-page states */}
       <div className="flex flex-col rounded-md border">
-        <div className="divide-y overflow-hidden">
+        <div className="divide-y overflow-hidden" style={{ minHeight: 220 }}>
           {!search.isLoading && suggestions.length === 0 && (
-            <p className="p-3 text-sm text-muted-foreground">
+            <div
+              className="flex items-center justify-center p-3 text-sm text-muted-foreground"
+              style={{ minHeight: 220 }}
+            >
               {t('common:onboarding.connections.empty')}
-            </p>
+            </div>
           )}
           {suggestions.map((item) => (
             <button

@@ -32,13 +32,21 @@ function OnboardingHandleStep({
         {t('common:onboarding.handle.description')}
       </p>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="onboarding-handle">@</Label>
-        <Input
-          id="onboarding-handle"
-          value={handle}
-          placeholder={t('common:onboarding.handle.placeholder')}
-          onChange={(event) => setHandle(event.target.value)}
-        />
+        <Label htmlFor="onboarding-handle" className="sr-only">
+          @{t('common:onboarding.handle.placeholder')}
+        </Label>
+        <div className="flex h-9 items-center gap-1 rounded-md border border-input bg-transparent px-3 shadow-xs transition-[color,box-shadow] has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-[3px] has-[input:focus-visible]:ring-ring/50 dark:bg-input/30">
+          <span className="text-base text-muted-foreground select-none md:text-sm">
+            @
+          </span>
+          <Input
+            id="onboarding-handle"
+            value={handle}
+            placeholder={t('common:onboarding.handle.placeholder')}
+            onChange={(event) => setHandle(event.target.value)}
+            className="h-auto border-0 bg-transparent px-0 py-0 shadow-none placeholder:text-foreground/70 placeholder:italic focus-visible:ring-0 dark:bg-transparent"
+          />
+        </div>
         {!isValid && (
           <p role="alert" className="text-sm text-destructive">
             {t('common:onboarding.handle.invalid')}

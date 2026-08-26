@@ -213,8 +213,45 @@
         "title": "Pricing",
         "rushFee": "Rush fee",
         "rushFeeDays": "Threshold (days)",
-        "rushFeeAmount": "Fee ($)"
+        "rushFeeAmount": "Fee ($)",
+        "priceMode": {
+          "FIXED": "Fixed price",
+          "STARTING_FROM": "Starting from",
+          "RANGE": "Price range"
+        },
+        "typesTable": {
+          "addRow": "Add commission type",
+          "columns": {
+            "key": "Key",
+            "label": "Label",
+            "basePrice": "Base price ($)",
+            "active": "Status",
+            "tag": "Gallery tag"
+          },
+          "active": "Active",
+          "inactive": "Inactive"
+        }
       }
+    }
+  },
+  "app": {
+    "nav": {
+      "toggle": "Toggle sidebar",
+      "dashboard": "Dashboard",
+      "commissionSettings": "Commission settings",
+      "openLabel": "App",
+      "backToSite": "Back to site"
+    },
+    "commissionSettings": {
+      "title": "Commission settings",
+      "types": "Commission types",
+      "options": "Options",
+      "addons": "Add-ons",
+      "rushFee": "Rush fee"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome back, {{name}}."
     }
   }
 }

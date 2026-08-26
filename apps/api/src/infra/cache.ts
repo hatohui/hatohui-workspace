@@ -2,7 +2,7 @@ import { Global, Injectable, Module } from '@nestjs/common';
 import { RedisClient } from './redis';
 
 export const CACHE_KEYS = {
-  adminEmail: () => 'config:admin-email',
+  userRoles: (userId: string) => `auth:roles:${userId}`,
   systemParametersList: () => 'admin:system-parameters:list',
   birthdaysList: () => 'friends:birthdays:list',
   connectionContext: (userId: string) => `conn:ctx:${userId}`,

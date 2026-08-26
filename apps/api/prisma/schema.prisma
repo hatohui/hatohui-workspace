@@ -13,30 +13,62 @@ enum OnboardingStatus {
   SKIPPED
 }
 
+model Role {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  no        Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users UserRole[]
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+}
+
 /// Login identity only — never displayed. See docs/specs/friends/profile-model.
 model User {
-  id                String             @id @default(cuid())
-  googleId          String             @unique
-  email             String             @unique
-  name              String
-  avatarUrl         String?
-  onboardingStatus  OnboardingStatus   @default(PENDING)
-  timezone          String             @default("UTC")
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  id               String           @id @default(cuid())
+  googleId         String           @unique
+  email            String           @unique
+  name             String
+  avatarUrl        String?
+  onboardingStatus OnboardingStatus @default(PENDING)
+  timezone         String           @default("UTC")
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
-  profile           Profile?           @relation("ProfileOwner")
-  addedProfiles     Profile[]          @relation("AddedBy")
-  sentConnections     Connection[]     @relation("ConnectionRequester")
-  receivedConnections Connection[]     @relation("ConnectionAddressee")
-  notifications       Notification[]   @relation("NotificationRecipient")
-  actedNotifications  Notification[]   @relation("NotificationActor")
-  uploadedAssets    Asset[]
-  settings          UserSetting[]
-  queuedEmails      EmailOutbox[]      @relation("EmailOutboxRecipient")
-  assignedCommissions      Commission[]              @relation("CommissionAssignee")
-  commissionNotes          CommissionNote[]           @relation("CommissionNoteAuthor")
-  commissionStatusChanges  CommissionStatusHistory[]  @relation("CommissionStatusChangedBy")
+  profile                 Profile?                  @relation("ProfileOwner")
+  addedProfiles           Profile[]                 @relation("AddedBy")
+  sentConnections         Connection[]              @relation("ConnectionRequester")
+  receivedConnections     Connection[]              @relation("ConnectionAddressee")
+  notifications           Notification[]            @relation("NotificationRecipient")
+  actedNotifications      Notification[]            @relation("NotificationActor")
+  uploadedAssets          Asset[]
+  roles                   UserRole[]
+  settings                UserSetting[]
+  queuedEmails            EmailOutbox[]             @relation("EmailOutboxRecipient")
+  commissions             Commission[]              @relation("CommissionArtist")
+  commissionOpenings      CommissionOpening[]       @relation("ArtistCommissionOpenings")
+  commissionGroups        CommissionGroup[]         @relation("ArtistCommissionGroups")
+  projects                Project[]                 @relation("ArtistProjects")
+  commissionTypes         CommissionType[]          @relation("ArtistCommissionTypes")
+  commissionOptions       CommissionOption[]        @relation("ArtistCommissionOptions")
+  commissionAddons        CommissionAddon[]         @relation("ArtistCommissionAddons")
+  commissionFollowers     CommissionFollower[]      @relation("ArtistFollowers")
+  clientAccount           Client?                   @relation("ClientAccount")
+  commissionStatusChanges CommissionStatusHistory[] @relation("CommissionStatusChangedBy")
 }
 
 enum AppScope {
@@ -90,22 +122,22 @@ enum FriendVisibility {
 /// The public half of a person. `userId` is null until claimed, and permanent
 /// once set. See docs/specs/friends/profile-model.
 model Profile {
-  id           String           @id @default(cuid())
+  id           String   @id @default(cuid())
   displayName  String
-  handle       String?          @unique
+  handle       String?  @unique
   avatarUrl    String?
   avatarKey    String?
   socialMedias Json?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  userId       String?          @unique
-  user         User?            @relation("ProfileOwner", fields: [userId], references: [id])
+  userId String? @unique
+  user   User?   @relation("ProfileOwner", fields: [userId], references: [id])
 
-  addedById    String?
-  addedBy      User?            @relation("AddedBy", fields: [addedById], references: [id])
+  addedById String?
+  addedBy   User?   @relation("AddedBy", fields: [addedById], references: [id])
 
-  birthday     Birthday?
+  birthday Birthday?
 }
 
 /// Absent row means no birthday known, which is why month/day are required.
@@ -279,6 +311,9 @@ model ProcessQueue {
 }
 
 enum CommissionStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
   NOT_YET_STARTED
   QUEUED
   SKETCH
@@ -295,8 +330,13 @@ enum PaymentStatus {
   FULL
 }
 
-enum CommissionNoteVisibility {
+enum Visibility {
   INTERNAL
+  CLIENT
+}
+
+enum AuthorRole {
+  ARTIST
   CLIENT
 }
 
@@ -309,26 +349,32 @@ model Tag {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  assets         Asset[]
-  commissionType CommissionType?
+  assets          Asset[]
+  commissionTypes CommissionType[]
 }
 
 /// Admin-manageable commission type (e.g. Icon, Full Body). Replaces the old
 /// fixed CommissionType enum so admins can add new types at runtime. `key` is
 /// also the i18n key suffix: commission.type.<key>.label.
 model CommissionType {
-  id        String   @id @default(cuid())
-  key       String   @unique
+  id       String @id @default(cuid())
+  artistId String
+  artist   User   @relation("ArtistCommissionTypes", fields: [artistId], references: [id], onDelete: Cascade)
+
+  key       String
+  label     String
+  basePrice Int
   no        Int      @default(0)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tagId String @unique
-  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String?
+  tag   Tag?    @relation(fields: [tagId], references: [id], onDelete: SetNull)
 
-  pricing     CommissionTypePricing?
-  commissions Commission[]
+  details CommissionDetail[]
+
+  @@unique([artistId, key])
 }
 
 enum PreferredContactMethod {
@@ -340,113 +386,260 @@ enum PreferredContactMethod {
 }
 
 /// Admin-configurable base price for a CommissionType, in USD cents.
-model CommissionTypePricing {
-  id               String         @id @default(cuid())
-  commissionTypeId String         @unique
-  commissionType   CommissionType @relation(fields: [commissionTypeId], references: [id], onDelete: Cascade)
-  basePriceCents   Int
-  active           Boolean        @default(true)
-  updatedAt        DateTime       @updatedAt
-}
 
 /// Admin-configurable rendering option (e.g. "Sketched" at -40%), applied as
 /// a percentage modifier on top of the CommissionType base price.
-model CommissionOptionPricing {
-  id              String   @id @default(cuid())
-  key             String   @unique
+model CommissionOption {
+  id       String @id @default(cuid())
+  artistId String
+  artist   User   @relation("ArtistCommissionOptions", fields: [artistId], references: [id], onDelete: Cascade)
+
+  key             String
+  label           String
   modifierPercent Int
+  no              Int      @default(0)
   active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@unique([artistId, key])
 }
 
-/// Admin-configurable add-on (e.g. "Background"). minPriceCents is a floor —
-/// the actual quote for an addon is set manually per-commission since these
-/// are "from $X" rather than fixed.
-model CommissionAddonPricing {
-  id            String   @id @default(cuid())
-  key           String   @unique
-  minPriceCents Int
-  active        Boolean  @default(true)
-  updatedAt     DateTime @updatedAt
+enum PriceMode {
+  FIXED
+  STARTING_FROM
+  RANGE
+}
+
+model CommissionAddon {
+  id       String @id @default(cuid())
+  artistId String
+  artist   User   @relation("ArtistCommissionAddons", fields: [artistId], references: [id], onDelete: Cascade)
+
+  key       String
+  label     String
+  priceMode PriceMode @default(STARTING_FROM)
+  minPrice  Int
+  maxPrice  Int?
+  no        Int       @default(0)
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([artistId, key])
 }
 
 /// Singleton row (there is always exactly one) holding the rush-fee surcharge
 /// applied when a client picks a deadline within thresholdDays.
-model CommissionRushFeeSetting {
-  id            String   @id @default(cuid())
-  thresholdDays Int      @default(10)
-  feeCents      Int      @default(2500)
-  updatedAt     DateTime @updatedAt
-}
 
 model Commission {
-  id       String    @id @default(cuid())
+  id       String           @id @default(cuid())
+  status   CommissionStatus @default(PENDING)
+  priority Int?
+
+  artistId String
+  artist   User   @relation("CommissionArtist", fields: [artistId], references: [id])
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
+
+  commissionOpeningId String?
+  commissionOpening   CommissionOpening? @relation(fields: [commissionOpeningId], references: [id], onDelete: SetNull)
+
+  groupId String?
+  group   CommissionGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  paymentMethodId String?
+  paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  accessCode String @unique @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  detail   CommissionDetail?
+  comments Comment[]
+  history  CommissionStatusHistory[]
+  progress CommissionProgress[]
+
+  @@index([artistId, status])
+  @@index([clientId])
+  @@index([groupId])
+}
+
+model CommissionGroup {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+
+  artistId String
+  artist   User   @relation("ArtistCommissionGroups", fields: [artistId], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  accessCode String @unique @default(cuid())
+
+  currency String @default("USD")
+  quote    Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members     CommissionGroupMember[]
+  commissions Commission[]
+  comments    Comment[]
+
+  @@index([artistId])
+}
+
+model CommissionGroupMember {
+  id       String          @id @default(cuid())
+  groupId  String
+  group    CommissionGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  clientId String
+  client   Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([groupId, clientId])
+}
+
+model Client {
+  id                     String                 @id @default(cuid())
+  email                  String                 @unique
+  name                   String
+  preferredContactMethod PreferredContactMethod @default(EMAIL)
+  contactHandle          String?
+
+  userId String? @unique
+  user   User?   @relation("ClientAccount", fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  commissions      Commission[]
+  groupMemberships CommissionGroupMember[]
+  comments         Comment[]
+}
+
+model PaymentMethod {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  no        Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  commissions Commission[]
+}
+
+model CommissionDetail {
+  id           String     @id @default(cuid())
+  commissionId String     @unique
+  commission   Commission @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+
   idea     Json
   deadline DateTime?
 
-  status        CommissionStatus @default(NOT_YET_STARTED)
-  paymentStatus PaymentStatus    @default(NOT_YET)
-  isHidden      Boolean          @default(false)
+  paymentStatus   PaymentStatus @default(NOT_YET)
+  isHiddenInQueue Boolean       @default(false)
 
   commissionTypeId String?
   commissionType   CommissionType? @relation(fields: [commissionTypeId], references: [id], onDelete: SetNull)
   optionKey        String?
   addonKeys        String[]        @default([])
-  quoteCents       Int?
 
-  clientName             String
-  clientEmail            String
-  preferredContactMethod PreferredContactMethod @default(EMAIL)
-  contactHandle          String?
-  accessCode             String                 @unique @default(cuid())
+  currency      String @default("USD")
+  quote         Int?
+  originalQuote Int?
 
-  referenceAssets   String[] @default([])
-  deliverableAssets String[] @default([])
-  deliveredAt       DateTime?
+  referenceAssets String[]  @default([])
+  deliveredAt     DateTime?
 
-  ideaConfirmedAt   DateTime?
-  sketchConfirmedAt DateTime?
+  ideaConfirmedAt    DateTime?
+  sketchConfirmedAt  DateTime?
   paymentConfirmedAt DateTime?
-  lineDoneAt        DateTime?
+  lineDoneAt         DateTime?
   coloringDoneAt     DateTime?
   finishedAt         DateTime?
 
-  assignedToId String?
-  assignedTo   User?   @relation("CommissionAssignee", fields: [assignedToId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommissionProgress {
+  id           String     @id @default(cuid())
+  commissionId String
+  commission   Commission @relation(fields: [commissionId], references: [id], onDelete: Cascade)
 
   projectId String?
-  project   Project? @relation(fields: [projectId], references: [id])
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  title      String?
+  body       Json?
+  images     String[]   @default([])
+  isFinal    Boolean    @default(false)
+  visibility Visibility @default(CLIENT)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  notes   CommissionNote[]
-  history CommissionStatusHistory[]
+  comments Comment[]
+
+  @@index([commissionId, createdAt])
 }
 
-/// A curated group of finished commissions, shown together as a set in the
-/// public gallery (e.g. a themed batch or series). Unlike Commission,
-/// isHidden defaults to false since projects are admin-curated for display.
 model Project {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
   description String?
-  isHidden    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  brief       Json?
 
-  commissions Commission[]
+  artistId String
+  artist   User   @relation("ArtistProjects", fields: [artistId], references: [id])
+
+  isHidden  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  groups   CommissionGroup[]
+  artworks CommissionProgress[]
+  comments Comment[]
+
+  @@index([artistId])
 }
 
-model CommissionNote {
-  id           String                    @id @default(cuid())
-  commissionId String
-  commission   Commission                @relation(fields: [commissionId], references: [id])
-  authorId     String?
-  author       User?                     @relation("CommissionNoteAuthor", fields: [authorId], references: [id])
-  visibility   CommissionNoteVisibility  @default(INTERNAL)
-  body         String
-  createdAt    DateTime                  @default(now())
+model Comment {
+  id String @id @default(cuid())
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  groupId String?
+  group   CommissionGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  commissionId String?
+  commission   Commission? @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+
+  progressId String?
+  progress   CommissionProgress? @relation(fields: [progressId], references: [id], onDelete: Cascade)
+
+  authorRole     AuthorRole @default(ARTIST)
+  authorClientId String?
+  authorClient   Client?    @relation(fields: [authorClientId], references: [id], onDelete: SetNull)
+
+  visibility Visibility @default(INTERNAL)
+  body       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId, createdAt])
+  @@index([groupId, createdAt])
+  @@index([commissionId, createdAt])
+  @@index([progressId, createdAt])
 }
 
 model CommissionStatusHistory {
@@ -459,4 +652,55 @@ model CommissionStatusHistory {
   changedBy    User              @relation("CommissionStatusChangedBy", fields: [changedById], references: [id])
   note         String?
   createdAt    DateTime          @default(now())
+}
+
+enum CommissionOpeningEndMode {
+  MANUAL
+  SLOT_CAP
+  INDEFINITE
+}
+
+enum CommissionOpeningStatus {
+  SCHEDULED
+  OPEN
+  CLOSED
+}
+
+model CommissionOpening {
+  id      String                   @id @default(cuid())
+  status  CommissionOpeningStatus  @default(SCHEDULED)
+  endMode CommissionOpeningEndMode
+
+  artistId String
+  artist   User   @relation("ArtistCommissionOpenings", fields: [artistId], references: [id], onDelete: Cascade)
+
+  scheduledAt   DateTime?
+  openedAt      DateTime?
+  closedAt      DateTime?
+  slotCap       Int?
+  slotCapEndsAt DateTime?
+
+  postTitle String?
+  postBody  Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  commissions Commission[]
+
+  @@index([artistId, status])
+}
+
+model CommissionFollower {
+  id       String @id @default(cuid())
+  artistId String
+  artist   User   @relation("ArtistFollowers", fields: [artistId], references: [id], onDelete: Cascade)
+
+  email            String
+  isActive         Boolean  @default(true)
+  unsubscribeToken String   @unique @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([artistId, email])
 }

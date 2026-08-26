@@ -9,6 +9,7 @@ export function CommissionOptionPricingSection() {
   const { t } = useTranslation('art');
   const pricing = useCommissionOptionPricingAdmin();
   const [key, setKey] = useState('');
+  const [label, setLabel] = useState('');
   const [modifier, setModifier] = useState('');
 
   return (
@@ -21,10 +22,7 @@ export function CommissionOptionPricingSection() {
             className="flex items-center justify-between rounded-md bg-card p-2 text-sm"
           >
             <span>
-              {t(`commission.option.${item.key}.label`, {
-                defaultValue: item.key,
-              })}{' '}
-              — {item.modifierPercent}%
+              {item.label} — {item.modifierPercent}%
             </span>
             <Button
               variant="outline"
@@ -43,18 +41,26 @@ export function CommissionOptionPricingSection() {
           onChange={(event) => setKey(event.target.value)}
         />
         <Input
+          placeholder={t('commission.form.optionLabel')}
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
+        />
+        <Input
           type="number"
           placeholder="%"
           value={modifier}
           onChange={(event) => setModifier(event.target.value)}
         />
         <Button
-          disabled={!key || !modifier}
+          disabled={!key || !label || !modifier}
           onClick={() => {
             void pricing
-              .create({ data: { key, modifierPercent: Number(modifier) } })
+              .create({
+                data: { key, label, modifierPercent: Number(modifier) },
+              })
               .then(() => {
                 setKey('');
+                setLabel('');
                 setModifier('');
               });
           }}

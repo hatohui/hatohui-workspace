@@ -2,114 +2,84 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { AuthService } from '@/modules/auth/services/auth.service';
+import type { User } from '@prisma/client';
 import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
 import {
   CommissionAddonPricingDto,
   CommissionOptionPricingDto,
   CommissionPricingDto,
   CommissionRushFeeSettingDto,
-  CommissionTypePricingDto,
   UpsertCommissionAddonPricingDto,
   UpsertCommissionOptionPricingDto,
   UpsertCommissionRushFeeSettingDto,
-  UpsertCommissionTypePricingDto,
 } from '@/modules/commission-pricing/dto/commission-pricing.dto';
 
 @ApiTags('commission-pricing')
 @Controller('commission-pricing')
 export class CommissionPricingController {
-  constructor(private readonly pricingService: CommissionPricingService) {}
+  constructor(
+    private readonly pricingService: CommissionPricingService,
+    private readonly auth: AuthService,
+  ) {}
 
   @Get()
   @ApiOperation({
     operationId: 'commissionPricing',
-    summary: 'Active pricing config used by the commission request form',
+    summary:
+      "An artist's active options/addons/rush-fee/currency, for the commission request form",
   })
+  @ApiQuery({ name: 'artistId', required: true, type: String })
   @ApiOkResponse({ type: CommissionPricingDto })
-  getActive(): Promise<CommissionPricingDto> {
-    return this.pricingService.getActive();
+  getActive(
+    @Query('artistId') artistId: string,
+  ): Promise<CommissionPricingDto> {
+    return this.pricingService.getActive(artistId);
   }
 
   @Put('rush-fee')
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'updateCommissionRushFee',
-    summary: 'Update the rush-fee surcharge settings',
+    summary: 'Update your own rush-fee surcharge setting',
   })
   @ApiOkResponse({ type: CommissionRushFeeSettingDto })
-  updateRushFee(
+  async updateRushFee(
     @Body() dto: UpsertCommissionRushFeeSettingDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionRushFeeSettingDto> {
-    return this.pricingService.updateRushFee(dto);
-  }
-
-  @Get('types')
-  @UseGuards(AuthGuard)
-  @ApiOperation({
-    operationId: 'commissionTypePricings',
-    summary: 'List commission type pricing rows',
-  })
-  @ApiOkResponse({ type: CommissionTypePricingDto, isArray: true })
-  listTypes(): Promise<CommissionTypePricingDto[]> {
-    return this.pricingService.listTypes();
-  }
-
-  @Post('types')
-  @UseGuards(AuthGuard)
-  @ApiOperation({
-    operationId: 'createCommissionTypePricing',
-    summary: 'Create a commission type pricing row',
-  })
-  @ApiOkResponse({ type: CommissionTypePricingDto })
-  createType(
-    @Body() dto: UpsertCommissionTypePricingDto,
-  ): Promise<CommissionTypePricingDto> {
-    return this.pricingService.createType(dto);
-  }
-
-  @Put('types/:id')
-  @UseGuards(AuthGuard)
-  @ApiOperation({
-    operationId: 'updateCommissionTypePricing',
-    summary: 'Update a commission type pricing row',
-  })
-  @ApiOkResponse({ type: CommissionTypePricingDto })
-  updateType(
-    @Param('id') id: string,
-    @Body() dto: UpsertCommissionTypePricingDto,
-  ): Promise<CommissionTypePricingDto> {
-    return this.pricingService.updateType(id, dto);
-  }
-
-  @Delete('types/:id')
-  @UseGuards(AuthGuard)
-  @HttpCode(204)
-  @ApiOperation({
-    operationId: 'deleteCommissionTypePricing',
-    summary: 'Delete a commission type pricing row',
-  })
-  deleteType(@Param('id') id: string): Promise<void> {
-    return this.pricingService.deleteType(id);
+    await this.assertArtist(user);
+    return this.pricingService.updateRushFee(user.id, dto);
   }
 
   @Get('options')
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'commissionOptionPricings',
-    summary: 'List commission option pricing rows',
+    summary: 'List your own commission option pricing rows',
   })
   @ApiOkResponse({ type: CommissionOptionPricingDto, isArray: true })
-  listOptions(): Promise<CommissionOptionPricingDto[]> {
-    return this.pricingService.listOptions();
+  listOptions(
+    @CurrentUser() user: User,
+  ): Promise<CommissionOptionPricingDto[]> {
+    return this.pricingService.listOptions(user.id);
   }
 
   @Post('options')
@@ -119,24 +89,27 @@ export class CommissionPricingController {
     summary: 'Create a commission option pricing row',
   })
   @ApiOkResponse({ type: CommissionOptionPricingDto })
-  createOption(
+  async createOption(
     @Body() dto: UpsertCommissionOptionPricingDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionOptionPricingDto> {
-    return this.pricingService.createOption(dto);
+    await this.assertArtist(user);
+    return this.pricingService.createOption(user.id, dto);
   }
 
   @Put('options/:id')
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'updateCommissionOptionPricing',
-    summary: 'Update a commission option pricing row',
+    summary: 'Update one of your own commission option pricing rows',
   })
   @ApiOkResponse({ type: CommissionOptionPricingDto })
   updateOption(
     @Param('id') id: string,
     @Body() dto: UpsertCommissionOptionPricingDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionOptionPricingDto> {
-    return this.pricingService.updateOption(id, dto);
+    return this.pricingService.updateOption(user.id, id, dto);
   }
 
   @Delete('options/:id')
@@ -144,21 +117,24 @@ export class CommissionPricingController {
   @HttpCode(204)
   @ApiOperation({
     operationId: 'deleteCommissionOptionPricing',
-    summary: 'Delete a commission option pricing row',
+    summary: 'Delete one of your own commission option pricing rows',
   })
-  deleteOption(@Param('id') id: string): Promise<void> {
-    return this.pricingService.deleteOption(id);
+  deleteOption(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<void> {
+    return this.pricingService.deleteOption(user.id, id);
   }
 
   @Get('addons')
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'commissionAddonPricings',
-    summary: 'List commission add-on pricing rows',
+    summary: 'List your own commission add-on pricing rows',
   })
   @ApiOkResponse({ type: CommissionAddonPricingDto, isArray: true })
-  listAddons(): Promise<CommissionAddonPricingDto[]> {
-    return this.pricingService.listAddons();
+  listAddons(@CurrentUser() user: User): Promise<CommissionAddonPricingDto[]> {
+    return this.pricingService.listAddons(user.id);
   }
 
   @Post('addons')
@@ -168,24 +144,27 @@ export class CommissionPricingController {
     summary: 'Create a commission add-on pricing row',
   })
   @ApiOkResponse({ type: CommissionAddonPricingDto })
-  createAddon(
+  async createAddon(
     @Body() dto: UpsertCommissionAddonPricingDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionAddonPricingDto> {
-    return this.pricingService.createAddon(dto);
+    await this.assertArtist(user);
+    return this.pricingService.createAddon(user.id, dto);
   }
 
   @Put('addons/:id')
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'updateCommissionAddonPricing',
-    summary: 'Update a commission add-on pricing row',
+    summary: 'Update one of your own commission add-on pricing rows',
   })
   @ApiOkResponse({ type: CommissionAddonPricingDto })
   updateAddon(
     @Param('id') id: string,
     @Body() dto: UpsertCommissionAddonPricingDto,
+    @CurrentUser() user: User,
   ): Promise<CommissionAddonPricingDto> {
-    return this.pricingService.updateAddon(id, dto);
+    return this.pricingService.updateAddon(user.id, id, dto);
   }
 
   @Delete('addons/:id')
@@ -193,9 +172,18 @@ export class CommissionPricingController {
   @HttpCode(204)
   @ApiOperation({
     operationId: 'deleteCommissionAddonPricing',
-    summary: 'Delete a commission add-on pricing row',
+    summary: 'Delete one of your own commission add-on pricing rows',
   })
-  deleteAddon(@Param('id') id: string): Promise<void> {
-    return this.pricingService.deleteAddon(id);
+  deleteAddon(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<void> {
+    return this.pricingService.deleteAddon(user.id, id);
+  }
+
+  private async assertArtist(user: User): Promise<void> {
+    if (!(await this.auth.isArtist(user))) {
+      throw new ForbiddenException('Artist access denied');
+    }
   }
 }

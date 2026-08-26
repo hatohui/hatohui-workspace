@@ -8,14 +8,22 @@
 
 export interface CommissionTypeDto {
   id: string;
+  artistId: string;
   /** Also the i18n key: commission.type.<key> */
   key: string;
+  label: string;
+  /** Base price, in the artist's currency's smallest unit */
+  basePrice: number;
   /** Display order, ascending */
   no: number;
   active: boolean;
-  tagId: string;
-  /** Name of the linked Tag, used for gallery filtering */
-  tagName: string;
+  /** @nullable */
+  tagId: string | null;
+  /**
+     * Name of the linked Tag, used for gallery filtering
+     * @nullable
+     */
+  tagName: string | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -5,24 +5,37 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { CommentDto } from './commentDto';
 import type { CommissionDetailDtoIdea } from './commissionDetailDtoIdea';
 import type { CommissionDetailDtoPaymentStatus } from './commissionDetailDtoPaymentStatus';
 import type { CommissionDetailDtoPreferredContactMethod } from './commissionDetailDtoPreferredContactMethod';
 import type { CommissionDetailDtoStatus } from './commissionDetailDtoStatus';
-import type { CommissionNoteDto } from './commissionNoteDto';
 import type { CommissionStatusHistoryDto } from './commissionStatusHistoryDto';
 import type { CommissionStepsDto } from './commissionStepsDto';
 
 export interface CommissionDetailDto {
   id: string;
+  artistId: string;
+  clientId: string;
+  /** @nullable */
+  commissionOpeningId: string | null;
+  /** @nullable */
+  groupId: string | null;
+  /** @nullable */
+  paymentMethodId: string | null;
+  status: CommissionDetailDtoStatus;
+  /**
+     * Custom triage ordering
+     * @nullable
+     */
+  priority: number | null;
   /** Tiptap/ProseMirror JSON document */
   idea: CommissionDetailDtoIdea;
   /** @nullable */
   deadline: string | null;
-  status: CommissionDetailDtoStatus;
   paymentStatus: CommissionDetailDtoPaymentStatus;
-  /** Whether this commission is hidden from any public showcase */
-  isHidden: boolean;
+  /** Whether this commission is hidden from the public /queue */
+  isHiddenInQueue: boolean;
   /** @nullable */
   commissionTypeId: string | null;
   /**
@@ -31,33 +44,34 @@ export interface CommissionDetailDto {
      */
   commissionTypeKey: string | null;
   /**
-     * Key of the selected CommissionOptionPricing
+     * Key of the selected CommissionOption
      * @nullable
      */
   optionKey: string | null;
-  /** Keys of selected CommissionAddonPricing rows */
+  /** Keys of selected CommissionAddon rows */
   addonKeys: string[];
+  currency: string;
   /**
-     * Quote in USD cents
+     * Quote, in currency's smallest unit
      * @nullable
      */
-  quoteCents: number | null;
+  quote: number | null;
+  /**
+     * Quote snapshotted at accept time, to detect later changes
+     * @nullable
+     */
+  originalQuote: number | null;
   clientName: string;
   clientEmail: string;
   preferredContactMethod: CommissionDetailDtoPreferredContactMethod;
   /** @nullable */
   contactHandle: string | null;
   referenceAssets: string[];
-  deliverableAssets: string[];
   /** @nullable */
   deliveredAt: string | null;
   steps: CommissionStepsDto;
-  /** @nullable */
-  assignedToId: string | null;
-  /** @nullable */
-  projectId: string | null;
   createdAt: string;
   updatedAt: string;
-  notes: CommissionNoteDto[];
+  comments: CommentDto[];
   history: CommissionStatusHistoryDto[];
 }

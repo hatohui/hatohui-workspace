@@ -18,8 +18,10 @@ export interface UserDto {
   handle: string | null;
   /** @nullable */
   avatarUrl: string | null;
-  /** Whether this account is the configured admin. Cosmetic only — admin routes enforce their own check and also require the admin key. */
+  /** Whether this account holds the admin role. Cosmetic only — admin routes enforce their own check and also require the admin key. */
   isAdmin: boolean;
+  /** Whether this account holds the artist role — can own commissions, openings and projects. */
+  isArtist: boolean;
   onboardingStatus: UserDtoOnboardingStatus;
   /** IANA timezone name this account is scheduled against */
   timezone: string;

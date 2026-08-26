@@ -1,35 +1,51 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Database } from '@/infra/db';
 import type { CommissionType, Tag } from '@prisma/client';
+import { uniqueSlug } from '@/common/utils/slugify';
 import {
   CommissionTypeDto,
   UpsertCommissionTypeDto,
 } from '@/modules/commission-types/dto/commission-type.dto';
 
-type CommissionTypeWithTag = CommissionType & { tag: Tag };
+type CommissionTypeWithTag = CommissionType & { tag: Tag | null };
 
 @Injectable()
 export class CommissionTypesService {
   constructor(private readonly db: Database) {}
 
-  list(activeOnly: boolean): Promise<CommissionTypeDto[]> {
+  list(artistId: string, activeOnly: boolean): Promise<CommissionTypeDto[]> {
     return this.db.commissionType
       .findMany({
-        where: activeOnly ? { active: true } : undefined,
+        where: activeOnly ? { artistId, active: true } : { artistId },
         include: { tag: true },
         orderBy: { no: 'asc' },
       })
       .then((rows) => rows.map(toDto));
   }
 
-  async create(dto: UpsertCommissionTypeDto): Promise<CommissionTypeDto> {
+  async create(
+    artistId: string,
+    dto: UpsertCommissionTypeDto,
+  ): Promise<CommissionTypeDto> {
+    const key = await uniqueSlug(dto.label, async (candidate) => {
+      const existing = await this.db.commissionType.findUnique({
+        where: { artistId_key: { artistId, key: candidate } },
+      });
+      return existing !== null;
+    });
+
     const row = await this.db.$transaction(async (tx) => {
-      const tag = await tx.tag.create({
-        data: { name: dto.key.toLowerCase() },
+      const tag = await tx.tag.upsert({
+        where: { name: dto.label.toLowerCase() },
+        update: {},
+        create: { name: dto.label.toLowerCase() },
       });
       return tx.commissionType.create({
         data: {
-          key: dto.key,
+          artistId,
+          key,
+          label: dto.label,
+          basePrice: dto.basePrice,
           no: dto.no ?? 0,
           active: dto.active ?? true,
           tagId: tag.id,
@@ -41,23 +57,29 @@ export class CommissionTypesService {
   }
 
   async update(
+    artistId: string,
     id: string,
     dto: UpsertCommissionTypeDto,
   ): Promise<CommissionTypeDto> {
-    const existing = await this.assertExists(id);
+    const existing = await this.assertOwned(artistId, id);
     const row = await this.db.$transaction(async (tx) => {
-      if (dto.key !== existing.key) {
-        await tx.tag.update({
-          where: { id: existing.tagId },
-          data: { name: dto.key.toLowerCase() },
+      let tagId = existing.tagId;
+      if (dto.label !== existing.label) {
+        const tag = await tx.tag.upsert({
+          where: { name: dto.label.toLowerCase() },
+          update: {},
+          create: { name: dto.label.toLowerCase() },
         });
+        tagId = tag.id;
       }
       return tx.commissionType.update({
         where: { id },
         data: {
-          key: dto.key,
+          label: dto.label,
+          basePrice: dto.basePrice,
           no: dto.no ?? existing.no,
           active: dto.active ?? existing.active,
+          tagId,
         },
         include: { tag: true },
       });
@@ -65,14 +87,17 @@ export class CommissionTypesService {
     return toDto(row);
   }
 
-  async remove(id: string): Promise<void> {
-    await this.assertExists(id);
+  async remove(artistId: string, id: string): Promise<void> {
+    await this.assertOwned(artistId, id);
     await this.db.commissionType.delete({ where: { id } });
   }
 
-  private async assertExists(id: string): Promise<CommissionType> {
+  private async assertOwned(
+    artistId: string,
+    id: string,
+  ): Promise<CommissionType> {
     const row = await this.db.commissionType.findUnique({ where: { id } });
-    if (!row) {
+    if (!row || row.artistId !== artistId) {
       throw new NotFoundException(`Commission type ${id} not found`);
     }
     return row;
@@ -82,11 +107,14 @@ export class CommissionTypesService {
 function toDto(row: CommissionTypeWithTag): CommissionTypeDto {
   return {
     id: row.id,
+    artistId: row.artistId,
     key: row.key,
+    label: row.label,
+    basePrice: row.basePrice,
     no: row.no,
     active: row.active,
     tagId: row.tagId,
-    tagName: row.tag.name,
+    tagName: row.tag?.name ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };

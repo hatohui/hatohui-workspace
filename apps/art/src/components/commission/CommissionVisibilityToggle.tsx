@@ -4,11 +4,11 @@ import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
 
 export function CommissionVisibilityToggle({
-  isHidden,
+  isHiddenInQueue,
   onChange,
 }: {
-  isHidden: boolean;
-  onChange: (isHidden: boolean) => Promise<unknown>;
+  isHiddenInQueue: boolean;
+  onChange: (isHiddenInQueue: boolean) => Promise<unknown>;
 }) {
   const { t } = useTranslation('art');
 
@@ -16,9 +16,9 @@ export function CommissionVisibilityToggle({
     <Button
       variant="outline"
       size="sm"
-      onClick={() => void onChange(!isHidden)}
+      onClick={() => void onChange(!isHiddenInQueue)}
     >
-      {isHidden
+      {isHiddenInQueue
         ? t('commission.admin.visibility.show')
         : t('commission.admin.visibility.hide')}
     </Button>

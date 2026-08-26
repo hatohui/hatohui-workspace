@@ -1,7 +1,16 @@
-import { format } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
 
 export function formatDate(date: Date, formatStr: string) {
   return format(date, formatStr);
+}
+
+export function parseDate(
+  value: string,
+  formatStr: string,
+  referenceDate: Date,
+): Date | undefined {
+  const parsed = parse(value, formatStr, referenceDate);
+  return isValid(parsed) ? parsed : undefined;
 }
 
 /// Always day-before-month, regardless of locale. Intl's own numeric

@@ -9,14 +9,14 @@ import {
   getCommissionTypesQueryKey,
 } from '@hatohui/models';
 
-export function useCommissionTypesAdmin() {
+export function useCommissionTypesAdmin(artistId: string) {
   const queryClient = useQueryClient();
   const invalidate = () =>
     queryClient.invalidateQueries({
-      queryKey: getCommissionTypesQueryKey({ includeInactive: true }),
+      queryKey: getCommissionTypesQueryKey({ artistId, includeInactive: true }),
     });
 
-  const listQuery = useCommissionTypes({ includeInactive: true });
+  const listQuery = useCommissionTypes({ artistId, includeInactive: true });
   const create = useCreateCommissionType({
     mutation: { onSuccess: invalidate },
   });

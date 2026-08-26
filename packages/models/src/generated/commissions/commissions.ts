@@ -26,21 +26,21 @@ import type {
 
 import type {
   AddReferenceAssetsDto,
-  AssignCommissionDto,
+  CommentDto,
   CommissionDetailDto,
   CommissionDto,
-  CommissionNoteDto,
   CommissionPublicDetailDto,
   CommissionPublicDto,
   CommissionQueueDto,
+  CommissionQueueParams,
   CommissionsParams,
   CreateClientNoteDto,
-  CreateCommissionNoteDto,
+  CreateCommentDto,
+  CreatePrivateCommissionDto,
   DeliverCommissionDto,
   LookupCommissionsByEmailParams,
   PaginatedCommissionsDto,
   SubmitCommissionDto,
-  UpdateCommissionProjectDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
   UpdateCommissionStepDto,
@@ -91,7 +91,7 @@ export const getSubmitCommissionUrl = () => {
 }
 
 /**
- * @summary Submit a new commission request
+ * @summary Submit a new commission request to an artist
  */
 export const submitCommission = async (submitCommissionDto: SubmitCommissionDto, options?: RequestInit): Promise<submitCommissionResponse> => {
 
@@ -140,7 +140,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type SubmitCommissionMutationError = unknown
 
     /**
- * @summary Submit a new commission request
+ * @summary Submit a new commission request to an artist
  */
 export const useSubmitCommission = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitCommission>>, TError,{data: SubmitCommissionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -180,7 +180,7 @@ export const getCommissionsUrl = (params?: CommissionsParams,) => {
 }
 
 /**
- * @summary List commission requests
+ * @summary List your own commission requests
  */
 export const commissions = async (params?: CommissionsParams, options?: RequestInit): Promise<commissionsResponse> => {
 
@@ -251,7 +251,7 @@ export function useCommissions<TData = Awaited<ReturnType<typeof commissions>>, 
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List commission requests
+ * @summary List your own commission requests
  */
 
 export function useCommissions<TData = Awaited<ReturnType<typeof commissions>>, TError = unknown>(
@@ -271,7 +271,89 @@ export function useCommissions<TData = Awaited<ReturnType<typeof commissions>>, 
 
 
 
-export type commissionQueueResponse200 = {
+export type createPrivateCommissionResponse200 = {
+  data: CommissionDto
+  status: 200
+}
+
+export type createPrivateCommissionResponseSuccess = (createPrivateCommissionResponse200) & {
+  headers: Headers;
+};
+;
+
+export type createPrivateCommissionResponse = (createPrivateCommissionResponseSuccess)
+
+export const getCreatePrivateCommissionUrl = () => {
+
+
+
+
+  return `/commissions/private`
+}
+
+/**
+ * @summary Artist creates a commission directly, without going through an opening
+ */
+export const createPrivateCommission = async (createPrivateCommissionDto: CreatePrivateCommissionDto, options?: RequestInit): Promise<createPrivateCommissionResponse> => {
+
+  return customFetch<createPrivateCommissionResponse>(getCreatePrivateCommissionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createPrivateCommissionDto)
+  }
+);}
+
+
+
+
+
+export const getCreatePrivateCommissionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPrivateCommission>>, TError,{data: CreatePrivateCommissionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createPrivateCommission>>, TError,{data: CreatePrivateCommissionDto}, TContext> => {
+
+const mutationKey = ['createPrivateCommission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPrivateCommission>>, {data: CreatePrivateCommissionDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createPrivateCommission(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreatePrivateCommissionMutationResult = NonNullable<Awaited<ReturnType<typeof createPrivateCommission>>>
+    export type CreatePrivateCommissionMutationBody = CreatePrivateCommissionDto
+    export type CreatePrivateCommissionMutationError = unknown
+
+    /**
+ * @summary Artist creates a commission directly, without going through an opening
+ */
+export const useCreatePrivateCommission = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPrivateCommission>>, TError,{data: CreatePrivateCommissionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createPrivateCommission>>,
+        TError,
+        {data: CreatePrivateCommissionDto},
+        TContext
+      > => {
+      return useMutation(getCreatePrivateCommissionMutationOptions(options), queryClient);
+    }
+    export type commissionQueueResponse200 = {
   data: CommissionQueueDto
   status: 200
 }
@@ -283,20 +365,27 @@ export type commissionQueueResponseSuccess = (commissionQueueResponse200) & {
 
 export type commissionQueueResponse = (commissionQueueResponseSuccess)
 
-export const getCommissionQueueUrl = () => {
+export const getCommissionQueueUrl = (params: CommissionQueueParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/commissions/queue`
+  return stringifiedParams.length > 0 ? `/commissions/queue?${stringifiedParams}` : `/commissions/queue`
 }
 
 /**
- * @summary Public timeline of non-hidden, active commissions
+ * @summary Public timeline of an artist's non-hidden, active commissions
  */
-export const commissionQueue = async ( options?: RequestInit): Promise<commissionQueueResponse> => {
+export const commissionQueue = async (params: CommissionQueueParams, options?: RequestInit): Promise<commissionQueueResponse> => {
 
-  return customFetch<commissionQueueResponse>(getCommissionQueueUrl(),
+  return customFetch<commissionQueueResponse>(getCommissionQueueUrl(params),
   {
     ...options,
     method: 'GET'
@@ -309,23 +398,23 @@ export const commissionQueue = async ( options?: RequestInit): Promise<commissio
 
 
 
-export const getCommissionQueueQueryKey = () => {
+export const getCommissionQueueQueryKey = (params?: CommissionQueueParams,) => {
     return [
-    `/commissions/queue`
+    `/commissions/queue`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getCommissionQueueQueryOptions = <TData = Awaited<ReturnType<typeof commissionQueue>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCommissionQueueQueryOptions = <TData = Awaited<ReturnType<typeof commissionQueue>>, TError = unknown>(params: CommissionQueueParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommissionQueueQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getCommissionQueueQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionQueue>>> = ({ signal }) => commissionQueue({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionQueue>>> = ({ signal }) => commissionQueue(params, { signal, ...requestOptions });
 
 
 
@@ -339,7 +428,7 @@ export type CommissionQueueQueryError = unknown
 
 
 export function useCommissionQueue<TData = Awaited<ReturnType<typeof commissionQueue>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>> & Pick<
+ params: CommissionQueueParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionQueue>>,
           TError,
@@ -349,7 +438,7 @@ export function useCommissionQueue<TData = Awaited<ReturnType<typeof commissionQ
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionQueue<TData = Awaited<ReturnType<typeof commissionQueue>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>> & Pick<
+ params: CommissionQueueParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionQueue>>,
           TError,
@@ -359,19 +448,19 @@ export function useCommissionQueue<TData = Awaited<ReturnType<typeof commissionQ
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionQueue<TData = Awaited<ReturnType<typeof commissionQueue>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params: CommissionQueueParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Public timeline of non-hidden, active commissions
+ * @summary Public timeline of an artist's non-hidden, active commissions
  */
 
 export function useCommissionQueue<TData = Awaited<ReturnType<typeof commissionQueue>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params: CommissionQueueParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionQueue>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getCommissionQueueQueryOptions(options)
+  const queryOptions = getCommissionQueueQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -698,7 +787,7 @@ export const useAddCommissionReferenceAssets = <TError = unknown,
       return useMutation(getAddCommissionReferenceAssetsMutationOptions(options), queryClient);
     }
     export type addClientCommissionNoteResponse200 = {
-  data: CommissionNoteDto
+  data: CommentDto
   status: 200
 }
 
@@ -801,7 +890,7 @@ export const getCommissionUrl = (id: string,) => {
 }
 
 /**
- * @summary Get a commission request with its notes and status history
+ * @summary Get one of your own commissions with its notes and status history
  */
 export const commission = async (id: string, options?: RequestInit): Promise<commissionResponse> => {
 
@@ -872,7 +961,7 @@ export function useCommission<TData = Awaited<ReturnType<typeof commission>>, TE
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get a commission request with its notes and status history
+ * @summary Get one of your own commissions with its notes and status history
  */
 
 export function useCommission<TData = Awaited<ReturnType<typeof commission>>, TError = unknown>(
@@ -1328,7 +1417,7 @@ export const getDeliverCommissionUrl = (id: string,) => {
 }
 
 /**
- * @summary Attach the final artwork and email it to the client
+ * @summary Attach the final artwork as a progress entry and email it to the client
  */
 export const deliverCommission = async (id: string,
     deliverCommissionDto: DeliverCommissionDto, options?: RequestInit): Promise<deliverCommissionResponse> => {
@@ -1378,7 +1467,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeliverCommissionMutationError = unknown
 
     /**
- * @summary Attach the final artwork and email it to the client
+ * @summary Attach the final artwork as a progress entry and email it to the client
  */
 export const useDeliverCommission = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deliverCommission>>, TError,{id: string;data: DeliverCommissionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -1390,174 +1479,8 @@ export const useDeliverCommission = <TError = unknown,
       > => {
       return useMutation(getDeliverCommissionMutationOptions(options), queryClient);
     }
-    export type assignCommissionResponse200 = {
-  data: CommissionDto
-  status: 200
-}
-
-export type assignCommissionResponseSuccess = (assignCommissionResponse200) & {
-  headers: Headers;
-};
-;
-
-export type assignCommissionResponse = (assignCommissionResponseSuccess)
-
-export const getAssignCommissionUrl = (id: string,) => {
-
-
-
-
-  return `/commissions/${id}/assign`
-}
-
-/**
- * @summary Assign or unassign a team member to a commission
- */
-export const assignCommission = async (id: string,
-    assignCommissionDto: AssignCommissionDto, options?: RequestInit): Promise<assignCommissionResponse> => {
-
-  return customFetch<assignCommissionResponse>(getAssignCommissionUrl(id),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(assignCommissionDto)
-  }
-);}
-
-
-
-
-
-export const getAssignCommissionMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignCommission>>, TError,{id: string;data: AssignCommissionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof assignCommission>>, TError,{id: string;data: AssignCommissionDto}, TContext> => {
-
-const mutationKey = ['assignCommission'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof assignCommission>>, {id: string;data: AssignCommissionDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  assignCommission(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type AssignCommissionMutationResult = NonNullable<Awaited<ReturnType<typeof assignCommission>>>
-    export type AssignCommissionMutationBody = AssignCommissionDto
-    export type AssignCommissionMutationError = unknown
-
-    /**
- * @summary Assign or unassign a team member to a commission
- */
-export const useAssignCommission = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignCommission>>, TError,{id: string;data: AssignCommissionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof assignCommission>>,
-        TError,
-        {id: string;data: AssignCommissionDto},
-        TContext
-      > => {
-      return useMutation(getAssignCommissionMutationOptions(options), queryClient);
-    }
-    export type updateCommissionProjectResponse200 = {
-  data: CommissionDto
-  status: 200
-}
-
-export type updateCommissionProjectResponseSuccess = (updateCommissionProjectResponse200) & {
-  headers: Headers;
-};
-;
-
-export type updateCommissionProjectResponse = (updateCommissionProjectResponseSuccess)
-
-export const getUpdateCommissionProjectUrl = (id: string,) => {
-
-
-
-
-  return `/commissions/${id}/project`
-}
-
-/**
- * @summary Attach or detach a commission from a project
- */
-export const updateCommissionProject = async (id: string,
-    updateCommissionProjectDto: UpdateCommissionProjectDto, options?: RequestInit): Promise<updateCommissionProjectResponse> => {
-
-  return customFetch<updateCommissionProjectResponse>(getUpdateCommissionProjectUrl(id),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(updateCommissionProjectDto)
-  }
-);}
-
-
-
-
-
-export const getUpdateCommissionProjectMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionProject>>, TError,{id: string;data: UpdateCommissionProjectDto}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateCommissionProject>>, TError,{id: string;data: UpdateCommissionProjectDto}, TContext> => {
-
-const mutationKey = ['updateCommissionProject'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCommissionProject>>, {id: string;data: UpdateCommissionProjectDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  updateCommissionProject(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateCommissionProjectMutationResult = NonNullable<Awaited<ReturnType<typeof updateCommissionProject>>>
-    export type UpdateCommissionProjectMutationBody = UpdateCommissionProjectDto
-    export type UpdateCommissionProjectMutationError = unknown
-
-    /**
- * @summary Attach or detach a commission from a project
- */
-export const useUpdateCommissionProject = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionProject>>, TError,{id: string;data: UpdateCommissionProjectDto}, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateCommissionProject>>,
-        TError,
-        {id: string;data: UpdateCommissionProjectDto},
-        TContext
-      > => {
-      return useMutation(getUpdateCommissionProjectMutationOptions(options), queryClient);
-    }
     export type createCommissionNoteResponse200 = {
-  data: CommissionNoteDto
+  data: CommentDto
   status: 200
 }
 
@@ -1580,14 +1503,14 @@ export const getCreateCommissionNoteUrl = (id: string,) => {
  * @summary Add an internal or client-facing note to a commission
  */
 export const createCommissionNote = async (id: string,
-    createCommissionNoteDto: CreateCommissionNoteDto, options?: RequestInit): Promise<createCommissionNoteResponse> => {
+    createCommentDto: CreateCommentDto, options?: RequestInit): Promise<createCommissionNoteResponse> => {
 
   return customFetch<createCommissionNoteResponse>(getCreateCommissionNoteUrl(id),
   {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(createCommissionNoteDto)
+    body: JSON.stringify(createCommentDto)
   }
 );}
 
@@ -1596,8 +1519,8 @@ export const createCommissionNote = async (id: string,
 
 
 export const getCreateCommissionNoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCommissionNote>>, TError,{id: string;data: CreateCommissionNoteDto}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createCommissionNote>>, TError,{id: string;data: CreateCommissionNoteDto}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCommissionNote>>, TError,{id: string;data: CreateCommentDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createCommissionNote>>, TError,{id: string;data: CreateCommentDto}, TContext> => {
 
 const mutationKey = ['createCommissionNote'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1609,7 +1532,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createCommissionNote>>, {id: string;data: CreateCommissionNoteDto}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createCommissionNote>>, {id: string;data: CreateCommentDto}> = (props) => {
           const {id,data} = props ?? {};
 
           return  createCommissionNote(id,data,requestOptions)
@@ -1623,18 +1546,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type CreateCommissionNoteMutationResult = NonNullable<Awaited<ReturnType<typeof createCommissionNote>>>
-    export type CreateCommissionNoteMutationBody = CreateCommissionNoteDto
+    export type CreateCommissionNoteMutationBody = CreateCommentDto
     export type CreateCommissionNoteMutationError = unknown
 
     /**
  * @summary Add an internal or client-facing note to a commission
  */
 export const useCreateCommissionNote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCommissionNote>>, TError,{id: string;data: CreateCommissionNoteDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCommissionNote>>, TError,{id: string;data: CreateCommentDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createCommissionNote>>,
         TError,
-        {id: string;data: CreateCommissionNoteDto},
+        {id: string;data: CreateCommentDto},
         TContext
       > => {
       return useMutation(getCreateCommissionNoteMutationOptions(options), queryClient);

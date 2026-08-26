@@ -5,7 +5,7 @@ import {
   type ColumnDef,
   type ColumnSizingState,
 } from '@tanstack/react-table';
-import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronsUpDown, Trash2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EditableCell, type EditableCellOption } from './editable-cell';
 
@@ -36,6 +36,9 @@ export interface EditableDataTableProps<T extends { id: string }> {
   sortBy?: keyof T & string;
   sortDirection?: 'asc' | 'desc';
   onSortChange?: (key: keyof T & string) => void;
+  /** When set, renders a trailing per-row delete button that calls this. */
+  onDeleteRow?: (row: T) => void;
+  deleteRowLabel?: string;
 }
 
 const DEFAULT_COLUMN_WIDTH = 160;
@@ -62,6 +65,8 @@ export function EditableDataTable<T extends { id: string }>({
   sortBy,
   sortDirection,
   onSortChange,
+  onDeleteRow,
+  deleteRowLabel = 'Delete row',
 }: EditableDataTableProps<T>) {
   const [columnSizing, setColumnSizing] = React.useState<ColumnSizingState>(
     () => loadStoredSizing(storageKey),
@@ -212,6 +217,9 @@ export function EditableDataTable<T extends { id: string }>({
                   </th>
                 );
               })}
+              {onDeleteRow && (
+                <th className="w-10 border-r-0 px-2 py-2" aria-hidden />
+              )}
             </tr>
           ))}
         </thead>
@@ -260,13 +268,28 @@ export function EditableDataTable<T extends { id: string }>({
                   </td>
                 );
               })}
+              {onDeleteRow && (
+                <td className="p-0 text-center">
+                  <button
+                    type="button"
+                    aria-label={deleteRowLabel}
+                    onClick={() => onDeleteRow(row.original)}
+                    className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-destructive"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
         {onAddRow && (
           <tfoot>
             <tr>
-              <td colSpan={columns.length} className="p-0">
+              <td
+                colSpan={onDeleteRow ? columns.length + 1 : columns.length}
+                className="p-0"
+              >
                 <button
                   type="button"
                   onClick={onAddRow}

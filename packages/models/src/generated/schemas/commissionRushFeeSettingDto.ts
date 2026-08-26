@@ -9,6 +9,6 @@
 export interface CommissionRushFeeSettingDto {
   /** Deadlines within this many days trigger the rush fee */
   thresholdDays: number;
-  /** Rush fee in USD cents */
-  feeCents: number;
+  /** Rush fee, in the artist's currency's smallest unit */
+  feeAmount: number;
 }
