@@ -175,27 +175,75 @@ scope every read/write by `artistId`, and let a `findUnique` + ownership
 mismatch fall through to 404 rather than 403 (don't reveal another artist's
 row exists).
 
-### Still not built — new modules (backend)
+### Backend modules — done, none wired into the frontend yet
 
-None of these exist yet as their own module/controller. `docs/conventions.md`'s
-one-module-per-resource rule applies — this is several resources, not one
-`commission-open` module:
+All five, following the ownership pattern established earlier
+(`@CurrentUser()` + `isArtist` + `findUnique`-then-match-else-404). Verified
+via `tsc`/`eslint` (clean across the whole repo) and via curl against a
+minted dev-artist session for every write path, then cleaned up.
 
-- [ ] **`commission-openings`** — CRUD + open/close for `CommissionOpening`.
-      Enforcing "one active opening per artist" is a service-layer check;
-      Prisma's schema DSL can't express the partial unique index.
-- [ ] **`commission-progress`** — the timeline itself (list/create/mark-final),
-      currently only reachable indirectly via `deliver()`'s inline write.
-- [ ] **`clients`** — an explicit lookup-by-email endpoint for the prefill flow
-      (Use Case 6/8). `resolveClient()` exists inside `commissions.service.ts`
-      but there's no way for the frontend to query "have I commissioned
-      before?" ahead of submitting.
-- [ ] **`commission-followers`** — subscribe/unsubscribe by email, per artist.
-- [ ] **`commission-groups`** — group CRUD, membership, the shared
-      visibility/comment rules from the PRD's "Groups and projects" section.
-- [ ] **`comments`** on `project`/`group` subjects — `Comment` supports all
-      four subject FKs in the schema, but only the `commission`/`progress`
-      paths have service methods so far (inside `commissions.service.ts`).
+- [x] **`commission-openings`** — `GET current?artistId=` (public, 404 if
+      neither open nor scheduled — matches the rest of this API's "not found"
+      idiom rather than 200-with-null, see the OpenAPI note below),
+      `GET mine`/`POST`/`PUT :id`/`POST :id/open`/`POST :id/close`/
+      `DELETE :id` (all artist-owned). "One active opening per artist" is the
+      service-layer check the checklist flagged (`assertNoActiveOpening`,
+      409 `ConflictException`) — confirmed by curl: creating a second
+      `MANUAL` opening while one is `OPEN` correctly 409s.
+      **`SLOT_CAP` auto-close is wired into `CommissionsService.updateStatus`**
+      (not left as a TODO): every status transition calls
+      `maybeAutoCloseForSlotCap`, which counts commissions past triage
+      (`ACCEPTED` and beyond, not `PENDING`/`DECLINED`/`CANCELLED`) against
+      the cap and closes the opening once it's reached.
+- [x] **`commission-progress`** — `GET ?commissionId=` (artist, full timeline
+      incl. `INTERNAL`), `GET by-code/:code` (public, `CLIENT`-visible only —
+      same filtering rule `Comment` already used), `POST`/`PUT :id`/
+      `POST :id/finalize`/`DELETE :id`. Finalizing sets
+      `CommissionDetail.deliveredAt` (verified by curl: finalize → re-fetch
+      the commission → `deliveredAt` populated) and can attach the entry to a
+      `Project` via `projectId`, per the PRD's "finished work attaches back
+      to the project via `CommissionProgress.projectId`". `deliver()` in
+      `commissions.service.ts` was left as its own inline write rather than
+      refactored to call this service — both exist; not unified this round.
+- [x] **`clients`** — `GET lookup?email=`, 404 if no `Client` row (matches
+      the rest of the API rather than 200-with-null). Returns the thin
+      prefill shape only (name/preferredContactMethod/contactHandle) — no
+      commission history, no internal id.
+- [x] **`commission-followers`** — `POST` (subscribe, public),
+      `GET unsubscribe/:token` (public, the link an announcement email would
+      contain), `GET mine` (artist).
+- [x] **`commission-groups`** — `GET mine`/`POST`/`PUT :id`/
+      `POST :id/members`/`DELETE :id/members/:clientId` (artist-owned),
+      `GET by-code/:code` (public member view — title/description/quote/
+      currency/members/commissions/comments) and
+      `POST by-code/:code/comments`. The PRD flags "access is granted by
+      membership... this is the one rule the schema cannot enforce, so the
+      service layer must" — implemented as: the group's `accessCode` alone
+      grants *read* access (same trust model as `Commission.accessCode`
+      elsewhere), but *posting* a comment additionally requires the poster's
+      own commission's access code, which the service resolves to a
+      `Commission.groupId` match before accepting the comment — this is what
+      actually proves "you're a member," not just someone the group link
+      reached.
+- [x] **`comments` on `project`/`group` subjects** — done as a side effect of
+      the groups module, not a separate module: `CommentDto`/`toCommentDto`
+      moved from a private function inside `commissions.service.ts` to
+      `comment.dto.ts` (exported, `groupId`/`projectId` fields added), so
+      `commissions.service.ts` and the new `commission-groups.service.ts`
+      share one mapper instead of each having their own copy.
+
+**One OpenAPI/Orval gotcha hit and fixed, worth remembering**: an early draft
+of both `commission-openings/current` and `clients/lookup` used
+`@ApiOkResponse({ type: X, nullable: true })` on a controller method
+returning `Promise<X | null>` directly. NestJS Swagger renders that as a
+`oneOf: [{$ref}, {type: 'null'}]` schema shape that Orval's OpenAPI validator
+(`@scalar/openapi-parser`) rejects outright (`must match exactly one schema
+in oneOf`) — `task app:openapi:generate` failed with no explanation pointing
+at *which* endpoint. No other endpoint in this codebase declares a nullable
+type at the top level of a response for exactly this reason — every other
+"might not exist" GET either 404s or nests the nullable value as a property
+inside a DTO (like `CommissionPricingDto.rushFee`). Fixed by switching both
+to 404, matching the existing convention instead of introducing a new one.
 
 ### Frontend
 
@@ -377,13 +425,159 @@ one-module-per-resource rule applies — this is several resources, not one
 
         **Not independently browser-verified this round** — the user has
         their own logged-in dev session running and is testing directly.
-13. [ ] Build the remaining new UI per the PRD's use cases (opening config,
-        triage card/table views, accepted-slots table, progress timeline,
-        group views, anonymous-client access-code flow).
-14. [x] Lint + typecheck everything touched by item 11's cascade fix —
-        `apps/api`/`apps/art`/`packages/ui`/`packages/models` all clean.
-        Item 13 hasn't happened yet, so this isn't "everything" for the
-        feature as a whole yet, just everything touched so far.
+13. [x] Build the remaining new UI per the PRD's use cases — **all done**:
+        opening config, triage, accepted-slots table, progress timeline,
+        group views, and the anonymous access-code flow. See below.
+    - [x] **Opening config (Use Case 1) — built, backend-verified, not yet
+          browser-verified logged-in** (redirect-when-logged-out confirmed;
+          couldn't mint a session cookie in-browser, same limitation as
+          before). `useCommissionOpenings.ts` wraps the five
+          `commission-openings` hooks. `CommissionOpeningPanel.tsx`: shows
+          the active opening (if any) with an inline edit form, Open
+          Now/Close buttons matching its status, a create form when there's
+          none, and a history list of past openings. `endMode` picker
+          conditionally reveals the `slotCap` field only for `SLOT_CAP`
+          (`scheduledAt` only shown on create — editing when to open once
+          scheduling has already happened isn't this form's job). New
+          `/app/commission-opening` page + `AppSidebar` nav entry (artist-
+          gated, matching `commission-settings`'s pattern exactly).
+          **Caught and fixed a real bug while wiring the sidebar's "back to
+          site" link**: it was hardcoded to `/`, which is now the artist
+          *picker* rather than any artist's storefront after the routing
+          rework in item 11 — fixed to `/${user.handle}`.
+        - **A second `packages/models` export-list gap, same shape as the
+          `artists` one from item 11**: none of the five new modules'
+          generated hooks were re-exported from `packages/models/src/index.ts`
+          (it's hand-maintained, not auto-generated) — `tsc` caught it
+          immediately as "no exported member" once the frontend hook file
+          tried to import them.
+    - [x] **Triage (Use Case 2) + Accepted slots (Use Case 3) — built,
+          backend-verified via curl, not browser-verified logged-in**
+          (redirect confirmed for the logged-out case; couldn't mint a
+          session, and the dev seed's artist doesn't hold the `admin` role
+          this page also requires — same limitation as opening config, one
+          layer deeper).
+        - **Backend additions this needed, none of which existed yet**:
+          `PATCH /commissions/:id/priority`, `DELETE /commissions/:id`
+          (deletes `CommissionStatusHistory` rows first in the same
+          transaction — that relation has no `onDelete: Cascade`, unlike
+          `CommissionDetail`/`Comment`/`CommissionProgress`, so a plain
+          `commission.delete` would have thrown a live FK-constraint error
+          the first time anyone actually used this button — then deletes the
+          commission, then best-effort deletes each reference asset from
+          storage via the new `Storage.getKeyFromUrl` — `referenceAssets`
+          stores full public URLs, not keys, so there was no way to call
+          `deleteObject` without reversing `getPublicUrl` first),
+          `POST /commissions/:id/send-confirmation` (400s if the quote
+          changed since acceptance and no `note` is given — the PRD's exact
+          rule), and a `priority` sort mode + quote-snapshot-into-
+          `originalQuote` on first `ACCEPTED` transition (wired into
+          `CommissionsService.updateStatus`, the same integration point
+          `SLOT_CAP` auto-close already uses).
+        - **A real bug caught and fixed in the same `updateStatus` change**:
+          the transaction's own `commission.update(...)` result was returned
+          directly, but its `include` reads `detail` at that query's turn —
+          *before* the sibling `commissionDetail.update` in the same
+          transaction snapshots `originalQuote`. The immediate response to
+          "accept this commission" reported `originalQuote: null` on the
+          exact call that set it, even though the DB write was correct (a
+          follow-up `PATCH .../quote` showed the right value). Fixed by
+          re-fetching after the transaction instead of trusting its result,
+          matching `deliver()`'s existing pattern. Caught by literally
+          reading the curl output rather than assuming a 200 meant correct.
+        - **`COMMISSION_SORT_OPTIONS` gained `'priority'`**; `deadline` and
+          `priority` sorts both use `nulls: 'last'` with `createdAt` as a
+          tiebreak, so "no deadline set" / "no custom priority set" fall
+          back to submission order among themselves, per the PRD's "undated
+          items fall back to submission time" — same treatment for priority
+          even though the PRD only says it for deadline, since the same gap
+          exists for both.
+        - **Frontend**: `/admin/commissions` is now the triage view
+          (`TriageBoard.tsx`) — three tabs (Pending/Accepted/Declined) each
+          backed by their own `useCommissionTriage` list, three sort modes,
+          card/table toggle on the Pending tab (`TriageCard.tsx`/
+          `TriageTable.tsx`), accept/decline with **no confirmation
+          dialog** and an undo banner (`useUndoableAction.ts` — generic,
+          fires the action immediately and offers a 6s-window undo, not
+          specific to commissions). The old Kanban board (production
+          pipeline, `NOT_YET_STARTED`→`CANCELLED`) moved to
+          `/admin/commissions/production`, unchanged otherwise — it was
+          never the triage view, just adjacent to it in the old single-page
+          layout. `AcceptedSlotsTable.tsx` covers Use Case 3 exactly:
+          name/contact/deadline/idea read-only, price and payment status
+          editable inline, Confirm/Replace/Send Confirmation
+          Email/Delete actions. Replace opens `ReplaceSlotDialog.tsx` (picks
+          from the Pending+Declined pools, declines the outgoing commission
+          and accepts the incoming one). Sending the confirmation email
+          checks `quote !== originalQuote` client-side first and, if
+          changed, requires a note via `ConfirmationNoteDialog.tsx` before
+          calling the API — mirroring the backend's own check rather than
+          just handling its 400. `ReferenceThumbnail.tsx`: renders the first
+          reference as an image, falls back to a link+tooltip on `onError` —
+          there's no server-side way to tell an uploaded image from a
+          client-pasted link (both are stored as plain URLs), so this is a
+          client-side "did it actually load as an image" heuristic rather
+          than a flag from the API.
+    - [x] **Progress timeline (used by Use Cases 3 and 8) + Group views
+          (Use Case "anonymous access-code flow") — built, verified both by
+          curl and live in the browser** (the group view is public, no
+          session needed, so unlike everything else this round it could
+          actually be clicked through end-to-end: created a real group and
+          commission via curl, opened `/[artist]/groups/[code]` cold,
+          confirmed the member list and status showed correctly, entered the
+          member commission's own access code, and posted a comment that
+          appeared in the thread immediately — no console errors on any of
+          it).
+        - **Two more real gaps caught before any frontend code touched
+          them, same pattern as the whole session**:
+          `finalizeCommissionProgress`'s controller took
+          `@Body('projectId') projectId: string | undefined` instead of a
+          declared DTO — Nest/Swagger had no schema for the body, so Orval
+          generated a bodyless client method and the "attach to project on
+          finalize" feature was silently unreachable from any frontend code
+          that would ever call it. Fixed with a proper
+          `FinalizeCommissionProgressDto`. Separately,
+          `CommissionProgressService.create`/`update` stored `images` as
+          given — raw object keys, per the DTO's own
+          (now-corrected) "returned by `POST /images/sign`" description —
+          instead of resolving them to public URLs like `deliver()` already
+          does; confirmed by curl (`"images":["uploads/test-key.png"]` came
+          back unchanged, not a working URL) before it ever reached a
+          `<img src>`.
+        - **A third**: the artist-facing `CommissionGroupDto` never
+          exposed `accessCode` at all — an artist could create a group and
+          add members but had no way to ever learn the code needed to
+          actually give them access to it. Added it to the DTO and mapper;
+          confirmed by curl that `create` now returns it.
+        - Artist side: `/admin/commissions/[id]` gained
+          `CommissionProgressTimeline.tsx` (list with per-entry
+          delete, a post form with title/images/visibility/"mark final"
+          — kept alongside the existing `CommissionDeliverPanel` rather
+          than replacing it, since that panel's quick-deliver shortcut still
+          has its own simpler use). `/admin/groups`
+          (`CommissionGroupsAdmin.tsx`) lists the artist's groups, creates
+          new ones, and adds/removes members by email — each group card
+          shows its shareable `/[artist]/groups/[code]` link with an
+          explicit "treat it like a password" warning, per the PRD's
+          anonymous-access rule.
+        - Client side: `OrderProgressTimeline.tsx` added to
+          `/[artist]/queue/[code]` (`OrderDetail.tsx`), reading only
+          `CLIENT`-visible entries via the by-access-code endpoint.
+          `GroupView.tsx` at `/[artist]/groups/[code]`: member list with
+          each one's commission status, the shared quote/currency if set,
+          and a comment thread. Posting requires the visitor's own
+          commission access code as proof of membership (the backend check
+          from item 11's `commission-groups` module) — `useGroupMemberCode.ts`
+          remembers it in `localStorage` per group code after first entry, so
+          a returning member isn't asked again, matching the PRD's "browser
+          remembers... keyed per access code" convenience rule. Getting this
+          hook's initial read right mattered: it uses the same
+          effect-after-mount pattern (not a lazy `useState` initializer) as
+          the earlier `useCommissionForm` draft-restore fix, for the same
+          reason — `localStorage` doesn't exist during SSR.
+14. [x] Lint + typecheck everything — `apps/api`/`apps/art`/`packages/ui`/
+        `packages/models` all clean, confirmed fresh after item 13 finished
+        (not just the item 11 cascade fix this line originally referred to).
 
 ## Commission type catalog rework — done, local only, NOT deployed to production
 
@@ -445,12 +639,47 @@ per-artist table back to a global catalog" for the full rationale.
       deploy the migration to production (same discipline as the last one:
       rehearse against a production-shaped local copy first, verify by direct
       query after, never trust migration-table bookkeeping alone).
-- [ ] `useCommissionPricingEstimate.ts` (public commission-request price
-      estimate) still references the old flat option/addon shape
-      (`modifierPercent`, `minPriceCents`, `pricing.types`) — it's part of the
-      already-flagged item-11 cascade, but now also needs the new "derive
-      price from selected option, render a dropdown only when a type has >1
-      enabled option" logic from the PRD once that cascade gets picked up.
+- [x] `useCommissionPricingEstimate.ts` — **done as part of item 11**: fully
+      rewritten to fetch `commissionTypesByArtist` + `commissionPricing`,
+      derive price from the selected option, and render a dropdown only when
+      a type has 2+ enabled options. (This bullet was stale — written before
+      that cascade fix landed; leaving it struck through rather than deleted
+      so the resumable log doesn't quietly lose the fact it was once open.)
+
+## Not yet deployed to production
+
+Three separate local-only changes from this session, each needing the same
+rehearse-then-ask discipline as the original production incident before
+going anywhere near the live database — **do not deploy any of these without
+explicit confirmation, one at a time**:
+
+- [ ] The commission-type-catalog-rework migration (see above) — blocked on
+      deciding with the artist how to re-create their 2 existing production
+      `CommissionOption` rows under the new per-type shape.
+- [ ] `20260827194604_explicit_asset_tag_join` — makes `Asset<->Tag` explicit
+      (`AssetTag` model replacing Prisma's implicit `_AssetToTag`). Written
+      idempotently and to preserve existing rows via `INSERT ... SELECT`
+      before dropping the old table, but only rehearsed against local dev
+      (which had zero rows in `_AssetToTag` to begin with) — production's
+      copy has real data (every tag on every uploaded asset) and hasn't been
+      rehearsed against a production-shaped copy the way the original
+      incident's fix was.
+- [ ] Everything from items 11–13 this round: the `artists`,
+      `commission-openings`, `commission-progress`, `clients`,
+      `commission-followers`, and `commission-groups` backend modules, the
+      `[artist]` routing rework, and all the frontend built on top of them.
+      None of it is schema-destructive on its own (it's new tables/columns,
+      not drops), but it hasn't been rehearsed against a production-shaped
+      copy either — do that before deploying, not for the first time on the
+      live database.
+
+## Known gaps, not fixed this round
+
+- [ ] No `DELETE /commission-groups/:id` — groups can be created and have
+      members added/removed, but not removed themselves. Wasn't in the
+      original module design and wasn't added when the frontend surfaced the
+      lack; low urgency since a group with no real activity is harmless to
+      leave around, but worth closing before this ships for real use.
 
 ## Later / separate (do not fold into this feature)
 

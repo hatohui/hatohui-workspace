@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { EmailService } from '@/infra/email';
@@ -25,6 +29,7 @@ import {
   CommissionPublicDto,
   CreatePrivateCommissionDto,
   DeliverCommissionDto,
+  SendConfirmationEmailDto,
   SubmitCommissionDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
@@ -39,15 +44,18 @@ import {
 import {
   CommentDto,
   CreateCommentDto,
+  toCommentDto,
 } from '@/modules/commissions/dto/comment.dto';
 import { CommissionStatusHistoryDto } from '@/modules/commissions/dto/commission-history.dto';
 import { CommissionQueueDto } from '@/modules/commissions/dto/commission-queue.dto';
 import {
+  CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE,
   DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE,
   NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE,
   QUEUE_STATUSES,
   QUEUE_STATUS_RANK,
 } from '@/modules/commissions/commissions.constants';
+import { CommissionOpeningsService } from '@/modules/commission-openings/services/commission-openings.service';
 
 const DEFAULT_CURRENCY = 'USD';
 
@@ -68,6 +76,7 @@ export class CommissionsService {
     private readonly storage: Storage,
     private readonly email: EmailService,
     private readonly userSettings: UserSettingsService,
+    private readonly commissionOpenings: CommissionOpeningsService,
   ) {}
 
   async submit(dto: SubmitCommissionDto): Promise<CommissionDto> {
@@ -157,12 +166,24 @@ export class CommissionsService {
       ],
     };
 
-    const orderBy: Prisma.CommissionOrderByWithRelationInput =
+    // 'deadline' and 'priority' are nullable — nulls sort last, with
+    // createdAt as the tiebreak among them, so "no deadline"/"no custom
+    // priority" falls back to submission order rather than clustering
+    // arbitrarily (PRD: "undated items fall back to submission time").
+    const orderBy: Prisma.CommissionOrderByWithRelationInput[] =
       sort === 'quote'
-        ? { detail: { quote: direction } }
+        ? [{ detail: { quote: direction } }]
         : sort === 'deadline'
-          ? { detail: { deadline: direction } }
-          : { createdAt: direction };
+          ? [
+              { detail: { deadline: { sort: direction, nulls: 'last' } } },
+              { createdAt: direction },
+            ]
+          : sort === 'priority'
+            ? [
+                { priority: { sort: direction, nulls: 'last' } },
+                { createdAt: direction },
+              ]
+            : [{ createdAt: direction }];
 
     const [items, total] = await Promise.all([
       this.db.commission.findMany({
@@ -279,11 +300,16 @@ export class CommissionsService {
   ): Promise<CommissionDto> {
     const existing = await this.findOwnedOrThrow(artistId, id);
 
-    const [commission] = await this.db.$transaction([
+    // Snapshot the quote the moment a commission is first accepted, so a
+    // later price change can be detected before sending the confirmation
+    // email — see PRD Use Case 3.
+    const justAccepted =
+      dto.status === 'ACCEPTED' && existing.status !== 'ACCEPTED';
+
+    await this.db.$transaction([
       this.db.commission.update({
         where: { id },
         data: { status: dto.status },
-        include: commissionInclude,
       }),
       this.db.commissionStatusHistory.create({
         data: {
@@ -294,7 +320,27 @@ export class CommissionsService {
           note: dto.note ?? null,
         },
       }),
+      ...(justAccepted
+        ? [
+            this.db.commissionDetail.update({
+              where: { commissionId: id },
+              data: { originalQuote: existing.detail?.quote ?? null },
+            }),
+          ]
+        : []),
     ]);
+
+    // Re-fetch rather than trust the transaction's own update result: its
+    // `include` is evaluated at that query's turn, before the quote-snapshot
+    // write later in the same transaction — using it directly would report
+    // a stale (pre-snapshot) originalQuote on exactly the call that set it.
+    const commission = await this.findOwnedOrThrow(artistId, id);
+
+    if (commission.commissionOpeningId) {
+      await this.commissionOpenings.maybeAutoCloseForSlotCap(
+        commission.commissionOpeningId,
+      );
+    }
 
     return toCommissionDto(commission);
   }
@@ -404,6 +450,81 @@ export class CommissionsService {
     }
 
     return toCommissionDto(commission);
+  }
+
+  async updatePriority(
+    artistId: string,
+    id: string,
+    priority: number | null,
+  ): Promise<CommissionDto> {
+    await this.findOwnedOrThrow(artistId, id);
+    const commission = await this.db.commission.update({
+      where: { id },
+      data: { priority },
+      include: commissionInclude,
+    });
+    return toCommissionDto(commission);
+  }
+
+  /// Deletion is always a deliberate per-item action (PRD "Closing vs
+  /// deleting") — it removes the record *and* its uploaded reference images
+  /// from storage, so no orphaned objects are left behind. CommissionDetail/
+  /// Comment/CommissionProgress cascade at the DB level; CommissionStatusHistory
+  /// doesn't (no onDelete: Cascade on that relation), so it's cleared first.
+  async remove(artistId: string, id: string): Promise<void> {
+    const existing = await this.findOwnedOrThrow(artistId, id);
+
+    await this.db.$transaction([
+      this.db.commissionStatusHistory.deleteMany({
+        where: { commissionId: id },
+      }),
+      this.db.commission.delete({ where: { id } }),
+    ]);
+
+    for (const url of existing.detail?.referenceAssets ?? []) {
+      const key = this.storage.getKeyFromUrl(url);
+      if (key) await this.storage.deleteObject(key).catch(() => {});
+    }
+  }
+
+  /// "Confirm" (Use Case 3) — sends the client an email asking them to
+  /// confirm the accepted quote. Requires an explanatory note if the quote
+  /// has changed since acceptance (`originalQuote`), since silently emailing
+  /// a different number than what the client agreed to isn't acceptable.
+  async sendConfirmationEmail(
+    artistId: string,
+    id: string,
+    dto: SendConfirmationEmailDto,
+  ): Promise<void> {
+    const commission = await this.findOwnedOrThrow(artistId, id);
+    const detail = requireDetail(commission);
+
+    const quoteChanged =
+      detail.originalQuote != null && detail.quote !== detail.originalQuote;
+    if (quoteChanged && !dto.note) {
+      throw new BadRequestException(
+        'A note is required: the quote changed since this commission was accepted',
+      );
+    }
+
+    const templateId = await this.getTemplateId(
+      CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE,
+    );
+    if (!templateId) return;
+
+    await this.email.sendTemplateEmail({
+      to: [{ email: commission.client.email, name: commission.client.name }],
+      templateId,
+      params: {
+        label: commissionDisplayLabel(
+          detail.commissionType ?? null,
+          commission.client.name,
+        ),
+        quote: detail.quote,
+        currency: detail.currency,
+        note: dto.note ?? null,
+      },
+    });
   }
 
   async addNote(
@@ -630,28 +751,6 @@ function toPublicDto(commission: CommissionWithRelations): CommissionPublicDto {
     deliveredAt: detail.deliveredAt?.toISOString() ?? null,
     createdAt: commission.createdAt.toISOString(),
     updatedAt: commission.updatedAt.toISOString(),
-  };
-}
-
-function toCommentDto(comment: {
-  id: string;
-  commissionId: string | null;
-  progressId: string | null;
-  authorClientId: string | null;
-  authorRole: CommentDto['authorRole'];
-  visibility: Visibility;
-  body: string;
-  createdAt: Date;
-}): CommentDto {
-  return {
-    id: comment.id,
-    commissionId: comment.commissionId,
-    progressId: comment.progressId,
-    authorClientId: comment.authorClientId,
-    authorRole: comment.authorRole,
-    visibility: comment.visibility,
-    body: comment.body,
-    createdAt: comment.createdAt.toISOString(),
   };
 }
 

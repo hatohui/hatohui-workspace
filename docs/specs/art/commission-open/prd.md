@@ -388,6 +388,39 @@ author is always `commission.artist`, so the column would add a way for the
 record to disagree with its owner and no behaviour a join doesn't give. It
 comes back with collaboration.
 
+**Implementation note**: `SLOT_CAP` auto-close isn't a cron job or a client-
+side check — it's wired directly into `CommissionsService.updateStatus`.
+Every status transition calls `CommissionOpeningsService.maybeAutoCloseForSlotCap`,
+which counts commissions past triage (`ACCEPTED` and beyond — `PENDING`,
+`DECLINED`, and `CANCELLED` don't count, since those haven't taken a slot or
+gave theirs back) against the opening's `slotCap` and closes it the moment
+the count is reached. This means the cap is enforced at the exact place a
+slot gets taken, not on a delay.
+
+**Implementation note on the OpenAPI pipeline**: a controller method
+returning `Promise<X | null>` decorated with
+`@ApiOkResponse({ type: X, nullable: true })` produces a `oneOf` response
+schema that Orval's validator rejects outright, with an error that doesn't
+name the offending endpoint. No endpoint in this codebase does this for a
+reason: "might not exist" is always either a 404 or a nullable *property*
+nested inside a DTO (`CommissionPricingDto.rushFee`), never a nullable
+top-level response. `commission-openings/current` and `clients/lookup` hit
+this and were fixed by switching to 404, matching the existing convention.
+
+**Implementation note on deletion (Use Case 4)**: `CommissionStatusHistory`
+is the one child relation off `Commission` without `onDelete: Cascade` (it's
+an audit log — that was deliberate). A plain `commission.delete()` would
+throw a foreign-key error the first time it ran against a commission with
+any status history, i.e. almost every real one. `CommissionsService.remove`
+deletes the history rows first, in the same transaction. Deleting the
+uploaded reference images needed a second fix: `CommissionDetail.referenceAssets`
+stores full public URLs (`Storage.getPublicUrl(key)`'s output), not raw
+keys, so there was no way to call `Storage.deleteObject` (which needs a key)
+without first reversing that — `Storage.getKeyFromUrl` does that, returning
+null for anything that isn't one of the app's own object URLs (a
+client-pasted external reference link), which the caller then just leaves
+alone rather than trying to delete.
+
 ### Comments
 
 `CommissionNote` became **`Comment`**: every "card" in the app has its own

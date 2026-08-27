@@ -324,6 +324,29 @@ export class UpdatePaymentStatusDto {
   paymentStatus: PaymentStatus;
 }
 
+export class UpdateCommissionPriorityDto {
+  @ApiProperty({
+    description:
+      'Custom triage ordering — lower sorts first. Null clears it back to first-come-first-serve.',
+    nullable: true,
+  })
+  @IsOptional()
+  @IsInt()
+  priority: number | null;
+}
+
+export class SendConfirmationEmailDto {
+  @ApiProperty({
+    required: false,
+    description:
+      'Required if the quote changed since this commission was accepted — explains why to the client',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  note?: string;
+}
+
 export class UpdateCommissionStepDto {
   @ApiProperty({ enum: COMMISSION_STEP_KEYS })
   @IsEnum(COMMISSION_STEP_KEYS)

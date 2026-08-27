@@ -40,7 +40,9 @@ import type {
   DeliverCommissionDto,
   LookupCommissionsByEmailParams,
   PaginatedCommissionsDto,
+  SendConfirmationEmailDto,
   SubmitCommissionDto,
+  UpdateCommissionPriorityDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
   UpdateCommissionStepDto,
@@ -981,7 +983,89 @@ export function useCommission<TData = Awaited<ReturnType<typeof commission>>, TE
 
 
 
-export type updateCommissionStatusResponse200 = {
+export type deleteCommissionResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteCommissionResponseSuccess = (deleteCommissionResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteCommissionResponse = (deleteCommissionResponseSuccess)
+
+export const getDeleteCommissionUrl = (id: string,) => {
+
+
+
+
+  return `/commissions/${id}`
+}
+
+/**
+ * @summary Delete a commission and its uploaded reference images
+ */
+export const deleteCommission = async (id: string, options?: RequestInit): Promise<deleteCommissionResponse> => {
+
+  return customFetch<deleteCommissionResponse>(getDeleteCommissionUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteCommissionMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCommission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteCommission>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteCommission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCommission>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteCommission(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteCommissionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCommission>>>
+
+    export type DeleteCommissionMutationError = unknown
+
+    /**
+ * @summary Delete a commission and its uploaded reference images
+ */
+export const useDeleteCommission = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCommission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteCommission>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteCommissionMutationOptions(options), queryClient);
+    }
+    export type updateCommissionStatusResponse200 = {
   data: CommissionDto
   status: 200
 }
@@ -1395,6 +1479,172 @@ export const useUpdateCommissionVisibility = <TError = unknown,
         TContext
       > => {
       return useMutation(getUpdateCommissionVisibilityMutationOptions(options), queryClient);
+    }
+    export type updateCommissionPriorityResponse200 = {
+  data: CommissionDto
+  status: 200
+}
+
+export type updateCommissionPriorityResponseSuccess = (updateCommissionPriorityResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateCommissionPriorityResponse = (updateCommissionPriorityResponseSuccess)
+
+export const getUpdateCommissionPriorityUrl = (id: string,) => {
+
+
+
+
+  return `/commissions/${id}/priority`
+}
+
+/**
+ * @summary Set a custom triage sort order for a commission
+ */
+export const updateCommissionPriority = async (id: string,
+    updateCommissionPriorityDto: UpdateCommissionPriorityDto, options?: RequestInit): Promise<updateCommissionPriorityResponse> => {
+
+  return customFetch<updateCommissionPriorityResponse>(getUpdateCommissionPriorityUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateCommissionPriorityDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateCommissionPriorityMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionPriority>>, TError,{id: string;data: UpdateCommissionPriorityDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCommissionPriority>>, TError,{id: string;data: UpdateCommissionPriorityDto}, TContext> => {
+
+const mutationKey = ['updateCommissionPriority'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCommissionPriority>>, {id: string;data: UpdateCommissionPriorityDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateCommissionPriority(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCommissionPriorityMutationResult = NonNullable<Awaited<ReturnType<typeof updateCommissionPriority>>>
+    export type UpdateCommissionPriorityMutationBody = UpdateCommissionPriorityDto
+    export type UpdateCommissionPriorityMutationError = unknown
+
+    /**
+ * @summary Set a custom triage sort order for a commission
+ */
+export const useUpdateCommissionPriority = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionPriority>>, TError,{id: string;data: UpdateCommissionPriorityDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCommissionPriority>>,
+        TError,
+        {id: string;data: UpdateCommissionPriorityDto},
+        TContext
+      > => {
+      return useMutation(getUpdateCommissionPriorityMutationOptions(options), queryClient);
+    }
+    export type sendCommissionConfirmationEmailResponse204 = {
+  data: void
+  status: 204
+}
+
+export type sendCommissionConfirmationEmailResponseSuccess = (sendCommissionConfirmationEmailResponse204) & {
+  headers: Headers;
+};
+;
+
+export type sendCommissionConfirmationEmailResponse = (sendCommissionConfirmationEmailResponseSuccess)
+
+export const getSendCommissionConfirmationEmailUrl = (id: string,) => {
+
+
+
+
+  return `/commissions/${id}/send-confirmation`
+}
+
+/**
+ * @summary Email the client asking them to confirm the accepted quote. Requires a note if the quote changed since acceptance.
+ */
+export const sendCommissionConfirmationEmail = async (id: string,
+    sendConfirmationEmailDto: SendConfirmationEmailDto, options?: RequestInit): Promise<sendCommissionConfirmationEmailResponse> => {
+
+  return customFetch<sendCommissionConfirmationEmailResponse>(getSendCommissionConfirmationEmailUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(sendConfirmationEmailDto)
+  }
+);}
+
+
+
+
+
+export const getSendCommissionConfirmationEmailMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCommissionConfirmationEmail>>, TError,{id: string;data: SendConfirmationEmailDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof sendCommissionConfirmationEmail>>, TError,{id: string;data: SendConfirmationEmailDto}, TContext> => {
+
+const mutationKey = ['sendCommissionConfirmationEmail'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendCommissionConfirmationEmail>>, {id: string;data: SendConfirmationEmailDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  sendCommissionConfirmationEmail(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SendCommissionConfirmationEmailMutationResult = NonNullable<Awaited<ReturnType<typeof sendCommissionConfirmationEmail>>>
+    export type SendCommissionConfirmationEmailMutationBody = SendConfirmationEmailDto
+    export type SendCommissionConfirmationEmailMutationError = unknown
+
+    /**
+ * @summary Email the client asking them to confirm the accepted quote. Requires a note if the quote changed since acceptance.
+ */
+export const useSendCommissionConfirmationEmail = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCommissionConfirmationEmail>>, TError,{id: string;data: SendConfirmationEmailDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof sendCommissionConfirmationEmail>>,
+        TError,
+        {id: string;data: SendConfirmationEmailDto},
+        TContext
+      > => {
+      return useMutation(getSendCommissionConfirmationEmailMutationOptions(options), queryClient);
     }
     export type deliverCommissionResponse200 = {
   data: CommissionDto

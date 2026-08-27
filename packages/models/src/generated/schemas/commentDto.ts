@@ -14,6 +14,10 @@ export interface CommentDto {
   commissionId: string | null;
   /** @nullable */
   progressId: string | null;
+  /** @nullable */
+  groupId: string | null;
+  /** @nullable */
+  projectId: string | null;
   /**
      * Set only when authorRole is CLIENT
      * @nullable

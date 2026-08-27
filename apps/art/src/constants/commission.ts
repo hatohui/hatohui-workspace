@@ -21,6 +21,23 @@ export const COMMISSION_KANBAN_COLUMNS: CommissionDtoStatus[] = [
 export const COMMISSION_SORT_OPTIONS = Object.values(CommissionsSort);
 export const COMMISSION_SORT_DIRECTIONS = Object.values(CommissionsDirection);
 
+export const TRIAGE_TABS: CommissionDtoStatus[] = [
+  CommissionDtoStatus.PENDING,
+  CommissionDtoStatus.ACCEPTED,
+  CommissionDtoStatus.DECLINED,
+];
+
+/// Only the sort modes the PRD's triage use case actually asks for —
+/// first-come-first-serve (createdAt), custom priority, and by-deadline.
+export const TRIAGE_SORT_OPTIONS: CommissionsSort[] = [
+  CommissionsSort.createdAt,
+  CommissionsSort.priority,
+  CommissionsSort.deadline,
+];
+
+export const TRIAGE_VIEW_MODES = ['card', 'table'] as const;
+export type TriageViewMode = (typeof TRIAGE_VIEW_MODES)[number];
+
 export const COMMISSION_STEP_KEYS = [
   'ideaConfirmedAt',
   'sketchConfirmedAt',

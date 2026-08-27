@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -29,7 +31,9 @@ import {
   CommissionPublicDto,
   CreatePrivateCommissionDto,
   DeliverCommissionDto,
+  SendConfirmationEmailDto,
   SubmitCommissionDto,
+  UpdateCommissionPriorityDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
   UpdateCommissionStepDto,
@@ -250,6 +254,48 @@ export class CommissionsController {
     @CurrentUser() user: User,
   ): Promise<CommissionDto> {
     return this.commissionsService.updateVisibility(user.id, id, dto);
+  }
+
+  @Patch(':id/priority')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'updateCommissionPriority',
+    summary: 'Set a custom triage sort order for a commission',
+  })
+  @ApiOkResponse({ type: CommissionDto })
+  updatePriority(
+    @Param('id') id: string,
+    @Body() dto: UpdateCommissionPriorityDto,
+    @CurrentUser() user: User,
+  ): Promise<CommissionDto> {
+    return this.commissionsService.updatePriority(user.id, id, dto.priority);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  @HttpCode(204)
+  @ApiOperation({
+    operationId: 'deleteCommission',
+    summary: 'Delete a commission and its uploaded reference images',
+  })
+  remove(@Param('id') id: string, @CurrentUser() user: User): Promise<void> {
+    return this.commissionsService.remove(user.id, id);
+  }
+
+  @Post(':id/send-confirmation')
+  @UseGuards(AuthGuard)
+  @HttpCode(204)
+  @ApiOperation({
+    operationId: 'sendCommissionConfirmationEmail',
+    summary:
+      'Email the client asking them to confirm the accepted quote. Requires a note if the quote changed since acceptance.',
+  })
+  sendConfirmation(
+    @Param('id') id: string,
+    @Body() dto: SendConfirmationEmailDto,
+    @CurrentUser() user: User,
+  ): Promise<void> {
+    return this.commissionsService.sendConfirmationEmail(user.id, id, dto);
   }
 
   @Post(':id/deliver')

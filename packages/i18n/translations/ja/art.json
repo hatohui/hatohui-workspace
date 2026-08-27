@@ -150,6 +150,9 @@
       }
     },
     "status": {
+      "PENDING": "保留中",
+      "ACCEPTED": "承諾済み",
+      "DECLINED": "辞退",
       "NOT_YET_STARTED": "未着手",
       "QUEUED": "順番待ち",
       "SKETCH": "ラフ制作中",
@@ -164,8 +167,72 @@
       "PARTIAL": "一部入金済み",
       "FULL": "支払い完了"
     },
+    "groups": {
+      "sharedQuote": "共有料金",
+      "members": "参加メンバー",
+      "thread": "ディスカッション",
+      "noComments": "まだメッセージはありません。",
+      "memberCodeLabel": "ご自身のコミッションコードを入力して参加してください",
+      "memberCodePlaceholder": "アクセスコード",
+      "memberCodeSave": "続ける",
+      "memberCodeChange": "違う場合はコードを変更"
+    },
+    "groupsAdmin": {
+      "title": "グループ",
+      "newTitle": "新しいグループ名",
+      "create": "作成",
+      "empty": "グループはまだありません。",
+      "noMembers": "メンバーはまだいません。",
+      "memberEmail": "メール",
+      "memberNameHint": "名前（新規の場合）",
+      "addMember": "追加",
+      "shareWarning": "このリンクはグループにのみ共有してください。パスワードと同様に扱ってください。"
+    },
     "admin": {
       "title": "コミッション一覧",
+      "production": {
+        "title": "制作中一覧"
+      },
+      "triage": {
+        "title": "振り分け",
+        "accept": "承諾",
+        "decline": "辞退",
+        "restore": "戻す",
+        "undo": "取り消す",
+        "empty": "対象はありません。",
+        "noReference": "参考なし",
+        "acceptedToast": "承諾しました。",
+        "declinedToast": "辞退しました。",
+        "columns": {
+          "name": "名前",
+          "contactMethod": "連絡方法",
+          "deadline": "納期",
+          "price": "料金",
+          "idea": "内容",
+          "reference": "参考画像",
+          "actions": "操作"
+        },
+        "sort": {
+          "createdAt": "先着順",
+          "priority": "優先度指定",
+          "deadline": "納期順"
+        },
+        "view": {
+          "card": "カード表示",
+          "table": "テーブル表示"
+        }
+      },
+      "accepted": {
+        "empty": "現在、承諾済みの枠はありません。",
+        "confirm": "確定する",
+        "replace": "入れ替える",
+        "replaceTitle": "この枠を入れ替える",
+        "replaceEmpty": "入れ替え候補（保留中・辞退済み）がありません。",
+        "sendConfirmation": "確認メールを送る",
+        "quoteChangedTitle": "承諾時から料金が変わっています",
+        "quoteChangedDescription": "送信する前に、変更の理由を記入してください。",
+        "quoteChangedPlaceholder": "例：ご希望により背景を追加したため"
+      },
       "searchPlaceholder": "依頼者名で検索",
       "statusFilterAll": "すべてのステータス",
       "inactive": "無効",
@@ -206,9 +273,42 @@
         "filesLabel": "完成イラストファイル",
         "send": "依頼者に送付"
       },
+      "progress": {
+        "title": "進捗",
+        "empty": "まだ進捗の投稿はありません。",
+        "untitled": "更新",
+        "final": "完成",
+        "titlePlaceholder": "今回の更新内容（任意）",
+        "imagesLabel": "画像",
+        "markFinal": "これが完成イラストです",
+        "post": "投稿"
+      },
       "visibility": {
         "show": "公開する",
         "hide": "非公開にする"
+      },
+      "opening": {
+        "title": "コミッション募集",
+        "none": "現在、募集中または予約済みの受付枠はありません。",
+        "openNow": "今すぐ開始",
+        "closeNow": "終了する",
+        "history": "過去の募集",
+        "endMode": "終了方法",
+        "endModeOption": {
+          "MANUAL": "手動で終了する",
+          "SLOT_CAP": "指定した件数に達したら自動終了",
+          "INDEFINITE": "無期限で募集を続ける"
+        },
+        "slotCap": "受付上限数",
+        "slotsTaken": "{{taken}} / {{cap}} 件",
+        "scheduledAt": "開始日時（任意）",
+        "scheduledAtHint": "空欄の場合はすぐに開始します。",
+        "postTitle": "告知タイトル（任意）",
+        "status": {
+          "SCHEDULED": "予約済み",
+          "OPEN": "受付中",
+          "CLOSED": "終了"
+        }
       },
       "pricing": {
         "title": "料金設定",
@@ -254,6 +354,7 @@
       "toggle": "サイドバーを切り替え",
       "dashboard": "ダッシュボード",
       "commissionSettings": "コミッション設定",
+      "commissionOpening": "コミッション募集",
       "openLabel": "アプリ",
       "backToSite": "サイトに戻る"
     },

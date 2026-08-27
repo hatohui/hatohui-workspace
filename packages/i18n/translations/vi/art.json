@@ -149,6 +149,9 @@
       }
     },
     "status": {
+      "PENDING": "Đang chờ duyệt",
+      "ACCEPTED": "Đã nhận",
+      "DECLINED": "Đã từ chối",
       "NOT_YET_STARTED": "Chưa bắt đầu",
       "QUEUED": "Đang chờ",
       "SKETCH": "Đang phác thảo",
@@ -163,8 +166,72 @@
       "PARTIAL": "Đã thanh toán một phần",
       "FULL": "Đã thanh toán đủ"
     },
+    "groups": {
+      "sharedQuote": "Giá chung",
+      "members": "Thành viên trong nhóm",
+      "thread": "Thảo luận",
+      "noComments": "Chưa có tin nhắn nào.",
+      "memberCodeLabel": "Nhập mã commission của riêng bạn để tham gia thảo luận",
+      "memberCodePlaceholder": "Mã truy cập của bạn",
+      "memberCodeSave": "Tiếp tục",
+      "memberCodeChange": "Không phải bạn? Đổi mã"
+    },
+    "groupsAdmin": {
+      "title": "Nhóm",
+      "newTitle": "Tên nhóm mới",
+      "create": "Tạo",
+      "empty": "Chưa có nhóm nào.",
+      "noMembers": "Chưa có thành viên nào.",
+      "memberEmail": "Email",
+      "memberNameHint": "Tên (nếu là thành viên mới)",
+      "addMember": "Thêm",
+      "shareWarning": "Chỉ chia sẻ đường link này với nhóm — hãy coi nó như mật khẩu."
+    },
     "admin": {
       "title": "Đơn đặt vẽ",
+      "production": {
+        "title": "Đang sản xuất"
+      },
+      "triage": {
+        "title": "Phân loại",
+        "accept": "Nhận",
+        "decline": "Từ chối",
+        "restore": "Khôi phục",
+        "undo": "Hoàn tác",
+        "empty": "Không có gì ở đây.",
+        "noReference": "Không có ảnh",
+        "acceptedToast": "Đã nhận.",
+        "declinedToast": "Đã từ chối.",
+        "columns": {
+          "name": "Tên",
+          "contactMethod": "Liên hệ",
+          "deadline": "Thời hạn",
+          "price": "Giá",
+          "idea": "Ý tưởng",
+          "reference": "Ảnh tham khảo",
+          "actions": "Thao tác"
+        },
+        "sort": {
+          "createdAt": "Ai đến trước nhận trước",
+          "priority": "Ưu tiên tùy chỉnh",
+          "deadline": "Theo thời hạn"
+        },
+        "view": {
+          "card": "Xem dạng thẻ",
+          "table": "Xem dạng bảng"
+        }
+      },
+      "accepted": {
+        "empty": "Hiện chưa có slot nào được nhận.",
+        "confirm": "Xác nhận",
+        "replace": "Thay thế",
+        "replaceTitle": "Thay thế slot này",
+        "replaceEmpty": "Không có đơn đang chờ hoặc đã từ chối để thay vào.",
+        "sendConfirmation": "Gửi email xác nhận",
+        "quoteChangedTitle": "Giá đã thay đổi kể từ khi nhận",
+        "quoteChangedDescription": "Giải thích lý do thay đổi trước khi gửi cho khách.",
+        "quoteChangedPlaceholder": "VD: Thêm nền chi tiết theo yêu cầu"
+      },
       "searchPlaceholder": "Tìm theo tên khách hàng",
       "statusFilterAll": "Tất cả trạng thái",
       "inactive": "ngừng dùng",
@@ -207,9 +274,42 @@
         "filesLabel": "Tệp tác phẩm hoàn thiện",
         "send": "Gửi cho khách hàng"
       },
+      "progress": {
+        "title": "Tiến độ",
+        "empty": "Chưa có cập nhật tiến độ nào.",
+        "untitled": "Cập nhật",
+        "final": "Hoàn thiện",
+        "titlePlaceholder": "Cập nhật lần này về gì? (tùy chọn)",
+        "imagesLabel": "Hình ảnh",
+        "markFinal": "Đây là tác phẩm hoàn thiện",
+        "post": "Đăng"
+      },
       "visibility": {
         "show": "Hiển thị công khai",
         "hide": "Ẩn khỏi công khai"
+      },
+      "opening": {
+        "title": "Đợt nhận commission",
+        "none": "Bạn chưa có đợt nhận commission nào đang mở hoặc đã lên lịch.",
+        "openNow": "Mở ngay",
+        "closeNow": "Đóng",
+        "history": "Các đợt trước",
+        "endMode": "Cách kết thúc",
+        "endModeOption": {
+          "MANUAL": "Tự đóng thủ công",
+          "SLOT_CAP": "Tự đóng khi đủ số lượng slot",
+          "INDEFINITE": "Mở vô thời hạn"
+        },
+        "slotCap": "Số slot tối đa",
+        "slotsTaken": "Đã nhận {{taken}}/{{cap}} slot",
+        "scheduledAt": "Mở lúc (tùy chọn)",
+        "scheduledAtHint": "Để trống nếu muốn mở ngay.",
+        "postTitle": "Tiêu đề thông báo (tùy chọn)",
+        "status": {
+          "SCHEDULED": "Đã lên lịch",
+          "OPEN": "Đang mở",
+          "CLOSED": "Đã đóng"
+        }
       },
       "pricing": {
         "title": "Bảng giá",
@@ -255,6 +355,7 @@
       "toggle": "Thu gọn thanh bên",
       "dashboard": "Bảng điều khiển",
       "commissionSettings": "Cài đặt commission",
+      "commissionOpening": "Đợt nhận commission",
       "openLabel": "Ứng dụng",
       "backToSite": "Về trang chính"
     },

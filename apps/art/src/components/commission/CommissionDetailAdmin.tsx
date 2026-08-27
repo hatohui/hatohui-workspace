@@ -8,6 +8,7 @@ import { CommissionStatusControl } from './CommissionStatusControl';
 import { CommissionStepChecklist } from './CommissionStepChecklist';
 import { CommissionQuoteEditor } from './CommissionQuoteEditor';
 import { CommissionDeliverPanel } from './CommissionDeliverPanel';
+import { CommissionProgressTimeline } from './CommissionProgressTimeline';
 import { CommissionAdminNotes } from './CommissionAdminNotes';
 import { CommissionHistoryList } from './CommissionHistoryList';
 import { CommissionVisibilityToggle } from './CommissionVisibilityToggle';
@@ -63,6 +64,7 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
         onDeliver={detail.deliver}
         isDelivering={detail.isDelivering}
       />
+      <CommissionProgressTimeline commissionId={commission.id} />
       <CommissionAdminNotes
         notes={commission.comments}
         onAdd={detail.addNote}

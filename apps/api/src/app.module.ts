@@ -25,6 +25,11 @@ import { CommissionsModule } from '@/modules/commissions/commissions.module';
 import { CommissionTypesModule } from '@/modules/commission-types/commission-types.module';
 import { CommissionPricingModule } from '@/modules/commission-pricing/commission-pricing.module';
 import { ProjectsModule } from '@/modules/projects/projects.module';
+import { CommissionOpeningsModule } from '@/modules/commission-openings/commission-openings.module';
+import { CommissionProgressModule } from '@/modules/commission-progress/commission-progress.module';
+import { ClientsModule } from '@/modules/clients/clients.module';
+import { CommissionFollowersModule } from '@/modules/commission-followers/commission-followers.module';
+import { CommissionGroupsModule } from '@/modules/commission-groups/commission-groups.module';
 
 @Module({
   imports: [
@@ -57,6 +62,11 @@ import { ProjectsModule } from '@/modules/projects/projects.module';
     CommissionTypesModule,
     CommissionPricingModule,
     ProjectsModule,
+    CommissionOpeningsModule,
+    CommissionProgressModule,
+    ClientsModule,
+    CommissionFollowersModule,
+    CommissionGroupsModule,
   ],
 })
 export class AppModule {}

@@ -149,6 +149,9 @@
       }
     },
     "status": {
+      "PENDING": "Pending",
+      "ACCEPTED": "Accepted",
+      "DECLINED": "Declined",
       "NOT_YET_STARTED": "Not yet started",
       "QUEUED": "Queued",
       "SKETCH": "Sketch",
@@ -163,8 +166,72 @@
       "PARTIAL": "Partially paid",
       "FULL": "Paid in full"
     },
+    "groups": {
+      "sharedQuote": "Shared price",
+      "members": "Who's in this group",
+      "thread": "Discussion",
+      "noComments": "No messages yet.",
+      "memberCodeLabel": "Enter your own commission code to join the discussion",
+      "memberCodePlaceholder": "Your access code",
+      "memberCodeSave": "Continue",
+      "memberCodeChange": "Not you? Change code"
+    },
+    "groupsAdmin": {
+      "title": "Groups",
+      "newTitle": "New group title",
+      "create": "Create",
+      "empty": "No groups yet.",
+      "noMembers": "No members yet.",
+      "memberEmail": "Email",
+      "memberNameHint": "Name (if new)",
+      "addMember": "Add",
+      "shareWarning": "Share this link with the group — treat it like a password."
+    },
     "admin": {
       "title": "Commissions",
+      "production": {
+        "title": "Production"
+      },
+      "triage": {
+        "title": "Triage",
+        "accept": "Accept",
+        "decline": "Decline",
+        "restore": "Restore",
+        "undo": "Undo",
+        "empty": "Nothing here.",
+        "noReference": "No ref",
+        "acceptedToast": "Accepted.",
+        "declinedToast": "Declined.",
+        "columns": {
+          "name": "Name",
+          "contactMethod": "Contact",
+          "deadline": "Deadline",
+          "price": "Price",
+          "idea": "Idea",
+          "reference": "Reference",
+          "actions": "Actions"
+        },
+        "sort": {
+          "createdAt": "First come, first served",
+          "priority": "Custom priority",
+          "deadline": "By deadline"
+        },
+        "view": {
+          "card": "Card view",
+          "table": "Table view"
+        }
+      },
+      "accepted": {
+        "empty": "No accepted slots right now.",
+        "confirm": "Confirm",
+        "replace": "Replace",
+        "replaceTitle": "Replace this slot",
+        "replaceEmpty": "No pending or declined submissions to swap in.",
+        "sendConfirmation": "Send confirmation email",
+        "quoteChangedTitle": "The quote changed since acceptance",
+        "quoteChangedDescription": "Explain the change before it goes to the client.",
+        "quoteChangedPlaceholder": "e.g. Added a complex background per their request"
+      },
       "searchPlaceholder": "Search by client name",
       "statusFilterAll": "All statuses",
       "inactive": "inactive",
@@ -207,9 +274,42 @@
         "filesLabel": "Final artwork files",
         "send": "Send to client"
       },
+      "progress": {
+        "title": "Progress",
+        "empty": "No progress posted yet.",
+        "untitled": "Update",
+        "final": "Final",
+        "titlePlaceholder": "What's this update about? (optional)",
+        "imagesLabel": "Images",
+        "markFinal": "This is the final artwork",
+        "post": "Post"
+      },
       "visibility": {
         "show": "Show publicly",
         "hide": "Hide from public"
+      },
+      "opening": {
+        "title": "Commission opening",
+        "none": "You don't have an open or scheduled commission window right now.",
+        "openNow": "Open now",
+        "closeNow": "Close",
+        "history": "Past openings",
+        "endMode": "When it ends",
+        "endModeOption": {
+          "MANUAL": "I'll close it manually",
+          "SLOT_CAP": "Closes automatically after a number of slots",
+          "INDEFINITE": "Stays open indefinitely"
+        },
+        "slotCap": "Slot cap",
+        "slotsTaken": "{{taken}} of {{cap}} slots taken",
+        "scheduledAt": "Open at (optional)",
+        "scheduledAtHint": "Leave blank to open immediately.",
+        "postTitle": "Announcement title (optional)",
+        "status": {
+          "SCHEDULED": "Scheduled",
+          "OPEN": "Open",
+          "CLOSED": "Closed"
+        }
       },
       "pricing": {
         "title": "Pricing",
@@ -255,6 +355,7 @@
       "toggle": "Toggle sidebar",
       "dashboard": "Dashboard",
       "commissionSettings": "Commission settings",
+      "commissionOpening": "Commission opening",
       "openLabel": "App",
       "backToSite": "Back to site"
     },

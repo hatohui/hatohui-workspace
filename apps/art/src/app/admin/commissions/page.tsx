@@ -1,5 +1,5 @@
-import { KanbanBoard } from '@/components/commission/KanbanBoard';
+import { TriageBoard } from '@/components/commission/TriageBoard';
 
 export default function AdminCommissionsPage() {
-  return <KanbanBoard />;
+  return <TriageBoard />;
 }

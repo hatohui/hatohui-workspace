@@ -2103,7 +2103,8 @@
               "enum": [
                 "createdAt",
                 "deadline",
-                "quote"
+                "quote",
+                "priority"
               ]
             }
           },
@@ -2397,6 +2398,28 @@
         "tags": [
           "commissions"
         ]
+      },
+      "delete": {
+        "operationId": "deleteCommission",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a commission and its uploaded reference images",
+        "tags": [
+          "commissions"
+        ]
       }
     },
     "/commissions/{id}/status": {
@@ -2604,6 +2627,81 @@
         ]
       }
     },
+    "/commissions/{id}/priority": {
+      "patch": {
+        "operationId": "updateCommissionPriority",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionPriorityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set a custom triage sort order for a commission",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/send-confirmation": {
+      "post": {
+        "operationId": "sendCommissionConfirmationEmail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendConfirmationEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Email the client asking them to confirm the accepted quote. Requires a note if the quote changed since acceptance.",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
     "/commissions/{id}/deliver": {
       "post": {
         "operationId": "deliverCommission",
@@ -2683,6 +2781,219 @@
         "summary": "Add an internal or client-facing note to a commission",
         "tags": [
           "commissions"
+        ]
+      }
+    },
+    "/commission-openings/current": {
+      "get": {
+        "operationId": "currentCommissionOpening",
+        "parameters": [
+          {
+            "name": "artistId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionOpeningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "The one opening a storefront should show for an artist — open, else next scheduled. 404 if neither exists.",
+        "tags": [
+          "commission-openings"
+        ]
+      }
+    },
+    "/commission-openings/mine": {
+      "get": {
+        "operationId": "myCommissionOpenings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionOpeningDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List your own commission openings, past and present",
+        "tags": [
+          "commission-openings"
+        ]
+      }
+    },
+    "/commission-openings": {
+      "post": {
+        "operationId": "createCommissionOpening",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionOpeningDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionOpeningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Open (or schedule) a commission window",
+        "tags": [
+          "commission-openings"
+        ]
+      }
+    },
+    "/commission-openings/{id}": {
+      "put": {
+        "operationId": "updateCommissionOpening",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionOpeningDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionOpeningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update the configuration of one of your own commission openings",
+        "tags": [
+          "commission-openings"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCommissionOpening",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a commission opening that has no commissions attached",
+        "tags": [
+          "commission-openings"
+        ]
+      }
+    },
+    "/commission-openings/{id}/open": {
+      "post": {
+        "operationId": "openCommissionOpening",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionOpeningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Manually open a scheduled commission opening now",
+        "tags": [
+          "commission-openings"
+        ]
+      }
+    },
+    "/commission-openings/{id}/close": {
+      "post": {
+        "operationId": "closeCommissionOpening",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionOpeningDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Manually close an open commission opening",
+        "tags": [
+          "commission-openings"
         ]
       }
     },
@@ -3415,6 +3726,556 @@
         "summary": "Show or hide a project from the public gallery",
         "tags": [
           "projects"
+        ]
+      }
+    },
+    "/commission-progress": {
+      "get": {
+        "operationId": "commissionProgress",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionProgressDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "The full progress timeline for one of your own commissions",
+        "tags": [
+          "commission-progress"
+        ]
+      },
+      "post": {
+        "operationId": "createCommissionProgress",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommissionProgressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Post a new progress entry to one of your own commissions",
+        "tags": [
+          "commission-progress"
+        ]
+      }
+    },
+    "/commission-progress/by-code/{code}": {
+      "get": {
+        "operationId": "commissionProgressByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionProgressDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "A commission's client-visible progress timeline, by access code",
+        "tags": [
+          "commission-progress"
+        ]
+      }
+    },
+    "/commission-progress/{id}": {
+      "put": {
+        "operationId": "updateCommissionProgress",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionProgressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update one of your own progress entries",
+        "tags": [
+          "commission-progress"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCommissionProgress",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Remove one of your own progress entries",
+        "tags": [
+          "commission-progress"
+        ]
+      }
+    },
+    "/commission-progress/{id}/finalize": {
+      "post": {
+        "operationId": "finalizeCommissionProgress",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinalizeCommissionProgressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Mark a progress entry final — the delivered artwork, optionally attached to a Project",
+        "tags": [
+          "commission-progress"
+        ]
+      }
+    },
+    "/clients/lookup": {
+      "get": {
+        "operationId": "lookupClientByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPrefillDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Prefill data for a returning client. 404 if this email hasn't commissioned before.",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
+    "/commission-followers": {
+      "post": {
+        "operationId": "subscribeToCommissionOpenings",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscribeCommissionFollowerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Subscribe an email to an artist's opening announcements",
+        "tags": [
+          "commission-followers"
+        ]
+      }
+    },
+    "/commission-followers/unsubscribe/{token}": {
+      "get": {
+        "operationId": "unsubscribeFromCommissionOpenings",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Unsubscribe via the link sent in an announcement email",
+        "tags": [
+          "commission-followers"
+        ]
+      }
+    },
+    "/commission-followers/mine": {
+      "get": {
+        "operationId": "myCommissionFollowers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionFollowerDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List your active followers",
+        "tags": [
+          "commission-followers"
+        ]
+      }
+    },
+    "/commission-groups/mine": {
+      "get": {
+        "operationId": "myCommissionGroups",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionGroupDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List your own commission groups",
+        "tags": [
+          "commission-groups"
+        ]
+      }
+    },
+    "/commission-groups": {
+      "post": {
+        "operationId": "createCommissionGroup",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommissionGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionGroupDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a commission group",
+        "tags": [
+          "commission-groups"
+        ]
+      }
+    },
+    "/commission-groups/{id}": {
+      "put": {
+        "operationId": "updateCommissionGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommissionGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionGroupDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update one of your own commission groups",
+        "tags": [
+          "commission-groups"
+        ]
+      }
+    },
+    "/commission-groups/{id}/members": {
+      "post": {
+        "operationId": "addCommissionGroupMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCommissionGroupMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionGroupDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add a member to one of your own commission groups",
+        "tags": [
+          "commission-groups"
+        ]
+      }
+    },
+    "/commission-groups/{id}/members/{clientId}": {
+      "delete": {
+        "operationId": "removeCommissionGroupMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Remove a member from one of your own commission groups",
+        "tags": [
+          "commission-groups"
+        ]
+      }
+    },
+    "/commission-groups/by-code/{code}": {
+      "get": {
+        "operationId": "commissionGroupByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionGroupViewDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A group's shared member view, by the group's access code",
+        "tags": [
+          "commission-groups"
+        ]
+      }
+    },
+    "/commission-groups/by-code/{code}/comments": {
+      "post": {
+        "operationId": "postCommissionGroupComment",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCommissionGroupCommentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Post to a group's shared thread, proving membership via your own commission's access code",
+        "tags": [
+          "commission-groups"
         ]
       }
     }
@@ -5665,6 +6526,14 @@
             "type": "string",
             "nullable": true
           },
+          "groupId": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
           "authorClientId": {
             "type": "string",
             "example": "clx1234567890",
@@ -5699,6 +6568,8 @@
           "id",
           "commissionId",
           "progressId",
+          "groupId",
+          "projectId",
           "authorClientId",
           "authorRole",
           "visibility",
@@ -6236,6 +7107,28 @@
           "isHiddenInQueue"
         ]
       },
+      "UpdateCommissionPriorityDto": {
+        "type": "object",
+        "properties": {
+          "priority": {
+            "type": "number",
+            "description": "Custom triage ordering — lower sorts first. Null clears it back to first-come-first-serve.",
+            "nullable": true
+          }
+        },
+        "required": [
+          "priority"
+        ]
+      },
+      "SendConfirmationEmailDto": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "description": "Required if the quote changed since this commission was accepted — explains why to the client"
+          }
+        }
+      },
       "DeliverCommissionDto": {
         "type": "object",
         "properties": {
@@ -6270,6 +7163,123 @@
         "required": [
           "body",
           "visibility"
+        ]
+      },
+      "CommissionOpeningDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "artistId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "endMode": {
+            "type": "string",
+            "enum": [
+              "MANUAL",
+              "SLOT_CAP",
+              "INDEFINITE"
+            ]
+          },
+          "scheduledAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "openedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "closedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "slotCap": {
+            "type": "number",
+            "nullable": true,
+            "description": "Closes automatically once this many slots are taken"
+          },
+          "slotCapEndsAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Closes automatically at this time regardless of slot count"
+          },
+          "slotsTaken": {
+            "type": "number",
+            "nullable": true,
+            "description": "How many non-pending, non-declined commissions this opening has taken"
+          },
+          "postTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "postBody": {
+            "type": "object",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "artistId",
+          "status",
+          "endMode",
+          "scheduledAt",
+          "openedAt",
+          "closedAt",
+          "slotCap",
+          "slotCapEndsAt",
+          "slotsTaken",
+          "postTitle",
+          "postBody",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpsertCommissionOpeningDto": {
+        "type": "object",
+        "properties": {
+          "endMode": {
+            "type": "string",
+            "enum": [
+              "MANUAL",
+              "SLOT_CAP",
+              "INDEFINITE"
+            ]
+          },
+          "scheduledAt": {
+            "type": "string",
+            "description": "When to open — omit to open immediately, set in the future to schedule"
+          },
+          "slotCap": {
+            "type": "number",
+            "description": "Required when endMode is SLOT_CAP"
+          },
+          "slotCapEndsAt": {
+            "type": "string"
+          },
+          "postTitle": {
+            "type": "string"
+          },
+          "postBody": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "endMode"
         ]
       },
       "CommissionTypeDto": {
@@ -6802,6 +7812,449 @@
         },
         "required": [
           "isHidden"
+        ]
+      },
+      "CommissionProgressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "commissionId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "body": {
+            "type": "object",
+            "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isFinal": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL",
+              "CLIENT"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "commissionId",
+          "projectId",
+          "title",
+          "body",
+          "images",
+          "isFinal",
+          "visibility",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateCommissionProgressDto": {
+        "type": "object",
+        "properties": {
+          "commissionId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "images": {
+            "description": "Object keys returned by POST /images/sign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isFinal": {
+            "type": "boolean",
+            "default": false
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL",
+              "CLIENT"
+            ],
+            "default": "CLIENT"
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Attach this progress entry (if final) to a Project"
+          }
+        },
+        "required": [
+          "commissionId",
+          "images",
+          "visibility"
+        ]
+      },
+      "UpdateCommissionProgressDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "images": {
+            "description": "Object keys returned by POST /images/sign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "INTERNAL",
+              "CLIENT"
+            ]
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FinalizeCommissionProgressDto": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Attach the delivered artwork to a Project"
+          }
+        }
+      },
+      "ClientPrefillDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ]
+          },
+          "contactHandle": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "name",
+          "preferredContactMethod",
+          "contactHandle"
+        ]
+      },
+      "SubscribeCommissionFollowerDto": {
+        "type": "object",
+        "properties": {
+          "artistId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "artistId",
+          "email"
+        ]
+      },
+      "CommissionFollowerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "isActive",
+          "createdAt"
+        ]
+      },
+      "CommissionGroupMemberDto": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "clientId",
+          "name",
+          "email"
+        ]
+      },
+      "CommissionGroupDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "artistId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessCode": {
+            "type": "string",
+            "description": "The group's shared-view access code — treat it like a password, per the anonymous-access model"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "quote": {
+            "type": "number",
+            "nullable": true
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionGroupMemberDto"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "artistId",
+          "title",
+          "description",
+          "projectId",
+          "accessCode",
+          "currency",
+          "quote",
+          "members",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateCommissionGroupDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdateCommissionGroupDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quote": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "AddCommissionGroupMemberDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Required only if this email has no Client row yet"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "CommissionGroupCommissionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "clientId",
+          "clientName",
+          "status",
+          "createdAt"
+        ]
+      },
+      "CommissionGroupViewDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "artistId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessCode": {
+            "type": "string",
+            "description": "The group's shared-view access code — treat it like a password, per the anonymous-access model"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "quote": {
+            "type": "number",
+            "nullable": true
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionGroupMemberDto"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "commissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionGroupCommissionDto"
+            }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "artistId",
+          "title",
+          "description",
+          "projectId",
+          "accessCode",
+          "currency",
+          "quote",
+          "members",
+          "createdAt",
+          "updatedAt",
+          "commissions",
+          "comments"
+        ]
+      },
+      "PostCommissionGroupCommentDto": {
+        "type": "object",
+        "properties": {
+          "memberAccessCode": {
+            "type": "string",
+            "description": "The access code of the member's own commission — proves membership"
+          },
+          "body": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "memberAccessCode",
+          "body"
         ]
       }
     }

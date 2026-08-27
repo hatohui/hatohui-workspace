@@ -4,6 +4,7 @@ export const COMMISSION_SORT_OPTIONS = [
   'createdAt',
   'deadline',
   'quote',
+  'priority',
 ] as const;
 export type CommissionSortOption = (typeof COMMISSION_SORT_OPTIONS)[number];
 
@@ -36,3 +37,5 @@ export const NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissionreceived.templateid';
 export const DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissiondelivered.templateid';
+export const CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE =
+  'art.commissionconfirmation.templateid';

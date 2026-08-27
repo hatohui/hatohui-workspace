@@ -7,6 +7,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
+  DoorOpen,
   ArrowLeft,
 } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
@@ -54,9 +55,23 @@ export function AppSidebar() {
             {t('app.nav.commissionSettings')}
           </SidebarNavItem>
         )}
+        {user?.isArtist && (
+          <SidebarNavItem
+            as={Link}
+            href="/app/commission-opening"
+            active={pathname?.startsWith('/app/commission-opening')}
+            icon={<DoorOpen />}
+          >
+            {t('app.nav.commissionOpening')}
+          </SidebarNavItem>
+        )}
       </SidebarContent>
       <SidebarFooter>
-        <SidebarNavItem as={Link} href="/" icon={<ArrowLeft />}>
+        <SidebarNavItem
+          as={Link}
+          href={user?.handle ? `/${user.handle}` : '/'}
+          icon={<ArrowLeft />}
+        >
           {t('app.nav.backToSite')}
         </SidebarNavItem>
       </SidebarFooter>

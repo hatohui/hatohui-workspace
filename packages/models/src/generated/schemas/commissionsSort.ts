@@ -13,4 +13,5 @@ export const CommissionsSort = {
   createdAt: 'createdAt',
   deadline: 'deadline',
   quote: 'quote',
+  priority: 'priority',
 } as const;

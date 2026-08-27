@@ -280,7 +280,7 @@ model Asset {
   size        Int
   width       Int?
   height      Int?
-  tags        Tag[]
+  tags        AssetTag[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -349,8 +349,23 @@ model Tag {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  assets          Asset[]
+  assets          AssetTag[]
   commissionTypes CommissionType[]
+}
+
+/// Explicit join for the Asset<->Tag many-to-many (was Prisma's implicit
+/// `_AssetToTag` table) — made explicit so it's visible in the schema
+/// instead of being generated and hidden.
+model AssetTag {
+  assetId String
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  tagId   String
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([assetId, tagId])
+  @@index([tagId])
 }
 
 /// Platform-wide, admin-curated catalog of commission types (e.g. Sketch,

@@ -42,6 +42,14 @@ export class Storage {
     return `${this.publicUrl}/${key}`;
   }
 
+  /** Reverses getPublicUrl — null for anything that isn't one of our own
+   * object URLs (e.g. a client-supplied external reference link), which
+   * callers should simply leave alone rather than try to delete. */
+  getKeyFromUrl(url: string): string | null {
+    const prefix = `${this.publicUrl}/`;
+    return url.startsWith(prefix) ? url.slice(prefix.length) : null;
+  }
+
   async getObjectBytes(key: string): Promise<Buffer> {
     const result = await this.client.send(
       new GetObjectCommand({ Bucket: this.bucket, Key: key }),

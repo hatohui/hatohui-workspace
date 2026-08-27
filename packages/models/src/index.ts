@@ -14,6 +14,11 @@ export * from './generated/commissions/commissions';
 export * from './generated/commission-types/commission-types';
 export * from './generated/commission-pricing/commission-pricing';
 export * from './generated/projects/projects';
+export * from './generated/commission-openings/commission-openings';
+export * from './generated/commission-progress/commission-progress';
+export * from './generated/clients/clients';
+export * from './generated/commission-followers/commission-followers';
+export * from './generated/commission-groups/commission-groups';
 export * from './generated/schemas';
 export {
   setApiBaseUrl,

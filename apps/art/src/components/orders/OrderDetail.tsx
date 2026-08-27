@@ -5,6 +5,7 @@ import { RichTextView } from '@hatohui/ui';
 import { useCommissionCodeLookup } from '@/hooks/useCommissionLookup';
 import { useCommissionDisplayLabel } from '@/hooks/useCommissionDisplayLabel';
 import { OrderReferenceUploader } from './OrderReferenceUploader';
+import { OrderProgressTimeline } from './OrderProgressTimeline';
 import { OrderNotesThread } from './OrderNotesThread';
 
 export function OrderDetail({ code }: { code: string }) {
@@ -68,6 +69,8 @@ export function OrderDetail({ code }: { code: string }) {
           })}
         </p>
       )}
+
+      <OrderProgressTimeline code={code} />
 
       <OrderReferenceUploader
         references={commission.referenceAssets}
