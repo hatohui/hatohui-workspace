@@ -48,21 +48,29 @@ what's done, what's broken right now, and the order to fix it in.
       genuine range, not just always-a-floor
 - [x] `prisma validate` + `prisma format` pass
 - [x] `task db:generate` — client regenerated
-- [x] Migrated locally, in order:
-      `20260827033240_commission_status_add_intake_values` →
+- [x] **Migrated — local dev AND production, both confirmed applied and
+      verified.** `20260827033240_commission_status_add_intake_values` →
       `20260827033249_commission_opening_client_roles` →
       `20260827033300_seed_roles_and_backfill_users` →
-      `20260827040008_commission_addon_price_mode`
-- [x] Backfill migration (3rd above) verified safe for production users
-      (simulated admin-email-match + plain user in a transaction, rolled
-      back) — see PRD "Migrations" for exactly what it does and why
+      `20260827040008_commission_addon_price_mode`. Migration 2 failed
+      against production on the first real deploy attempt and had to be
+      rewritten to be fully idempotent (safe to re-run against any partial
+      state) after a live incident — **read PRD "The production incident"
+      in full before touching this migration file again**, it is not
+      optional context. Post-deploy verification against production
+      confirmed every value correct: all 4 `CommissionType` rows, both
+      options, both addons, the rush-fee setting, all 32 users intact, the
+      admin correctly holding `user`+`admin`+`artist`, old tables gone.
 
 **Do not edit `schema.prisma` again without adding a new migration.** The
-four above are applied to local dev; don't hand-edit their `.sql` files.
-When generating a migration that both adds enum values *and* uses them
-(`prisma migrate diff --script` puts both in one file), split the
-`ALTER TYPE ... ADD VALUE` statements into their own earlier migration —
-Postgres cannot use a new enum value in the same transaction that adds it.
+four above are applied to both local dev and production; don't hand-edit
+their `.sql` files without re-reading the incident writeup first — migration
+2 specifically must stay idempotent (guards intact) since it's now proven to
+matter, not theoretical. When generating a migration that both adds enum
+values *and* uses them (`prisma migrate diff --script` puts both in one
+file), split the `ALTER TYPE ... ADD VALUE` statements into their own earlier
+migration — Postgres cannot use a new enum value in the same transaction that
+adds it.
 
 ## Code cascade — backend done, frontend not started
 

@@ -502,32 +502,104 @@ entries.
 
 ## Migrations
 
-Applied, in order, against local dev (`localhost:5437`/`hatohui`):
+Applied, in order:
 
 1. `20260827033240_commission_status_add_intake_values` — adds `PENDING`,
    `ACCEPTED`, `DECLINED` to `CommissionStatus`. Split into its own migration
    because Postgres cannot use a new enum value in the same transaction that
-   adds it (the SQL Prisma generates for a schema diff puts both in one file;
-   this had to be split by hand).
+   adds it.
 2. `20260827033249_commission_opening_client_roles` — the bulk of this
-   feature's schema: every model change described above. Drops
-   `CommissionTypePricing`, `CommissionOptionPricing`, `CommissionAddonPricing`,
-   `CommissionRushFeeSetting`, and the old `CommissionNote`.
-3. `20260827033300_seed_roles_and_backfill_users` — hand-written, not
-   schema-generated. Seeds the three base `Role` rows (`user`/`artist`/`admin`,
-   `ON CONFLICT DO NOTHING`), grants every existing `User` the `user` role, and
-   grants `admin` + `artist` to whichever user's email matches
-   `SystemParameters['admin.email']` — preserving the one admin the old
-   email-based check recognized. **No `User` row is touched or dropped by any
-   of the three migrations.** Verified by simulating two production-shaped
-   users (an admin-email match and a plain user) in a transaction, then rolling
-   back.
+   feature's schema. See "The production incident" below — this file is not
+   what a plain `prisma migrate diff` would generate; it was hand-rewritten
+   after a real failed production deploy.
+3. `20260827033300_seed_roles_and_backfill_users` — grants every existing
+   `User` the `user` role, and `admin` + `artist` to whoever matches
+   `SystemParameters['admin.email']`.
+4. `20260827040008_commission_addon_price_mode` — adds `PriceMode` +
+   `CommissionAddon.maxPrice`.
 
-The local dev database was reset (`prisma migrate reset`) to apply migration 2
-without a manual data-loss workaround — it held only reproducible seed data (no
-`User` or `Commission` rows). **Production has real users and must not be
-reset**; migration 3 is what makes deploying this to production safe despite
-that reset having been fine locally.
+### The production incident, and what it changed about how migrations get written here
+
+The user ran `bunx prisma migrate deploy` against production directly and
+migration 2 failed: `column "artistId" of relation "CommissionType" contains
+null values`. Production had a real, established site with 32 real users and
+4 real `CommissionType` rows (the artist's actual catalog, `ICON`/`HALF_BODY`/
+`FULL_BODY`/`SKETCH_PAGE`) — the migration, as a plain schema-diff would
+generate it, had no backfill logic for turning `artistId` from nullable to
+`NOT NULL` on a non-empty table.
+
+**First wrong assumption: "Postgres rolled it back cleanly."** Checking
+`CommissionType`'s columns directly showed the old shape, which looked like
+confirmation of a full transactional rollback. It wasn't — it was only
+consistent with *one* explanation among several. The actual mechanism: this
+database connection does not run a migration's SQL as one all-or-nothing
+transaction. Statements commit individually as they succeed. `CommissionType`
+happened to be the exact statement that failed, so everything *before* it in
+file order (4 `CREATE TYPE` enums, `Commission`'s entire column migration —
+trivially safe since `Commission` had 0 rows —, and several `DROP CONSTRAINT`/
+`DROP INDEX` statements) had already committed and stayed committed.
+Everything *after* it (all the new `CREATE TABLE`s, the old-table drops,
+indexes, foreign keys) had never run.
+
+This was only discovered because a second migration attempt — this time
+against the corrected file, which naively started with `CREATE TYPE
+"Visibility"` again — failed immediately with `type "Visibility" already
+exists`. That contradiction is what forced a full re-audit instead of trusting
+the first (wrong) read of the evidence.
+
+**The fix wasn't a backfill script — it was making the migration idempotent.**
+A production database can end up in a bespoke partially-applied state that no
+`prisma migrate diff` output anticipates, and that state is specific to
+whichever statement happened to fail. Rather than hand-write a one-off "resume
+from exactly here" patch (fragile, and wrong for a fresh install or CI), the
+migration file itself was rewritten so every statement is safe to re-run
+regardless of what already succeeded:
+
+- `CREATE TYPE` wrapped in `DO $$ BEGIN ... EXCEPTION WHEN duplicate_object
+  THEN NULL; END $$;` (Postgres enums have no `IF NOT EXISTS`).
+- Every `CREATE TABLE`, `CREATE INDEX`/`CREATE UNIQUE INDEX`, `DROP TABLE`,
+  `DROP TYPE` gained `IF NOT EXISTS`/`IF EXISTS`.
+- Every `DROP CONSTRAINT`, `DROP INDEX`, `DROP COLUMN` gained `IF EXISTS`;
+  every `ADD COLUMN` gained `IF NOT EXISTS`.
+- The backfill itself (artist lookup via `SystemParameters['admin.email']`,
+  `basePrice`/`label` recovered from the tables being dropped, `CommissionType`/
+  `CommissionOption`/`CommissionAddon`/rush-fee data carried into their
+  replacements before the source tables are dropped) stayed as designed —
+  see the per-model sections above for why each backfill choice was made.
+
+**Second wrong assumption, caught only by rehearsal: a fresh install has no
+`User` rows at all.** The admin account is never seeded — it's created only by
+logging in via Google OAuth. But an *older* migration
+(`commission_type_tag_refactor`) hardcodes 4 `CommissionType`/`Tag` rows
+directly into its own SQL, so they exist on every fresh database regardless.
+The first local rehearsal (production-shaped data, an admin user already
+present) passed. A second rehearsal against a genuinely fresh install failed:
+the backfill's admin lookup found no match, and a safety check that was
+supposed to fail loudly on that case did exactly that. The fix: on a fresh
+install, those 4 hardcoded rows are placeholder data nobody could ever have
+used (the per-artist model didn't exist before this migration), so they are
+deleted rather than the migration failing — `DELETE FROM "CommissionType"
+WHERE "artistId" IS NULL` after the real backfill attempt, same for `Project`.
+
+**Verification approach, since this ran against a database with real users:**
+before touching production, the exact SQL was rehearsed against a local
+database seeded to match production's real data shape (4 types, 2 options, 2
+addons, 1 rush-fee row, an admin user) — the DB was queried afterward to
+confirm every value, not just to check for absence of an error. That rehearsal
+caught a real bug (`CommissionAddon.priceMode`/`maxPrice` referenced in this
+migration before a *later* migration actually adds those columns) before it
+ever reached production. After the actual production deploy, the same
+verification query ran again directly against production and confirmed every
+value landed correctly, all 32 users intact, old tables gone.
+
+**Takeaway for future migrations against this database:** never trust
+`applied_steps_count`/`finished_at` in `_prisma_migrations`, or a superficial
+column check, as proof of what a failed migration did or didn't do — audit
+every enum, table, column, constraint, and index the migration touches,
+directly. Assume statement-level autocommit, not whole-file transactionality,
+unless proven otherwise for this specific connection. When a migration must
+run against a database with real data, rehearse it against a copy of that
+data locally and verify actual values, not just success/failure.
 
 ## Grounding
 

@@ -1,105 +1,40 @@
--- CreateEnum
-CREATE TYPE "Visibility" AS ENUM ('INTERNAL', 'CLIENT');
+-- This migration was hit by a prior partial failure on at least one
+-- deployment target: this database's connection does not run the whole
+-- migration script as one transaction, so some statements from an earlier
+-- failed attempt already committed before it errored out partway through.
+-- Every statement below that could plausibly have already run is guarded
+-- (IF EXISTS / IF NOT EXISTS / duplicate_object catch) so this file is
+-- correct both against a fresh database and against that specific
+-- partially-applied state, without needing a one-off resume script.
 
 -- CreateEnum
-CREATE TYPE "AuthorRole" AS ENUM ('ARTIST', 'CLIENT');
+DO $$ BEGIN
+  CREATE TYPE "Visibility" AS ENUM ('INTERNAL', 'CLIENT');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- CreateEnum
-CREATE TYPE "CommissionOpeningEndMode" AS ENUM ('MANUAL', 'SLOT_CAP', 'INDEFINITE');
+DO $$ BEGIN
+  CREATE TYPE "AuthorRole" AS ENUM ('ARTIST', 'CLIENT');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- CreateEnum
-CREATE TYPE "CommissionOpeningStatus" AS ENUM ('SCHEDULED', 'OPEN', 'CLOSED');
+DO $$ BEGIN
+  CREATE TYPE "CommissionOpeningEndMode" AS ENUM ('MANUAL', 'SLOT_CAP', 'INDEFINITE');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- DropForeignKey
-ALTER TABLE "Commission" DROP CONSTRAINT "Commission_assignedToId_fkey";
+-- CreateEnum
+DO $$ BEGIN
+  CREATE TYPE "CommissionOpeningStatus" AS ENUM ('SCHEDULED', 'OPEN', 'CLOSED');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- DropForeignKey
-ALTER TABLE "Commission" DROP CONSTRAINT "Commission_commissionTypeId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Commission" DROP CONSTRAINT "Commission_projectId_fkey";
-
--- DropForeignKey
-ALTER TABLE "CommissionNote" DROP CONSTRAINT "CommissionNote_authorId_fkey";
-
--- DropForeignKey
-ALTER TABLE "CommissionNote" DROP CONSTRAINT "CommissionNote_commissionId_fkey";
-
--- DropForeignKey
-ALTER TABLE "CommissionType" DROP CONSTRAINT "CommissionType_tagId_fkey";
-
--- DropForeignKey
-ALTER TABLE "CommissionTypePricing" DROP CONSTRAINT "CommissionTypePricing_commissionTypeId_fkey";
-
--- DropIndex
-DROP INDEX "CommissionType_key_key";
-
--- DropIndex
-DROP INDEX "CommissionType_tagId_key";
-
--- AlterTable
-ALTER TABLE "Commission" DROP COLUMN "addonKeys",
-DROP COLUMN "assignedToId",
-DROP COLUMN "clientEmail",
-DROP COLUMN "clientName",
-DROP COLUMN "coloringDoneAt",
-DROP COLUMN "commissionTypeId",
-DROP COLUMN "contactHandle",
-DROP COLUMN "deadline",
-DROP COLUMN "deliverableAssets",
-DROP COLUMN "deliveredAt",
-DROP COLUMN "finishedAt",
-DROP COLUMN "idea",
-DROP COLUMN "ideaConfirmedAt",
-DROP COLUMN "isHidden",
-DROP COLUMN "lineDoneAt",
-DROP COLUMN "optionKey",
-DROP COLUMN "paymentConfirmedAt",
-DROP COLUMN "paymentStatus",
-DROP COLUMN "preferredContactMethod",
-DROP COLUMN "projectId",
-DROP COLUMN "quoteCents",
-DROP COLUMN "referenceAssets",
-DROP COLUMN "sketchConfirmedAt",
-ADD COLUMN     "artistId" TEXT NOT NULL,
-ADD COLUMN     "clientId" TEXT NOT NULL,
-ADD COLUMN     "commissionOpeningId" TEXT,
-ADD COLUMN     "groupId" TEXT,
-ADD COLUMN     "paymentMethodId" TEXT,
-ADD COLUMN     "priority" INTEGER,
-ALTER COLUMN "status" SET DEFAULT 'PENDING';
-
--- AlterTable
-ALTER TABLE "CommissionType" ADD COLUMN     "artistId" TEXT NOT NULL,
-ADD COLUMN     "basePrice" INTEGER NOT NULL,
-ADD COLUMN     "label" TEXT NOT NULL,
-ALTER COLUMN "tagId" DROP NOT NULL;
-
--- AlterTable
-ALTER TABLE "Project" ADD COLUMN     "artistId" TEXT NOT NULL,
-ADD COLUMN     "brief" JSONB,
-ALTER COLUMN "isHidden" SET DEFAULT true;
-
--- DropTable
-DROP TABLE "CommissionAddonPricing";
-
--- DropTable
-DROP TABLE "CommissionNote";
-
--- DropTable
-DROP TABLE "CommissionOptionPricing";
-
--- DropTable
-DROP TABLE "CommissionRushFeeSetting";
-
--- DropTable
-DROP TABLE "CommissionTypePricing";
-
--- DropEnum
-DROP TYPE "CommissionNoteVisibility";
+-- ============================================================
+-- Phase 1: create every brand-new table first, so the backfill
+-- in Phase 3 has somewhere to write existing data into before
+-- the old tables are dropped in Phase 4.
+-- ============================================================
 
 -- CreateTable
-CREATE TABLE "Role" (
+CREATE TABLE IF NOT EXISTS "Role" (
     "id" TEXT NOT NULL,
     "key" TEXT NOT NULL,
     "label" TEXT NOT NULL,
@@ -111,7 +46,7 @@ CREATE TABLE "Role" (
 );
 
 -- CreateTable
-CREATE TABLE "UserRole" (
+CREATE TABLE IF NOT EXISTS "UserRole" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "roleId" TEXT NOT NULL,
@@ -121,7 +56,7 @@ CREATE TABLE "UserRole" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionOption" (
+CREATE TABLE IF NOT EXISTS "CommissionOption" (
     "id" TEXT NOT NULL,
     "artistId" TEXT NOT NULL,
     "key" TEXT NOT NULL,
@@ -136,7 +71,7 @@ CREATE TABLE "CommissionOption" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionAddon" (
+CREATE TABLE IF NOT EXISTS "CommissionAddon" (
     "id" TEXT NOT NULL,
     "artistId" TEXT NOT NULL,
     "key" TEXT NOT NULL,
@@ -151,7 +86,7 @@ CREATE TABLE "CommissionAddon" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionGroup" (
+CREATE TABLE IF NOT EXISTS "CommissionGroup" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
@@ -167,7 +102,7 @@ CREATE TABLE "CommissionGroup" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionGroupMember" (
+CREATE TABLE IF NOT EXISTS "CommissionGroupMember" (
     "id" TEXT NOT NULL,
     "groupId" TEXT NOT NULL,
     "clientId" TEXT NOT NULL,
@@ -177,7 +112,7 @@ CREATE TABLE "CommissionGroupMember" (
 );
 
 -- CreateTable
-CREATE TABLE "Client" (
+CREATE TABLE IF NOT EXISTS "Client" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -191,7 +126,7 @@ CREATE TABLE "Client" (
 );
 
 -- CreateTable
-CREATE TABLE "PaymentMethod" (
+CREATE TABLE IF NOT EXISTS "PaymentMethod" (
     "id" TEXT NOT NULL,
     "key" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -204,7 +139,7 @@ CREATE TABLE "PaymentMethod" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionDetail" (
+CREATE TABLE IF NOT EXISTS "CommissionDetail" (
     "id" TEXT NOT NULL,
     "commissionId" TEXT NOT NULL,
     "idea" JSONB NOT NULL,
@@ -232,7 +167,7 @@ CREATE TABLE "CommissionDetail" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionProgress" (
+CREATE TABLE IF NOT EXISTS "CommissionProgress" (
     "id" TEXT NOT NULL,
     "commissionId" TEXT NOT NULL,
     "projectId" TEXT,
@@ -248,7 +183,7 @@ CREATE TABLE "CommissionProgress" (
 );
 
 -- CreateTable
-CREATE TABLE "Comment" (
+CREATE TABLE IF NOT EXISTS "Comment" (
     "id" TEXT NOT NULL,
     "projectId" TEXT,
     "groupId" TEXT,
@@ -265,7 +200,7 @@ CREATE TABLE "Comment" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionOpening" (
+CREATE TABLE IF NOT EXISTS "CommissionOpening" (
     "id" TEXT NOT NULL,
     "status" "CommissionOpeningStatus" NOT NULL DEFAULT 'SCHEDULED',
     "endMode" "CommissionOpeningEndMode" NOT NULL,
@@ -284,7 +219,7 @@ CREATE TABLE "CommissionOpening" (
 );
 
 -- CreateTable
-CREATE TABLE "CommissionFollower" (
+CREATE TABLE IF NOT EXISTS "CommissionFollower" (
     "id" TEXT NOT NULL,
     "artistId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -296,80 +231,284 @@ CREATE TABLE "CommissionFollower" (
     CONSTRAINT "CommissionFollower_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "Role_key_key" ON "Role"("key");
+-- ============================================================
+-- Phase 2: drop the FKs/indexes on tables we're about to alter,
+-- and make Commission's shape change (0 rows in every known
+-- deployment so far, so this is safe with no backfill needed).
+-- ============================================================
+
+-- DropForeignKey
+ALTER TABLE "Commission" DROP CONSTRAINT IF EXISTS "Commission_assignedToId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "Commission" DROP CONSTRAINT IF EXISTS "Commission_commissionTypeId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "Commission" DROP CONSTRAINT IF EXISTS "Commission_projectId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "CommissionNote" DROP CONSTRAINT IF EXISTS "CommissionNote_authorId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "CommissionNote" DROP CONSTRAINT IF EXISTS "CommissionNote_commissionId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "CommissionType" DROP CONSTRAINT IF EXISTS "CommissionType_tagId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "CommissionTypePricing" DROP CONSTRAINT IF EXISTS "CommissionTypePricing_commissionTypeId_fkey";
+
+-- DropIndex
+DROP INDEX IF EXISTS "CommissionType_key_key";
+
+-- DropIndex
+DROP INDEX IF EXISTS "CommissionType_tagId_key";
+
+-- AlterTable
+ALTER TABLE "Commission" DROP COLUMN IF EXISTS "addonKeys",
+DROP COLUMN IF EXISTS "assignedToId",
+DROP COLUMN IF EXISTS "clientEmail",
+DROP COLUMN IF EXISTS "clientName",
+DROP COLUMN IF EXISTS "coloringDoneAt",
+DROP COLUMN IF EXISTS "commissionTypeId",
+DROP COLUMN IF EXISTS "contactHandle",
+DROP COLUMN IF EXISTS "deadline",
+DROP COLUMN IF EXISTS "deliverableAssets",
+DROP COLUMN IF EXISTS "deliveredAt",
+DROP COLUMN IF EXISTS "finishedAt",
+DROP COLUMN IF EXISTS "idea",
+DROP COLUMN IF EXISTS "ideaConfirmedAt",
+DROP COLUMN IF EXISTS "isHidden",
+DROP COLUMN IF EXISTS "lineDoneAt",
+DROP COLUMN IF EXISTS "optionKey",
+DROP COLUMN IF EXISTS "paymentConfirmedAt",
+DROP COLUMN IF EXISTS "paymentStatus",
+DROP COLUMN IF EXISTS "preferredContactMethod",
+DROP COLUMN IF EXISTS "projectId",
+DROP COLUMN IF EXISTS "quoteCents",
+DROP COLUMN IF EXISTS "referenceAssets",
+DROP COLUMN IF EXISTS "sketchConfirmedAt",
+ADD COLUMN IF NOT EXISTS "artistId" TEXT NOT NULL,
+ADD COLUMN IF NOT EXISTS "clientId" TEXT NOT NULL,
+ADD COLUMN IF NOT EXISTS "commissionOpeningId" TEXT,
+ADD COLUMN IF NOT EXISTS "groupId" TEXT,
+ADD COLUMN IF NOT EXISTS "paymentMethodId" TEXT,
+ADD COLUMN IF NOT EXISTS "priority" INTEGER,
+ALTER COLUMN "status" SET DEFAULT 'PENDING';
+
+-- ============================================================
+-- Phase 3: add the new artist-scoping columns as NULLABLE first,
+-- backfill them (and migrate data out of the tables about to be
+-- dropped), then tighten to NOT NULL. Every row being backfilled
+-- here is pre-existing catalog config (types/options/addons/rush
+-- fee), never client-submitted data — Commission/CommissionNote
+-- have 0 rows in every deployment this was verified against.
+-- ============================================================
+
+-- AlterTable
+ALTER TABLE "CommissionType" ADD COLUMN IF NOT EXISTS "artistId" TEXT,
+ADD COLUMN IF NOT EXISTS "basePrice" INTEGER,
+ADD COLUMN IF NOT EXISTS "label" TEXT,
+ALTER COLUMN "tagId" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Project" ADD COLUMN IF NOT EXISTS "artistId" TEXT,
+ADD COLUMN IF NOT EXISTS "brief" JSONB,
+ALTER COLUMN "isHidden" SET DEFAULT true;
+
+-- Backfill: every pre-existing CommissionType/Project row belongs to
+-- whichever user matches the configured admin.email — the only artist
+-- that existed before this migration introduced multi-artist support.
+UPDATE "CommissionType"
+SET "artistId" = (
+  SELECT u."id" FROM "User" u
+  JOIN "SystemParameters" sp ON sp."type" = 'admin.email' AND sp."scope" = 'ALL'
+  WHERE LOWER(u."email") = LOWER(sp."value")
+  LIMIT 1
+)
+WHERE "artistId" IS NULL;
+
+UPDATE "Project"
+SET "artistId" = (
+  SELECT u."id" FROM "User" u
+  JOIN "SystemParameters" sp ON sp."type" = 'admin.email' AND sp."scope" = 'ALL'
+  WHERE LOWER(u."email") = LOWER(sp."value")
+  LIMIT 1
+)
+WHERE "artistId" IS NULL;
+
+-- Backfill CommissionType.basePrice from the CommissionTypePricing row
+-- it's about to lose, and .label from its key (INITCAP turns e.g.
+-- HALF_BODY into "Half Body", matching the old hardcoded i18n labels).
+UPDATE "CommissionType" ct
+SET "basePrice" = ctp."basePriceCents"
+FROM "CommissionTypePricing" ctp
+WHERE ctp."commissionTypeId" = ct."id" AND ct."basePrice" IS NULL;
+
+UPDATE "CommissionType" SET "basePrice" = 0 WHERE "basePrice" IS NULL;
+UPDATE "CommissionType" SET "label" = INITCAP(REPLACE("key", '_', ' ')) WHERE "label" IS NULL;
+
+-- On a fresh install there is no User yet (the admin account only ever
+-- gets created by logging in — nothing seeds it), so any CommissionType/
+-- Project row that's still unowned at this point is the hardcoded
+-- placeholder data from the older commission_type_tag_refactor migration,
+-- never real per-artist data (that concept didn't exist before this
+-- migration). Nobody could have used it, so it's safe to drop rather than
+-- fail the whole migration over data with no possible owner yet.
+DELETE FROM "CommissionType" WHERE "artistId" IS NULL;
+DELETE FROM "Project" WHERE "artistId" IS NULL;
+
+ALTER TABLE "CommissionType" ALTER COLUMN "artistId" SET NOT NULL,
+ALTER COLUMN "basePrice" SET NOT NULL,
+ALTER COLUMN "label" SET NOT NULL;
+
+ALTER TABLE "Project" ALTER COLUMN "artistId" SET NOT NULL;
+
+-- Migrate CommissionOptionPricing / CommissionAddonPricing / the
+-- singleton CommissionRushFeeSetting into their replacements, owned by
+-- that same artist, before the old tables are dropped below.
+INSERT INTO "CommissionOption" ("id", "artistId", "key", "label", "modifierPercent", "no", "active", "createdAt", "updatedAt")
+SELECT
+  op."id",
+  (SELECT u."id" FROM "User" u JOIN "SystemParameters" sp ON sp."type" = 'admin.email' AND sp."scope" = 'ALL' WHERE LOWER(u."email") = LOWER(sp."value") LIMIT 1),
+  op."key",
+  INITCAP(REPLACE(op."key", '_', ' ')),
+  op."modifierPercent",
+  0,
+  op."active",
+  CURRENT_TIMESTAMP,
+  op."updatedAt"
+FROM "CommissionOptionPricing" op;
+
+-- priceMode/maxPrice don't exist on CommissionAddon yet at this point in
+-- migration history (added later by
+-- 20260827040008_commission_addon_price_mode, whose DEFAULT
+-- 'STARTING_FROM' backfills these rows automatically when that runs).
+INSERT INTO "CommissionAddon" ("id", "artistId", "key", "label", "minPrice", "no", "active", "createdAt", "updatedAt")
+SELECT
+  ap."id",
+  (SELECT u."id" FROM "User" u JOIN "SystemParameters" sp ON sp."type" = 'admin.email' AND sp."scope" = 'ALL' WHERE LOWER(u."email") = LOWER(sp."value") LIMIT 1),
+  ap."key",
+  INITCAP(REPLACE(ap."key", '_', ' ')),
+  ap."minPriceCents",
+  0,
+  ap."active",
+  CURRENT_TIMESTAMP,
+  ap."updatedAt"
+FROM "CommissionAddonPricing" ap;
+
+INSERT INTO "UserSetting" ("id", "userId", "type", "scope", "value", "createdAt", "updatedAt")
+SELECT
+  gen_random_uuid()::text,
+  (SELECT u."id" FROM "User" u JOIN "SystemParameters" sp ON sp."type" = 'admin.email' AND sp."scope" = 'ALL' WHERE LOWER(u."email") = LOWER(sp."value") LIMIT 1),
+  'art.commission.rushfee',
+  'ART',
+  json_build_object('thresholdDays', rf."thresholdDays", 'feeAmount', rf."feeCents")::text,
+  CURRENT_TIMESTAMP,
+  rf."updatedAt"
+FROM "CommissionRushFeeSetting" rf;
+
+-- ============================================================
+-- Phase 4: now safe to drop what's been fully migrated.
+-- ============================================================
+
+-- DropTable
+DROP TABLE IF EXISTS "CommissionAddonPricing";
+
+-- DropTable
+DROP TABLE IF EXISTS "CommissionNote";
+
+-- DropTable
+DROP TABLE IF EXISTS "CommissionOptionPricing";
+
+-- DropTable
+DROP TABLE IF EXISTS "CommissionRushFeeSetting";
+
+-- DropTable
+DROP TABLE IF EXISTS "CommissionTypePricing";
+
+-- DropEnum
+DROP TYPE IF EXISTS "CommissionNoteVisibility";
+
+-- ============================================================
+-- Phase 5: indexes and foreign keys, unchanged from the original
+-- generated migration.
+-- ============================================================
 
 -- CreateIndex
-CREATE INDEX "UserRole_roleId_idx" ON "UserRole"("roleId");
+CREATE UNIQUE INDEX IF NOT EXISTS "Role_key_key" ON "Role"("key");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "UserRole_userId_roleId_key" ON "UserRole"("userId", "roleId");
+CREATE INDEX IF NOT EXISTS "UserRole_roleId_idx" ON "UserRole"("roleId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionOption_artistId_key_key" ON "CommissionOption"("artistId", "key");
+CREATE UNIQUE INDEX IF NOT EXISTS "UserRole_userId_roleId_key" ON "UserRole"("userId", "roleId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionAddon_artistId_key_key" ON "CommissionAddon"("artistId", "key");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionOption_artistId_key_key" ON "CommissionOption"("artistId", "key");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionGroup_accessCode_key" ON "CommissionGroup"("accessCode");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionAddon_artistId_key_key" ON "CommissionAddon"("artistId", "key");
 
 -- CreateIndex
-CREATE INDEX "CommissionGroup_artistId_idx" ON "CommissionGroup"("artistId");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionGroup_accessCode_key" ON "CommissionGroup"("accessCode");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionGroupMember_groupId_clientId_key" ON "CommissionGroupMember"("groupId", "clientId");
+CREATE INDEX IF NOT EXISTS "CommissionGroup_artistId_idx" ON "CommissionGroup"("artistId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Client_email_key" ON "Client"("email");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionGroupMember_groupId_clientId_key" ON "CommissionGroupMember"("groupId", "clientId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Client_userId_key" ON "Client"("userId");
+CREATE UNIQUE INDEX IF NOT EXISTS "Client_email_key" ON "Client"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "PaymentMethod_key_key" ON "PaymentMethod"("key");
+CREATE UNIQUE INDEX IF NOT EXISTS "Client_userId_key" ON "Client"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionDetail_commissionId_key" ON "CommissionDetail"("commissionId");
+CREATE UNIQUE INDEX IF NOT EXISTS "PaymentMethod_key_key" ON "PaymentMethod"("key");
 
 -- CreateIndex
-CREATE INDEX "CommissionProgress_commissionId_createdAt_idx" ON "CommissionProgress"("commissionId", "createdAt");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionDetail_commissionId_key" ON "CommissionDetail"("commissionId");
 
 -- CreateIndex
-CREATE INDEX "Comment_projectId_createdAt_idx" ON "Comment"("projectId", "createdAt");
+CREATE INDEX IF NOT EXISTS "CommissionProgress_commissionId_createdAt_idx" ON "CommissionProgress"("commissionId", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "Comment_groupId_createdAt_idx" ON "Comment"("groupId", "createdAt");
+CREATE INDEX IF NOT EXISTS "Comment_projectId_createdAt_idx" ON "Comment"("projectId", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "Comment_commissionId_createdAt_idx" ON "Comment"("commissionId", "createdAt");
+CREATE INDEX IF NOT EXISTS "Comment_groupId_createdAt_idx" ON "Comment"("groupId", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "Comment_progressId_createdAt_idx" ON "Comment"("progressId", "createdAt");
+CREATE INDEX IF NOT EXISTS "Comment_commissionId_createdAt_idx" ON "Comment"("commissionId", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "CommissionOpening_artistId_status_idx" ON "CommissionOpening"("artistId", "status");
+CREATE INDEX IF NOT EXISTS "Comment_progressId_createdAt_idx" ON "Comment"("progressId", "createdAt");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionFollower_unsubscribeToken_key" ON "CommissionFollower"("unsubscribeToken");
+CREATE INDEX IF NOT EXISTS "CommissionOpening_artistId_status_idx" ON "CommissionOpening"("artistId", "status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionFollower_artistId_email_key" ON "CommissionFollower"("artistId", "email");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionFollower_unsubscribeToken_key" ON "CommissionFollower"("unsubscribeToken");
 
 -- CreateIndex
-CREATE INDEX "Commission_artistId_status_idx" ON "Commission"("artistId", "status");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionFollower_artistId_email_key" ON "CommissionFollower"("artistId", "email");
 
 -- CreateIndex
-CREATE INDEX "Commission_clientId_idx" ON "Commission"("clientId");
+CREATE INDEX IF NOT EXISTS "Commission_artistId_status_idx" ON "Commission"("artistId", "status");
 
 -- CreateIndex
-CREATE INDEX "Commission_groupId_idx" ON "Commission"("groupId");
+CREATE INDEX IF NOT EXISTS "Commission_clientId_idx" ON "Commission"("clientId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "CommissionType_artistId_key_key" ON "CommissionType"("artistId", "key");
+CREATE INDEX IF NOT EXISTS "Commission_groupId_idx" ON "Commission"("groupId");
 
 -- CreateIndex
-CREATE INDEX "Project_artistId_idx" ON "Project"("artistId");
+CREATE UNIQUE INDEX IF NOT EXISTS "CommissionType_artistId_key_key" ON "CommissionType"("artistId", "key");
+
+-- CreateIndex
+CREATE INDEX IF NOT EXISTS "Project_artistId_idx" ON "Project"("artistId");
 
 -- AddForeignKey
 ALTER TABLE "UserRole" ADD CONSTRAINT "UserRole_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -454,4 +593,3 @@ ALTER TABLE "CommissionOpening" ADD CONSTRAINT "CommissionOpening_artistId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "CommissionFollower" ADD CONSTRAINT "CommissionFollower_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
