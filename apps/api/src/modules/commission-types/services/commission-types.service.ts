@@ -3,7 +3,9 @@ import { Database } from '@/infra/db';
 import type { CommissionType, Tag } from '@prisma/client';
 import { uniqueSlug } from '@/common/utils/slugify';
 import {
+  ArtistCommissionTypeDto,
   CommissionTypeDto,
+  UpsertArtistCommissionTypeDto,
   UpsertCommissionTypeDto,
 } from '@/modules/commission-types/dto/commission-type.dto';
 
@@ -13,23 +15,96 @@ type CommissionTypeWithTag = CommissionType & { tag: Tag | null };
 export class CommissionTypesService {
   constructor(private readonly db: Database) {}
 
-  list(artistId: string, activeOnly: boolean): Promise<CommissionTypeDto[]> {
+  /** The full platform catalog (admin view). */
+  listCatalog(activeOnly: boolean): Promise<CommissionTypeDto[]> {
     return this.db.commissionType
       .findMany({
-        where: activeOnly ? { artistId, active: true } : { artistId },
+        where: activeOnly ? { active: true } : {},
         include: { tag: true },
         orderBy: { no: 'asc' },
       })
       .then((rows) => rows.map(toDto));
   }
 
-  async create(
+  /** The catalog joined with one artist's enablement of each entry. */
+  async listForArtist(artistId: string): Promise<ArtistCommissionTypeDto[]> {
+    const [types, enablements] = await Promise.all([
+      this.db.commissionType.findMany({
+        where: { active: true },
+        orderBy: { no: 'asc' },
+      }),
+      this.db.artistCommissionType.findMany({ where: { artistId } }),
+    ]);
+    const enablementByType = new Map(
+      enablements.map((row) => [row.commissionTypeId, row]),
+    );
+    return types.map((type) => {
+      const enablement = enablementByType.get(type.id);
+      return {
+        id: enablement?.id ?? null,
+        commissionTypeId: type.id,
+        key: type.key,
+        label: type.label,
+        no: enablement?.no ?? type.no,
+        enabled: enablement?.active ?? false,
+      };
+    });
+  }
+
+  /** Public storefront view: only the types this artist has actually turned
+   * on, no enablement bookkeeping exposed. */
+  async listEnabledForArtist(artistId: string): Promise<CommissionTypeDto[]> {
+    const enabled = await this.listForArtist(artistId);
+    const ids = enabled
+      .filter((row) => row.enabled)
+      .map((row) => row.commissionTypeId);
+    if (ids.length === 0) return [];
+    return this.db.commissionType
+      .findMany({
+        where: { id: { in: ids } },
+        include: { tag: true },
+        orderBy: { no: 'asc' },
+      })
+      .then((rows) => rows.map(toDto));
+  }
+
+  async setEnabled(
     artistId: string,
-    dto: UpsertCommissionTypeDto,
-  ): Promise<CommissionTypeDto> {
+    commissionTypeId: string,
+    dto: UpsertArtistCommissionTypeDto,
+  ): Promise<ArtistCommissionTypeDto> {
+    const type = await this.db.commissionType.findUnique({
+      where: { id: commissionTypeId },
+    });
+    if (!type) {
+      throw new NotFoundException(
+        `Commission type ${commissionTypeId} not found`,
+      );
+    }
+    const row = await this.db.artistCommissionType.upsert({
+      where: { artistId_commissionTypeId: { artistId, commissionTypeId } },
+      update: { active: dto.active, no: dto.no },
+      create: {
+        artistId,
+        commissionTypeId,
+        active: dto.active,
+        no: dto.no ?? type.no,
+      },
+    });
+    return {
+      id: row.id,
+      commissionTypeId: type.id,
+      key: type.key,
+      label: type.label,
+      no: row.no,
+      enabled: row.active,
+    };
+  }
+
+  async create(dto: UpsertCommissionTypeDto): Promise<CommissionTypeDto> {
     const key = await uniqueSlug(dto.label, async (candidate) => {
       const existing = await this.db.commissionType.findUnique({
-        where: { artistId_key: { artistId, key: candidate } },
+        where: { key: candidate },
       });
       return existing !== null;
     });
@@ -42,10 +117,8 @@ export class CommissionTypesService {
       });
       return tx.commissionType.create({
         data: {
-          artistId,
           key,
           label: dto.label,
-          basePrice: dto.basePrice,
           no: dto.no ?? 0,
           active: dto.active ?? true,
           tagId: tag.id,
@@ -57,11 +130,10 @@ export class CommissionTypesService {
   }
 
   async update(
-    artistId: string,
     id: string,
     dto: UpsertCommissionTypeDto,
   ): Promise<CommissionTypeDto> {
-    const existing = await this.assertOwned(artistId, id);
+    const existing = await this.assertExists(id);
     const row = await this.db.$transaction(async (tx) => {
       let tagId = existing.tagId;
       if (dto.label !== existing.label) {
@@ -76,7 +148,6 @@ export class CommissionTypesService {
         where: { id },
         data: {
           label: dto.label,
-          basePrice: dto.basePrice,
           no: dto.no ?? existing.no,
           active: dto.active ?? existing.active,
           tagId,
@@ -87,17 +158,14 @@ export class CommissionTypesService {
     return toDto(row);
   }
 
-  async remove(artistId: string, id: string): Promise<void> {
-    await this.assertOwned(artistId, id);
+  async remove(id: string): Promise<void> {
+    await this.assertExists(id);
     await this.db.commissionType.delete({ where: { id } });
   }
 
-  private async assertOwned(
-    artistId: string,
-    id: string,
-  ): Promise<CommissionType> {
+  private async assertExists(id: string): Promise<CommissionType> {
     const row = await this.db.commissionType.findUnique({ where: { id } });
-    if (!row || row.artistId !== artistId) {
+    if (!row) {
       throw new NotFoundException(`Commission type ${id} not found`);
     }
     return row;
@@ -107,10 +175,8 @@ export class CommissionTypesService {
 function toDto(row: CommissionTypeWithTag): CommissionTypeDto {
   return {
     id: row.id,
-    artistId: row.artistId,
     key: row.key,
     label: row.label,
-    basePrice: row.basePrice,
     no: row.no,
     active: row.active,
     tagId: row.tagId,

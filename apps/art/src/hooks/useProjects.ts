@@ -12,14 +12,17 @@ import {
   type ProjectDto,
 } from '@hatohui/models';
 
-export function useProjects(initialItems?: ProjectDto[]) {
-  const query = useProjectsQuery({
-    query: {
-      initialData: initialItems
-        ? { data: initialItems, status: 200 as const, headers: new Headers() }
-        : undefined,
+export function useProjects(artistId?: string, initialItems?: ProjectDto[]) {
+  const query = useProjectsQuery(
+    { artistId },
+    {
+      query: {
+        initialData: initialItems
+          ? { data: initialItems, status: 200 as const, headers: new Headers() }
+          : undefined,
+      },
     },
-  });
+  );
   return {
     items: query.data?.data ?? [],
     isLoading: query.isPending,
@@ -34,12 +37,14 @@ export function useProject(id: string) {
   };
 }
 
-export function useProjectsAdmin() {
+export function useProjectsAdmin(artistId: string) {
   const queryClient = useQueryClient();
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: getProjectsQueryKey() });
+    queryClient.invalidateQueries({
+      queryKey: getProjectsQueryKey({ artistId }),
+    });
 
-  const listQuery = useProjectsQuery();
+  const listQuery = useProjectsQuery({ artistId });
   const create = useCreateProject({ mutation: { onSuccess: invalidate } });
   const update = useUpdateProject({ mutation: { onSuccess: invalidate } });
   const updateVisibility = useUpdateProjectVisibility({

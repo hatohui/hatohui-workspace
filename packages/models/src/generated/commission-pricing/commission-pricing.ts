@@ -27,6 +27,7 @@ import type {
 import type {
   CommissionAddonPricingDto,
   CommissionOptionPricingDto,
+  CommissionOptionPricingsParams,
   CommissionPricingDto,
   CommissionPricingParams,
   CommissionRushFeeSettingDto,
@@ -270,20 +271,27 @@ export type commissionOptionPricingsResponseSuccess = (commissionOptionPricingsR
 
 export type commissionOptionPricingsResponse = (commissionOptionPricingsResponseSuccess)
 
-export const getCommissionOptionPricingsUrl = () => {
+export const getCommissionOptionPricingsUrl = (params?: CommissionOptionPricingsParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/commission-pricing/options`
+  return stringifiedParams.length > 0 ? `/commission-pricing/options?${stringifiedParams}` : `/commission-pricing/options`
 }
 
 /**
- * @summary List your own commission option pricing rows
+ * @summary List your own commission option pricing rows, optionally scoped to one commission type
  */
-export const commissionOptionPricings = async ( options?: RequestInit): Promise<commissionOptionPricingsResponse> => {
+export const commissionOptionPricings = async (params?: CommissionOptionPricingsParams, options?: RequestInit): Promise<commissionOptionPricingsResponse> => {
 
-  return customFetch<commissionOptionPricingsResponse>(getCommissionOptionPricingsUrl(),
+  return customFetch<commissionOptionPricingsResponse>(getCommissionOptionPricingsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -296,23 +304,23 @@ export const commissionOptionPricings = async ( options?: RequestInit): Promise<
 
 
 
-export const getCommissionOptionPricingsQueryKey = () => {
+export const getCommissionOptionPricingsQueryKey = (params?: CommissionOptionPricingsParams,) => {
     return [
-    `/commission-pricing/options`
+    `/commission-pricing/options`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getCommissionOptionPricingsQueryOptions = <TData = Awaited<ReturnType<typeof commissionOptionPricings>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCommissionOptionPricingsQueryOptions = <TData = Awaited<ReturnType<typeof commissionOptionPricings>>, TError = unknown>(params?: CommissionOptionPricingsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommissionOptionPricingsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getCommissionOptionPricingsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionOptionPricings>>> = ({ signal }) => commissionOptionPricings({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionOptionPricings>>> = ({ signal }) => commissionOptionPricings(params, { signal, ...requestOptions });
 
 
 
@@ -326,7 +334,7 @@ export type CommissionOptionPricingsQueryError = unknown
 
 
 export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof commissionOptionPricings>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>> & Pick<
+ params: undefined |  CommissionOptionPricingsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionOptionPricings>>,
           TError,
@@ -336,7 +344,7 @@ export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof co
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof commissionOptionPricings>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>> & Pick<
+ params?: CommissionOptionPricingsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionOptionPricings>>,
           TError,
@@ -346,19 +354,19 @@ export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof co
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof commissionOptionPricings>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: CommissionOptionPricingsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List your own commission option pricing rows
+ * @summary List your own commission option pricing rows, optionally scoped to one commission type
  */
 
 export function useCommissionOptionPricings<TData = Awaited<ReturnType<typeof commissionOptionPricings>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: CommissionOptionPricingsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionOptionPricings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getCommissionOptionPricingsQueryOptions(options)
+  const queryOptions = getCommissionOptionPricingsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

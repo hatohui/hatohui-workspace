@@ -1,4 +1,8 @@
 {
+  "artistPicker": {
+    "title": "Chọn một nghệ sĩ",
+    "empty": "Chưa có nghệ sĩ nào mở gian hàng."
+  },
   "site": {
     "title": "Art",
     "nav": {
@@ -68,6 +72,7 @@
     "codeLabel": "Hoặc nếu bạn được cấp mã",
     "codeGo": "Xem",
     "deliverables": "Tác phẩm hoàn thiện",
+    "deliveredAt": "Đã giao vào {{date}}",
     "existingReferences": "Ảnh tham khảo đã tải lên",
     "addLinkLabel": "Hoặc dán liên kết (vd: thư mục Google Drive)",
     "addLinkPlaceholder": "https://...",
@@ -110,41 +115,37 @@
       "OTHER": "Khác"
     },
     "type": {
+      "SKETCH": {
+        "label": "Phác thảo",
+        "description": "Một bản phác thảo nét đơn giản."
+      },
+      "LINEART": {
+        "label": "Nét vẽ",
+        "description": "Chỉ có nét vẽ sạch, không tô màu hay đổ bóng."
+      },
       "ICON": {
         "label": "Icon",
         "description": "Ảnh cận mặt và vai."
       },
-      "HALF_BODY": {
+      "BUST": {
         "label": "Nửa người",
         "description": "Từ eo trở lên, chi tiết hơn icon."
       },
-      "FULL_BODY": {
+      "FULL": {
         "label": "Toàn thân",
         "description": "Toàn bộ nhân vật từ đầu đến chân."
       },
-      "SKETCH_PAGE": {
+      "SKETCHPAGE": {
         "label": "Trang phác thảo",
         "description": "Một trang gồm nhiều phác thảo/dáng của một nhân vật."
-      }
-    },
-    "option": {
-      "FULLY_RENDERED": {
-        "label": "Vẽ đầy đủ màu",
-        "description": "Đầy đủ màu sắc, đổ bóng và hoàn thiện."
       },
-      "SKETCHED": {
-        "label": "Phác thảo",
-        "description": "Chỉ có nét vẽ sạch, không tô màu hay đổ bóng."
-      }
-    },
-    "addon": {
-      "COMPLEX_COSTUME": {
-        "label": "Độ phức tạp",
-        "description": "Chi tiết thêm cho trang phục, giáp hoặc phụ kiện cầu kỳ.\n\nTick vào đây chỉ để Hato để ý thôi nha, không tự động cộng thêm giá đâu. Hato sẽ tự xem từng tác phẩm để đánh giá xem có thật sự 'phức tạp' hay không.\n\nKhông chắc thì cứ nhắn Hato nha!"
+      "COMIC": {
+        "label": "Truyện tranh",
+        "description": "Một trang hoặc dải truyện tranh ngắn."
       },
-      "BACKGROUND": {
-        "label": "Nền",
-        "description": "Nền chi tiết."
+      "ANIMATION": {
+        "label": "Hoạt hình",
+        "description": "Một đoạn clip hoạt hình ngắn hoặc GIF lặp."
       }
     },
     "status": {
@@ -202,6 +203,7 @@
       },
       "deliver": {
         "title": "Gửi tác phẩm hoàn thiện",
+        "deliveredAt": "Đã giao vào {{date}}",
         "filesLabel": "Tệp tác phẩm hoàn thiện",
         "send": "Gửi cho khách hàng"
       },
@@ -212,12 +214,14 @@
       "pricing": {
         "title": "Bảng giá",
         "rushFee": "Phụ phí gấp",
+        "rushFeeEnabled": "Áp dụng phụ phí gấp",
         "rushFeeDays": "Ngưỡng (ngày)",
         "rushFeeAmount": "Phí ($)",
         "priceMode": {
           "FIXED": "Giá cố định",
           "STARTING_FROM": "Bắt đầu từ",
-          "RANGE": "Khoảng giá"
+          "RANGE": "Khoảng giá",
+          "PERCENTAGE": "Phần trăm giá của option"
         },
         "typesTable": {
           "addRow": "Thêm loại commission",
@@ -230,6 +234,18 @@
           },
           "active": "Đang bật",
           "inactive": "Đã tắt"
+        },
+        "optionsTable": {
+          "optionsFor": "Các option cho {{type}}",
+          "priceMode": "Kiểu tính giá",
+          "minPrice": "Giá ($)",
+          "maxPrice": "Đến ($)",
+          "addRow": "Thêm option",
+          "deleteRow": "Xóa dòng"
+        },
+        "addonsTable": {
+          "percent": "Phần trăm",
+          "addRow": "Thêm add-on"
         }
       }
     }

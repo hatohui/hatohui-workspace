@@ -28,7 +28,7 @@ export function CommissionQuoteEditor({
     commissionTypeId?: string | null;
     optionKey?: string | null;
     addonKeys?: string[];
-    quoteCents?: number | null;
+    quote?: number | null;
   }) => Promise<unknown>;
   onSavePaymentStatus: (
     status: CommissionDto['paymentStatus'],
@@ -36,12 +36,13 @@ export function CommissionQuoteEditor({
 }) {
   const { t } = useTranslation('art');
   const pricing = useCommissionPricingEstimate(
+    commission.artistId,
     commission.commissionTypeId ?? undefined,
     commission.optionKey ?? undefined,
     commission.addonKeys,
   );
   const [quoteInput, setQuoteInput] = useState(
-    commission.quoteCents !== null ? String(commission.quoteCents / 100) : '',
+    commission.quote !== null ? String(commission.quote / 100) : '',
   );
 
   return (
@@ -51,7 +52,7 @@ export function CommissionQuoteEditor({
         <Select
           value={commission.commissionTypeId ?? ''}
           onValueChange={(value) =>
-            void onSaveQuote({ commissionTypeId: value })
+            void onSaveQuote({ commissionTypeId: value, optionKey: null })
           }
         >
           <SelectTrigger>
@@ -61,11 +62,10 @@ export function CommissionQuoteEditor({
           </SelectTrigger>
           <SelectContent>
             {pricing.types.map((type) => (
-              <SelectItem
-                key={type.commissionTypeId}
-                value={type.commissionTypeId}
-              >
-                {t(`commission.type.${type.commissionTypeKey}.label`)}
+              <SelectItem key={type.id} value={type.id}>
+                {t(`commission.type.${type.key}.label`, {
+                  defaultValue: type.label,
+                })}
               </SelectItem>
             ))}
           </SelectContent>
@@ -82,9 +82,9 @@ export function CommissionQuoteEditor({
             <SelectValue placeholder={t('commission.form.optionPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
-            {pricing.options.map((option) => (
+            {pricing.optionsForType.map((option) => (
               <SelectItem key={option.key} value={option.key}>
-                {t(`commission.option.${option.key}.label`)}
+                {option.label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -92,12 +92,10 @@ export function CommissionQuoteEditor({
       </div>
 
       <div>
-        <Label htmlFor="quoteCents">
-          {t('commission.form.estimateLabel')} ($)
-        </Label>
+        <Label htmlFor="quote">{t('commission.form.estimateLabel')} ($)</Label>
         <div className="flex gap-2">
           <Input
-            id="quoteCents"
+            id="quote"
             type="number"
             value={quoteInput}
             onChange={(event) => setQuoteInput(event.target.value)}
@@ -106,9 +104,7 @@ export function CommissionQuoteEditor({
             size="sm"
             onClick={() =>
               void onSaveQuote({
-                quoteCents: quoteInput
-                  ? Math.round(Number(quoteInput) * 100)
-                  : null,
+                quote: quoteInput ? Math.round(Number(quoteInput) * 100) : null,
               })
             }
           >

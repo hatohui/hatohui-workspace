@@ -6,11 +6,20 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Max,
   Min,
 } from 'class-validator';
 import { PriceMode } from '@prisma/client';
 
 export { PriceMode };
+
+/** priceMode values valid for a CommissionOption — an option has nothing to
+ * take a PERCENTAGE of, since it's the thing other prices are a percentage of. */
+export const OPTION_PRICE_MODES = [
+  PriceMode.FIXED,
+  PriceMode.STARTING_FROM,
+  PriceMode.RANGE,
+] as const;
 
 export class CommissionOptionPricingDto {
   @ApiProperty()
@@ -18,6 +27,9 @@ export class CommissionOptionPricingDto {
 
   @ApiProperty()
   artistId: string;
+
+  @ApiProperty()
+  commissionTypeId: string;
 
   @ApiProperty({
     example: 'SKETCHED',
@@ -29,11 +41,24 @@ export class CommissionOptionPricingDto {
   @ApiProperty({ example: 'Sketched' })
   label: string;
 
+  @ApiProperty({ enum: OPTION_PRICE_MODES })
+  priceMode: (typeof OPTION_PRICE_MODES)[number];
+
   @ApiProperty({
-    example: -40,
-    description: 'Percent modifier on the base price',
+    example: 3000,
+    description:
+      'FIXED: the price. STARTING_FROM: the floor ("from X"). RANGE: the lower bound. In the artist\'s currency\'s smallest unit.',
   })
-  modifierPercent: number;
+  minPrice: number;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Upper bound — set only when priceMode is RANGE',
+  })
+  maxPrice: number | null;
+
+  @ApiProperty({ description: 'Display order, ascending' })
+  no: number;
 
   @ApiProperty()
   active: boolean;
@@ -43,14 +68,40 @@ export class CommissionOptionPricingDto {
 }
 
 export class UpsertCommissionOptionPricingDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  commissionTypeId: string;
+
   @ApiProperty({ example: 'Sketched' })
   @IsString()
   @IsNotEmpty()
   label: string;
 
-  @ApiProperty({ example: -40 })
+  @ApiProperty({ enum: OPTION_PRICE_MODES, default: PriceMode.FIXED })
+  @IsEnum(OPTION_PRICE_MODES)
+  priceMode: (typeof OPTION_PRICE_MODES)[number];
+
+  @ApiProperty({ example: 3000 })
   @IsInt()
-  modifierPercent: number;
+  @Min(0)
+  minPrice: number;
+
+  @ApiProperty({
+    required: false,
+    nullable: true,
+    description: 'Required (and > minPrice) when priceMode is RANGE',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  maxPrice?: number | null;
+
+  @ApiProperty({ required: false, default: 0 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  no?: number;
 
   @ApiProperty({ default: true, required: false })
   @IsOptional()
@@ -79,17 +130,24 @@ export class CommissionAddonPricingDto {
   priceMode: PriceMode;
 
   @ApiProperty({
-    example: 3000,
+    nullable: true,
     description:
-      'FIXED: the price. STARTING_FROM: the floor ("from X"). RANGE: the lower bound. In the artist\'s currency\'s smallest unit.',
+      'FIXED: the price. STARTING_FROM: the floor ("from X"). RANGE: the lower bound. Unused for PERCENTAGE. In the currency\'s smallest unit.',
   })
-  minPrice: number;
+  minPrice: number | null;
 
   @ApiProperty({
     nullable: true,
     description: 'Upper bound — set only when priceMode is RANGE',
   })
   maxPrice: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    description:
+      "Percent of the selected CommissionOption's price — set only when priceMode is PERCENTAGE",
+  })
+  percent: number | null;
 
   @ApiProperty()
   active: boolean;
@@ -108,10 +166,14 @@ export class UpsertCommissionAddonPricingDto {
   @IsEnum(PriceMode)
   priceMode: PriceMode;
 
-  @ApiProperty({ example: 3000 })
+  @ApiProperty({
+    required: false,
+    description: 'Required unless priceMode is PERCENTAGE',
+  })
+  @IsOptional()
   @IsInt()
   @Min(0)
-  minPrice: number;
+  minPrice?: number;
 
   @ApiProperty({
     required: false,
@@ -123,6 +185,17 @@ export class UpsertCommissionAddonPricingDto {
   @Min(0)
   maxPrice?: number | null;
 
+  @ApiProperty({
+    required: false,
+    description:
+      "Required when priceMode is PERCENTAGE — percent of the selected option's price",
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  percent?: number;
+
   @ApiProperty({ default: true, required: false })
   @IsOptional()
   @IsBoolean()
@@ -130,6 +203,9 @@ export class UpsertCommissionAddonPricingDto {
 }
 
 export class CommissionRushFeeSettingDto {
+  @ApiProperty({ description: 'Whether the rush fee applies at all' })
+  enabled: boolean;
+
   @ApiProperty({
     example: 10,
     description: 'Deadlines within this many days trigger the rush fee',
@@ -144,6 +220,10 @@ export class CommissionRushFeeSettingDto {
 }
 
 export class UpsertCommissionRushFeeSettingDto {
+  @ApiProperty()
+  @IsBoolean()
+  enabled: boolean;
+
   @ApiProperty({ example: 10 })
   @IsInt()
   @Min(0)

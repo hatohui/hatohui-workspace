@@ -10,17 +10,25 @@ import type { CommissionAddonPricingDtoPriceMode } from './commissionAddonPricin
 export interface CommissionAddonPricingDto {
   id: string;
   artistId: string;
-  /** Also the i18n key: commission.addon.<key> */
+  /** Internal slug, derived from label at creation and never shown to the artist */
   key: string;
   label: string;
   priceMode: CommissionAddonPricingDtoPriceMode;
-  /** FIXED: the price. STARTING_FROM: the floor ("from X"). RANGE: the lower bound. In the artist's currency's smallest unit. */
-  minPrice: number;
+  /**
+     * FIXED: the price. STARTING_FROM: the floor ("from X"). RANGE: the lower bound. Unused for PERCENTAGE. In the currency's smallest unit.
+     * @nullable
+     */
+  minPrice: number | null;
   /**
      * Upper bound — set only when priceMode is RANGE
      * @nullable
      */
   maxPrice: number | null;
+  /**
+     * Percent of the selected CommissionOption's price — set only when priceMode is PERCENTAGE
+     * @nullable
+     */
+  percent: number | null;
   active: boolean;
   updatedAt: string;
 }

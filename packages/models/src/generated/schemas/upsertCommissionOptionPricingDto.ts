@@ -5,10 +5,18 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { UpsertCommissionOptionPricingDtoPriceMode } from './upsertCommissionOptionPricingDtoPriceMode';
 
 export interface UpsertCommissionOptionPricingDto {
-  key: string;
+  commissionTypeId: string;
   label: string;
-  modifierPercent: number;
+  priceMode: UpsertCommissionOptionPricingDtoPriceMode;
+  minPrice: number;
+  /**
+     * Required (and > minPrice) when priceMode is RANGE
+     * @nullable
+     */
+  maxPrice?: number | null;
+  no?: number;
   active?: boolean;
 }

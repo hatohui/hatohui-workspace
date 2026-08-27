@@ -16,6 +16,10 @@ query?: string;
  * Filter by exact tag
  */
 tag?: string;
+/**
+ * Filter to one artist's uploads (storefront gallery)
+ */
+uploadedById?: string;
 sort?: AssetsSort;
 page?: number;
 pageSize?: number;

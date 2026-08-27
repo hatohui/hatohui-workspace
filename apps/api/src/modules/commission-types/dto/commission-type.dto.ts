@@ -8,32 +8,27 @@ import {
   Min,
 } from 'class-validator';
 
+/** A platform catalog entry. Carries no price — an artist's price for a type
+ * is derived from whichever CommissionOption(s) they've configured under it. */
 export class CommissionTypeDto {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
-  artistId: string;
-
   @ApiProperty({
     example: 'ICON',
-    description:
-      'Internal slug, derived from label at creation and never shown to the artist',
+    description: 'Internal slug, derived from label at creation',
   })
   key: string;
 
   @ApiProperty({ example: 'Icon' })
   label: string;
 
-  @ApiProperty({
-    description: "Base price, in the artist's currency's smallest unit",
-  })
-  basePrice: number;
-
   @ApiProperty({ description: 'Display order, ascending' })
   no: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Whether this type exists in the platform catalog at all',
+  })
   active: boolean;
 
   @ApiProperty({ nullable: true, type: String })
@@ -59,13 +54,6 @@ export class UpsertCommissionTypeDto {
   @IsNotEmpty()
   label: string;
 
-  @ApiProperty({
-    description: "Base price, in the artist's currency's smallest unit",
-  })
-  @IsInt()
-  @Min(0)
-  basePrice: number;
-
   @ApiProperty({ required: false, default: 0 })
   @IsOptional()
   @IsInt()
@@ -76,4 +64,42 @@ export class UpsertCommissionTypeDto {
   @IsOptional()
   @IsBoolean()
   active?: boolean;
+}
+
+/** A catalog entry joined with the current artist's enablement of it — the
+ * shape the artist-facing commission-settings page renders. */
+export class ArtistCommissionTypeDto {
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'Id of the ArtistCommissionType row, null if never enabled',
+  })
+  id: string | null;
+
+  @ApiProperty()
+  commissionTypeId: string;
+
+  @ApiProperty({ example: 'ICON' })
+  key: string;
+
+  @ApiProperty({ example: 'Icon' })
+  label: string;
+
+  @ApiProperty({ description: 'Display order, ascending' })
+  no: number;
+
+  @ApiProperty({ description: 'Whether the artist has this type turned on' })
+  enabled: boolean;
+}
+
+export class UpsertArtistCommissionTypeDto {
+  @ApiProperty()
+  @IsBoolean()
+  active: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  no?: number;
 }

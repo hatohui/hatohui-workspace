@@ -3,44 +3,64 @@ import type { PrismaClient } from '@prisma/client';
 const DEV_ARTIST_GOOGLE_ID = 'dev-artist-seed';
 const DEV_ARTIST_EMAIL = 'artist@example.dev';
 
-const TYPES: {
-  key: string;
-  label: string;
-  basePrice: number;
-  tagName: string;
+const ENABLED_TYPES: {
+  typeKey: string;
+  options: {
+    key: string;
+    label: string;
+    priceMode: 'FIXED' | 'STARTING_FROM' | 'RANGE';
+    minPrice: number;
+    maxPrice?: number;
+  }[];
 }[] = [
-  { key: 'ICON', label: 'Icon', basePrice: 3000, tagName: 'Icon' },
   {
-    key: 'HALF_BODY',
-    label: 'Half Body',
-    basePrice: 6000,
-    tagName: 'Half Body',
+    typeKey: 'ICON',
+    options: [{ key: 'ICON', label: 'Icon', priceMode: 'FIXED', minPrice: 3000 }],
   },
   {
-    key: 'FULL_BODY',
-    label: 'Full Body',
-    basePrice: 10000,
-    tagName: 'Full Body',
+    typeKey: 'BUST',
+    options: [
+      { key: 'SKETCHED', label: 'Sketched', priceMode: 'FIXED', minPrice: 3600 },
+      {
+        key: 'FULLY_RENDERED',
+        label: 'Fully Rendered',
+        priceMode: 'FIXED',
+        minPrice: 6000,
+      },
+    ],
   },
   {
-    key: 'SKETCH_PAGE',
-    label: 'Sketch Page',
-    basePrice: 18000,
-    tagName: 'Sketch Page',
+    typeKey: 'FULL',
+    options: [
+      {
+        key: 'FULLY_RENDERED',
+        label: 'Fully Rendered',
+        priceMode: 'STARTING_FROM',
+        minPrice: 10000,
+      },
+    ],
   },
-];
-
-const OPTIONS: { key: string; label: string; modifierPercent: number }[] = [
-  { key: 'FULLY_RENDERED', label: 'Fully Rendered', modifierPercent: 0 },
-  { key: 'SKETCHED', label: 'Sketched', modifierPercent: -40 },
+  {
+    typeKey: 'SKETCHPAGE',
+    options: [
+      {
+        key: 'STANDARD',
+        label: 'Standard',
+        priceMode: 'RANGE',
+        minPrice: 15000,
+        maxPrice: 22000,
+      },
+    ],
+  },
 ];
 
 const ADDONS: {
   key: string;
   label: string;
-  priceMode: 'FIXED' | 'STARTING_FROM' | 'RANGE';
-  minPrice: number;
+  priceMode: 'FIXED' | 'STARTING_FROM' | 'RANGE' | 'PERCENTAGE';
+  minPrice?: number;
   maxPrice?: number;
+  percent?: number;
 }[] = [
   {
     key: 'COMPLEX_COSTUME',
@@ -54,6 +74,12 @@ const ADDONS: {
     priceMode: 'RANGE',
     minPrice: 3000,
     maxPrice: 6000,
+  },
+  {
+    key: 'RUSH',
+    label: 'Rush',
+    priceMode: 'PERCENTAGE',
+    percent: 25,
   },
 ];
 
@@ -73,37 +99,60 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
     },
   });
 
+  // A public handle is what makes the artist reachable at /[artist] at all —
+  // real artists get one through onboarding, but the dev seed has to set it
+  // directly since nothing here goes through that flow.
+  await prisma.profile.upsert({
+    where: { userId: artist.id },
+    update: {},
+    create: {
+      userId: artist.id,
+      displayName: 'Dev Artist',
+      handle: 'dev-artist',
+    },
+  });
+
   await prisma.userRole.upsert({
     where: { userId_roleId: { userId: artist.id, roleId: artistRole.id } },
     update: {},
     create: { userId: artist.id, roleId: artistRole.id },
   });
 
-  for (const type of TYPES) {
-    const tag = await prisma.tag.upsert({
-      where: { name: type.tagName },
-      update: {},
-      create: { name: type.tagName },
+  for (const [index, entry] of ENABLED_TYPES.entries()) {
+    const type = await prisma.commissionType.findUnique({
+      where: { key: entry.typeKey },
     });
-    await prisma.commissionType.upsert({
-      where: { artistId_key: { artistId: artist.id, key: type.key } },
-      update: {},
-      create: {
-        artistId: artist.id,
-        key: type.key,
-        label: type.label,
-        basePrice: type.basePrice,
-        tagId: tag.id,
-      },
-    });
-  }
+    if (!type) continue;
 
-  for (const option of OPTIONS) {
-    await prisma.commissionOption.upsert({
-      where: { artistId_key: { artistId: artist.id, key: option.key } },
+    await prisma.artistCommissionType.upsert({
+      where: {
+        artistId_commissionTypeId: {
+          artistId: artist.id,
+          commissionTypeId: type.id,
+        },
+      },
       update: {},
-      create: { artistId: artist.id, ...option },
+      create: { artistId: artist.id, commissionTypeId: type.id, no: index },
     });
+
+    for (const [optionIndex, option] of entry.options.entries()) {
+      await prisma.commissionOption.upsert({
+        where: {
+          artistId_commissionTypeId_key: {
+            artistId: artist.id,
+            commissionTypeId: type.id,
+            key: option.key,
+          },
+        },
+        update: {},
+        create: {
+          artistId: artist.id,
+          commissionTypeId: type.id,
+          no: optionIndex,
+          ...option,
+        },
+      });
+    }
   }
 
   for (const addon of ADDONS) {
@@ -144,7 +193,7 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
       userId: artist.id,
       scope: 'ART',
       type: 'art.commission.rushfee',
-      value: JSON.stringify({ thresholdDays: 10, feeAmount: 2500 }),
+      value: JSON.stringify({ enabled: true, thresholdDays: 10, feeAmount: 2500 }),
     },
   });
 }

@@ -6,11 +6,11 @@ import { Button } from '@hatohui/ui';
 import { MultiImageUploadField } from '@/components/shared/MultiImageUploadField';
 
 export function CommissionDeliverPanel({
-  deliverableAssets,
+  deliveredAt,
   onDeliver,
   isDelivering,
 }: {
-  deliverableAssets: string[];
+  deliveredAt: string | null;
   onDeliver: (files: File[]) => Promise<unknown>;
   isDelivering: boolean;
 }) {
@@ -22,17 +22,12 @@ export function CommissionDeliverPanel({
       <h2 className="mb-2 text-sm font-medium">
         {t('commission.admin.deliver.title')}
       </h2>
-      {deliverableAssets.length > 0 && (
-        <div className="mb-3 grid grid-cols-3 gap-2">
-          {deliverableAssets.map((url) => (
-            <img
-              key={url}
-              src={url}
-              alt=""
-              className="aspect-square w-full rounded object-cover"
-            />
-          ))}
-        </div>
+      {deliveredAt && (
+        <p className="mb-3 text-sm text-muted-foreground">
+          {t('commission.admin.deliver.deliveredAt', {
+            date: new Date(deliveredAt).toLocaleDateString(),
+          })}
+        </p>
       )}
       <MultiImageUploadField
         label={t('commission.admin.deliver.filesLabel')}

@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import type { CommissionNoteDto } from '@hatohui/models';
+import type { CommentDto } from '@hatohui/models';
 import { Button, Textarea } from '@hatohui/ui';
 
 export function OrderNotesThread({
   notes,
   onAdd,
 }: {
-  notes: CommissionNoteDto[];
+  notes: CommentDto[];
   onAdd: (body: string) => Promise<unknown>;
 }) {
   const { t } = useTranslation('art');

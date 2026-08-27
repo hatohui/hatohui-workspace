@@ -4,10 +4,14 @@ import { useAssets } from '@hatohui/models';
 
 const EXAMPLES_PAGE_SIZE = 6;
 
-export function useCommissionReferenceExamples(tag: string | undefined) {
+export function useCommissionReferenceExamples(
+  artistId: string,
+  tag: string | undefined,
+) {
   const query = useAssets(
     {
       tag,
+      uploadedById: artistId,
       sort: 'newest',
       page: 1,
       pageSize: EXAMPLES_PAGE_SIZE,

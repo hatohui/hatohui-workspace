@@ -23,7 +23,9 @@ import { AuthService } from '@/modules/auth/services/auth.service';
 import type { User } from '@prisma/client';
 import { CommissionTypesService } from '@/modules/commission-types/services/commission-types.service';
 import {
+  ArtistCommissionTypeDto,
   CommissionTypeDto,
+  UpsertArtistCommissionTypeDto,
   UpsertCommissionTypeDto,
 } from '@/modules/commission-types/dto/commission-type.dto';
 
@@ -39,41 +41,80 @@ export class CommissionTypesController {
   @ApiOperation({
     operationId: 'commissionTypes',
     summary:
-      "List an artist's commission types (active only unless includeInactive=true)",
+      'List the platform commission-type catalog (active only unless includeInactive=true)',
   })
-  @ApiQuery({ name: 'artistId', required: true, type: String })
   @ApiQuery({ name: 'includeInactive', required: false, type: Boolean })
   @ApiOkResponse({ type: CommissionTypeDto, isArray: true })
-  list(
-    @Query('artistId') artistId: string,
+  listCatalog(
     @Query('includeInactive') includeInactive?: string,
   ): Promise<CommissionTypeDto[]> {
-    return this.commissionTypesService.list(
-      artistId,
-      includeInactive !== 'true',
-    );
+    return this.commissionTypesService.listCatalog(includeInactive !== 'true');
+  }
+
+  @Get('by-artist/:artistId')
+  @ApiOperation({
+    operationId: 'commissionTypesByArtist',
+    summary:
+      "List one artist's enabled commission types (public storefront view)",
+  })
+  @ApiOkResponse({ type: CommissionTypeDto, isArray: true })
+  listByArtist(
+    @Param('artistId') artistId: string,
+  ): Promise<CommissionTypeDto[]> {
+    return this.commissionTypesService.listEnabledForArtist(artistId);
+  }
+
+  @Get('mine')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'myCommissionTypes',
+    summary: 'List the catalog joined with your own enablement of each entry',
+  })
+  @ApiOkResponse({ type: ArtistCommissionTypeDto, isArray: true })
+  async listMine(
+    @CurrentUser() user: User,
+  ): Promise<ArtistCommissionTypeDto[]> {
+    await this.assertArtist(user);
+    return this.commissionTypesService.listForArtist(user.id);
+  }
+
+  @Put(':id/enable')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'setArtistCommissionTypeEnabled',
+    summary: 'Enable/disable a catalog type for yourself, and set its order',
+  })
+  @ApiOkResponse({ type: ArtistCommissionTypeDto })
+  async setEnabled(
+    @Param('id') id: string,
+    @Body() dto: UpsertArtistCommissionTypeDto,
+    @CurrentUser() user: User,
+  ): Promise<ArtistCommissionTypeDto> {
+    await this.assertArtist(user);
+    return this.commissionTypesService.setEnabled(user.id, id, dto);
   }
 
   @Post()
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'createCommissionType',
-    summary: 'Create a commission type (also creates/reuses its linked Tag)',
+    summary:
+      'Add a commission type to the platform catalog (also creates/reuses its linked Tag)',
   })
   @ApiOkResponse({ type: CommissionTypeDto })
   async create(
     @Body() dto: UpsertCommissionTypeDto,
     @CurrentUser() user: User,
   ): Promise<CommissionTypeDto> {
-    await this.assertArtist(user);
-    return this.commissionTypesService.create(user.id, dto);
+    await this.assertAdmin(user);
+    return this.commissionTypesService.create(dto);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'updateCommissionType',
-    summary: 'Update one of your own commission types',
+    summary: 'Update a catalog commission type',
   })
   @ApiOkResponse({ type: CommissionTypeDto })
   async update(
@@ -81,8 +122,8 @@ export class CommissionTypesController {
     @Body() dto: UpsertCommissionTypeDto,
     @CurrentUser() user: User,
   ): Promise<CommissionTypeDto> {
-    await this.assertArtist(user);
-    return this.commissionTypesService.update(user.id, id, dto);
+    await this.assertAdmin(user);
+    return this.commissionTypesService.update(id, dto);
   }
 
   @Delete(':id')
@@ -90,19 +131,25 @@ export class CommissionTypesController {
   @HttpCode(204)
   @ApiOperation({
     operationId: 'deleteCommissionType',
-    summary: 'Delete one of your own commission types',
+    summary: 'Remove a commission type from the platform catalog',
   })
   async remove(
     @Param('id') id: string,
     @CurrentUser() user: User,
   ): Promise<void> {
-    await this.assertArtist(user);
-    return this.commissionTypesService.remove(user.id, id);
+    await this.assertAdmin(user);
+    return this.commissionTypesService.remove(id);
   }
 
   private async assertArtist(user: User): Promise<void> {
     if (!(await this.auth.isArtist(user))) {
       throw new ForbiddenException('Artist access denied');
+    }
+  }
+
+  private async assertAdmin(user: User): Promise<void> {
+    if (!(await this.auth.isAdmin(user))) {
+      throw new ForbiddenException('Admin access denied');
     }
   }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Input, Label } from '@hatohui/ui';
 import { useCommissionEmailLookup } from '@/hooks/useCommissionLookup';
@@ -10,6 +10,7 @@ import { OrderLookupResults } from './OrderLookupResults';
 export function OrderLookup() {
   const { t } = useTranslation('art');
   const router = useRouter();
+  const { artist } = useParams<{ artist: string }>();
   const lookup = useCommissionEmailLookup();
   const [code, setCode] = useState('');
 
@@ -43,7 +44,7 @@ export function OrderLookup() {
           <Button
             variant="outline"
             disabled={!code}
-            onClick={() => router.push(`/queue/${code}`)}
+            onClick={() => router.push(`/${artist}/queue/${code}`)}
           >
             {t('orders.codeGo')}
           </Button>

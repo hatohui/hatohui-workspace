@@ -7,6 +7,5 @@
  */
 
 export type CommissionTypesParams = {
-artistId: string;
 includeInactive?: boolean;
 };

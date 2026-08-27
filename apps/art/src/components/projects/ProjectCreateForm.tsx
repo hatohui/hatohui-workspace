@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Input, Label } from '@hatohui/ui';
+import { useAuth } from '@hatohui/libs';
 import { useProjectsAdmin } from '@/hooks/useProjects';
 
 export function ProjectCreateForm() {
   const { t } = useTranslation('art');
-  const { create } = useProjectsAdmin();
+  const { user } = useAuth();
+  const { create } = useProjectsAdmin(user?.id ?? '');
   const [title, setTitle] = useState('');
 
   return (
@@ -26,7 +28,9 @@ export function ProjectCreateForm() {
           className="self-end"
           disabled={!title}
           onClick={() => {
-            void create({ data: { title } }).then(() => setTitle(''));
+            void create({
+              data: { title, brief: { type: 'doc', content: [] } },
+            }).then(() => setTitle(''));
           }}
         >
           {t('projects.create')}

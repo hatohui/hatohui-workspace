@@ -10,17 +10,16 @@ export default async function ProjectDetailPage({
 }) {
   const { id } = await params;
 
-  try {
-    const response = await project(id);
-    return (
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <ProjectDetail project={response.data} />
-      </main>
-    );
-  } catch (error) {
+  const response = await project(id).catch((error: unknown) => {
     if (error instanceof ApiError && error.status === 404) {
       notFound();
     }
     throw error;
-  }
+  });
+
+  return (
+    <main className="mx-auto max-w-4xl px-6 py-10">
+      <ProjectDetail project={response.data} />
+    </main>
+  );
 }

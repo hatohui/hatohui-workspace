@@ -2,140 +2,186 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import {
-  Button,
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@hatohui/ui';
-import { CommissionAddonPricingDtoPriceMode as PriceMode } from '@hatohui/models';
+import { EditableDataTable, type EditableColumn } from '@hatohui/ui';
+import type {
+  CommissionAddonPricingDto,
+  CommissionAddonPricingDtoPriceMode,
+} from '@hatohui/models';
 import { useCommissionAddonPricingAdmin } from '@/hooks/useCommissionPricingAdmin';
 
-const PRICE_MODES = [PriceMode.STARTING_FROM, PriceMode.FIXED, PriceMode.RANGE];
+const DRAFT_ID = '__draft__';
+const PRICE_MODES: CommissionAddonPricingDtoPriceMode[] = [
+  'FIXED',
+  'STARTING_FROM',
+  'RANGE',
+  'PERCENTAGE',
+];
 
-function formatAddonPrice(
-  priceMode: PriceMode,
-  minPrice: number,
-  maxPrice: number | null,
-): string {
-  const min = (minPrice / 100).toFixed(0);
-  if (priceMode === PriceMode.FIXED) return `$${min}`;
-  if (priceMode === PriceMode.RANGE && maxPrice != null) {
-    return `$${min}–$${(maxPrice / 100).toFixed(0)}`;
-  }
-  return `$${min}+`;
+interface AddonRow {
+  id: string;
+  label: string;
+  priceMode: string;
+  minPrice: string;
+  maxPrice: string;
+  percent: string;
+  active: string;
+}
+
+function toRow(item: CommissionAddonPricingDto): AddonRow {
+  return {
+    id: item.id,
+    label: item.label,
+    priceMode: item.priceMode,
+    minPrice: item.minPrice != null ? (item.minPrice / 100).toFixed(2) : '',
+    maxPrice: item.maxPrice != null ? (item.maxPrice / 100).toFixed(2) : '',
+    percent: item.percent != null ? String(item.percent) : '',
+    active: String(item.active),
+  };
+}
+
+function blankDraft(): AddonRow {
+  return {
+    id: DRAFT_ID,
+    label: '',
+    priceMode: 'STARTING_FROM',
+    minPrice: '',
+    maxPrice: '',
+    percent: '',
+    active: 'true',
+  };
+}
+
+function toCents(dollars: string): number {
+  return Math.round(Number(dollars) * 100);
 }
 
 export function CommissionAddonPricingSection() {
   const { t } = useTranslation('art');
   const pricing = useCommissionAddonPricingAdmin();
-  const [key, setKey] = useState('');
-  const [label, setLabel] = useState('');
-  const [priceMode, setPriceMode] = useState<PriceMode>(
-    PriceMode.STARTING_FROM,
-  );
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [draft, setDraft] = useState<AddonRow | null>(null);
 
-  const canSave =
-    key && label && minPrice && (priceMode !== PriceMode.RANGE || maxPrice);
+  const ACTIVE_OPTIONS = [
+    { label: t('commission.admin.pricing.typesTable.active'), value: 'true' },
+    {
+      label: t('commission.admin.pricing.typesTable.inactive'),
+      value: 'false',
+    },
+  ];
+
+  const PRICE_MODE_OPTIONS = PRICE_MODES.map((mode) => ({
+    label: t(`commission.admin.pricing.priceMode.${mode}`),
+    value: mode,
+  }));
+
+  const columns: EditableColumn<AddonRow>[] = [
+    {
+      key: 'label',
+      label: t('commission.admin.pricing.typesTable.columns.label'),
+      editable: true,
+      size: 180,
+    },
+    {
+      key: 'priceMode',
+      label: t('commission.admin.pricing.optionsTable.priceMode'),
+      editable: true,
+      options: PRICE_MODE_OPTIONS,
+      render: (row) => t(`commission.admin.pricing.priceMode.${row.priceMode}`),
+      size: 160,
+    },
+    {
+      key: 'minPrice',
+      label: t('commission.admin.pricing.optionsTable.minPrice'),
+      editable: (row) => row.priceMode !== 'PERCENTAGE',
+      render: (row) =>
+        row.priceMode === 'PERCENTAGE' ? '' : `$${row.minPrice}`,
+      size: 120,
+    },
+    {
+      key: 'maxPrice',
+      label: t('commission.admin.pricing.optionsTable.maxPrice'),
+      editable: (row) => row.priceMode === 'RANGE',
+      render: (row) => (row.maxPrice ? `$${row.maxPrice}` : ''),
+      size: 120,
+    },
+    {
+      key: 'percent',
+      label: t('commission.admin.pricing.addonsTable.percent'),
+      editable: (row) => row.priceMode === 'PERCENTAGE',
+      render: (row) =>
+        row.priceMode === 'PERCENTAGE' ? `${row.percent}%` : '',
+      size: 100,
+    },
+    {
+      key: 'active',
+      label: t('commission.admin.pricing.typesTable.columns.active'),
+      editable: (row) => row.id !== DRAFT_ID,
+      options: ACTIVE_OPTIONS,
+      render: (row) =>
+        row.active === 'true'
+          ? t('commission.admin.pricing.typesTable.active')
+          : t('commission.admin.pricing.typesTable.inactive'),
+      size: 120,
+    },
+  ];
+
+  const buildPayload = (row: AddonRow) => ({
+    label: row.label.trim(),
+    priceMode: row.priceMode as CommissionAddonPricingDto['priceMode'],
+    minPrice:
+      row.priceMode !== 'PERCENTAGE' && row.minPrice.trim()
+        ? toCents(row.minPrice)
+        : undefined,
+    maxPrice:
+      row.priceMode === 'RANGE' && row.maxPrice.trim()
+        ? toCents(row.maxPrice)
+        : undefined,
+    percent:
+      row.priceMode === 'PERCENTAGE' && row.percent.trim()
+        ? Number(row.percent)
+        : undefined,
+    active: row.active === 'true',
+  });
+
+  const handleCommit = (id: string, key: keyof AddonRow, value: string) => {
+    if (id === DRAFT_ID) {
+      const next = { ...(draft ?? blankDraft()), [key]: value };
+      setDraft(next);
+      const ready =
+        next.label.trim() &&
+        (next.priceMode === 'PERCENTAGE'
+          ? next.percent.trim()
+          : next.minPrice.trim() &&
+            (next.priceMode !== 'RANGE' || next.maxPrice.trim()));
+      if (ready) {
+        void pricing.create({ data: buildPayload(next) });
+        setDraft(null);
+      }
+      return;
+    }
+
+    const existing = pricing.items.find((item) => item.id === id);
+    if (!existing) return;
+    const next = { ...toRow(existing), [key]: value };
+    void pricing.update({ id, data: buildPayload(next) });
+  };
+
+  const rows = pricing.items.map(toRow);
 
   return (
     <section>
       <h2 className="mb-2 font-medium">{t('commission.form.addonsLabel')}</h2>
-      <ul className="space-y-1">
-        {pricing.items.map((item) => (
-          <li
-            key={item.id}
-            className="flex items-center justify-between rounded-md bg-card p-2 text-sm"
-          >
-            <span>
-              {item.label} —{' '}
-              {formatAddonPrice(item.priceMode, item.minPrice, item.maxPrice)}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => void pricing.remove(item.id)}
-            >
-              {t('gallery.card.delete')}
-            </Button>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <Input
-          placeholder="KEY"
-          value={key}
-          onChange={(event) => setKey(event.target.value)}
-        />
-        <Input
-          placeholder={t('commission.form.addonsLabel')}
-          value={label}
-          onChange={(event) => setLabel(event.target.value)}
-        />
-        <Select
-          value={priceMode}
-          onValueChange={(value) => setPriceMode(value as PriceMode)}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {PRICE_MODES.map((mode) => (
-              <SelectItem key={mode} value={mode}>
-                {t(`commission.admin.pricing.priceMode.${mode}`, {
-                  defaultValue: mode,
-                })}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Input
-          type="number"
-          placeholder={priceMode === PriceMode.FIXED ? '$' : '$ from'}
-          value={minPrice}
-          onChange={(event) => setMinPrice(event.target.value)}
-        />
-        {priceMode === PriceMode.RANGE && (
-          <Input
-            type="number"
-            placeholder="$ to"
-            value={maxPrice}
-            onChange={(event) => setMaxPrice(event.target.value)}
-          />
-        )}
-        <Button
-          disabled={!canSave}
-          onClick={() => {
-            void pricing
-              .create({
-                data: {
-                  key,
-                  label,
-                  priceMode,
-                  minPrice: Math.round(Number(minPrice) * 100),
-                  maxPrice:
-                    priceMode === PriceMode.RANGE
-                      ? Math.round(Number(maxPrice) * 100)
-                      : undefined,
-                },
-              })
-              .then(() => {
-                setKey('');
-                setLabel('');
-                setMinPrice('');
-                setMaxPrice('');
-                setPriceMode(PriceMode.STARTING_FROM);
-              });
-          }}
-        >
-          {t('gallery.upload.save')}
-        </Button>
-      </div>
+      <EditableDataTable
+        columns={columns}
+        rows={draft ? [...rows, draft] : rows}
+        storageKey="commission-addons"
+        onCommit={handleCommit}
+        onAddRow={() => setDraft((prev) => prev ?? blankDraft())}
+        addRowLabel={t('commission.admin.pricing.addonsTable.addRow')}
+        onDeleteRow={(row) =>
+          row.id === DRAFT_ID ? setDraft(null) : void pricing.remove(row.id)
+        }
+        deleteRowLabel={t('commission.admin.pricing.optionsTable.deleteRow')}
+      />
     </section>
   );
 }

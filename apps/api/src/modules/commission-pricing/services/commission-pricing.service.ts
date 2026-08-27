@@ -85,9 +85,15 @@ export class CommissionPricingService {
     return dto;
   }
 
-  listOptions(artistId: string): Promise<CommissionOptionPricingDto[]> {
+  listOptions(
+    artistId: string,
+    commissionTypeId?: string,
+  ): Promise<CommissionOptionPricingDto[]> {
     return this.db.commissionOption
-      .findMany({ where: { artistId }, orderBy: { no: 'asc' } })
+      .findMany({
+        where: { artistId, ...(commissionTypeId ? { commissionTypeId } : {}) },
+        orderBy: { no: 'asc' },
+      })
       .then((rows) => rows.map(toOptionDto));
   }
 
@@ -95,12 +101,30 @@ export class CommissionPricingService {
     artistId: string,
     dto: UpsertCommissionOptionPricingDto,
   ): Promise<CommissionOptionPricingDto> {
+    await this.assertTypeExists(dto.commissionTypeId);
+    const maxPrice = normalizeOptionMaxPrice(dto);
+    const key = await uniqueSlug(dto.label, async (candidate) => {
+      const existing = await this.db.commissionOption.findUnique({
+        where: {
+          artistId_commissionTypeId_key: {
+            artistId,
+            commissionTypeId: dto.commissionTypeId,
+            key: candidate,
+          },
+        },
+      });
+      return existing !== null;
+    });
     const row = await this.db.commissionOption.create({
       data: {
         artistId,
-        key: dto.key,
+        commissionTypeId: dto.commissionTypeId,
+        key,
         label: dto.label,
-        modifierPercent: dto.modifierPercent,
+        priceMode: dto.priceMode,
+        minPrice: dto.minPrice,
+        maxPrice,
+        no: dto.no ?? 0,
         active: dto.active ?? true,
       },
     });
@@ -113,12 +137,15 @@ export class CommissionPricingService {
     dto: UpsertCommissionOptionPricingDto,
   ): Promise<CommissionOptionPricingDto> {
     await this.assertOwned(this.db.commissionOption, artistId, id);
+    const maxPrice = normalizeOptionMaxPrice(dto);
     const row = await this.db.commissionOption.update({
       where: { id },
       data: {
-        key: dto.key,
         label: dto.label,
-        modifierPercent: dto.modifierPercent,
+        priceMode: dto.priceMode,
+        minPrice: dto.minPrice,
+        maxPrice,
+        no: dto.no,
         active: dto.active ?? true,
       },
     });
@@ -140,15 +167,22 @@ export class CommissionPricingService {
     artistId: string,
     dto: UpsertCommissionAddonPricingDto,
   ): Promise<CommissionAddonPricingDto> {
-    const maxPrice = normalizeAddonMaxPrice(dto);
+    const { minPrice, maxPrice, percent } = normalizeAddonPricing(dto);
+    const key = await uniqueSlug(dto.label, async (candidate) => {
+      const existing = await this.db.commissionAddon.findUnique({
+        where: { artistId_key: { artistId, key: candidate } },
+      });
+      return existing !== null;
+    });
     const row = await this.db.commissionAddon.create({
       data: {
         artistId,
-        key: dto.key,
+        key,
         label: dto.label,
         priceMode: dto.priceMode,
-        minPrice: dto.minPrice,
+        minPrice,
         maxPrice,
+        percent,
         active: dto.active ?? true,
       },
     });
@@ -161,15 +195,15 @@ export class CommissionPricingService {
     dto: UpsertCommissionAddonPricingDto,
   ): Promise<CommissionAddonPricingDto> {
     await this.assertOwned(this.db.commissionAddon, artistId, id);
-    const maxPrice = normalizeAddonMaxPrice(dto);
+    const { minPrice, maxPrice, percent } = normalizeAddonPricing(dto);
     const row = await this.db.commissionAddon.update({
       where: { id },
       data: {
-        key: dto.key,
         label: dto.label,
         priceMode: dto.priceMode,
-        minPrice: dto.minPrice,
+        minPrice,
         maxPrice,
+        percent,
         active: dto.active ?? true,
       },
     });
@@ -179,6 +213,17 @@ export class CommissionPricingService {
   async deleteAddon(artistId: string, id: string): Promise<void> {
     await this.assertOwned(this.db.commissionAddon, artistId, id);
     await this.db.commissionAddon.delete({ where: { id } });
+  }
+
+  private async assertTypeExists(commissionTypeId: string): Promise<void> {
+    const type = await this.db.commissionType.findUnique({
+      where: { id: commissionTypeId },
+    });
+    if (!type) {
+      throw new NotFoundException(
+        `Commission type ${commissionTypeId} not found`,
+      );
+    }
   }
 
   private async assertOwned(
@@ -201,16 +246,20 @@ function toOptionDto(row: CommissionOption): CommissionOptionPricingDto {
   return {
     id: row.id,
     artistId: row.artistId,
+    commissionTypeId: row.commissionTypeId,
     key: row.key,
     label: row.label,
-    modifierPercent: row.modifierPercent,
+    priceMode: row.priceMode as CommissionOptionPricingDto['priceMode'],
+    minPrice: row.minPrice,
+    maxPrice: row.maxPrice,
+    no: row.no,
     active: row.active,
     updatedAt: row.updatedAt.toISOString(),
   };
 }
 
-function normalizeAddonMaxPrice(dto: {
-  priceMode: PriceMode;
+function normalizeOptionMaxPrice(dto: {
+  priceMode: string;
   minPrice: number;
   maxPrice?: number | null;
 }): number | null {
@@ -223,6 +272,42 @@ function normalizeAddonMaxPrice(dto: {
   return dto.maxPrice;
 }
 
+function normalizeAddonPricing(dto: {
+  priceMode: PriceMode;
+  minPrice?: number;
+  maxPrice?: number | null;
+  percent?: number;
+}): {
+  minPrice: number | null;
+  maxPrice: number | null;
+  percent: number | null;
+} {
+  if (dto.priceMode === PriceMode.PERCENTAGE) {
+    if (dto.percent == null) {
+      throw new BadRequestException(
+        'percent is required when priceMode is PERCENTAGE',
+      );
+    }
+    return { minPrice: null, maxPrice: null, percent: dto.percent };
+  }
+
+  if (dto.minPrice == null) {
+    throw new BadRequestException(
+      'minPrice is required unless priceMode is PERCENTAGE',
+    );
+  }
+  if (dto.priceMode === PriceMode.RANGE) {
+    if (dto.maxPrice == null || dto.maxPrice <= dto.minPrice) {
+      throw new BadRequestException(
+        'maxPrice is required and must be greater than minPrice when priceMode is RANGE',
+      );
+    }
+    return { minPrice: dto.minPrice, maxPrice: dto.maxPrice, percent: null };
+  }
+
+  return { minPrice: dto.minPrice, maxPrice: null, percent: null };
+}
+
 function toAddonDto(row: CommissionAddon): CommissionAddonPricingDto {
   return {
     id: row.id,
@@ -232,6 +317,7 @@ function toAddonDto(row: CommissionAddon): CommissionAddonPricingDto {
     priceMode: row.priceMode,
     minPrice: row.minPrice,
     maxPrice: row.maxPrice,
+    percent: row.percent,
     active: row.active,
     updatedAt: row.updatedAt.toISOString(),
   };

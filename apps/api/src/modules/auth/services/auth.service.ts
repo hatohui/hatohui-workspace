@@ -45,6 +45,11 @@ export class AuthService {
     return this.hasRole(user, ROLE_KEYS.artist);
   }
 
+  async isArtistById(userId: string): Promise<boolean> {
+    const roles = await this.rolesFor(userId);
+    return roles.includes(ROLE_KEYS.artist);
+  }
+
   async hasRole(user: User | null, roleKey: RoleKey): Promise<boolean> {
     if (!user) return false;
     const roles = await this.rolesFor(user.id);

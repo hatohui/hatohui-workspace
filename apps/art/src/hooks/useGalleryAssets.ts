@@ -10,7 +10,10 @@ export interface GalleryInitialData {
   total: number;
 }
 
-export function useGalleryAssets(initialData?: GalleryInitialData) {
+export function useGalleryAssets(
+  artistId: string | undefined,
+  initialData?: GalleryInitialData,
+) {
   const [query, setQuery] = useState('');
   const [tag, setTag] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<AssetsSort>('newest');
@@ -27,6 +30,7 @@ export function useGalleryAssets(initialData?: GalleryInitialData) {
     {
       query: debouncedQuery || undefined,
       tag,
+      uploadedById: artistId,
       sort,
       page,
       pageSize: GALLERY_PAGE_SIZE,

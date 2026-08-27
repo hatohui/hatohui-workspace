@@ -1,21 +1,11 @@
-import { assets } from '@hatohui/models';
+import { artists } from '@hatohui/models';
 import '@/lib/api';
-import { GalleryGrid } from '@/components/gallery/GalleryGrid';
-import { GALLERY_PAGE_SIZE } from '@/constants/gallery';
+import { ArtistPicker } from '@/components/layout/ArtistPicker';
 
-// The gallery must reflect live uploads, and the CI build has no reachable
-// API to prerender against anyway — always render this route per-request.
 export const dynamic = 'force-dynamic';
 
-export default async function HomePage() {
-  const response = await assets({ page: 1, pageSize: GALLERY_PAGE_SIZE });
+export default async function ArtistIndexPage() {
+  const response = await artists();
 
-  return (
-    <GalleryGrid
-      initialData={{
-        items: response.data.items,
-        total: response.data.total,
-      }}
-    />
-  );
+  return <ArtistPicker artists={response.data} />;
 }

@@ -2,17 +2,20 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import type { ProjectDto } from '@hatohui/models';
 
 export function ProjectCard({ project }: { project: ProjectDto }) {
+  const { artist } = useParams<{ artist: string }>();
+
   return (
     <Link
-      href={`/projects/${project.id}`}
+      href={`/${artist}/projects/${project.id}`}
       className="group relative aspect-square overflow-hidden rounded-lg bg-card"
     >
-      {project.coverAssetUrl ? (
+      {project.coverImageUrl ? (
         <Image
-          src={project.coverAssetUrl}
+          src={project.coverImageUrl}
           alt={project.title}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"

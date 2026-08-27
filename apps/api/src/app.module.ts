@@ -15,6 +15,7 @@ import { ImagesModule } from '@/modules/images/images.module';
 import { SocialPlatformsModule } from '@/modules/social-platforms/social-platforms.module';
 import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
 import { UsersModule } from '@/modules/users/users.module';
+import { ArtistsModule } from '@/modules/artists/artists.module';
 import { AdminModule } from '@/modules/admin/admin.module';
 import { ConnectionsModule } from '@/modules/connections/connections.module';
 import { CronModule } from '@/modules/cron/cron.module';
@@ -46,6 +47,7 @@ import { ProjectsModule } from '@/modules/projects/projects.module';
     SocialPlatformsModule,
     OnboardingModule,
     UsersModule,
+    ArtistsModule,
     AdminModule,
     ConnectionsModule,
     CronModule,

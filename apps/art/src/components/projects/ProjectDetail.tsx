@@ -12,7 +12,7 @@ export function ProjectDetail({ project }: { project: ProjectDto }) {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {project.deliverableAssets.map((url) => (
+        {project.artworkImages.map((url) => (
           <div
             key={url}
             className="relative aspect-square overflow-hidden rounded-lg bg-card"

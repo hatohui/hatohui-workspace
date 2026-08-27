@@ -23,9 +23,9 @@ import { CommissionVisibilityCheckbox } from './CommissionVisibilityCheckbox';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
 
-export function CommissionForm() {
+export function CommissionForm({ artistId }: { artistId: string }) {
   const { t } = useTranslation('art');
-  const form = useCommissionForm();
+  const form = useCommissionForm(artistId);
   const [isClearOpen, setIsClearOpen] = useState(false);
   const formRef = useStaggerReveal<HTMLFormElement>(':scope > *', []);
 
@@ -62,7 +62,7 @@ export function CommissionForm() {
         />
       </div>
 
-      <CommissionTypeFields form={form} />
+      <CommissionTypeFields form={form} artistId={artistId} />
       <CommissionQuoteEstimate pricing={form.pricing} />
 
       <div>

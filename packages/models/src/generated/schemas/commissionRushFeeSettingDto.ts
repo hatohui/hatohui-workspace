@@ -7,6 +7,8 @@
  */
 
 export interface CommissionRushFeeSettingDto {
+  /** Whether the rush fee applies at all */
+  enabled: boolean;
   /** Deadlines within this many days trigger the rush fee */
   thresholdDays: number;
   /** Rush fee, in the artist's currency's smallest unit */

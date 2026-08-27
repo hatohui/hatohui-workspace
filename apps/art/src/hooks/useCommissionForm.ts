@@ -51,15 +51,21 @@ function loadDraft(): CommissionFormState | null {
   }
 }
 
-export function useCommissionForm() {
+export function useCommissionForm(artistId: string) {
   const [state, setState] = useState<CommissionFormState>(INITIAL_STATE);
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isDraftRestored, setIsDraftRestored] = useState(false);
 
+  // Restoring a draft must happen post-mount, not in a lazy initializer:
+  // localStorage doesn't exist during the server render, so an initializer
+  // that read it would disagree with the client's first paint and fail
+  // hydration. This is exactly what an effect is for — syncing from an
+  // external system unavailable at render time.
   useEffect(() => {
     const draft = loadDraft();
     if (draft) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setState(draft);
       setIsDraftRestored(true);
     }
@@ -78,6 +84,7 @@ export function useCommissionForm() {
   const submitCommission = useSubmitCommission();
   const { uploadImage, isUploading } = useImageUpload();
   const pricing = useCommissionPricingEstimate(
+    artistId,
     state.commissionTypeId || undefined,
     state.optionKey || undefined,
     state.addonKeys,
@@ -98,10 +105,11 @@ export function useCommissionForm() {
 
     await submitCommission.mutateAsync({
       data: {
+        artistId,
         idea: state.idea,
         deadline: state.deadline || undefined,
         commissionTypeId: state.commissionTypeId || undefined,
-        optionKey: state.optionKey || undefined,
+        optionKey: pricing.selectedOption?.key ?? state.optionKey ?? undefined,
         addonKeys: state.addonKeys,
         clientName: state.clientName,
         clientEmail: state.clientEmail,

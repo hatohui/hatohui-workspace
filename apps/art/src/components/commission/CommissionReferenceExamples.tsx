@@ -5,12 +5,14 @@ import { useTranslation } from '@hatohui/i18n';
 import { useCommissionReferenceExamples } from '@/hooks/useCommissionReferenceExamples';
 
 export function CommissionReferenceExamples({
+  artistId,
   tag,
 }: {
+  artistId: string;
   tag: string | undefined;
 }) {
   const { t } = useTranslation('art');
-  const { items } = useCommissionReferenceExamples(tag);
+  const { items } = useCommissionReferenceExamples(artistId, tag);
 
   if (!tag || items.length === 0) return null;
 

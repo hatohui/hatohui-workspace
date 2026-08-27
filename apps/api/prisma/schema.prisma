@@ -63,7 +63,7 @@ model User {
   commissionOpenings      CommissionOpening[]       @relation("ArtistCommissionOpenings")
   commissionGroups        CommissionGroup[]         @relation("ArtistCommissionGroups")
   projects                Project[]                 @relation("ArtistProjects")
-  commissionTypes         CommissionType[]          @relation("ArtistCommissionTypes")
+  commissionTypes         ArtistCommissionType[]    @relation("ArtistCommissionTypes")
   commissionOptions       CommissionOption[]        @relation("ArtistCommissionOptions")
   commissionAddons        CommissionAddon[]         @relation("ArtistCommissionAddons")
   commissionFollowers     CommissionFollower[]      @relation("ArtistFollowers")
@@ -353,28 +353,45 @@ model Tag {
   commissionTypes CommissionType[]
 }
 
-/// Admin-manageable commission type (e.g. Icon, Full Body). Replaces the old
-/// fixed CommissionType enum so admins can add new types at runtime. `key` is
-/// also the i18n key suffix: commission.type.<key>.label.
+/// Platform-wide, admin-curated catalog of commission types (e.g. Sketch,
+/// Lineart, Icon, Bust, Full, Sketchpage, Comic, Animation). `key` is also the
+/// i18n key suffix: commission.type.<key>.label. Artists opt into individual
+/// types via ArtistCommissionType and price them via their own
+/// CommissionOptions — a type itself carries no price.
 model CommissionType {
-  id       String @id @default(cuid())
-  artistId String
-  artist   User   @relation("ArtistCommissionTypes", fields: [artistId], references: [id], onDelete: Cascade)
-
-  key       String
-  label     String
-  basePrice Int
-  no        Int      @default(0)
-  active    Boolean  @default(true)
+  id     String @id @default(cuid())
+  key    String @unique
+  label  String
+  no     Int      @default(0)
+  active Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   tagId String?
   tag   Tag?    @relation(fields: [tagId], references: [id], onDelete: SetNull)
 
-  details CommissionDetail[]
+  artistTypes ArtistCommissionType[]
+  options     CommissionOption[]
+  details     CommissionDetail[]
+}
 
-  @@unique([artistId, key])
+/// An artist's enablement of a platform CommissionType. Existing only for
+/// types the artist has turned on; `active` lets them toggle it back off
+/// without losing their configured CommissionOptions.
+model ArtistCommissionType {
+  id       String @id @default(cuid())
+  artistId String
+  artist   User   @relation("ArtistCommissionTypes", fields: [artistId], references: [id], onDelete: Cascade)
+
+  commissionTypeId String
+  commissionType   CommissionType @relation(fields: [commissionTypeId], references: [id], onDelete: Cascade)
+
+  no        Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([artistId, commissionTypeId])
 }
 
 enum PreferredContactMethod {
@@ -385,32 +402,42 @@ enum PreferredContactMethod {
   OTHER
 }
 
-/// Admin-configurable base price for a CommissionType, in USD cents.
+enum PriceMode {
+  FIXED
+  STARTING_FROM
+  RANGE
+  PERCENTAGE
+}
 
-/// Admin-configurable rendering option (e.g. "Sketched" at -40%), applied as
-/// a percentage modifier on top of the CommissionType base price.
+/// An artist's priced variant of a CommissionType (e.g. "Flat color" at $40,
+/// "Full render" starting at $70). A type with exactly one option is applied
+/// directly to an order; a type with several renders as a dropdown for the
+/// client to pick from. PERCENTAGE is not a valid mode here — an option has
+/// nothing to take a percentage of.
 model CommissionOption {
   id       String @id @default(cuid())
   artistId String
   artist   User   @relation("ArtistCommissionOptions", fields: [artistId], references: [id], onDelete: Cascade)
 
-  key             String
-  label           String
-  modifierPercent Int
-  no              Int      @default(0)
-  active          Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  commissionTypeId String
+  commissionType   CommissionType @relation(fields: [commissionTypeId], references: [id], onDelete: Cascade)
 
-  @@unique([artistId, key])
+  key       String
+  label     String
+  priceMode PriceMode @default(FIXED)
+  minPrice  Int
+  maxPrice  Int?
+  no        Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([artistId, commissionTypeId, key])
 }
 
-enum PriceMode {
-  FIXED
-  STARTING_FROM
-  RANGE
-}
-
+/// Admin-configurable surcharge/discount an artist can attach to an order.
+/// PERCENTAGE addons are computed against the price of whichever
+/// CommissionOption the client selected.
 model CommissionAddon {
   id       String @id @default(cuid())
   artistId String
@@ -419,8 +446,9 @@ model CommissionAddon {
   key       String
   label     String
   priceMode PriceMode @default(STARTING_FROM)
-  minPrice  Int
+  minPrice  Int?
   maxPrice  Int?
+  percent   Int?
   no        Int       @default(0)
   active    Boolean   @default(true)
   createdAt DateTime  @default(now())

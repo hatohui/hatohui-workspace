@@ -22,6 +22,14 @@ export class AssetQueryDto {
   tag?: string;
 
   @ApiProperty({
+    required: false,
+    description: "Filter to one artist's uploads (storefront gallery)",
+  })
+  @IsOptional()
+  @IsString()
+  uploadedById?: string;
+
+  @ApiProperty({
     enum: ASSET_SORT_OPTIONS,
     required: false,
     default: 'newest',

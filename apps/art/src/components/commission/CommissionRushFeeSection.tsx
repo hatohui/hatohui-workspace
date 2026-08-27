@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Input, Label } from '@hatohui/ui';
+import { Button, Input, Label, Switch } from '@hatohui/ui';
 import {
   useCommissionRushFeeAdmin,
   type RushFeeSetting,
@@ -13,9 +13,10 @@ function RushFeeForm({
   onSave,
 }: {
   initial: RushFeeSetting | null | undefined;
-  onSave: (thresholdDays: number, feeAmount: number) => void;
+  onSave: (enabled: boolean, thresholdDays: number, feeAmount: number) => void;
 }) {
   const { t } = useTranslation('art');
+  const [enabled, setEnabled] = useState(initial?.enabled ?? false);
   const [thresholdDays, setThresholdDays] = useState(
     String(initial?.thresholdDays ?? 10),
   );
@@ -24,7 +25,21 @@ function RushFeeForm({
   );
 
   return (
-    <div className="flex items-end gap-2">
+    <div className="flex items-end gap-3">
+      <div className="flex items-center gap-2">
+        <Switch
+          checked={enabled}
+          onCheckedChange={(checked) => {
+            setEnabled(checked);
+            onSave(
+              checked,
+              Number(thresholdDays),
+              Math.round(Number(feeDollars) * 100),
+            );
+          }}
+        />
+        <Label>{t('commission.admin.pricing.rushFeeEnabled')}</Label>
+      </div>
       <div>
         <Label htmlFor="rush-days">
           {t('commission.admin.pricing.rushFeeDays')}
@@ -32,6 +47,7 @@ function RushFeeForm({
         <Input
           id="rush-days"
           type="number"
+          disabled={!enabled}
           value={thresholdDays}
           onChange={(event) => setThresholdDays(event.target.value)}
         />
@@ -43,13 +59,19 @@ function RushFeeForm({
         <Input
           id="rush-amount"
           type="number"
+          disabled={!enabled}
           value={feeDollars}
           onChange={(event) => setFeeDollars(event.target.value)}
         />
       </div>
       <Button
+        disabled={!enabled}
         onClick={() =>
-          onSave(Number(thresholdDays), Math.round(Number(feeDollars) * 100))
+          onSave(
+            enabled,
+            Number(thresholdDays),
+            Math.round(Number(feeDollars) * 100),
+          )
         }
       >
         {t('gallery.upload.save')}
@@ -71,8 +93,8 @@ export function CommissionRushFeeSection({ artistId }: { artistId: string }) {
         <RushFeeForm
           key={rushFee ? 'loaded' : 'default'}
           initial={rushFee}
-          onSave={(thresholdDays, feeAmount) =>
-            void update({ data: { thresholdDays, feeAmount } })
+          onSave={(enabled, thresholdDays, feeAmount) =>
+            void update({ data: { enabled, thresholdDays, feeAmount } })
           }
         />
       )}

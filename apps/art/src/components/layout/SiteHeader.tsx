@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { LayoutGrid } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import {
@@ -23,21 +24,26 @@ export function SiteHeader() {
   const { user, isLoading } = useAuth();
   const { confirming, requestLogout, cancelLogout, confirmLogout } =
     useConfirmLogout();
+  const { artist } = useParams<{ artist?: string }>();
 
   return (
     <header className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="font-serif text-lg">
+        <Link href={artist ? `/${artist}` : '/'} className="font-serif text-lg">
           {t('site.title')}
         </Link>
-        <nav className="flex items-center gap-6 text-sm">
-          <Link href="/">{t('site.nav.gallery')}</Link>
-          <Link href="/commission">{t('site.nav.commission')}</Link>
-          <Link href="/queue">{t('site.nav.queue')}</Link>
-          {user?.isAdmin && (
-            <Link href="/admin/commissions">{t('site.nav.admin')}</Link>
-          )}
-        </nav>
+        {artist && (
+          <nav className="flex items-center gap-6 text-sm">
+            <Link href={`/${artist}`}>{t('site.nav.gallery')}</Link>
+            <Link href={`/${artist}/commission`}>
+              {t('site.nav.commission')}
+            </Link>
+            <Link href={`/${artist}/queue`}>{t('site.nav.queue')}</Link>
+            {user?.isAdmin && (
+              <Link href="/admin/commissions">{t('site.nav.admin')}</Link>
+            )}
+          </nav>
+        )}
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           {!isLoading && !user && <GoogleLoginIconButton />}
@@ -52,7 +58,9 @@ export function SiteHeader() {
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    aria-label={t('common:auth.loggedInAs', { name: user.name })}
+                    aria-label={t('common:auth.loggedInAs', {
+                      name: user.name,
+                    })}
                   >
                     <Avatar
                       src={user.avatarUrl}

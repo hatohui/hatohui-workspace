@@ -43,12 +43,12 @@ export function OrderDetail({ code }: { code: string }) {
           </dt>
           <dd>{t(`commission.paymentStatus.${commission.paymentStatus}`)}</dd>
         </div>
-        {commission.quoteCents !== null && (
+        {commission.quote !== null && (
           <div>
             <dt className="font-medium">
               {t('commission.form.estimateLabel')}
             </dt>
-            <dd>${(commission.quoteCents / 100).toFixed(2)}</dd>
+            <dd>${(commission.quote / 100).toFixed(2)}</dd>
           </div>
         )}
         {commission.deadline && (
@@ -61,21 +61,12 @@ export function OrderDetail({ code }: { code: string }) {
         )}
       </dl>
 
-      {commission.deliverableAssets.length > 0 && (
-        <div>
-          <h2 className="font-medium">{t('orders.deliverables')}</h2>
-          <div className="mt-2 grid grid-cols-3 gap-2">
-            {commission.deliverableAssets.map((url) => (
-              <a key={url} href={url} target="_blank" rel="noreferrer">
-                <img
-                  src={url}
-                  alt=""
-                  className="aspect-square w-full rounded object-cover"
-                />
-              </a>
-            ))}
-          </div>
-        </div>
+      {commission.deliveredAt && (
+        <p className="text-sm text-muted-foreground">
+          {t('orders.deliveredAt', {
+            date: new Date(commission.deliveredAt).toLocaleDateString(),
+          })}
+        </p>
       )}
 
       <OrderReferenceUploader
@@ -84,7 +75,7 @@ export function OrderDetail({ code }: { code: string }) {
         isUploading={lookup.isUploadingReferences}
       />
 
-      <OrderNotesThread notes={commission.notes} onAdd={lookup.addNote} />
+      <OrderNotesThread notes={commission.comments} onAdd={lookup.addNote} />
     </div>
   );
 }

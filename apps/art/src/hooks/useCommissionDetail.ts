@@ -7,13 +7,12 @@ import {
   useUpdateCommissionStep,
   useUpdateCommissionQuote,
   useUpdateCommissionVisibility,
-  useUpdateCommissionProject,
   useDeliverCommission,
   useCreateCommissionNote,
   getCommissionQueryKey,
   type UpdateCommissionStatusDtoStatus,
   type UpdatePaymentStatusDtoPaymentStatus,
-  type CreateCommissionNoteDtoVisibility,
+  type CreateCommentDtoVisibility,
 } from '@hatohui/models';
 import { useQueryClient } from '@tanstack/react-query';
 import { useImageUpload } from '@hatohui/libs';
@@ -40,9 +39,6 @@ export function useCommissionDetail(id: string) {
   const updateVisibility = useUpdateCommissionVisibility({
     mutation: { onSuccess: invalidate },
   });
-  const updateProject = useUpdateCommissionProject({
-    mutation: { onSuccess: invalidate },
-  });
   const deliver = useDeliverCommission({ mutation: { onSuccess: invalidate } });
   const createNote = useCreateCommissionNote({
     mutation: { onSuccess: invalidate },
@@ -66,14 +62,11 @@ export function useCommissionDetail(id: string) {
       commissionTypeId?: string | null;
       optionKey?: string | null;
       addonKeys?: string[];
-      quoteCents?: number | null;
+      quote?: number | null;
     }) => updateQuote.mutateAsync({ id, data }),
 
     setVisibility: (isHiddenInQueue: boolean) =>
       updateVisibility.mutateAsync({ id, data: { isHiddenInQueue } }),
-
-    setProject: (projectId: string | null) =>
-      updateProject.mutateAsync({ id, data: { projectId } }),
 
     deliver: async (files: File[]) => {
       const uploaded = await Promise.all(
@@ -81,12 +74,12 @@ export function useCommissionDetail(id: string) {
       );
       return deliver.mutateAsync({
         id,
-        data: { deliverableAssets: uploaded.map((asset) => asset.key) },
+        data: { images: uploaded.map((asset) => asset.key) },
       });
     },
     isDelivering: deliver.isPending || isUploading,
 
-    addNote: (body: string, visibility: CreateCommissionNoteDtoVisibility) =>
+    addNote: (body: string, visibility: CreateCommentDtoVisibility) =>
       createNote.mutateAsync({ id, data: { body, visibility } }),
   };
 }

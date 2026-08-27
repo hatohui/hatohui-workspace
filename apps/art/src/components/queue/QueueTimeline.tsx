@@ -5,9 +5,9 @@ import { useCommissionQueue } from '@/hooks/useCommissionQueue';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
 import { QueueTimelineItem } from './QueueTimelineItem';
 
-export function QueueTimeline() {
+export function QueueTimeline({ artistId }: { artistId: string }) {
   const { t } = useTranslation('art');
-  const { items, isLoading } = useCommissionQueue();
+  const { items, isLoading } = useCommissionQueue(artistId);
   const listRef = useStaggerReveal<HTMLOListElement>('[data-reveal]', [items]);
 
   if (isLoading)

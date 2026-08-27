@@ -25,8 +25,10 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ArtistCommissionTypeDto,
   CommissionTypeDto,
   CommissionTypesParams,
+  UpsertArtistCommissionTypeDto,
   UpsertCommissionTypeDto
 } from '../schemas';
 
@@ -64,7 +66,7 @@ export type commissionTypesResponseSuccess = (commissionTypesResponse200) & {
 
 export type commissionTypesResponse = (commissionTypesResponseSuccess)
 
-export const getCommissionTypesUrl = (params: CommissionTypesParams,) => {
+export const getCommissionTypesUrl = (params?: CommissionTypesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -80,9 +82,9 @@ export const getCommissionTypesUrl = (params: CommissionTypesParams,) => {
 }
 
 /**
- * @summary List an artist's commission types (active only unless includeInactive=true)
+ * @summary List the platform commission-type catalog (active only unless includeInactive=true)
  */
-export const commissionTypes = async (params: CommissionTypesParams, options?: RequestInit): Promise<commissionTypesResponse> => {
+export const commissionTypes = async (params?: CommissionTypesParams, options?: RequestInit): Promise<commissionTypesResponse> => {
 
   return customFetch<commissionTypesResponse>(getCommissionTypesUrl(params),
   {
@@ -104,7 +106,7 @@ export const getCommissionTypesQueryKey = (params?: CommissionTypesParams,) => {
     }
 
 
-export const getCommissionTypesQueryOptions = <TData = Awaited<ReturnType<typeof commissionTypes>>, TError = unknown>(params: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getCommissionTypesQueryOptions = <TData = Awaited<ReturnType<typeof commissionTypes>>, TError = unknown>(params?: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -127,7 +129,7 @@ export type CommissionTypesQueryError = unknown
 
 
 export function useCommissionTypes<TData = Awaited<ReturnType<typeof commissionTypes>>, TError = unknown>(
- params: CommissionTypesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>> & Pick<
+ params: undefined |  CommissionTypesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionTypes>>,
           TError,
@@ -137,7 +139,7 @@ export function useCommissionTypes<TData = Awaited<ReturnType<typeof commissionT
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionTypes<TData = Awaited<ReturnType<typeof commissionTypes>>, TError = unknown>(
- params: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>> & Pick<
+ params?: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commissionTypes>>,
           TError,
@@ -147,15 +149,15 @@ export function useCommissionTypes<TData = Awaited<ReturnType<typeof commissionT
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommissionTypes<TData = Awaited<ReturnType<typeof commissionTypes>>, TError = unknown>(
- params: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List an artist's commission types (active only unless includeInactive=true)
+ * @summary List the platform commission-type catalog (active only unless includeInactive=true)
  */
 
 export function useCommissionTypes<TData = Awaited<ReturnType<typeof commissionTypes>>, TError = unknown>(
- params: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ params?: CommissionTypesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -192,7 +194,7 @@ export const getCreateCommissionTypeUrl = () => {
 }
 
 /**
- * @summary Create a commission type (also creates/reuses its linked Tag)
+ * @summary Add a commission type to the platform catalog (also creates/reuses its linked Tag)
  */
 export const createCommissionType = async (upsertCommissionTypeDto: UpsertCommissionTypeDto, options?: RequestInit): Promise<createCommissionTypeResponse> => {
 
@@ -241,7 +243,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type CreateCommissionTypeMutationError = unknown
 
     /**
- * @summary Create a commission type (also creates/reuses its linked Tag)
+ * @summary Add a commission type to the platform catalog (also creates/reuses its linked Tag)
  */
 export const useCreateCommissionType = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCommissionType>>, TError,{data: UpsertCommissionTypeDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -252,6 +254,313 @@ export const useCreateCommissionType = <TError = unknown,
         TContext
       > => {
       return useMutation(getCreateCommissionTypeMutationOptions(options), queryClient);
+    }
+    export type commissionTypesByArtistResponse200 = {
+  data: CommissionTypeDto[]
+  status: 200
+}
+
+export type commissionTypesByArtistResponseSuccess = (commissionTypesByArtistResponse200) & {
+  headers: Headers;
+};
+;
+
+export type commissionTypesByArtistResponse = (commissionTypesByArtistResponseSuccess)
+
+export const getCommissionTypesByArtistUrl = (artistId: string,) => {
+
+
+
+
+  return `/commission-types/by-artist/${artistId}`
+}
+
+/**
+ * @summary List one artist's enabled commission types (public storefront view)
+ */
+export const commissionTypesByArtist = async (artistId: string, options?: RequestInit): Promise<commissionTypesByArtistResponse> => {
+
+  return customFetch<commissionTypesByArtistResponse>(getCommissionTypesByArtistUrl(artistId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getCommissionTypesByArtistQueryKey = (artistId: string,) => {
+    return [
+    `/commission-types/by-artist/${artistId}`
+    ] as const;
+    }
+
+
+export const getCommissionTypesByArtistQueryOptions = <TData = Awaited<ReturnType<typeof commissionTypesByArtist>>, TError = unknown>(artistId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypesByArtist>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCommissionTypesByArtistQueryKey(artistId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionTypesByArtist>>> = ({ signal }) => commissionTypesByArtist(artistId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: artistId !== null && artistId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof commissionTypesByArtist>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CommissionTypesByArtistQueryResult = NonNullable<Awaited<ReturnType<typeof commissionTypesByArtist>>>
+export type CommissionTypesByArtistQueryError = unknown
+
+
+export function useCommissionTypesByArtist<TData = Awaited<ReturnType<typeof commissionTypesByArtist>>, TError = unknown>(
+ artistId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypesByArtist>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commissionTypesByArtist>>,
+          TError,
+          Awaited<ReturnType<typeof commissionTypesByArtist>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommissionTypesByArtist<TData = Awaited<ReturnType<typeof commissionTypesByArtist>>, TError = unknown>(
+ artistId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypesByArtist>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commissionTypesByArtist>>,
+          TError,
+          Awaited<ReturnType<typeof commissionTypesByArtist>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommissionTypesByArtist<TData = Awaited<ReturnType<typeof commissionTypesByArtist>>, TError = unknown>(
+ artistId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypesByArtist>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List one artist's enabled commission types (public storefront view)
+ */
+
+export function useCommissionTypesByArtist<TData = Awaited<ReturnType<typeof commissionTypesByArtist>>, TError = unknown>(
+ artistId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionTypesByArtist>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCommissionTypesByArtistQueryOptions(artistId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type myCommissionTypesResponse200 = {
+  data: ArtistCommissionTypeDto[]
+  status: 200
+}
+
+export type myCommissionTypesResponseSuccess = (myCommissionTypesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type myCommissionTypesResponse = (myCommissionTypesResponseSuccess)
+
+export const getMyCommissionTypesUrl = () => {
+
+
+
+
+  return `/commission-types/mine`
+}
+
+/**
+ * @summary List the catalog joined with your own enablement of each entry
+ */
+export const myCommissionTypes = async ( options?: RequestInit): Promise<myCommissionTypesResponse> => {
+
+  return customFetch<myCommissionTypesResponse>(getMyCommissionTypesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getMyCommissionTypesQueryKey = () => {
+    return [
+    `/commission-types/mine`
+    ] as const;
+    }
+
+
+export const getMyCommissionTypesQueryOptions = <TData = Awaited<ReturnType<typeof myCommissionTypes>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getMyCommissionTypesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof myCommissionTypes>>> = ({ signal }) => myCommissionTypes({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof myCommissionTypes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type MyCommissionTypesQueryResult = NonNullable<Awaited<ReturnType<typeof myCommissionTypes>>>
+export type MyCommissionTypesQueryError = unknown
+
+
+export function useMyCommissionTypes<TData = Awaited<ReturnType<typeof myCommissionTypes>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionTypes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myCommissionTypes>>,
+          TError,
+          Awaited<ReturnType<typeof myCommissionTypes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useMyCommissionTypes<TData = Awaited<ReturnType<typeof myCommissionTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionTypes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myCommissionTypes>>,
+          TError,
+          Awaited<ReturnType<typeof myCommissionTypes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useMyCommissionTypes<TData = Awaited<ReturnType<typeof myCommissionTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List the catalog joined with your own enablement of each entry
+ */
+
+export function useMyCommissionTypes<TData = Awaited<ReturnType<typeof myCommissionTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionTypes>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getMyCommissionTypesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type setArtistCommissionTypeEnabledResponse200 = {
+  data: ArtistCommissionTypeDto
+  status: 200
+}
+
+export type setArtistCommissionTypeEnabledResponseSuccess = (setArtistCommissionTypeEnabledResponse200) & {
+  headers: Headers;
+};
+;
+
+export type setArtistCommissionTypeEnabledResponse = (setArtistCommissionTypeEnabledResponseSuccess)
+
+export const getSetArtistCommissionTypeEnabledUrl = (id: string,) => {
+
+
+
+
+  return `/commission-types/${id}/enable`
+}
+
+/**
+ * @summary Enable/disable a catalog type for yourself, and set its order
+ */
+export const setArtistCommissionTypeEnabled = async (id: string,
+    upsertArtistCommissionTypeDto: UpsertArtistCommissionTypeDto, options?: RequestInit): Promise<setArtistCommissionTypeEnabledResponse> => {
+
+  return customFetch<setArtistCommissionTypeEnabledResponse>(getSetArtistCommissionTypeEnabledUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(upsertArtistCommissionTypeDto)
+  }
+);}
+
+
+
+
+
+export const getSetArtistCommissionTypeEnabledMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setArtistCommissionTypeEnabled>>, TError,{id: string;data: UpsertArtistCommissionTypeDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setArtistCommissionTypeEnabled>>, TError,{id: string;data: UpsertArtistCommissionTypeDto}, TContext> => {
+
+const mutationKey = ['setArtistCommissionTypeEnabled'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setArtistCommissionTypeEnabled>>, {id: string;data: UpsertArtistCommissionTypeDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  setArtistCommissionTypeEnabled(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetArtistCommissionTypeEnabledMutationResult = NonNullable<Awaited<ReturnType<typeof setArtistCommissionTypeEnabled>>>
+    export type SetArtistCommissionTypeEnabledMutationBody = UpsertArtistCommissionTypeDto
+    export type SetArtistCommissionTypeEnabledMutationError = unknown
+
+    /**
+ * @summary Enable/disable a catalog type for yourself, and set its order
+ */
+export const useSetArtistCommissionTypeEnabled = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setArtistCommissionTypeEnabled>>, TError,{id: string;data: UpsertArtistCommissionTypeDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof setArtistCommissionTypeEnabled>>,
+        TError,
+        {id: string;data: UpsertArtistCommissionTypeDto},
+        TContext
+      > => {
+      return useMutation(getSetArtistCommissionTypeEnabledMutationOptions(options), queryClient);
     }
     export type updateCommissionTypeResponse200 = {
   data: CommissionTypeDto
@@ -274,7 +583,7 @@ export const getUpdateCommissionTypeUrl = (id: string,) => {
 }
 
 /**
- * @summary Update one of your own commission types
+ * @summary Update a catalog commission type
  */
 export const updateCommissionType = async (id: string,
     upsertCommissionTypeDto: UpsertCommissionTypeDto, options?: RequestInit): Promise<updateCommissionTypeResponse> => {
@@ -324,7 +633,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateCommissionTypeMutationError = unknown
 
     /**
- * @summary Update one of your own commission types
+ * @summary Update a catalog commission type
  */
 export const useUpdateCommissionType = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionType>>, TError,{id: string;data: UpsertCommissionTypeDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -357,7 +666,7 @@ export const getDeleteCommissionTypeUrl = (id: string,) => {
 }
 
 /**
- * @summary Delete one of your own commission types
+ * @summary Remove a commission type from the platform catalog
  */
 export const deleteCommissionType = async (id: string, options?: RequestInit): Promise<deleteCommissionTypeResponse> => {
 
@@ -406,7 +715,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeleteCommissionTypeMutationError = unknown
 
     /**
- * @summary Delete one of your own commission types
+ * @summary Remove a commission type from the platform catalog
  */
 export const useDeleteCommissionType = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCommissionType>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}

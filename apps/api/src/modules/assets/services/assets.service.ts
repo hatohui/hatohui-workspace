@@ -48,6 +48,7 @@ export class AssetsService {
     sort: AssetSortOption,
     page: number,
     pageSize: number,
+    uploadedById?: string,
   ): Promise<PaginatedAssetsDto> {
     const where: Prisma.AssetWhereInput = {
       AND: [
@@ -64,6 +65,7 @@ export class AssetsService {
             }
           : {},
         tag ? { tags: { some: { name: tag } } } : {},
+        uploadedById ? { uploadedById } : {},
       ],
     };
 
@@ -88,7 +90,7 @@ export class AssetsService {
   }
 
   async create(dto: CreateAssetDto, uploader: User): Promise<AssetDto> {
-    await this.assertAdmin(uploader);
+    await this.assertArtistOrAdmin(uploader);
 
     if (Boolean(dto.key) === Boolean(dto.externalUrl)) {
       throw new BadRequestException(
@@ -145,8 +147,8 @@ export class AssetsService {
     dto: UpdateAssetDto,
     actor: User,
   ): Promise<AssetDto> {
-    await this.assertAdmin(actor);
-    await this.findOrThrow(id);
+    const existing = await this.findOrThrow(id);
+    await this.assertOwnerOrAdmin(existing, actor);
     const tagIds = await this.resolveTagIds(dto.tags);
     const asset = await this.db.asset.update({
       where: { id },
@@ -170,8 +172,8 @@ export class AssetsService {
   }
 
   async remove(id: string, actor: User): Promise<void> {
-    await this.assertAdmin(actor);
     const existing = await this.findOrThrow(id);
+    await this.assertOwnerOrAdmin(existing, actor);
     await this.db.asset.delete({ where: { id } });
     if (existing.key) {
       await this.storage.deleteObject(existing.key).catch(() => {});
@@ -186,6 +188,21 @@ export class AssetsService {
     if (!(await this.auth.isAdmin(user))) {
       throw new ForbiddenException('Admin access denied');
     }
+  }
+
+  /// Uploading is an artist managing their own gallery, not a site-admin
+  /// power — gate on either role, same reasoning as assertOwnerOrAdmin below.
+  private async assertArtistOrAdmin(user: User): Promise<void> {
+    if (await this.auth.isArtist(user)) return;
+    await this.assertAdmin(user);
+  }
+
+  /// Managing an asset is either a global-admin power, or the uploader
+  /// managing their own — an artist doesn't need site-wide admin to edit
+  /// tags on or delete their own gallery uploads.
+  private async assertOwnerOrAdmin(asset: Asset, actor: User): Promise<void> {
+    if (asset.uploadedById === actor.id) return;
+    await this.assertAdmin(actor);
   }
 
   private async findOrThrow(id: string): Promise<Asset> {

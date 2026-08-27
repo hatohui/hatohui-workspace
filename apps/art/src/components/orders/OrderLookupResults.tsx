@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useTranslation } from '@hatohui/i18n';
 import type { CommissionPublicDto } from '@hatohui/models';
 import { Card, CardContent } from '@hatohui/ui';
@@ -14,6 +15,7 @@ export function OrderLookupResults({
   isLoading: boolean;
 }) {
   const { t } = useTranslation('art');
+  const { artist } = useParams<{ artist: string }>();
   const displayLabel = useCommissionDisplayLabel();
 
   if (isLoading)
@@ -24,7 +26,7 @@ export function OrderLookupResults({
   return (
     <div className="space-y-2">
       {items.map((item) => (
-        <Link key={item.id} href={`/queue/${item.accessCode}`}>
+        <Link key={item.id} href={`/${artist}/queue/${item.accessCode}`}>
           <Card className="transition-colors hover:bg-card-hover">
             <CardContent className="flex items-center justify-between py-4">
               <span>{displayLabel(item.commissionTypeKey)}</span>

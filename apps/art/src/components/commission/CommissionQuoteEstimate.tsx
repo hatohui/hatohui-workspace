@@ -10,17 +10,17 @@ export function CommissionQuoteEstimate({
 }) {
   const { t } = useTranslation('art');
 
-  if (pricing.estimateCents === null) return null;
+  if (pricing.estimate === null) return null;
 
   return (
     <p className="text-sm text-muted-foreground">
       {t('commission.form.estimateLabel')}: $
-      {(pricing.estimateCents / 100).toFixed(2)}
+      {(pricing.estimate / 100).toFixed(2)}
       {pricing.isRush && pricing.rushFee && (
         <span>
           {' ('}
           {t('commission.form.rushFeeIncluded', {
-            amount: (pricing.rushFee.feeCents / 100).toFixed(0),
+            amount: (pricing.rushFee.feeAmount / 100).toFixed(0),
             days: pricing.rushFee.thresholdDays,
           })}
           {')'}

@@ -2,10 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import type {
-  CommissionNoteDto,
-  CreateCommissionNoteDtoVisibility,
-} from '@hatohui/models';
+import type { CommentDto, CreateCommentDtoVisibility } from '@hatohui/models';
 import {
   Button,
   Select,
@@ -20,16 +17,16 @@ export function CommissionAdminNotes({
   notes,
   onAdd,
 }: {
-  notes: CommissionNoteDto[];
+  notes: CommentDto[];
   onAdd: (
     body: string,
-    visibility: CreateCommissionNoteDtoVisibility,
+    visibility: CreateCommentDtoVisibility,
   ) => Promise<unknown>;
 }) {
   const { t } = useTranslation('art');
   const [body, setBody] = useState('');
   const [visibility, setVisibility] =
-    useState<CreateCommissionNoteDtoVisibility>('INTERNAL');
+    useState<CreateCommentDtoVisibility>('INTERNAL');
 
   return (
     <div className="rounded-lg border border-border p-4">
@@ -58,7 +55,7 @@ export function CommissionAdminNotes({
           <Select
             value={visibility}
             onValueChange={(value) =>
-              setVisibility(value as CreateCommissionNoteDtoVisibility)
+              setVisibility(value as CreateCommentDtoVisibility)
             }
           >
             <SelectTrigger className="w-48">

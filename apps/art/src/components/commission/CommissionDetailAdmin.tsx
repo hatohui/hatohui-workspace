@@ -11,7 +11,6 @@ import { CommissionDeliverPanel } from './CommissionDeliverPanel';
 import { CommissionAdminNotes } from './CommissionAdminNotes';
 import { CommissionHistoryList } from './CommissionHistoryList';
 import { CommissionVisibilityToggle } from './CommissionVisibilityToggle';
-import { CommissionProjectSelect } from './CommissionProjectSelect';
 
 export function CommissionDetailAdmin({ id }: { id: string }) {
   const { t } = useTranslation('art');
@@ -53,10 +52,6 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
         steps={commission.steps}
         onToggle={detail.toggleStep}
       />
-      <CommissionProjectSelect
-        projectId={commission.projectId}
-        onChange={detail.setProject}
-      />
       <CommissionQuoteEditor
         commission={commission}
         paymentStatus={commission.paymentStatus}
@@ -64,11 +59,14 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
         onSavePaymentStatus={detail.setPaymentStatus}
       />
       <CommissionDeliverPanel
-        deliverableAssets={commission.deliverableAssets}
+        deliveredAt={commission.deliveredAt}
         onDeliver={detail.deliver}
         isDelivering={detail.isDelivering}
       />
-      <CommissionAdminNotes notes={commission.notes} onAdd={detail.addNote} />
+      <CommissionAdminNotes
+        notes={commission.comments}
+        onAdd={detail.addNote}
+      />
       <CommissionHistoryList history={commission.history} />
     </div>
   );

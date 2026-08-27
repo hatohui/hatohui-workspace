@@ -7,6 +7,7 @@
  */
 
 export interface UpsertCommissionRushFeeSettingDto {
+  enabled: boolean;
   thresholdDays: number;
   feeAmount: number;
 }

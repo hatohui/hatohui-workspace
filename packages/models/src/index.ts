@@ -5,6 +5,7 @@ export * from './generated/health/health';
 export * from './generated/platforms/platforms';
 export * from './generated/onboarding/onboarding';
 export * from './generated/users/users';
+export * from './generated/artists/artists';
 export * from './generated/connections/connections';
 export * from './generated/notifications/notifications';
 export * from './generated/admin/admin';

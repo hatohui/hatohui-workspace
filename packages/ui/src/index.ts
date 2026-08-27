@@ -23,4 +23,5 @@ export * from './components/ui/editable-data-table';
 export * from './components/ui/confirm-dialog';
 export * from './components/ui/pagination';
 export * from './components/ui/sidebar';
+export * from './components/ui/switch';
 export * from './lib/utils';

@@ -1,7 +1,10 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useCommissionPricing } from '@hatohui/models';
+import {
+  useCommissionPricing,
+  useCommissionTypesByArtist,
+} from '@hatohui/models';
 
 function daysUntil(dateString: string): number {
   const target = new Date(`${dateString}T00:00:00`);
@@ -11,48 +14,68 @@ function daysUntil(dateString: string): number {
 }
 
 export function useCommissionPricingEstimate(
+  artistId: string | undefined,
   commissionTypeId: string | undefined,
   optionKey: string | undefined,
   addonKeys: string[],
   deadline?: string,
 ) {
-  const pricingQuery = useCommissionPricing();
+  const typesQuery = useCommissionTypesByArtist(artistId ?? '', {
+    query: { enabled: !!artistId },
+  });
+  const pricingQuery = useCommissionPricing(
+    { artistId: artistId ?? '' },
+    { query: { enabled: !!artistId } },
+  );
   const pricing = pricingQuery.data?.data;
+  const types = typesQuery.data?.data ?? [];
+
+  const optionsForType = useMemo(
+    () =>
+      (pricing?.options ?? []).filter(
+        (option) => option.commissionTypeId === commissionTypeId,
+      ),
+    [pricing, commissionTypeId],
+  );
+
+  // A type with exactly one option applies it directly — no picker needed,
+  // so the estimate still resolves even before the client "chooses" one.
+  const selectedOption =
+    optionsForType.find((option) => option.key === optionKey) ??
+    (optionsForType.length === 1 ? optionsForType[0] : undefined);
 
   const isRush = useMemo(() => {
-    if (!pricing || !deadline) return false;
+    if (!pricing?.rushFee?.enabled || !deadline) return false;
     return daysUntil(deadline) < pricing.rushFee.thresholdDays;
   }, [pricing, deadline]);
 
-  const estimateCents = useMemo(() => {
-    if (!pricing || !commissionTypeId) return null;
+  const estimate = useMemo(() => {
+    if (!pricing || !selectedOption) return null;
+    const base = selectedOption.minPrice;
 
-    const type = pricing.types.find(
-      (row) => row.commissionTypeId === commissionTypeId,
-    );
-    if (!type) return null;
-
-    const option = pricing.options.find((row) => row.key === optionKey);
-    const modifier = option ? 1 + option.modifierPercent / 100 : 1;
-    const base = Math.round(type.basePriceCents * modifier);
-
-    const addonsMin = addonKeys.reduce((sum, key) => {
+    const addonsTotal = addonKeys.reduce((sum, key) => {
       const addon = pricing.addons.find((row) => row.key === key);
-      return sum + (addon?.minPriceCents ?? 0);
+      if (!addon) return sum;
+      if (addon.priceMode === 'PERCENTAGE') {
+        return sum + Math.round((base * (addon.percent ?? 0)) / 100);
+      }
+      return sum + (addon.minPrice ?? 0);
     }, 0);
 
-    const rushFee = isRush ? pricing.rushFee.feeCents : 0;
+    const rushFee = isRush ? (pricing.rushFee?.feeAmount ?? 0) : 0;
 
-    return base + addonsMin + rushFee;
-  }, [pricing, commissionTypeId, optionKey, addonKeys, isRush]);
+    return base + addonsTotal + rushFee;
+  }, [pricing, selectedOption, addonKeys, isRush]);
 
   return {
-    types: pricing?.types ?? [],
-    options: pricing?.options ?? [],
+    types,
+    optionsForType,
+    selectedOption,
     addons: pricing?.addons ?? [],
-    rushFee: pricing?.rushFee,
+    rushFee: pricing?.rushFee ?? null,
+    currency: pricing?.currency ?? 'USD',
     isRush,
-    estimateCents,
-    isLoading: pricingQuery.isPending,
+    estimate,
+    isLoading: pricingQuery.isPending || typesQuery.isPending,
   };
 }

@@ -1,4 +1,8 @@
 {
+  "artistPicker": {
+    "title": "Choose an artist",
+    "empty": "No artists have a storefront open yet."
+  },
   "site": {
     "title": "Art",
     "nav": {
@@ -68,6 +72,7 @@
     "codeLabel": "Or, if I gave you a code",
     "codeGo": "Go",
     "deliverables": "Final artwork",
+    "deliveredAt": "Delivered on {{date}}",
     "existingReferences": "Your uploaded references",
     "addLinkLabel": "Or paste a link (e.g. a Google Drive folder)",
     "addLinkPlaceholder": "https://...",
@@ -110,41 +115,37 @@
       "OTHER": "Other"
     },
     "type": {
+      "SKETCH": {
+        "label": "Sketch",
+        "description": "A single rough, loose-line sketch."
+      },
+      "LINEART": {
+        "label": "Lineart",
+        "description": "Clean line art only, no coloring or shading."
+      },
       "ICON": {
         "label": "Icon",
         "description": "A close-up headshot illustration — face and shoulders only."
       },
-      "HALF_BODY": {
-        "label": "Half Body",
+      "BUST": {
+        "label": "Bust",
         "description": "From the waist up, with more detail than an icon."
       },
-      "FULL_BODY": {
+      "FULL": {
         "label": "Full Body",
         "description": "The full character from head to toe."
       },
-      "SKETCH_PAGE": {
+      "SKETCHPAGE": {
         "label": "Sketch Page",
         "description": "A page of multiple rough sketches/poses of one subject."
-      }
-    },
-    "option": {
-      "FULLY_RENDERED": {
-        "label": "Fully rendered",
-        "description": "Full color, shading, and polish."
       },
-      "SKETCHED": {
-        "label": "Sketched",
-        "description": "Clean line art only, no coloring or shading."
-      }
-    },
-    "addon": {
-      "COMPLEX_COSTUME": {
-        "label": "Complexity",
-        "description": "Extra detail work for intricate outfits, armor, or accessories.\n\nTicking this just makes me aware - it doesn't add to the price upfront. I personally review each piece to judge whether it's actually \"complex.\"\n\nFeel free to reach out if you're not sure!"
+      "COMIC": {
+        "label": "Comic",
+        "description": "A short sequential-art page or strip."
       },
-      "BACKGROUND": {
-        "label": "Background",
-        "description": "Detailed backgrounds."
+      "ANIMATION": {
+        "label": "Animation",
+        "description": "A short animated clip or looping GIF."
       }
     },
     "status": {
@@ -202,6 +203,7 @@
       },
       "deliver": {
         "title": "Deliver final artwork",
+        "deliveredAt": "Delivered on {{date}}",
         "filesLabel": "Final artwork files",
         "send": "Send to client"
       },
@@ -212,12 +214,14 @@
       "pricing": {
         "title": "Pricing",
         "rushFee": "Rush fee",
+        "rushFeeEnabled": "Charge a rush fee",
         "rushFeeDays": "Threshold (days)",
         "rushFeeAmount": "Fee ($)",
         "priceMode": {
           "FIXED": "Fixed price",
           "STARTING_FROM": "Starting from",
-          "RANGE": "Price range"
+          "RANGE": "Price range",
+          "PERCENTAGE": "Percentage of option price"
         },
         "typesTable": {
           "addRow": "Add commission type",
@@ -230,6 +234,18 @@
           },
           "active": "Active",
           "inactive": "Inactive"
+        },
+        "optionsTable": {
+          "optionsFor": "Options for {{type}}",
+          "priceMode": "Price mode",
+          "minPrice": "Price ($)",
+          "maxPrice": "Up to ($)",
+          "addRow": "Add option",
+          "deleteRow": "Delete row"
+        },
+        "addonsTable": {
+          "percent": "Percent",
+          "addRow": "Add add-on"
         }
       }
     }

@@ -5,9 +5,9 @@ import { useProjects } from '@/hooks/useProjects';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
 import { ProjectCard } from './ProjectCard';
 
-export function ProjectsSection() {
+export function ProjectsSection({ artistId }: { artistId?: string }) {
   const { t } = useTranslation('art');
-  const { items, isLoading } = useProjects();
+  const { items, isLoading } = useProjects(artistId);
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [items]);
 
   if (isLoading)

@@ -14,14 +14,14 @@ import {
   getCommissionAddonPricingsQueryKey,
 } from '@hatohui/models';
 
-export function useCommissionOptionPricingAdmin() {
+export function useCommissionOptionPricingAdmin(commissionTypeId: string) {
   const queryClient = useQueryClient();
   const invalidate = () =>
     queryClient.invalidateQueries({
-      queryKey: getCommissionOptionPricingsQueryKey(),
+      queryKey: getCommissionOptionPricingsQueryKey({ commissionTypeId }),
     });
 
-  const listQuery = useCommissionOptionPricings();
+  const listQuery = useCommissionOptionPricings({ commissionTypeId });
   const create = useCreateCommissionOptionPricing({
     mutation: { onSuccess: invalidate },
   });

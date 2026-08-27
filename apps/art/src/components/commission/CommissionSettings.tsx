@@ -2,7 +2,6 @@
 
 import { useTranslation } from '@hatohui/i18n';
 import { CommissionTypesTable } from './CommissionTypesTable';
-import { CommissionOptionPricingSection } from './CommissionOptionPricingSection';
 import { CommissionAddonPricingSection } from './CommissionAddonPricingSection';
 import { CommissionRushFeeSection } from './CommissionRushFeeSection';
 
@@ -18,9 +17,8 @@ export function CommissionSettings({ artistId }: { artistId: string }) {
         <h2 className="mb-2 font-medium">
           {t('commission.form.commissionTypeLabel')}
         </h2>
-        <CommissionTypesTable artistId={artistId} />
+        <CommissionTypesTable />
       </section>
-      <CommissionOptionPricingSection />
       <CommissionAddonPricingSection />
       <CommissionRushFeeSection artistId={artistId} />
     </div>

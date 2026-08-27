@@ -1249,6 +1249,62 @@
         ]
       }
     },
+    "/artists": {
+      "get": {
+        "operationId": "artists",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PublicUserDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List every artist with a public storefront handle",
+        "tags": [
+          "artists"
+        ]
+      }
+    },
+    "/artists/{handle}": {
+      "get": {
+        "operationId": "artistByHandle",
+        "parameters": [
+          {
+            "name": "handle",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicUserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Resolve an artist's storefront handle",
+        "tags": [
+          "artists"
+        ]
+      }
+    },
     "/admin/profiles": {
       "get": {
         "operationId": "adminListProfiles",
@@ -1816,6 +1872,15 @@
             "required": false,
             "in": "query",
             "description": "Filter by exact tag",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uploadedById",
+            "required": false,
+            "in": "query",
+            "description": "Filter to one artist's uploads (storefront gallery)",
             "schema": {
               "type": "string"
             }
@@ -2626,14 +2691,6 @@
         "operationId": "commissionTypes",
         "parameters": [
           {
-            "name": "artistId",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "includeInactive",
             "required": false,
             "in": "query",
@@ -2657,7 +2714,7 @@
             }
           }
         },
-        "summary": "List an artist's commission types (active only unless includeInactive=true)",
+        "summary": "List the platform commission-type catalog (active only unless includeInactive=true)",
         "tags": [
           "commission-types"
         ]
@@ -2687,7 +2744,107 @@
             }
           }
         },
-        "summary": "Create a commission type (also creates/reuses its linked Tag)",
+        "summary": "Add a commission type to the platform catalog (also creates/reuses its linked Tag)",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/by-artist/{artistId}": {
+      "get": {
+        "operationId": "commissionTypesByArtist",
+        "parameters": [
+          {
+            "name": "artistId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionTypeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List one artist's enabled commission types (public storefront view)",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/mine": {
+      "get": {
+        "operationId": "myCommissionTypes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArtistCommissionTypeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List the catalog joined with your own enablement of each entry",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/{id}/enable": {
+      "put": {
+        "operationId": "setArtistCommissionTypeEnabled",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertArtistCommissionTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistCommissionTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Enable/disable a catalog type for yourself, and set its order",
         "tags": [
           "commission-types"
         ]
@@ -2728,7 +2885,7 @@
             }
           }
         },
-        "summary": "Update one of your own commission types",
+        "summary": "Update a catalog commission type",
         "tags": [
           "commission-types"
         ]
@@ -2750,7 +2907,7 @@
             "description": ""
           }
         },
-        "summary": "Delete one of your own commission types",
+        "summary": "Remove a commission type from the platform catalog",
         "tags": [
           "commission-types"
         ]
@@ -2822,7 +2979,16 @@
     "/commission-pricing/options": {
       "get": {
         "operationId": "commissionOptionPricings",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "commissionTypeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -2838,7 +3004,7 @@
             }
           }
         },
-        "summary": "List your own commission option pricing rows",
+        "summary": "List your own commission option pricing rows, optionally scoped to one commission type",
         "tags": [
           "commission-pricing"
         ]
@@ -6112,28 +6278,22 @@
           "id": {
             "type": "string"
           },
-          "artistId": {
-            "type": "string"
-          },
           "key": {
             "type": "string",
             "example": "ICON",
-            "description": "Also the i18n key: commission.type.<key>"
+            "description": "Internal slug, derived from label at creation"
           },
           "label": {
             "type": "string",
             "example": "Icon"
-          },
-          "basePrice": {
-            "type": "number",
-            "description": "Base price, in the artist's currency's smallest unit"
           },
           "no": {
             "type": "number",
             "description": "Display order, ascending"
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether this type exists in the platform catalog at all"
           },
           "tagId": {
             "type": "string",
@@ -6153,10 +6313,8 @@
         },
         "required": [
           "id",
-          "artistId",
           "key",
           "label",
-          "basePrice",
           "no",
           "active",
           "tagId",
@@ -6165,9 +6323,17 @@
           "updatedAt"
         ]
       },
-      "UpsertCommissionTypeDto": {
+      "ArtistCommissionTypeDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the ArtistCommissionType row, null if never enabled"
+          },
+          "commissionTypeId": {
+            "type": "string"
+          },
           "key": {
             "type": "string",
             "example": "ICON"
@@ -6176,9 +6342,44 @@
             "type": "string",
             "example": "Icon"
           },
-          "basePrice": {
+          "no": {
             "type": "number",
-            "description": "Base price, in the artist's currency's smallest unit"
+            "description": "Display order, ascending"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the artist has this type turned on"
+          }
+        },
+        "required": [
+          "id",
+          "commissionTypeId",
+          "key",
+          "label",
+          "no",
+          "enabled"
+        ]
+      },
+      "UpsertArtistCommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "no": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "active"
+        ]
+      },
+      "UpsertCommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Icon"
           },
           "no": {
             "type": "number",
@@ -6190,9 +6391,7 @@
           }
         },
         "required": [
-          "key",
-          "label",
-          "basePrice"
+          "label"
         ]
       },
       "CommissionOptionPricingDto": {
@@ -6204,54 +6403,17 @@
           "artistId": {
             "type": "string"
           },
+          "commissionTypeId": {
+            "type": "string"
+          },
           "key": {
             "type": "string",
             "example": "SKETCHED",
-            "description": "Also the i18n key: commission.option.<key>"
+            "description": "Internal slug, derived from label at creation and never shown to the artist"
           },
           "label": {
             "type": "string",
             "example": "Sketched"
-          },
-          "modifierPercent": {
-            "type": "number",
-            "example": -40,
-            "description": "Percent modifier on the base price"
-          },
-          "active": {
-            "type": "boolean"
-          },
-          "updatedAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "artistId",
-          "key",
-          "label",
-          "modifierPercent",
-          "active",
-          "updatedAt"
-        ]
-      },
-      "CommissionAddonPricingDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "artistId": {
-            "type": "string"
-          },
-          "key": {
-            "type": "string",
-            "example": "BACKGROUND",
-            "description": "Also the i18n key: commission.addon.<key>"
-          },
-          "label": {
-            "type": "string",
-            "example": "Background"
           },
           "priceMode": {
             "type": "string",
@@ -6271,6 +6433,73 @@
             "nullable": true,
             "description": "Upper bound — set only when priceMode is RANGE"
           },
+          "no": {
+            "type": "number",
+            "description": "Display order, ascending"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "artistId",
+          "commissionTypeId",
+          "key",
+          "label",
+          "priceMode",
+          "minPrice",
+          "maxPrice",
+          "no",
+          "active",
+          "updatedAt"
+        ]
+      },
+      "CommissionAddonPricingDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "artistId": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "example": "BACKGROUND",
+            "description": "Internal slug, derived from label at creation and never shown to the artist"
+          },
+          "label": {
+            "type": "string",
+            "example": "Background"
+          },
+          "priceMode": {
+            "type": "string",
+            "enum": [
+              "FIXED",
+              "STARTING_FROM",
+              "RANGE",
+              "PERCENTAGE"
+            ]
+          },
+          "minPrice": {
+            "type": "number",
+            "nullable": true,
+            "description": "FIXED: the price. STARTING_FROM: the floor (\"from X\"). RANGE: the lower bound. Unused for PERCENTAGE. In the currency's smallest unit."
+          },
+          "maxPrice": {
+            "type": "number",
+            "nullable": true,
+            "description": "Upper bound — set only when priceMode is RANGE"
+          },
+          "percent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percent of the selected CommissionOption's price — set only when priceMode is PERCENTAGE"
+          },
           "active": {
             "type": "boolean"
           },
@@ -6286,6 +6515,7 @@
           "priceMode",
           "minPrice",
           "maxPrice",
+          "percent",
           "active",
           "updatedAt"
         ]
@@ -6293,6 +6523,10 @@
       "CommissionRushFeeSettingDto": {
         "type": "object",
         "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the rush fee applies at all"
+          },
           "thresholdDays": {
             "type": "number",
             "example": 10,
@@ -6305,6 +6539,7 @@
           }
         },
         "required": [
+          "enabled",
           "thresholdDays",
           "feeAmount"
         ]
@@ -6348,6 +6583,9 @@
       "UpsertCommissionRushFeeSettingDto": {
         "type": "object",
         "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
           "thresholdDays": {
             "type": "number",
             "example": 10
@@ -6358,6 +6596,7 @@
           }
         },
         "required": [
+          "enabled",
           "thresholdDays",
           "feeAmount"
         ]
@@ -6365,39 +6604,12 @@
       "UpsertCommissionOptionPricingDto": {
         "type": "object",
         "properties": {
-          "key": {
-            "type": "string",
-            "example": "SKETCHED"
+          "commissionTypeId": {
+            "type": "string"
           },
           "label": {
             "type": "string",
             "example": "Sketched"
-          },
-          "modifierPercent": {
-            "type": "number",
-            "example": -40
-          },
-          "active": {
-            "type": "boolean",
-            "default": true
-          }
-        },
-        "required": [
-          "key",
-          "label",
-          "modifierPercent"
-        ]
-      },
-      "UpsertCommissionAddonPricingDto": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "example": "BACKGROUND"
-          },
-          "label": {
-            "type": "string",
-            "example": "Background"
           },
           "priceMode": {
             "type": "string",
@@ -6406,7 +6618,7 @@
               "STARTING_FROM",
               "RANGE"
             ],
-            "default": "STARTING_FROM"
+            "default": "FIXED"
           },
           "minPrice": {
             "type": "number",
@@ -6417,16 +6629,60 @@
             "nullable": true,
             "description": "Required (and > minPrice) when priceMode is RANGE"
           },
+          "no": {
+            "type": "number",
+            "default": 0
+          },
           "active": {
             "type": "boolean",
             "default": true
           }
         },
         "required": [
-          "key",
+          "commissionTypeId",
           "label",
           "priceMode",
           "minPrice"
+        ]
+      },
+      "UpsertCommissionAddonPricingDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Background"
+          },
+          "priceMode": {
+            "type": "string",
+            "enum": [
+              "FIXED",
+              "STARTING_FROM",
+              "RANGE",
+              "PERCENTAGE"
+            ],
+            "default": "STARTING_FROM"
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Required unless priceMode is PERCENTAGE"
+          },
+          "maxPrice": {
+            "type": "number",
+            "nullable": true,
+            "description": "Required (and > minPrice) when priceMode is RANGE"
+          },
+          "percent": {
+            "type": "number",
+            "description": "Required when priceMode is PERCENTAGE — percent of the selected option's price"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "label",
+          "priceMode"
         ]
       },
       "ProjectDto": {

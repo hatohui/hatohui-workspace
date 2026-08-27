@@ -252,20 +252,103 @@ one-module-per-resource rule applies — this is several resources, not one
     - Orphaned a leftover Windows dev-server process while verifying
       (`preview_stop` doesn't always fully kill on Windows) — found and
       killed the PID holding port 5175 directly rather than guessing.
-11. [ ] **Still broken — pre-existing cascade, not touched:**
-        `CommissionForm.tsx`, `CommissionQuoteEditor.tsx`, `KanbanBoard.tsx`,
-        `CommissionAdminNotes.tsx`, `CommissionReferenceExamples.tsx`,
-        `CommissionDetailAdmin.tsx`, `useCommissionDetail.ts`,
-        `useCommissionPricingEstimate.ts`, `OrderDetail.tsx`,
-        `OrderNotesThread.tsx`, `ProjectDetail.tsx`, `ProjectCard.tsx`,
-        `ProjectsAdminList.tsx`, `ProjectCreateForm.tsx`, `useProjects.ts`,
-        `useCommissionQueue.ts`, `useCommissionForm.ts`,
-        `CommissionTypeFields.tsx`, `CommissionQuoteEstimate.tsx`. Every one
-        of these public-facing API calls also needs an `artistId` added now
-        that the backend requires one — resolving *which* artist a given
-        `apps/art` page is for is itself unbuilt (no per-artist routing yet
-        on a site that used to assume a single owner). This is the next
-        chunk of work, separate from what item 10 covered.
+11. [x] **Fixed — the whole cascade, plus real per-artist routing.** The
+        user chose "real per-artist routing now" over hardcoding a single
+        site-owner artist (the cheaper option) when asked directly, so this
+        went further than patching the ~40 tsc errors:
+        - **Routing**: every public route moved under a new `/[artist]`
+          segment, keyed by the artist's public **handle**
+          (`Profile.handle`, already existed platform-wide — not a new
+          field): `/[artist]` (gallery, was `/`), `/[artist]/commission`,
+          `/[artist]/queue`, `/[artist]/queue/[code]`,
+          `/[artist]/projects/[id]`. `/[artist]/layout.tsx` resolves the
+          handle via a new `resolveArtist()` (`src/lib/artist.ts`, wrapped in
+          React's `cache()` so the layout and page under it share one API
+          call) and 404s on an unknown/non-artist handle. The new root `/` is
+          `ArtistPicker.tsx` — lists every artist with a handle, links to
+          `/[handle]`. `SiteHeader`'s nav links itself off `useParams()` now,
+          not hardcoded paths.
+        - **New backend `artists` module**: `GET /artists` (list, handle
+          required) and `GET /artists/:handle` (resolve one, 404 if the
+          handle doesn't belong to an artist) — reuses `PublicUserDto`/
+          `PUBLIC_USER_SELECT` from the `users` module rather than
+          duplicating the "safe public shape" concept. Added
+          `AuthService.isArtistById` alongside the existing `isArtist(User)`
+          since this module often only has an id, not a full row.
+        - **New public `GET /commission-types/by-artist/:artistId`** — the
+          storefront needs "this artist's enabled types" without being that
+          artist (unlike `/commission-types/mine`, which is
+          `@CurrentUser()`-only).
+        - **Two real multi-artist bugs caught and fixed along the way**,
+          neither hypothetical: `AssetsService.create`/`update`/`remove` were
+          gated on global `isAdmin` — under one assumed site-owner that
+          happened to work, but it meant *no artist who isn't also the
+          platform admin could upload to their own gallery at all*. Now
+          gated on `isArtist` (create) / ownership-or-admin (update, remove).
+          Same shape of bug in `ProjectsService.list`/`findOne`: hidden
+          projects were only visible to a global admin, not to the artist
+          who owns them. Both fixed with an `isOwner` check alongside the
+          existing `isAdmin` one. `assets`/`useGalleryAssets` also gained a
+          `uploadedById` filter so a storefront's gallery only shows that
+          artist's uploads.
+        - **Every file from the original broken-cascade list fixed**:
+          `CommissionForm`/`CommissionTypeFields`/`CommissionQuoteEstimate`/
+          `useCommissionForm` (`artistId` param, submits it in
+          `SubmitCommissionDto`), `useCommissionPricingEstimate` (fully
+          rewritten — see below), `CommissionQuoteEditor`/
+          `CommissionAdminNotes`/`CommissionDetailAdmin`/
+          `useCommissionDetail` (`CommissionNoteDto`→`CommentDto`,
+          `quoteCents`→`quote`, `deliverableAssets`→`images`/`deliveredAt`,
+          dropped `setProject` — `updateCommissionProject` no longer exists,
+          project attachment moved to `CommissionProgress`),
+          `OrderDetail`/`OrderNotesThread` (same DTO renames, public side),
+          `ProjectDetail`/`ProjectCard`/`ProjectsAdminList`/
+          `ProjectCreateForm`/`useProjects` (`coverAssetUrl`→`coverImageUrl`,
+          `deliverableAssets`→`artworkImages`, `commissionCount`→
+          `artworkCount`, `CreateProjectDto.brief` now required,
+          `ProjectsParams` fixed from a bugged `{query:{...}}` call to
+          `(params, options)`), `useCommissionQueue` (`artistId` param).
+          `CommissionProjectSelect.tsx` and the orphaned, never-wired
+          `ProjectsGrid.tsx` deleted rather than patched — both dead once
+          the model changed.
+        - **`useCommissionPricingEstimate` rewritten** for the type-catalog
+          rework's pricing model, not just renamed fields: fetches
+          `commissionTypesByArtist` + `commissionPricing({artistId})`,
+          groups options by `commissionTypeId`, resolves the sole option
+          automatically when a type has exactly one (`CommissionTypeFields`
+          only renders the option dropdown when there are 2+), computes
+          `PERCENTAGE` addons against the selected option's price per the
+          PRD, and reads `rushFee.enabled` instead of treating any stored
+          rush-fee row as implicitly on.
+        - **A real hydration bug, introduced and caught in this same
+          pass**: fixing `useCommissionForm`'s draft-restore
+          `set-state-in-effect` lint warning by switching to a `useState`
+          lazy initializer reading `localStorage` broke SSR — `localStorage`
+          doesn't exist on the server, so the server-rendered HTML and the
+          client's first paint disagreed and hydration failed. Caught by
+          checking browser console after the routing work, not by lint or
+          `tsc` (neither would have flagned it). Reverted to the effect-based
+          restore with a comment explaining why the effect is correct here
+          (syncing from a system unavailable at render time is what effects
+          are for, despite the lint heuristic) rather than fighting the lint
+          rule again.
+        - **Verified two ways**: `bunx tsc --noEmit` and `bunx eslint --fix`
+          clean across `apps/api`, `apps/art`, `packages/ui`,
+          `packages/models` (only remaining lint error is
+          `ImagePreviewGrid.tsx`'s pre-existing, untouched
+          `set-state-in-effect` — confirmed via `git diff` that this session
+          never touched that file). Live in the browser: artist picker →
+          `/dev-artist` gallery (empty-state correct) →
+          `/dev-artist/commission` → selected "Bust" (2 options) and got the
+          option dropdown, selected "Icon" (1 option) and got no dropdown
+          plus a correct live `$30.00` estimate → `/dev-artist/queue`. Console
+          checked for errors after every navigation (a fresh tab, not just
+          reload, to rule out stale HMR state).
+        - Dev seed (`development/commission-pricing.ts`) now also upserts a
+          `Profile{handle: 'dev-artist'}` for the seeded dev artist — without
+          it, the dev artist has no way to be reached at `/[artist]` at all,
+          since a real `Profile`/handle is otherwise only created through
+          onboarding opt-in.
 12. [x] **Commission types: create/edit UI, using the workspace's editable
         table pattern.** `CommissionTypesTable.tsx` — `@hatohui/ui`'s
         `EditableDataTable` (the same component `apps/workspace`'s
@@ -297,7 +380,77 @@ one-module-per-resource rule applies — this is several resources, not one
 13. [ ] Build the remaining new UI per the PRD's use cases (opening config,
         triage card/table views, accepted-slots table, progress timeline,
         group views, anonymous-client access-code flow).
-14. [ ] Lint + typecheck everything touched, once 11 and 13 are done.
+14. [x] Lint + typecheck everything touched by item 11's cascade fix —
+        `apps/api`/`apps/art`/`packages/ui`/`packages/models` all clean.
+        Item 13 hasn't happened yet, so this isn't "everything" for the
+        feature as a whole yet, just everything touched so far.
+
+## Commission type catalog rework — done, local only, NOT deployed to production
+
+Reworked per the user's explicit design feedback after the production
+incident above was resolved. See PRD "Commission type catalog: from
+per-artist table back to a global catalog" for the full rationale.
+
+- [x] Schema: `CommissionType` → global catalog (`key` unique, no price);
+      new `ArtistCommissionType` join (enable/disable + order); `CommissionOption`
+      scoped to `(artistId, commissionTypeId)` with its own `priceMode`/price
+      (`modifierPercent` removed); `PriceMode.PERCENTAGE` added, valid only on
+      `CommissionAddon` (new nullable `percent` column, `minPrice`/`maxPrice`
+      now nullable); rush-fee `UserSetting` JSON gained `enabled: boolean`.
+- [x] Migration `20260827152523_commission_type_catalog_rework` — applied and
+      verified against local dev only. **Not rehearsed or applied against
+      production.** Unlike the CommissionType rows (map 1:1 by key, safe to
+      drop `artistId`/`basePrice`), the old flat `CommissionOption` rows have
+      no relation to any type to backfill from — deploying this needs an
+      explicit decision with the artist about which type(s) their 2 existing
+      options belong under before it can be rehearsed and applied for real,
+      the same rehearse-locally-first discipline as the last incident.
+- [x] Seeds: new `core/commission-types.ts` seeds the global catalog
+      (SKETCH/LINEART/ICON/BUST/FULL/SKETCHPAGE/COMIC/ANIMATION);
+      `development/commission-pricing.ts` rewritten to enable a subset for
+      the dev artist and create type-scoped options.
+- [x] Backend: `commission-types` module rewritten — `GET /commission-types`
+      is now the public global catalog, `GET /commission-types/mine` is the
+      artist-joined enablement view, `PUT /commission-types/:id/enable` is
+      the artist toggle, create/update/delete of catalog entries now require
+      `isAdmin` (was `isArtist`). `commission-pricing` module: options now
+      take `commissionTypeId`; addon DTOs/service handle `PERCENTAGE` +
+      `percent`; rush-fee DTOs carry `enabled`.
+- [x] Frontend: `CommissionTypesTable.tsx` is now an enable/disable toggle
+      list (new `Switch` component added to `@hatohui/ui`) that renders a new
+      `CommissionOptionsTable.tsx` (EditableDataTable, wired with
+      `onDeleteRow` — this is also where "i can't delete the rows for the
+      table as well" got fixed) per enabled type.
+      `CommissionOptionPricingSection.tsx` deleted (options aren't a flat
+      per-artist list anymore). `CommissionAddonPricingSection.tsx` rewritten
+      from an ad-hoc form to the same EditableDataTable pattern, with
+      `PERCENTAGE` mode + percent column. `CommissionRushFeeSection.tsx` got
+      an enabled `Switch`.
+- [x] Verified via `tsc --noEmit` (api, art, ui all clean — new files
+      introduce zero errors; the ~40 pre-existing errors in
+      `CommissionQuoteEditor.tsx`/`useCommissionPricingEstimate.ts`/etc. are
+      the already-flagged separate-scope cascade from item 11, untouched) and
+      via curl against a minted dev-artist session cookie exercising every
+      new endpoint (catalog list, mine, enable toggle, option create incl.
+      RANGE-without-maxPrice 400, addon create incl. PERCENTAGE-without-percent
+      400, rush-fee update) — all behaved as designed. Could not verify the
+      new UI in-browser: the browser tool's permission classifier blocked
+      injecting a session cookie to simulate a logged-in artist, and there is
+      no dev OAuth bypass in this codebase to log in for real.
+- [ ] Log in as a real artist in the browser and click through the new
+      Commission Settings page at least once (toggle a type, add/edit/delete
+      an option, add a PERCENTAGE addon, flip the rush-fee switch).
+- [ ] Decide with the artist how to re-create their 2 existing production
+      `CommissionOption` rows under the new per-type shape, then rehearse and
+      deploy the migration to production (same discipline as the last one:
+      rehearse against a production-shaped local copy first, verify by direct
+      query after, never trust migration-table bookkeeping alone).
+- [ ] `useCommissionPricingEstimate.ts` (public commission-request price
+      estimate) still references the old flat option/addon shape
+      (`modifierPercent`, `minPriceCents`, `pricing.types`) — it's part of the
+      already-flagged item-11 cascade, but now also needs the new "derive
+      price from selected option, render a dropdown only when a type has >1
+      enabled option" logic from the PRD once that cascade gets picked up.
 
 ## Later / separate (do not fold into this feature)
 

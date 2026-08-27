@@ -40,6 +40,7 @@ export class AssetsController {
       query.sort ?? 'newest',
       query.page ?? 1,
       query.pageSize ?? 24,
+      query.uploadedById,
     );
   }
 

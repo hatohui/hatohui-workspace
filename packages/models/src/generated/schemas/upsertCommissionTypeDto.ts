@@ -7,10 +7,7 @@
  */
 
 export interface UpsertCommissionTypeDto {
-  key: string;
   label: string;
-  /** Base price, in the artist's currency's smallest unit */
-  basePrice: number;
   no?: number;
   active?: boolean;
 }

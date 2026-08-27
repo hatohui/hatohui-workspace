@@ -1,4 +1,8 @@
 {
+  "artistPicker": {
+    "title": "アーティストを選択",
+    "empty": "まだ公開されているアーティストがいません。"
+  },
   "site": {
     "title": "Art",
     "nav": {
@@ -69,6 +73,7 @@
     "codeLabel": "コードをお持ちの場合はこちら",
     "codeGo": "表示",
     "deliverables": "完成イラスト",
+    "deliveredAt": "{{date}} に納品済み",
     "existingReferences": "アップロード済みの参考画像",
     "addLinkLabel": "またはリンクを貼り付け（例: Google ドライブのフォルダ）",
     "addLinkPlaceholder": "https://...",
@@ -111,41 +116,37 @@
       "OTHER": "その他"
     },
     "type": {
+      "SKETCH": {
+        "label": "ラフ",
+        "description": "ラフな線一枚のみの下描き。"
+      },
+      "LINEART": {
+        "label": "線画",
+        "description": "着色や陰影なしの線画のみ。"
+      },
       "ICON": {
         "label": "アイコン",
         "description": "顔と肩だけのクローズアップイラスト。"
       },
-      "HALF_BODY": {
+      "BUST": {
         "label": "半身",
         "description": "腰から上、アイコンより詳細。"
       },
-      "FULL_BODY": {
+      "FULL": {
         "label": "全身",
         "description": "頭からつま先まで全身。"
       },
-      "SKETCH_PAGE": {
+      "SKETCHPAGE": {
         "label": "ラフページ",
         "description": "同じキャラクターの複数のラフ/ポーズをまとめたページ。"
-      }
-    },
-    "option": {
-      "FULLY_RENDERED": {
-        "label": "フルカラー",
-        "description": "フルカラー、陰影、仕上げまで。"
       },
-      "SKETCHED": {
-        "label": "線画",
-        "description": "着色や陰影なしの線画のみ。"
-      }
-    },
-    "addon": {
-      "COMPLEX_COSTUME": {
-        "label": "複雑さ",
-        "description": "凝った衣装・鎧・装飾品などの追加ディテール。\n\nこれにチェックしても自動で加算はされません - あくまで私への申告です。実際に「複雑」かどうかは作品ごとに私が確認します。\n\n不安な場合は気軽にご連絡ください！"
+      "COMIC": {
+        "label": "コミック",
+        "description": "短いコマ割りのページやストリップ。"
       },
-      "BACKGROUND": {
-        "label": "背景",
-        "description": "描き込んだ背景。"
+      "ANIMATION": {
+        "label": "アニメーション",
+        "description": "短いアニメクリップまたはループGIF。"
       }
     },
     "status": {
@@ -201,6 +202,7 @@
       },
       "deliver": {
         "title": "完成イラストを送付",
+        "deliveredAt": "{{date}} に納品済み",
         "filesLabel": "完成イラストファイル",
         "send": "依頼者に送付"
       },
@@ -211,12 +213,14 @@
       "pricing": {
         "title": "料金設定",
         "rushFee": "特急料金",
+        "rushFeeEnabled": "特急料金を適用する",
         "rushFeeDays": "しきい値（日）",
         "rushFeeAmount": "料金（$）",
         "priceMode": {
           "FIXED": "固定料金",
           "STARTING_FROM": "この価格から",
-          "RANGE": "価格帯"
+          "RANGE": "価格帯",
+          "PERCENTAGE": "オプション価格に対する割合"
         },
         "typesTable": {
           "addRow": "コミッション種別を追加",
@@ -229,6 +233,18 @@
           },
           "active": "有効",
           "inactive": "無効"
+        },
+        "optionsTable": {
+          "optionsFor": "{{type}} のオプション",
+          "priceMode": "料金形態",
+          "minPrice": "料金（$）",
+          "maxPrice": "上限（$）",
+          "addRow": "オプションを追加",
+          "deleteRow": "行を削除"
+        },
+        "addonsTable": {
+          "percent": "割合",
+          "addRow": "追加オプションを追加"
         }
       }
     }

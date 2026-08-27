@@ -106,6 +106,42 @@ email])`: you follow an artist, not the site.
 This replaced an earlier nullable `assignedToId`. Two columns both answering
 "whose commission is this" can disagree; one required owner cannot.
 
+**Multi-artist in the schema doesn't by itself make `apps/art` multi-artist**
+— the backend being artist-scoped everywhere still leaves open how a
+frontend page decides *which* artist it's for. Two options, when this
+actually came up (the backend requiring `artistId` broke ~40 frontend call
+sites that had implicitly assumed a single site-owner artist): hardcode this
+deployment to one artist (cheapest — matches how the site is actually
+deployed today, defers the frontend question until a second artist exists)
+or build real per-artist routing now. Chosen: **real routing**, via a
+`/[artist]` segment keyed by the artist's public **handle**
+(`Profile.handle`, the same field the friends app already uses for public
+profile URLs — not a new one) — every public route
+(`/[artist]`, `/[artist]/commission`, `/[artist]/queue[/[code]]`,
+`/[artist]/projects/[id]`) lives under it, resolved once per request by
+`/[artist]/layout.tsx` and 404ing on an unknown handle or a handle that
+isn't an artist. The site root `/` became an artist picker rather than
+gallery content.
+
+Two things this decision required that didn't previously exist:
+- A public **`artists`** module (`GET /artists`, `GET /artists/:handle`),
+  since resolving a handle to "is this an artist, and what's their id" has
+  to be a real lookup a public page can call without authenticating.
+- A public **`GET /commission-types/by-artist/:artistId`**, since the
+  existing `/commission-types/mine` is `@CurrentUser()`-scoped (an artist
+  looking at their own catalog), not usable for a storefront visitor looking
+  at someone else's.
+
+Going multi-artist for real (rather than deferring behind a single hardcoded
+owner) also surfaced two bugs that a single-owner deployment had been
+masking rather than avoiding: `AssetsService`'s create/update/remove were
+gated on global `isAdmin`, meaning an artist who wasn't also the platform
+admin could never have managed their own gallery; `ProjectsService`'s
+hidden-project visibility had the same shape of bug. Both fixed by adding an
+ownership check (`isArtist` / `viewer.id === artistId`) alongside the
+existing admin check, rather than replacing it — admin still needs to manage
+anyone's.
+
 ### Client identity
 
 `Client` (unique `email`, name, preferred contact method, handle) replaces the
@@ -218,6 +254,48 @@ unit of whatever `currency` says, and interpreting it (whether to divide by
 `CommissionAddon.minPrice` is deliberately a floor, not a fixed price: an
 add-on like "Background" is "from $X", and the actual quote for it is set
 manually per commission in `CommissionDetail.quote` rather than computed.
+
+### Commission type catalog: from per-artist table back to a global catalog
+
+The per-artist `CommissionType` design above (each artist freely invents their
+own `key`/`label`/`basePrice` rows) turned out to be the wrong shape once
+artists actually used it: there is no reason two artists' "Icon" types should
+be unrelated rows, and letting artists free-type a `basePrice` on the *type*
+conflicts with the type also having `CommissionOption`s that are supposed to
+be what's actually priced. Reworked to:
+
+| Was | Now |
+| --- | --- |
+| `CommissionType` per-artist (`artistId`, `key`, `label`, `basePrice`) | `CommissionType` is a **global, admin-curated catalog** (`key` globally unique, no price) |
+| (implicit — artist owns the row) | `ArtistCommissionType` — join row an artist uses to enable/disable a catalog entry and order it |
+| `CommissionOption` flat per-artist list, `modifierPercent` against the type's `basePrice` | `CommissionOption` scoped to `(artistId, commissionTypeId)`, carries its own `priceMode`/`minPrice`/`maxPrice` — a type's price is *derived from* whichever option(s) the artist configured under it, not stored on the type |
+
+Rendering consequence for `apps/art`'s public commission form: a type with
+exactly one enabled `CommissionOption` applies it directly (no picker shown);
+a type with several renders a dropdown for the client to choose among them.
+
+`PriceMode` gained a fourth value, `PERCENTAGE`, valid only on
+`CommissionAddon` — computed against whichever `CommissionOption` the client
+selected (there is no other "base" left to reference, now that types don't
+carry a price). It is intentionally *not* a valid mode for `CommissionOption`
+itself: an option is the thing other prices are a percentage of, so it has
+nothing to reference. `CommissionAddon.minPrice`/`maxPrice` are nullable now
+(unused when `priceMode` is `PERCENTAGE`) and a new `percent` column holds the
+percentage.
+
+The rush-fee `UserSetting` JSON gained an explicit `enabled: boolean` — it
+used to be implicitly "on" whenever a row existed, which gave the artist no
+way to configure thresholds/fee ahead of time without it silently applying.
+
+**Known gap, deliberately left for whoever deploys this migration to
+production**: unlike `CommissionType`'s old `artistId`+`basePrice` (which
+migration `20260827152523_commission_type_catalog_rework` drops safely since
+there's currently exactly one artist and its `key`s map 1:1 onto the new
+global catalog), the old flat `CommissionOption` rows have **no relation to
+any type at all** to backfill from — the old model never had one. Migrating
+production's existing 2 example options requires a decision from the artist
+about which type(s) they belong under; it isn't something a migration script
+can infer.
 
 ### Payment methods
 

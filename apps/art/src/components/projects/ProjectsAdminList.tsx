@@ -2,11 +2,13 @@
 
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
+import { useAuth } from '@hatohui/libs';
 import { useProjectsAdmin } from '@/hooks/useProjects';
 
 export function ProjectsAdminList() {
   const { t } = useTranslation('art');
-  const { items, updateVisibility, remove } = useProjectsAdmin();
+  const { user } = useAuth();
+  const { items, updateVisibility, remove } = useProjectsAdmin(user?.id ?? '');
 
   if (items.length === 0) {
     return <p className="text-muted-foreground">{t('projects.empty')}</p>;
@@ -20,7 +22,7 @@ export function ProjectsAdminList() {
           className="flex items-center justify-between rounded-md bg-card p-2 text-sm"
         >
           <span>
-            {item.title} ({item.commissionCount})
+            {item.title} ({item.artworkCount})
           </span>
           <div className="flex gap-2">
             <Button

@@ -8,14 +8,16 @@
 import type { UpsertCommissionAddonPricingDtoPriceMode } from './upsertCommissionAddonPricingDtoPriceMode';
 
 export interface UpsertCommissionAddonPricingDto {
-  key: string;
   label: string;
   priceMode: UpsertCommissionAddonPricingDtoPriceMode;
-  minPrice: number;
+  /** Required unless priceMode is PERCENTAGE */
+  minPrice?: number;
   /**
      * Required (and > minPrice) when priceMode is RANGE
      * @nullable
      */
   maxPrice?: number | null;
+  /** Required when priceMode is PERCENTAGE — percent of the selected option's price */
+  percent?: number;
   active?: boolean;
 }

@@ -5,15 +5,25 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { CommissionOptionPricingDtoPriceMode } from './commissionOptionPricingDtoPriceMode';
 
 export interface CommissionOptionPricingDto {
   id: string;
   artistId: string;
-  /** Also the i18n key: commission.option.<key> */
+  commissionTypeId: string;
+  /** Internal slug, derived from label at creation and never shown to the artist */
   key: string;
   label: string;
-  /** Percent modifier on the base price */
-  modifierPercent: number;
+  priceMode: CommissionOptionPricingDtoPriceMode;
+  /** FIXED: the price. STARTING_FROM: the floor ("from X"). RANGE: the lower bound. In the artist's currency's smallest unit. */
+  minPrice: number;
+  /**
+     * Upper bound — set only when priceMode is RANGE
+     * @nullable
+     */
+  maxPrice: number | null;
+  /** Display order, ascending */
+  no: number;
   active: boolean;
   updatedAt: string;
 }

@@ -73,13 +73,16 @@ export class CommissionPricingController {
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'commissionOptionPricings',
-    summary: 'List your own commission option pricing rows',
+    summary:
+      'List your own commission option pricing rows, optionally scoped to one commission type',
   })
+  @ApiQuery({ name: 'commissionTypeId', required: false, type: String })
   @ApiOkResponse({ type: CommissionOptionPricingDto, isArray: true })
   listOptions(
     @CurrentUser() user: User,
+    @Query('commissionTypeId') commissionTypeId?: string,
   ): Promise<CommissionOptionPricingDto[]> {
-    return this.pricingService.listOptions(user.id);
+    return this.pricingService.listOptions(user.id, commissionTypeId);
   }
 
   @Post('options')

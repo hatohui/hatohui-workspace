@@ -8,14 +8,12 @@
 
 export interface CommissionTypeDto {
   id: string;
-  artistId: string;
-  /** Also the i18n key: commission.type.<key> */
+  /** Internal slug, derived from label at creation */
   key: string;
   label: string;
-  /** Base price, in the artist's currency's smallest unit */
-  basePrice: number;
   /** Display order, ascending */
   no: number;
+  /** Whether this type exists in the platform catalog at all */
   active: boolean;
   /** @nullable */
   tagId: string | null;

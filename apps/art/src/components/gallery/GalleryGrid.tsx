@@ -18,19 +18,22 @@ import { ProjectsSection } from '@/components/projects/ProjectsSection';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
 
 export function GalleryGrid({
+  artistId,
   initialData,
 }: {
+  artistId?: string;
   initialData: GalleryInitialData;
 }) {
   const { t } = useTranslation('art');
   const { user } = useAuth();
-  const gallery = useGalleryAssets(initialData);
+  const gallery = useGalleryAssets(artistId, initialData);
   const [selected, setSelected] = useState<AssetDto | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [section, setSection] = useState<GallerySection>('assets');
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [
     gallery.items,
   ]);
+  const isOwner = artistId ? user?.id === artistId : (user?.isAdmin ?? false);
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
@@ -46,7 +49,7 @@ export function GalleryGrid({
             }}
           />
         </div>
-        {section === 'assets' && user?.isAdmin && (
+        {section === 'assets' && isOwner && (
           <Button onClick={() => setIsUploadOpen(true)}>
             {t('gallery.upload.cta')}
           </Button>
@@ -54,7 +57,7 @@ export function GalleryGrid({
       </div>
 
       {section === 'projects' ? (
-        <ProjectsSection />
+        <ProjectsSection artistId={artistId} />
       ) : (
         <>
           <GalleryFilters gallery={gallery} />
@@ -73,7 +76,7 @@ export function GalleryGrid({
               <div key={asset.id} data-reveal>
                 <GalleryCard
                   asset={asset}
-                  isAdmin={user?.isAdmin ?? false}
+                  isAdmin={isOwner}
                   onClick={() => setSelected(asset)}
                 />
               </div>

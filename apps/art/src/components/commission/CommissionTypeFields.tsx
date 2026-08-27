@@ -10,20 +10,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@hatohui/ui';
+import type { CommissionAddonPricingDto } from '@hatohui/models';
 import type { useCommissionForm } from '@/hooks/useCommissionForm';
 import { CommissionReferenceExamples } from './CommissionReferenceExamples';
 import { InfoTooltip } from '@/components/shared/InfoTooltip';
 
+function formatAddonPrice(addon: CommissionAddonPricingDto): string {
+  const min = addon.minPrice != null ? (addon.minPrice / 100).toFixed(0) : '0';
+  switch (addon.priceMode) {
+    case 'FIXED':
+      return `$${min}`;
+    case 'RANGE':
+      return addon.maxPrice != null
+        ? `$${min}–$${(addon.maxPrice / 100).toFixed(0)}`
+        : `$${min}+`;
+    case 'PERCENTAGE':
+      return `${addon.percent ?? 0}%`;
+    default:
+      return `$${min}+`;
+  }
+}
+
 export function CommissionTypeFields({
   form,
+  artistId,
 }: {
   form: ReturnType<typeof useCommissionForm>;
+  artistId: string;
 }) {
   const { t } = useTranslation('art');
-  const { types, options, addons } = form.pricing;
+  const { types, optionsForType, addons } = form.pricing;
   const selectedType = types.find(
-    (type) => type.commissionTypeId === form.state.commissionTypeId,
+    (type) => type.id === form.state.commissionTypeId,
   );
+  const hasOptionChoice = optionsForType.length > 1;
 
   return (
     <div className="space-y-3 rounded-lg border border-border p-4">
@@ -32,15 +52,16 @@ export function CommissionTypeFields({
           <Label>{t('commission.form.commissionTypeLabel')}</Label>
           {selectedType && (
             <InfoTooltip
-              content={t(
-                `commission.type.${selectedType.commissionTypeKey}.description`,
-              )}
+              content={t(`commission.type.${selectedType.key}.description`)}
             />
           )}
         </div>
         <Select
           value={form.state.commissionTypeId}
-          onValueChange={(value) => form.update('commissionTypeId', value)}
+          onValueChange={(value) => {
+            form.update('commissionTypeId', value);
+            form.update('optionKey', '');
+          }}
         >
           <SelectTrigger>
             <SelectValue
@@ -49,52 +70,44 @@ export function CommissionTypeFields({
           </SelectTrigger>
           <SelectContent>
             {types.map((type) => (
-              <SelectItem
-                key={type.commissionTypeId}
-                value={type.commissionTypeId}
-              >
-                {t(`commission.type.${type.commissionTypeKey}.label`)} ($
-                {(type.basePriceCents / 100).toFixed(0)})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <CommissionReferenceExamples tag={selectedType?.tagName} />
-      </div>
-
-      <div>
-        <div className="flex items-center gap-1.5">
-          <Label>{t('commission.form.optionLabel')}</Label>
-          {form.state.optionKey && (
-            <InfoTooltip
-              content={t(
-                `commission.option.${form.state.optionKey}.description`,
-              )}
-            />
-          )}
-        </div>
-        <Select
-          value={form.state.optionKey}
-          onValueChange={(value) => form.update('optionKey', value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={t('commission.form.optionPlaceholder')} />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.key} value={option.key}>
-                {t(`commission.option.${option.key}.label`)}
-                {option.modifierPercent !== 0
-                  ? ` (${option.modifierPercent}%)`
-                  : ''}
+              <SelectItem key={type.id} value={type.id}>
+                {t(`commission.type.${type.key}.label`, {
+                  defaultValue: type.label,
+                })}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <CommissionReferenceExamples
-          tag={form.state.optionKey?.toLowerCase()}
+          artistId={artistId}
+          tag={selectedType?.tagName ?? undefined}
         />
       </div>
+
+      {hasOptionChoice && (
+        <div>
+          <div className="flex items-center gap-1.5">
+            <Label>{t('commission.form.optionLabel')}</Label>
+          </div>
+          <Select
+            value={form.state.optionKey}
+            onValueChange={(value) => form.update('optionKey', value)}
+          >
+            <SelectTrigger>
+              <SelectValue
+                placeholder={t('commission.form.optionPlaceholder')}
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {optionsForType.map((option) => (
+                <SelectItem key={option.key} value={option.key}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {addons.length > 0 && (
         <div>
@@ -118,12 +131,8 @@ export function CommissionTypeFields({
                         )
                       }
                     />
-                    {t(`commission.addon.${addon.key}.label`)} ($
-                    {(addon.minPriceCents / 100).toFixed(0)}+)
+                    {addon.label} ({formatAddonPrice(addon)})
                   </label>
-                  <InfoTooltip
-                    content={t(`commission.addon.${addon.key}.description`)}
-                  />
                 </div>
               );
             })}

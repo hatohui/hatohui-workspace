@@ -2,36 +2,26 @@
 
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  useCommissionTypes,
-  useCreateCommissionType,
-  useUpdateCommissionType,
-  useDeleteCommissionType,
-  getCommissionTypesQueryKey,
+  useMyCommissionTypes,
+  useSetArtistCommissionTypeEnabled,
+  getMyCommissionTypesQueryKey,
 } from '@hatohui/models';
 
-export function useCommissionTypesAdmin(artistId: string) {
+export function useCommissionTypesAdmin() {
   const queryClient = useQueryClient();
   const invalidate = () =>
     queryClient.invalidateQueries({
-      queryKey: getCommissionTypesQueryKey({ artistId, includeInactive: true }),
+      queryKey: getMyCommissionTypesQueryKey(),
     });
 
-  const listQuery = useCommissionTypes({ artistId, includeInactive: true });
-  const create = useCreateCommissionType({
-    mutation: { onSuccess: invalidate },
-  });
-  const update = useUpdateCommissionType({
-    mutation: { onSuccess: invalidate },
-  });
-  const remove = useDeleteCommissionType({
+  const listQuery = useMyCommissionTypes();
+  const setEnabled = useSetArtistCommissionTypeEnabled({
     mutation: { onSuccess: invalidate },
   });
 
   return {
     items: listQuery.data?.data ?? [],
     isLoading: listQuery.isPending,
-    create: create.mutateAsync,
-    update: update.mutateAsync,
-    remove: (id: string) => remove.mutateAsync({ id }),
+    setEnabled: setEnabled.mutateAsync,
   };
 }

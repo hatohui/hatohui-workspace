@@ -13,4 +13,5 @@ export const CommissionAddonPricingDtoPriceMode = {
   FIXED: 'FIXED',
   STARTING_FROM: 'STARTING_FROM',
   RANGE: 'RANGE',
+  PERCENTAGE: 'PERCENTAGE',
 } as const;

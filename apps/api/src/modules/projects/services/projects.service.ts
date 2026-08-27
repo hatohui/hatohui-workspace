@@ -28,11 +28,12 @@ export class ProjectsService {
   ) {}
 
   async list(viewer: User | null, artistId?: string): Promise<ProjectDto[]> {
-    const isAdmin = await this.auth.isAdmin(viewer);
+    const isOwner = !!viewer && !!artistId && viewer.id === artistId;
+    const canSeeHidden = isOwner || (await this.auth.isAdmin(viewer));
     const projects = await this.db.project.findMany({
       where: {
         ...(artistId ? { artistId } : {}),
-        ...(isAdmin ? {} : { isHidden: false }),
+        ...(canSeeHidden ? {} : { isHidden: false }),
       },
       orderBy: { createdAt: 'desc' },
       include: artworksInclude,
@@ -42,7 +43,8 @@ export class ProjectsService {
 
   async findOne(id: string, viewer: User | null): Promise<ProjectDto> {
     const project = await this.findOrThrow(id);
-    if (project.isHidden && !(await this.auth.isAdmin(viewer))) {
+    const isOwner = viewer?.id === project.artistId;
+    if (project.isHidden && !isOwner && !(await this.auth.isAdmin(viewer))) {
       throw new NotFoundException(`Project ${id} not found`);
     }
     return toProjectDto(project);
