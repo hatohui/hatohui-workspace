@@ -18,8 +18,8 @@ export function CommissionTypesTable() {
     items.find((item) => item.commissionTypeId === selectedId) ?? items[0];
 
   return (
-    <div className="flex gap-6">
-      <ul className="w-64 shrink-0 divide-y divide-border overflow-hidden rounded-md border border-border">
+    <div className="flex flex-col gap-4 md:flex-row md:gap-6">
+      <ul className="w-full shrink-0 divide-y divide-border overflow-hidden rounded-md border border-border md:w-64">
         {items.map((item) => {
           const isSelected =
             item.commissionTypeId === selected?.commissionTypeId;

@@ -18,7 +18,7 @@ export function CommissionOpeningPanel() {
     : undefined;
 
   return (
-    <div className="max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-8">
       <header className="space-y-1">
         <h1 className="font-serif text-2xl">
           {t('commission.admin.opening.title')}

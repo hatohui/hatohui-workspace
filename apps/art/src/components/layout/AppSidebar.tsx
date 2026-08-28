@@ -1,15 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import {
-  LayoutDashboard,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Settings,
-  DoorOpen,
-  ArrowLeft,
-} from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, ArrowLeft } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
 import {
@@ -20,14 +12,15 @@ import {
   SidebarNavItem,
   SidebarToggle,
 } from '@hatohui/ui';
+import { useAppNav } from '@/hooks/useAppNav';
 
 export function AppSidebar() {
   const { t } = useTranslation('art');
   const { user } = useAuth();
-  const pathname = usePathname();
+  const navItems = useAppNav();
 
   return (
-    <Sidebar defaultCollapsed={false}>
+    <Sidebar defaultCollapsed={false} className="hidden md:flex">
       <SidebarHeader>
         <SidebarToggle
           labelExpand={t('app.nav.toggle')}
@@ -37,34 +30,17 @@ export function AppSidebar() {
         />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarNavItem
-          as={Link}
-          href="/app"
-          active={pathname === '/app'}
-          icon={<LayoutDashboard />}
-        >
-          {t('app.nav.dashboard')}
-        </SidebarNavItem>
-        {user?.isArtist && (
+        {navItems.map((item) => (
           <SidebarNavItem
+            key={item.href}
             as={Link}
-            href="/app/commission-settings"
-            active={pathname?.startsWith('/app/commission-settings')}
-            icon={<Settings />}
+            href={item.href}
+            active={item.active}
+            icon={item.icon}
           >
-            {t('app.nav.commissionSettings')}
+            {item.label}
           </SidebarNavItem>
-        )}
-        {user?.isArtist && (
-          <SidebarNavItem
-            as={Link}
-            href="/app/commission-opening"
-            active={pathname?.startsWith('/app/commission-opening')}
-            icon={<DoorOpen />}
-          >
-            {t('app.nav.commissionOpening')}
-          </SidebarNavItem>
-        )}
+        ))}
       </SidebarContent>
       <SidebarFooter>
         <SidebarNavItem

@@ -107,7 +107,7 @@ export function CommissionRushFeeSection({ artistId }: { artistId: string }) {
 
   return (
     <section className="space-y-3">
-      <div className="space-y-1">
+      <div className="max-w-2xl space-y-1">
         <h2 className="font-medium">{t('app.commissionSettings.rushFee')}</h2>
         <p className="text-sm text-muted-foreground">
           {t('app.commissionSettings.rushFeeHint')}

@@ -180,7 +180,7 @@ export function EditableDataTable<T extends { id: string }>({
     <div
       ref={wrapperRef}
       className={cn(
-        'max-h-[70vh] w-full overflow-auto rounded-md border border-border',
+        'max-h-[70dvh] w-full overflow-auto rounded-md border border-border',
         className,
       )}
     >
@@ -252,7 +252,10 @@ export function EditableDataTable<T extends { id: string }>({
                 );
               })}
               {onDeleteRow && (
-                <th className="w-10 border-r-0 px-2 py-2" aria-hidden />
+                <th
+                  className="sticky right-0 z-10 w-10 border-r-0 border-l border-border bg-muted px-2 py-2"
+                  aria-hidden
+                />
               )}
             </tr>
           ))}
@@ -304,7 +307,7 @@ export function EditableDataTable<T extends { id: string }>({
                 );
               })}
               {onDeleteRow && (
-                <td className="p-0 text-center">
+                <td className="sticky right-0 z-10 border-l border-border bg-background p-0 text-center">
                   <button
                     type="button"
                     aria-label={deleteRowLabel}
