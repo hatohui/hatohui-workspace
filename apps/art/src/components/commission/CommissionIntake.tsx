@@ -7,9 +7,11 @@ import { CommissionClosedNotice } from './CommissionClosedNotice';
 
 export function CommissionIntake({
   artistId,
+  artistName,
   artistHandle,
 }: {
   artistId: string;
+  artistName: string;
   artistHandle: string;
 }) {
   const { t } = useTranslation('art');
@@ -24,6 +26,10 @@ export function CommissionIntake({
   }
 
   return (
-    <CommissionClosedNotice opening={opening} artistHandle={artistHandle} />
+    <CommissionClosedNotice
+      opening={opening}
+      artistName={artistName}
+      artistHandle={artistHandle}
+    />
   );
 }

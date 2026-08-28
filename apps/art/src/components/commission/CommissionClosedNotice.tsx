@@ -8,9 +8,11 @@ import type { CommissionOpeningDto } from '@hatohui/models';
 
 export function CommissionClosedNotice({
   opening,
+  artistName,
   artistHandle,
 }: {
   opening: CommissionOpeningDto | undefined;
+  artistName: string;
   artistHandle: string;
 }) {
   const { t } = useTranslation('art');
@@ -34,7 +36,9 @@ export function CommissionClosedNotice({
       />
       <div className="space-y-1.5">
         <h1 className="font-serif text-2xl">{t('commission.closed.title')}</h1>
-        <p className="text-muted-foreground">{t('commission.closed.body')}</p>
+        <p className="text-muted-foreground">
+          {t('commission.closed.body', { name: artistName })}
+        </p>
         {detail && (
           <p className="text-sm text-muted-foreground tabular-nums">{detail}</p>
         )}

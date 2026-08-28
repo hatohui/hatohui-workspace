@@ -11,7 +11,11 @@ export default async function CommissionPage({
 
   return (
     <main className="mx-auto max-w-xl px-6 py-10">
-      <CommissionIntake artistId={artistUser.id} artistHandle={artist} />
+      <CommissionIntake
+        artistId={artistUser.id}
+        artistName={artistUser.name}
+        artistHandle={artist}
+      />
     </main>
   );
 }

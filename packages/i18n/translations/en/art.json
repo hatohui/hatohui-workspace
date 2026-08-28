@@ -416,7 +416,7 @@
     },
     "closed": {
       "title": "Commissions aren't open right now",
-      "body": "This artist is not accepting new requests at the moment. Check back later, or take a look at what they have in progress.",
+      "body": "{{name}} isn't accepting new requests at the moment. Check back later, or take a look at what they have in progress.",
       "opensAt": "Scheduled to open {{date}}",
       "lastOpenAt": "Last open {{date}}",
       "seeQueue": "See the queue"

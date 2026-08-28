@@ -416,7 +416,7 @@
     },
     "closed": {
       "title": "Hiện chưa mở nhận commission",
-      "body": "Hoạ sĩ này hiện không nhận yêu cầu mới. Hãy quay lại sau, hoặc xem các tác phẩm đang thực hiện.",
+      "body": "{{name}} hiện không nhận yêu cầu mới. Hãy quay lại sau, hoặc xem các tác phẩm đang thực hiện.",
       "opensAt": "Dự kiến mở vào {{date}}",
       "lastOpenAt": "Lần mở gần nhất {{date}}",
       "seeQueue": "Xem hàng chờ"
