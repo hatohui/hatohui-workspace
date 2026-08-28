@@ -25,6 +25,7 @@ export function useCommissionRushFeeAdmin(artistId: string) {
   return {
     rushFee: pricingQuery.data?.data.rushFee,
     isLoading: pricingQuery.isPending,
+    isSaving: update.isPending,
     update: update.mutateAsync,
   };
 }

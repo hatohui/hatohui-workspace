@@ -80,7 +80,7 @@ export const getCurrentCommissionOpeningUrl = (params: CurrentCommissionOpeningP
 }
 
 /**
- * @summary The one opening a storefront should show for an artist — open, else next scheduled. 404 if neither exists.
+ * @summary The opening a storefront should show for an artist — open, else next scheduled, else most recently closed. 404 only if the artist has never opened.
  */
 export const currentCommissionOpening = async (params: CurrentCommissionOpeningParams, options?: RequestInit): Promise<currentCommissionOpeningResponse> => {
 
@@ -151,7 +151,7 @@ export function useCurrentCommissionOpening<TData = Awaited<ReturnType<typeof cu
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary The one opening a storefront should show for an artist — open, else next scheduled. 404 if neither exists.
+ * @summary The opening a storefront should show for an artist — open, else next scheduled, else most recently closed. 404 only if the artist has never opened.
  */
 
 export function useCurrentCommissionOpening<TData = Awaited<ReturnType<typeof currentCommissionOpening>>, TError = unknown>(

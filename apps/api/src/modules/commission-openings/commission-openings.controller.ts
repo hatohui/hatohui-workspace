@@ -40,7 +40,7 @@ export class CommissionOpeningsController {
   @ApiOperation({
     operationId: 'currentCommissionOpening',
     summary:
-      'The one opening a storefront should show for an artist — open, else next scheduled. 404 if neither exists.',
+      'The opening a storefront should show for an artist — open, else next scheduled, else most recently closed. 404 only if the artist has never opened.',
   })
   @ApiQuery({ name: 'artistId', required: true, type: String })
   @ApiOkResponse({ type: CommissionOpeningDto })

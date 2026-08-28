@@ -45,7 +45,7 @@ export function EditableCell({
 
   if (toggle) {
     return (
-      <div className="flex items-center px-3 py-2">
+      <div className="flex items-center justify-center px-2 py-2">
         <Switch
           checked={value === 'true'}
           disabled={!editable}
@@ -91,7 +91,7 @@ export function EditableCell({
           setEditing(true);
         }}
         className={cn(
-          'w-full truncate px-3 py-2 text-left text-sm outline-none',
+          'w-full cursor-pointer truncate px-3 py-2 text-left text-sm outline-none transition-colors duration-150 ease-out motion-reduce:transition-none',
           'hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
         )}
       >

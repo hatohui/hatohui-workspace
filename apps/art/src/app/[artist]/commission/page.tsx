@@ -1,4 +1,4 @@
-import { CommissionForm } from '@/components/commission/CommissionForm';
+import { CommissionIntake } from '@/components/commission/CommissionIntake';
 import { resolveArtist } from '@/lib/artist';
 
 export default async function CommissionPage({
@@ -11,7 +11,7 @@ export default async function CommissionPage({
 
   return (
     <main className="mx-auto max-w-xl px-6 py-10">
-      <CommissionForm artistId={artistUser.id} />
+      <CommissionIntake artistId={artistUser.id} artistHandle={artist} />
     </main>
   );
 }

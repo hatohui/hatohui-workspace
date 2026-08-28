@@ -290,10 +290,6 @@
       },
       "opening": {
         "title": "Commission opening",
-        "subtitle": "Control when clients can send you commission requests. Only one window can be active at a time.",
-        "none": "You don't have an open or scheduled commission window right now.",
-        "emptyTitle": "No commission window is open",
-        "emptyBody": "Set one up below — open it right away, or schedule it to open later.",
         "newHeading": "Open a new window",
         "editHeading": "Current window",
         "openNow": "Open now",
@@ -341,6 +337,40 @@
           "SCHEDULED": "Scheduled",
           "OPEN": "Open",
           "CLOSED": "Closed"
+        },
+        "oneWindowHint": "Only one window can be active at a time.",
+        "openCommission": "Open commission",
+        "back": "Back",
+        "noHistory": "No past commission windows yet.",
+        "columns": {
+          "status": "Status",
+          "endMode": "End mode",
+          "slots": "Slots",
+          "opened": "Opened",
+          "closed": "Closed"
+        },
+        "tabs": {
+          "overview": "Overview",
+          "history": "Past windows"
+        },
+        "stat": {
+          "endMode": "End mode",
+          "slots": "Slots taken",
+          "daysOpen": "Days open",
+          "status": "Status"
+        },
+        "detail": {
+          "heading": "Window details",
+          "endMode": "End mode",
+          "slotsTaken": "Slots taken",
+          "scheduledAt": "Scheduled for",
+          "openedAt": "Opened",
+          "closedAt": "Closed",
+          "notOpened": "Not opened yet",
+          "stillOpen": "Still open",
+          "announcement": "Announcement",
+          "noAnnouncement": "No announcement title set.",
+          "none": "—"
         }
       },
       "pricing": {
@@ -349,6 +379,9 @@
         "rushFeeEnabled": "Charge a rush fee",
         "rushFeeDays": "Threshold (days)",
         "rushFeeAmount": "Fee ($)",
+        "saved": "Saved.",
+        "saveFailed": "Couldn't save — your change was reverted.",
+        "removed": "Removed.",
         "priceMode": {
           "FIXED": "Fixed price",
           "STARTING_FROM": "Starting from",
@@ -361,7 +394,7 @@
             "key": "Key",
             "label": "Label",
             "basePrice": "Base price ($)",
-            "active": "Status",
+            "active": "Enabled",
             "tag": "Gallery tag"
           },
           "active": "Active",
@@ -380,6 +413,13 @@
           "addRow": "Add add-on"
         }
       }
+    },
+    "closed": {
+      "title": "Commissions aren't open right now",
+      "body": "This artist is not accepting new requests at the moment. Check back later, or take a look at what they have in progress.",
+      "opensAt": "Scheduled to open {{date}}",
+      "lastOpenAt": "Last open {{date}}",
+      "seeQueue": "See the queue"
     }
   },
   "app": {
@@ -393,10 +433,14 @@
     },
     "commissionSettings": {
       "title": "Commission settings",
+      "subtitle": "Set what clients can request, how each option is priced, and your rush-fee policy.",
       "types": "Commission types",
+      "typesHint": "Pick a type to edit its options and pricing. The toggle controls whether clients can choose it.",
       "options": "Options",
       "addons": "Add-ons",
-      "rushFee": "Rush fee"
+      "addonsHint": "Optional extras clients can add on top of a commission.",
+      "rushFee": "Rush fee",
+      "rushFeeHint": "Charge extra when a deadline is closer than the threshold. Turn it off to disable it entirely."
     },
     "dashboard": {
       "title": "Dashboard",

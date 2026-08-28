@@ -38,17 +38,21 @@ const ACTIVE_STATUSES: CommissionOpeningStatus[] = [
 export class CommissionOpeningsService {
   constructor(private readonly db: Database) {}
 
-  /** The one opening a storefront should show: the open one, or if none, the
-   * next scheduled one. Null means "nothing to show". */
+  /** The opening a storefront should show for an artist: the open one, else the
+   * next scheduled one, else the most recently closed one so the page can say
+   * when requests were last accepted. Null only if the artist has never opened. */
   async getCurrent(artistId: string): Promise<CommissionOpeningDto | null> {
-    const open = await this.db.commissionOpening.findFirst({
-      where: { artistId, status: CommissionOpeningStatus.OPEN },
-    });
     const opening =
-      open ??
+      (await this.db.commissionOpening.findFirst({
+        where: { artistId, status: CommissionOpeningStatus.OPEN },
+      })) ??
       (await this.db.commissionOpening.findFirst({
         where: { artistId, status: CommissionOpeningStatus.SCHEDULED },
         orderBy: { scheduledAt: 'asc' },
+      })) ??
+      (await this.db.commissionOpening.findFirst({
+        where: { artistId, status: CommissionOpeningStatus.CLOSED },
+        orderBy: { closedAt: 'desc' },
       }));
     if (!opening) return null;
     return this.toDto(opening);

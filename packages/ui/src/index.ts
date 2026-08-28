@@ -21,6 +21,7 @@ export * from './components/ui/error-state';
 export * from './components/ui/editable-cell';
 export * from './components/ui/editable-data-table';
 export * from './components/ui/confirm-dialog';
+export * from './components/ui/toast';
 export * from './components/ui/pagination';
 export * from './components/ui/sidebar';
 export * from './components/ui/switch';

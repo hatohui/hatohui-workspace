@@ -19,35 +19,45 @@ export function CommissionTypesTable() {
 
   return (
     <div className="flex gap-6">
-      <ul className="w-64 shrink-0 divide-y divide-border rounded-md border border-border">
-        {items.map((item) => (
-          <li key={item.commissionTypeId}>
-            <div
-              className={cn(
-                'flex items-center justify-between gap-2 p-3',
-                item.commissionTypeId === selected?.commissionTypeId &&
-                  'bg-accent',
-              )}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedId(item.commissionTypeId)}
-                className="min-w-0 flex-1 truncate text-left font-medium"
+      <ul className="w-64 shrink-0 divide-y divide-border overflow-hidden rounded-md border border-border">
+        {items.map((item) => {
+          const isSelected =
+            item.commissionTypeId === selected?.commissionTypeId;
+          return (
+            <li key={item.commissionTypeId}>
+              <div
+                className={cn(
+                  'flex items-center justify-between gap-2 border-l-2 border-transparent p-3 transition-colors duration-150 ease-out motion-reduce:transition-none',
+                  isSelected
+                    ? 'border-primary bg-accent'
+                    : 'hover:bg-accent/50',
+                )}
               >
-                {item.label}
-              </button>
-              <Switch
-                checked={item.enabled}
-                onCheckedChange={(checked) =>
-                  void setEnabled({
-                    id: item.commissionTypeId,
-                    data: { active: checked, no: item.no },
-                  })
-                }
-              />
-            </div>
-          </li>
-        ))}
+                <button
+                  type="button"
+                  onClick={() => setSelectedId(item.commissionTypeId)}
+                  className={cn(
+                    'min-w-0 flex-1 cursor-pointer truncate rounded-sm text-left outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    isSelected
+                      ? 'font-semibold'
+                      : 'font-medium text-muted-foreground',
+                  )}
+                >
+                  {item.label}
+                </button>
+                <Switch
+                  checked={item.enabled}
+                  onCheckedChange={(checked) =>
+                    void setEnabled({
+                      id: item.commissionTypeId,
+                      data: { active: checked, no: item.no },
+                    })
+                  }
+                />
+              </div>
+            </li>
+          );
+        })}
       </ul>
       <section className="min-w-0 flex-1">
         {selected && (

@@ -40,6 +40,7 @@ export interface EditableDataTableProps<T extends { id: string }> {
 
 const DEFAULT_COLUMN_WIDTH = 160;
 const MIN_COLUMN_WIDTH = 80;
+const TOGGLE_COLUMN_WIDTH = 96;
 const DELETE_COLUMN_WIDTH = 40;
 
 function loadStoredSizing(storageKey: string | undefined): ColumnSizingState {
@@ -93,8 +94,10 @@ export function EditableDataTable<T extends { id: string }>({
         id: column.key,
         accessorKey: column.key,
         header: column.label,
-        size: column.size ?? DEFAULT_COLUMN_WIDTH,
-        minSize: MIN_COLUMN_WIDTH,
+        size:
+          column.size ??
+          (column.toggle ? TOGGLE_COLUMN_WIDTH : DEFAULT_COLUMN_WIDTH),
+        minSize: column.toggle ? TOGGLE_COLUMN_WIDTH : MIN_COLUMN_WIDTH,
       })),
     [columns],
   );
@@ -124,7 +127,9 @@ export function EditableDataTable<T extends { id: string }>({
     containerWidth - (onDeleteRow ? DELETE_COLUMN_WIDTH : 0),
   );
 
-  const lastColumnKey = columns.at(-1)?.key;
+  const lastColumnKey =
+    [...columns].reverse().find((column) => !column.toggle)?.key ??
+    columns.at(-1)?.key;
   const lastColumnSize = lastColumnKey
     ? (table.getColumn(lastColumnKey)?.getSize() ?? 0)
     : 0;
@@ -218,7 +223,7 @@ export function EditableDataTable<T extends { id: string }>({
                         onClick={() =>
                           onSortChange(header.column.id as keyof T & string)
                         }
-                        className="flex items-center gap-1 hover:text-foreground"
+                        className="flex cursor-pointer items-center gap-1 transition-colors duration-150 ease-out hover:text-foreground motion-reduce:transition-none"
                       >
                         <span className="truncate">
                           {header.column.columnDef.header as string}
@@ -233,12 +238,12 @@ export function EditableDataTable<T extends { id: string }>({
                     ) : (
                       (header.column.columnDef.header as string)
                     )}
-                    {header.column.id !== lastColumnKey && (
+                    {header.column.id !== lastColumnKey && !column?.toggle && (
                       <div
                         onPointerDown={header.getResizeHandler()}
                         onTouchStart={header.getResizeHandler()}
                         className={cn(
-                          'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-ring',
+                          'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none transition-colors duration-150 ease-out hover:bg-ring motion-reduce:transition-none',
                           header.column.getIsResizing() && 'bg-ring',
                         )}
                       />
@@ -304,7 +309,7 @@ export function EditableDataTable<T extends { id: string }>({
                     type="button"
                     aria-label={deleteRowLabel}
                     onClick={() => onDeleteRow(row.original)}
-                    className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-destructive"
+                    className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors duration-150 ease-out hover:bg-accent hover:text-destructive motion-reduce:transition-none"
                   >
                     <Trash2 className="size-4" />
                   </button>
@@ -323,7 +328,7 @@ export function EditableDataTable<T extends { id: string }>({
                 <button
                   type="button"
                   onClick={onAddRow}
-                  className="w-full px-3 py-2 text-left text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  className="w-full cursor-pointer px-3 py-2 text-left text-sm text-muted-foreground transition-colors duration-150 ease-out hover:bg-accent hover:text-accent-foreground motion-reduce:transition-none"
                 >
                   + {addRowLabel}
                 </button>

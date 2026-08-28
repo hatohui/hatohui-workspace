@@ -137,7 +137,7 @@ export function SidebarToggle({
       onClick={toggle}
       aria-label={collapsed ? labelExpand : labelCollapse}
       className={cn(
-        'inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground',
+        'inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground motion-reduce:transition-none',
         className,
       )}
     >
@@ -166,10 +166,10 @@ export function SidebarNavItem({
     <Component
       href={href}
       className={cn(
-        'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+        'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ease-out motion-reduce:transition-none',
         active
           ? 'bg-accent text-accent-foreground'
-          : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+          : 'cursor-pointer text-muted-foreground hover:bg-accent hover:text-accent-foreground',
         collapsed && 'justify-center px-0',
         className,
       )}

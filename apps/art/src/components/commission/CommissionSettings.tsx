@@ -9,16 +9,26 @@ export function CommissionSettings({ artistId }: { artistId: string }) {
   const { t } = useTranslation('art');
 
   return (
-    <div className="space-y-8">
-      <h1 className="font-serif text-2xl">
-        {t('app.commissionSettings.title')}
-      </h1>
-      <section>
-        <h2 className="mb-2 font-medium">
-          {t('commission.form.commissionTypeLabel')}
-        </h2>
+    <div className="max-w-4xl space-y-10">
+      <header className="space-y-1">
+        <h1 className="font-serif text-2xl">
+          {t('app.commissionSettings.title')}
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {t('app.commissionSettings.subtitle')}
+        </p>
+      </header>
+
+      <section className="space-y-3">
+        <div className="space-y-1">
+          <h2 className="font-medium">{t('app.commissionSettings.types')}</h2>
+          <p className="text-sm text-muted-foreground">
+            {t('app.commissionSettings.typesHint')}
+          </p>
+        </div>
         <CommissionTypesTable />
       </section>
+
       <CommissionAddonPricingSection />
       <CommissionRushFeeSection artistId={artistId} />
     </div>

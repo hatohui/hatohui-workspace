@@ -2809,7 +2809,7 @@
             }
           }
         },
-        "summary": "The one opening a storefront should show for an artist — open, else next scheduled. 404 if neither exists.",
+        "summary": "The opening a storefront should show for an artist — open, else next scheduled, else most recently closed. 404 only if the artist has never opened.",
         "tags": [
           "commission-openings"
         ]

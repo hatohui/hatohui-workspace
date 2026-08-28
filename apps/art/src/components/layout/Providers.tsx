@@ -7,7 +7,7 @@ import {
   OnboardingModalProvider,
   OnboardingModal,
 } from '@hatohui/libs';
-import { TooltipProvider } from '@hatohui/ui';
+import { ToastProvider, TooltipProvider } from '@hatohui/ui';
 import { useTranslation, detectLocale } from '@hatohui/i18n';
 import '@/lib/api';
 import '@/config/i18n';
@@ -33,8 +33,10 @@ export function Providers({ children }: { children: ReactNode }) {
         }
       >
         <OnboardingModalProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-          <OnboardingModal mode="identity" />
+          <ToastProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+            <OnboardingModal mode="identity" />
+          </ToastProvider>
         </OnboardingModalProvider>
       </AuthProvider>
     </QueryClientProvider>

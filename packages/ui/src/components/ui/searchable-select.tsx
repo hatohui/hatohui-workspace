@@ -122,7 +122,7 @@ function SearchableSelect({
                   data-value={option.value}
                   onClick={() => select(option.value)}
                   className={cn(
-                    'flex w-full items-center px-3 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground',
+                    'flex w-full cursor-pointer items-center px-3 py-1.5 text-left text-sm transition-colors duration-150 ease-out hover:bg-accent hover:text-accent-foreground motion-reduce:transition-none',
                     option.value === value &&
                       'bg-accent font-medium text-accent-foreground',
                   )}

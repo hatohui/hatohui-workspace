@@ -108,7 +108,6 @@ export function CommissionAddonPricingSection() {
       label: t('commission.admin.pricing.typesTable.columns.active'),
       editable: (row) => row.id !== DRAFT_ID,
       toggle: true,
-      size: 100,
     },
   ];
 
@@ -156,8 +155,13 @@ export function CommissionAddonPricingSection() {
   const rows = pricing.items.map(toRow);
 
   return (
-    <section>
-      <h2 className="mb-2 font-medium">{t('commission.form.addonsLabel')}</h2>
+    <section className="space-y-3">
+      <div className="space-y-1">
+        <h2 className="font-medium">{t('app.commissionSettings.addons')}</h2>
+        <p className="text-sm text-muted-foreground">
+          {t('app.commissionSettings.addonsHint')}
+        </p>
+      </div>
       <EditableDataTable
         columns={columns}
         rows={draft ? [...rows, draft] : rows}

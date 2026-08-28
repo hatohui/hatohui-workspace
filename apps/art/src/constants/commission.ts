@@ -1,9 +1,11 @@
 import {
   CommissionDtoStatus,
   CommissionDtoPaymentStatus,
+  CommissionOpeningDtoStatus,
   CommissionsSort,
   CommissionsDirection,
 } from '@hatohui/models';
+import type { CommissionOpeningDto } from '@hatohui/models';
 
 export const COMMISSION_STATUS_OPTIONS = Object.values(CommissionDtoStatus);
 export const PAYMENT_STATUS_OPTIONS = Object.values(CommissionDtoPaymentStatus);
@@ -49,6 +51,16 @@ export const COMMISSION_STEP_KEYS = [
 export type CommissionStepKey = (typeof COMMISSION_STEP_KEYS)[number];
 
 export const COMMISSION_PAGE_SIZE = 20;
+
+export const OPENING_ACTIVE_STATUSES: CommissionOpeningDto['status'][] = [
+  CommissionOpeningDtoStatus.OPEN,
+  CommissionOpeningDtoStatus.SCHEDULED,
+];
+
+export const OPENING_DASHBOARD_TABS = ['overview', 'history'] as const;
+export type OpeningDashboardTab = (typeof OPENING_DASHBOARD_TABS)[number];
+
+export const OPENING_SAVED_FLASH_MS = 2500;
 
 export const PREFERRED_CONTACT_METHODS = [
   'EMAIL',

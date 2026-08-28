@@ -289,10 +289,6 @@
       },
       "opening": {
         "title": "コミッション募集",
-        "subtitle": "クライアントがコミッション依頼を送れる期間を管理します。同時に有効にできる募集枠は1つだけです。",
-        "none": "現在、募集中または予約済みの受付枠はありません。",
-        "emptyTitle": "募集中の受付枠がありません",
-        "emptyBody": "下のフォームで作成できます。すぐに開始することも、後日開始するよう予約することもできます。",
         "newHeading": "新しい募集を開始",
         "editHeading": "現在の募集",
         "openNow": "今すぐ開始",
@@ -340,6 +336,40 @@
           "SCHEDULED": "予約済み",
           "OPEN": "受付中",
           "CLOSED": "終了"
+        },
+        "oneWindowHint": "同時に有効にできる募集枠は1つだけです。",
+        "openCommission": "コミッションを募集",
+        "back": "戻る",
+        "noHistory": "過去の募集枠はまだありません。",
+        "columns": {
+          "status": "ステータス",
+          "endMode": "終了方法",
+          "slots": "枠",
+          "opened": "開始",
+          "closed": "終了"
+        },
+        "tabs": {
+          "overview": "概要",
+          "history": "過去の募集"
+        },
+        "stat": {
+          "endMode": "終了方法",
+          "slots": "受付枠",
+          "daysOpen": "募集日数",
+          "status": "ステータス"
+        },
+        "detail": {
+          "heading": "募集枠の詳細",
+          "endMode": "終了方法",
+          "slotsTaken": "受付枠",
+          "scheduledAt": "開始予定",
+          "openedAt": "開始",
+          "closedAt": "終了",
+          "notOpened": "未開始",
+          "stillOpen": "受付中",
+          "announcement": "告知",
+          "noAnnouncement": "告知タイトルが設定されていません。",
+          "none": "—"
         }
       },
       "pricing": {
@@ -348,6 +378,9 @@
         "rushFeeEnabled": "特急料金を適用する",
         "rushFeeDays": "しきい値（日）",
         "rushFeeAmount": "料金（$）",
+        "saved": "保存しました。",
+        "saveFailed": "保存できませんでした。変更を元に戻しました。",
+        "removed": "削除しました。",
         "priceMode": {
           "FIXED": "固定料金",
           "STARTING_FROM": "この価格から",
@@ -360,7 +393,7 @@
             "key": "キー",
             "label": "表示名",
             "basePrice": "基本料金（$）",
-            "active": "ステータス",
+            "active": "有効",
             "tag": "ギャラリータグ"
           },
           "active": "有効",
@@ -379,6 +412,13 @@
           "addRow": "追加オプションを追加"
         }
       }
+    },
+    "closed": {
+      "title": "現在コミッションは受付していません",
+      "body": "このアーティストは現在、新規の依頼を受け付けていません。後ほどご確認いただくか、制作中の作品をご覧ください。",
+      "opensAt": "{{date}} に開始予定",
+      "lastOpenAt": "前回の受付: {{date}}",
+      "seeQueue": "キューを見る"
     }
   },
   "app": {
@@ -392,10 +432,14 @@
     },
     "commissionSettings": {
       "title": "コミッション設定",
+      "subtitle": "受け付ける依頼内容、各オプションの料金、特急料金のルールを設定します。",
       "types": "コミッション種別",
+      "typesHint": "種別を選ぶとオプションと料金を編集できます。トグルで依頼者が選べるかどうかを切り替えます。",
       "options": "オプション",
       "addons": "追加オプション",
-      "rushFee": "特急料金"
+      "addonsHint": "コミッションに追加できる任意のオプションです。",
+      "rushFee": "特急料金",
+      "rushFeeHint": "納期がしきい値より近い場合に追加料金を請求します。オフにすると完全に無効化されます。"
     },
     "dashboard": {
       "title": "ダッシュボード",

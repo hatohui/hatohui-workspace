@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useMyCommissionOpenings,
@@ -10,6 +11,7 @@ import {
   useDeleteCommissionOpening,
   getMyCommissionOpeningsQueryKey,
 } from '@hatohui/models';
+import { OPENING_ACTIVE_STATUSES } from '@/constants/commission';
 
 export function useCommissionOpeningsAdmin() {
   const queryClient = useQueryClient();
@@ -35,8 +37,20 @@ export function useCommissionOpeningsAdmin() {
     mutation: { onSuccess: invalidate },
   });
 
+  const items = useMemo(() => listQuery.data?.data ?? [], [listQuery.data]);
+  const active = useMemo(
+    () => items.find((item) => OPENING_ACTIVE_STATUSES.includes(item.status)),
+    [items],
+  );
+  const history = useMemo(
+    () => items.filter((item) => item.id !== active?.id),
+    [items, active],
+  );
+
   return {
-    items: listQuery.data?.data ?? [],
+    items,
+    active,
+    history,
     isLoading: listQuery.isPending,
     create: create.mutateAsync,
     update: update.mutateAsync,

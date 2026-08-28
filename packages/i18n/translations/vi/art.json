@@ -290,10 +290,6 @@
       },
       "opening": {
         "title": "Đợt nhận commission",
-        "subtitle": "Kiểm soát thời điểm khách có thể gửi yêu cầu commission. Mỗi lúc chỉ một đợt được hoạt động.",
-        "none": "Bạn chưa có đợt nhận commission nào đang mở hoặc đã lên lịch.",
-        "emptyTitle": "Chưa có đợt nhận nào đang mở",
-        "emptyBody": "Tạo một đợt bên dưới — mở ngay, hoặc lên lịch để mở sau.",
         "newHeading": "Mở đợt nhận mới",
         "editHeading": "Đợt hiện tại",
         "openNow": "Mở ngay",
@@ -341,6 +337,40 @@
           "SCHEDULED": "Đã lên lịch",
           "OPEN": "Đang mở",
           "CLOSED": "Đã đóng"
+        },
+        "oneWindowHint": "Mỗi lúc chỉ một đợt được hoạt động.",
+        "openCommission": "Mở đợt nhận",
+        "back": "Quay lại",
+        "noHistory": "Chưa có đợt nhận commission nào trước đây.",
+        "columns": {
+          "status": "Trạng thái",
+          "endMode": "Cách kết thúc",
+          "slots": "Slot",
+          "opened": "Mở",
+          "closed": "Đóng"
+        },
+        "tabs": {
+          "overview": "Tổng quan",
+          "history": "Các đợt trước"
+        },
+        "stat": {
+          "endMode": "Cách kết thúc",
+          "slots": "Slot đã nhận",
+          "daysOpen": "Số ngày mở",
+          "status": "Trạng thái"
+        },
+        "detail": {
+          "heading": "Chi tiết đợt nhận",
+          "endMode": "Cách kết thúc",
+          "slotsTaken": "Slot đã nhận",
+          "scheduledAt": "Lên lịch mở",
+          "openedAt": "Đã mở",
+          "closedAt": "Đã đóng",
+          "notOpened": "Chưa mở",
+          "stillOpen": "Vẫn đang mở",
+          "announcement": "Thông báo",
+          "noAnnouncement": "Chưa đặt tiêu đề thông báo.",
+          "none": "—"
         }
       },
       "pricing": {
@@ -349,6 +379,9 @@
         "rushFeeEnabled": "Áp dụng phụ phí gấp",
         "rushFeeDays": "Ngưỡng (ngày)",
         "rushFeeAmount": "Phí ($)",
+        "saved": "Đã lưu.",
+        "saveFailed": "Không lưu được — thay đổi đã được hoàn tác.",
+        "removed": "Đã xóa.",
         "priceMode": {
           "FIXED": "Giá cố định",
           "STARTING_FROM": "Bắt đầu từ",
@@ -361,7 +394,7 @@
             "key": "Khóa",
             "label": "Tên hiển thị",
             "basePrice": "Giá cơ bản ($)",
-            "active": "Trạng thái",
+            "active": "Bật",
             "tag": "Thẻ thư viện"
           },
           "active": "Đang bật",
@@ -380,6 +413,13 @@
           "addRow": "Thêm add-on"
         }
       }
+    },
+    "closed": {
+      "title": "Hiện chưa mở nhận commission",
+      "body": "Hoạ sĩ này hiện không nhận yêu cầu mới. Hãy quay lại sau, hoặc xem các tác phẩm đang thực hiện.",
+      "opensAt": "Dự kiến mở vào {{date}}",
+      "lastOpenAt": "Lần mở gần nhất {{date}}",
+      "seeQueue": "Xem hàng chờ"
     }
   },
   "app": {
@@ -393,10 +433,14 @@
     },
     "commissionSettings": {
       "title": "Cài đặt commission",
+      "subtitle": "Thiết lập những gì khách có thể yêu cầu, cách tính giá từng tùy chọn, và chính sách phụ phí gấp.",
       "types": "Loại commission",
+      "typesHint": "Chọn một loại để sửa tùy chọn và giá. Công tắc quyết định khách có được chọn loại đó không.",
       "options": "Tùy chọn",
       "addons": "Dịch vụ thêm",
-      "rushFee": "Phụ phí gấp"
+      "addonsHint": "Các tùy chọn bổ sung khách có thể thêm vào một commission.",
+      "rushFee": "Phụ phí gấp",
+      "rushFeeHint": "Tính thêm phí khi hạn chót gần hơn ngưỡng. Tắt đi để vô hiệu hóa hoàn toàn."
     },
     "dashboard": {
       "title": "Bảng điều khiển",

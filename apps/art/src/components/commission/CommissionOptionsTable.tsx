@@ -100,7 +100,6 @@ export function CommissionOptionsTable({
       label: t('commission.admin.pricing.typesTable.columns.active'),
       editable: (row) => row.id !== DRAFT_ID,
       toggle: true,
-      size: 100,
     },
   ];
 
