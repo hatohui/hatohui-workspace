@@ -91,6 +91,7 @@ module "lambda" {
       ["https://${var.cloudflare_zone_name}"],
       [for app in local.frontend_apps : "https://${app}.${var.cloudflare_zone_name}"],
     ))
+    SESSION_COOKIE_DOMAIN = ".${var.cloudflare_zone_name}"
 
     GOOGLE_OAUTH_CLIENT_ID     = module.google_oauth.client_id
     GOOGLE_OAUTH_CLIENT_SECRET = module.google_oauth.client_secret
