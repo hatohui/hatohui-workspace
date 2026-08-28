@@ -210,6 +210,61 @@
         "show": "公开显示",
         "hide": "从公开中隐藏"
       },
+      "opening": {
+        "title": "约稿开放",
+        "subtitle": "控制客户何时可以向你发送约稿请求。同一时间只能有一个开放期生效。",
+        "none": "你目前没有开放中或已排期的约稿开放期。",
+        "emptyTitle": "当前没有开放中的约稿期",
+        "emptyBody": "在下方创建一个——可以立即开放，也可以排期稍后开放。",
+        "newHeading": "开启新的开放期",
+        "editHeading": "当前开放期",
+        "openNow": "立即开放",
+        "closeNow": "关闭",
+        "openSince": "自 {{date}} 起开放",
+        "scheduledFor": "{{date}} 开放",
+        "history": "过往开放期",
+        "endMode": "结束方式",
+        "endModeOption": {
+          "MANUAL": "由我手动关闭",
+          "SLOT_CAP": "达到名额数量后自动关闭",
+          "INDEFINITE": "无限期保持开放"
+        },
+        "endModeHint": {
+          "MANUAL": "开放期会一直保持，直到你手动关闭。",
+          "SLOT_CAP": "达到名额上限后开放期会自动关闭。",
+          "INDEFINITE": "开放期不会自动关闭，也不与名额数量挂钩。"
+        },
+        "endModeShort": {
+          "MANUAL": "手动",
+          "SLOT_CAP": "名额上限",
+          "INDEFINITE": "无限期"
+        },
+        "slotCap": "名额上限",
+        "slotCapHint": "在请求自动关闭前你会接受的约稿数量。",
+        "slotCapError": "请输入不小于 1 的名额上限。",
+        "slotsTaken": "已占用 {{taken}} / {{cap}} 个名额",
+        "scheduledAt": "开放时间（可选）",
+        "scheduledAtHint": "留空则立即开放。",
+        "scheduledAtTimezoneHint": "时间以 {{timezone}} 为准。留空则立即开放。",
+        "scheduledAtPastError": "请选择将来的时间。",
+        "clear": "清除",
+        "postTitle": "公告标题（可选）",
+        "postTitlePlaceholder": "例如：六月约稿开放",
+        "postTitleHint": "作为标题显示在你的公开约稿页面上。",
+        "saveNew": "开放约稿",
+        "saveScheduled": "排期约稿",
+        "saveChanges": "保存更改",
+        "saved": "已保存",
+        "closeConfirmTitle": "关闭这个约稿开放期？",
+        "closeConfirmBody": "新的请求会立即停止。你已收到的投稿不受影响。",
+        "closeConfirmCancel": "保持开放",
+        "closeConfirmSubmit": "关闭开放期",
+        "status": {
+          "SCHEDULED": "已排期",
+          "OPEN": "开放中",
+          "CLOSED": "已关闭"
+        }
+      },
       "pricing": {
         "title": "价格设置",
         "rushFee": "加急费",

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { cn } from '../../lib/utils';
 import { SearchableSelect } from './searchable-select';
+import { Switch } from './switch';
 
 export interface EditableCellOption {
   label: string;
@@ -11,6 +12,9 @@ export interface EditableCellProps {
   value: string;
   displayValue?: string;
   editable?: boolean;
+  /** Renders as an inline on/off Switch (value is 'true'/'false') that
+   * commits immediately on toggle, instead of a click-to-edit control. */
+  toggle?: boolean;
   options?: EditableCellOption[];
   selectPlaceholder?: string;
   searchPlaceholder?: string;
@@ -23,6 +27,7 @@ export function EditableCell({
   value,
   displayValue,
   editable = true,
+  toggle,
   options,
   selectPlaceholder = 'Select...',
   searchPlaceholder = 'Search...',
@@ -38,9 +43,23 @@ export function EditableCell({
     if (editing) inputRef.current?.focus();
   }, [editing]);
 
+  if (toggle) {
+    return (
+      <div className="flex items-center px-3 py-2">
+        <Switch
+          checked={value === 'true'}
+          disabled={!editable}
+          onCheckedChange={(checked) => onCommit(checked ? 'true' : 'false')}
+        />
+      </div>
+    );
+  }
+
   if (!editable) {
     return (
-      <div className="truncate px-3 py-2 text-sm">{displayValue ?? value}</div>
+      <div className="truncate px-3 py-2 text-sm text-muted-foreground/60">
+        {displayValue ?? value}
+      </div>
     );
   }
 

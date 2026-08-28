@@ -13,9 +13,9 @@ export interface EditableColumn<T> {
   key: keyof T & string;
   label: string;
   editable?: boolean | ((row: T) => boolean);
+  toggle?: boolean;
   options?: EditableCellOption[];
   render?: (row: T) => string;
-  /** Initial column width in pixels. */
   size?: number;
   selectPlaceholder?: string;
   searchPlaceholder?: string;
@@ -28,21 +28,19 @@ export interface EditableDataTableProps<T extends { id: string }> {
   rows: T[];
   onCommit: (id: string, key: keyof T & string, value: string) => void;
   className?: string;
-  /** When set, column widths persist to localStorage under this key. */
   storageKey?: string;
-  /** When set, renders a trailing "+ addRowLabel" row that calls this. */
   onAddRow?: () => void;
   addRowLabel?: string;
   sortBy?: keyof T & string;
   sortDirection?: 'asc' | 'desc';
   onSortChange?: (key: keyof T & string) => void;
-  /** When set, renders a trailing per-row delete button that calls this. */
   onDeleteRow?: (row: T) => void;
   deleteRowLabel?: string;
 }
 
 const DEFAULT_COLUMN_WIDTH = 160;
 const MIN_COLUMN_WIDTH = 80;
+const DELETE_COLUMN_WIDTH = 40;
 
 function loadStoredSizing(storageKey: string | undefined): ColumnSizingState {
   if (!storageKey || typeof window === 'undefined') return {};
@@ -121,19 +119,50 @@ export function EditableDataTable<T extends { id: string }>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const availableWidth = Math.max(
+    0,
+    containerWidth - (onDeleteRow ? DELETE_COLUMN_WIDTH : 0),
+  );
+
   const lastColumnKey = columns.at(-1)?.key;
   const lastColumnSize = lastColumnKey
     ? (table.getColumn(lastColumnKey)?.getSize() ?? 0)
     : 0;
-  const otherColumnsSize = table.getTotalSize() - lastColumnSize;
+  const rawOtherColumnsSize = table.getTotalSize() - lastColumnSize;
+
+  const shrinkScale =
+    availableWidth > 0 && rawOtherColumnsSize > availableWidth
+      ? Math.min(1, availableWidth / rawOtherColumnsSize)
+      : 1;
+
+  const shrunkColumnWidth = (rawSize: number) =>
+    Math.max(MIN_COLUMN_WIDTH, Math.round(rawSize * shrinkScale));
+
+  const otherColumnsSize =
+    shrinkScale === 1
+      ? rawOtherColumnsSize
+      : columns
+          .filter((column) => column.key !== lastColumnKey)
+          .reduce(
+            (sum, column) =>
+              sum +
+              shrunkColumnWidth(table.getColumn(column.key)?.getSize() ?? 0),
+            0,
+          );
+
   const effectiveLastColumnSize = Math.max(
     MIN_COLUMN_WIDTH,
-    containerWidth - otherColumnsSize,
+    availableWidth - otherColumnsSize,
   );
-  const tableWidth = otherColumnsSize + effectiveLastColumnSize;
+  const tableWidth =
+    otherColumnsSize +
+    effectiveLastColumnSize +
+    (onDeleteRow ? DELETE_COLUMN_WIDTH : 0);
 
   const getColumnWidth = (columnId: string, rawSize: number) =>
-    columnId === lastColumnKey ? effectiveLastColumnSize : rawSize;
+    columnId === lastColumnKey
+      ? effectiveLastColumnSize
+      : shrunkColumnWidth(rawSize);
 
   const focusCell = (rowIndex: number, colIndex: number) => {
     const target = tableRef.current?.querySelector<HTMLButtonElement>(
@@ -251,6 +280,7 @@ export function EditableDataTable<T extends { id: string }>({
                           ? column.editable(row.original)
                           : column.editable
                       }
+                      toggle={column.toggle}
                       options={column.options}
                       selectPlaceholder={column.selectPlaceholder}
                       searchPlaceholder={column.searchPlaceholder}

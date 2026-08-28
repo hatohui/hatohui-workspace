@@ -61,14 +61,6 @@ export function CommissionOptionsTable({
     useCommissionOptionPricingAdmin(commissionTypeId);
   const [draft, setDraft] = useState<OptionRow | null>(null);
 
-  const ACTIVE_OPTIONS = [
-    { label: t('commission.admin.pricing.typesTable.active'), value: 'true' },
-    {
-      label: t('commission.admin.pricing.typesTable.inactive'),
-      value: 'false',
-    },
-  ];
-
   const PRICE_MODE_OPTIONS = PRICE_MODES.map((mode) => ({
     label: t(`commission.admin.pricing.priceMode.${mode}`),
     value: mode,
@@ -107,12 +99,8 @@ export function CommissionOptionsTable({
       key: 'active',
       label: t('commission.admin.pricing.typesTable.columns.active'),
       editable: (row) => row.id !== DRAFT_ID,
-      options: ACTIVE_OPTIONS,
-      render: (row) =>
-        row.active === 'true'
-          ? t('commission.admin.pricing.typesTable.active')
-          : t('commission.admin.pricing.typesTable.inactive'),
-      size: 120,
+      toggle: true,
+      size: 100,
     },
   ];
 

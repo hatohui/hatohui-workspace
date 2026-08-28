@@ -290,9 +290,16 @@
       },
       "opening": {
         "title": "Đợt nhận commission",
+        "subtitle": "Kiểm soát thời điểm khách có thể gửi yêu cầu commission. Mỗi lúc chỉ một đợt được hoạt động.",
         "none": "Bạn chưa có đợt nhận commission nào đang mở hoặc đã lên lịch.",
+        "emptyTitle": "Chưa có đợt nhận nào đang mở",
+        "emptyBody": "Tạo một đợt bên dưới — mở ngay, hoặc lên lịch để mở sau.",
+        "newHeading": "Mở đợt nhận mới",
+        "editHeading": "Đợt hiện tại",
         "openNow": "Mở ngay",
         "closeNow": "Đóng",
+        "openSince": "Mở từ {{date}}",
+        "scheduledFor": "Mở vào {{date}}",
         "history": "Các đợt trước",
         "endMode": "Cách kết thúc",
         "endModeOption": {
@@ -300,11 +307,36 @@
           "SLOT_CAP": "Tự đóng khi đủ số lượng slot",
           "INDEFINITE": "Mở vô thời hạn"
         },
+        "endModeHint": {
+          "MANUAL": "Đợt nhận vẫn mở cho đến khi bạn tự đóng.",
+          "SLOT_CAP": "Đợt nhận tự đóng khi đạt số slot tối đa.",
+          "INDEFINITE": "Đợt nhận không tự đóng và không gắn với số lượng slot."
+        },
+        "endModeShort": {
+          "MANUAL": "Thủ công",
+          "SLOT_CAP": "Giới hạn slot",
+          "INDEFINITE": "Vô thời hạn"
+        },
         "slotCap": "Số slot tối đa",
+        "slotCapHint": "Số commission bạn sẽ nhận trước khi yêu cầu tự động đóng.",
+        "slotCapError": "Nhập số slot tối đa từ 1 trở lên.",
         "slotsTaken": "Đã nhận {{taken}}/{{cap}} slot",
         "scheduledAt": "Mở lúc (tùy chọn)",
         "scheduledAtHint": "Để trống nếu muốn mở ngay.",
+        "scheduledAtTimezoneHint": "Giờ theo múi {{timezone}}. Để trống nếu muốn mở ngay.",
+        "scheduledAtPastError": "Chọn thời điểm trong tương lai.",
+        "clear": "Xóa",
         "postTitle": "Tiêu đề thông báo (tùy chọn)",
+        "postTitlePlaceholder": "vd: Đã mở nhận commission tháng 6",
+        "postTitleHint": "Hiển thị làm tiêu đề trên trang commission công khai của bạn.",
+        "saveNew": "Mở đợt nhận",
+        "saveScheduled": "Lên lịch đợt nhận",
+        "saveChanges": "Lưu thay đổi",
+        "saved": "Đã lưu",
+        "closeConfirmTitle": "Đóng đợt nhận commission này?",
+        "closeConfirmBody": "Yêu cầu mới sẽ dừng ngay lập tức. Các đơn bạn đã nhận không bị ảnh hưởng.",
+        "closeConfirmCancel": "Giữ mở",
+        "closeConfirmSubmit": "Đóng đợt nhận",
         "status": {
           "SCHEDULED": "Đã lên lịch",
           "OPEN": "Đang mở",

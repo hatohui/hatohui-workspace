@@ -290,9 +290,16 @@
       },
       "opening": {
         "title": "Commission opening",
+        "subtitle": "Control when clients can send you commission requests. Only one window can be active at a time.",
         "none": "You don't have an open or scheduled commission window right now.",
+        "emptyTitle": "No commission window is open",
+        "emptyBody": "Set one up below — open it right away, or schedule it to open later.",
+        "newHeading": "Open a new window",
+        "editHeading": "Current window",
         "openNow": "Open now",
         "closeNow": "Close",
+        "openSince": "Open since {{date}}",
+        "scheduledFor": "Opens {{date}}",
         "history": "Past openings",
         "endMode": "When it ends",
         "endModeOption": {
@@ -300,11 +307,36 @@
           "SLOT_CAP": "Closes automatically after a number of slots",
           "INDEFINITE": "Stays open indefinitely"
         },
+        "endModeHint": {
+          "MANUAL": "The window stays open until you close it yourself.",
+          "SLOT_CAP": "The window closes on its own once the slot cap is reached.",
+          "INDEFINITE": "The window never closes automatically and isn't tied to a slot count."
+        },
+        "endModeShort": {
+          "MANUAL": "Manual",
+          "SLOT_CAP": "Slot cap",
+          "INDEFINITE": "Indefinite"
+        },
         "slotCap": "Slot cap",
+        "slotCapHint": "How many commissions you'll take before requests close automatically.",
+        "slotCapError": "Enter a slot cap of 1 or more.",
         "slotsTaken": "{{taken}} of {{cap}} slots taken",
         "scheduledAt": "Open at (optional)",
         "scheduledAtHint": "Leave blank to open immediately.",
+        "scheduledAtTimezoneHint": "Times are in {{timezone}}. Leave blank to open immediately.",
+        "scheduledAtPastError": "Pick a time in the future.",
+        "clear": "Clear",
         "postTitle": "Announcement title (optional)",
+        "postTitlePlaceholder": "e.g. June commissions are open",
+        "postTitleHint": "Shown as the headline on your public commissions page.",
+        "saveNew": "Open window",
+        "saveScheduled": "Schedule window",
+        "saveChanges": "Save changes",
+        "saved": "Saved",
+        "closeConfirmTitle": "Close this commission window?",
+        "closeConfirmBody": "New requests stop immediately. Submissions you've already received aren't affected.",
+        "closeConfirmCancel": "Keep open",
+        "closeConfirmSubmit": "Close window",
         "status": {
           "SCHEDULED": "Scheduled",
           "OPEN": "Open",

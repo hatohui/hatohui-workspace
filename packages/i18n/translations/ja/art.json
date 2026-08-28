@@ -289,9 +289,16 @@
       },
       "opening": {
         "title": "コミッション募集",
+        "subtitle": "クライアントがコミッション依頼を送れる期間を管理します。同時に有効にできる募集枠は1つだけです。",
         "none": "現在、募集中または予約済みの受付枠はありません。",
+        "emptyTitle": "募集中の受付枠がありません",
+        "emptyBody": "下のフォームで作成できます。すぐに開始することも、後日開始するよう予約することもできます。",
+        "newHeading": "新しい募集を開始",
+        "editHeading": "現在の募集",
         "openNow": "今すぐ開始",
         "closeNow": "終了する",
+        "openSince": "{{date}} から受付中",
+        "scheduledFor": "{{date}} に開始",
         "history": "過去の募集",
         "endMode": "終了方法",
         "endModeOption": {
@@ -299,11 +306,36 @@
           "SLOT_CAP": "指定した件数に達したら自動終了",
           "INDEFINITE": "無期限で募集を続ける"
         },
+        "endModeHint": {
+          "MANUAL": "自分で終了するまで募集は開いたままになります。",
+          "SLOT_CAP": "受付上限数に達すると自動的に終了します。",
+          "INDEFINITE": "自動終了せず、受付件数にも連動しません。"
+        },
+        "endModeShort": {
+          "MANUAL": "手動",
+          "SLOT_CAP": "上限数",
+          "INDEFINITE": "無期限"
+        },
         "slotCap": "受付上限数",
+        "slotCapHint": "自動的に受付を終了するまでに引き受けるコミッションの件数です。",
+        "slotCapError": "1以上の受付上限数を入力してください。",
         "slotsTaken": "{{taken}} / {{cap}} 件",
         "scheduledAt": "開始日時（任意）",
         "scheduledAtHint": "空欄の場合はすぐに開始します。",
+        "scheduledAtTimezoneHint": "時刻は {{timezone}} です。空欄の場合はすぐに開始します。",
+        "scheduledAtPastError": "未来の日時を選択してください。",
+        "clear": "クリア",
         "postTitle": "告知タイトル（任意）",
+        "postTitlePlaceholder": "例: 6月のコミッション受付中",
+        "postTitleHint": "公開コミッションページに見出しとして表示されます。",
+        "saveNew": "募集を開始",
+        "saveScheduled": "募集を予約",
+        "saveChanges": "変更を保存",
+        "saved": "保存しました",
+        "closeConfirmTitle": "この募集枠を終了しますか？",
+        "closeConfirmBody": "新規の依頼はすぐに停止します。すでに受け取った申し込みには影響しません。",
+        "closeConfirmCancel": "開いたままにする",
+        "closeConfirmSubmit": "募集を終了",
         "status": {
           "SCHEDULED": "予約済み",
           "OPEN": "受付中",
