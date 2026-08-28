@@ -41,7 +41,7 @@ jobs:
 
       - name: Regenerate OpenAPI client
         run: |
-          bunx prisma generate --schema apps/api/prisma/schema.prisma
+          (cd apps/api && bunx prisma generate)
           bun run scripts/export-openapi.ts
           bun run --cwd packages/models generate
         env:
