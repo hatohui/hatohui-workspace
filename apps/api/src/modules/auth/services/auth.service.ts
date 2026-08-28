@@ -56,6 +56,30 @@ export class AuthService {
     return roles.includes(roleKey);
   }
 
+  /// Grants or revokes a role for a user (e.g. from the workspace admin
+  /// dashboard) and busts the cached role list so it takes effect
+  /// immediately rather than after ROLE_CACHE_TTL_SECONDS.
+  async setRole(
+    userId: string,
+    roleKey: RoleKey,
+    granted: boolean,
+  ): Promise<void> {
+    const role = await this.db.role.findUnique({ where: { key: roleKey } });
+    if (!role) return;
+
+    if (granted) {
+      await this.db.userRole.upsert({
+        where: { userId_roleId: { userId, roleId: role.id } },
+        create: { userId, roleId: role.id },
+        update: {},
+      });
+    } else {
+      await this.db.userRole.deleteMany({ where: { userId, roleId: role.id } });
+    }
+
+    await this.cache.invalidate(CACHE_KEYS.userRoles(userId));
+  }
+
   private rolesFor(userId: string): Promise<RoleKey[]> {
     return this.cache.getOrSet(
       CACHE_KEYS.userRoles(userId),

@@ -5545,6 +5545,9 @@
           "isAdmin": {
             "type": "boolean"
           },
+          "isArtist": {
+            "type": "boolean"
+          },
           "createdAt": {
             "type": "string"
           },
@@ -5560,6 +5563,7 @@
           "timezone",
           "onboardingStatus",
           "isAdmin",
+          "isArtist",
           "createdAt",
           "updatedAt"
         ]
@@ -5610,6 +5614,14 @@
           },
           "timezone": {
             "type": "string"
+          },
+          "isAdmin": {
+            "type": "boolean",
+            "description": "Grant or revoke the admin role"
+          },
+          "isArtist": {
+            "type": "boolean",
+            "description": "Grant or revoke the artist role"
           }
         }
       },

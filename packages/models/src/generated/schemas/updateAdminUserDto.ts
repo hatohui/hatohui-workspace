@@ -12,4 +12,8 @@ export interface UpdateAdminUserDto {
   /** @nullable */
   avatarUrl?: string | null;
   timezone?: string;
+  /** Grant or revoke the admin role */
+  isAdmin?: boolean;
+  /** Grant or revoke the artist role */
+  isArtist?: boolean;
 }

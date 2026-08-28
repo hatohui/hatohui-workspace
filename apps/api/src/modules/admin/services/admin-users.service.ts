@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, type OnboardingStatus, type User } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { AuthService } from '@/modules/auth/services/auth.service';
+import { ROLE_KEYS } from '@/modules/auth/auth.constants';
 import type {
   AdminSortDirection,
   AdminUserSortOption,
@@ -66,7 +67,20 @@ export class AdminUsersService {
       throw new NotFoundException('User not found');
     }
 
-    const user = await this.db.user.update({ where: { id }, data: dto });
+    const { isAdmin, isArtist, ...fields } = dto;
+
+    const user =
+      Object.keys(fields).length > 0
+        ? await this.db.user.update({ where: { id }, data: fields })
+        : existing;
+
+    if (isAdmin !== undefined) {
+      await this.auth.setRole(id, ROLE_KEYS.admin, isAdmin);
+    }
+    if (isArtist !== undefined) {
+      await this.auth.setRole(id, ROLE_KEYS.artist, isArtist);
+    }
+
     return this.toDto(user);
   }
 
@@ -79,6 +93,7 @@ export class AdminUsersService {
       timezone: user.timezone,
       onboardingStatus: user.onboardingStatus,
       isAdmin: await this.auth.isAdmin(user),
+      isArtist: await this.auth.isArtist(user),
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
     };

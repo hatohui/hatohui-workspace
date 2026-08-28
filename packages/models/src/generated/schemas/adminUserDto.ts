@@ -16,6 +16,7 @@ export interface AdminUserDto {
   timezone: string;
   onboardingStatus: AdminUserDtoOnboardingStatus;
   isAdmin: boolean;
+  isArtist: boolean;
   createdAt: string;
   updatedAt: string;
 }

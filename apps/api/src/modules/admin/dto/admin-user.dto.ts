@@ -4,6 +4,7 @@ import {
   IsEmail,
   IsOptional,
   IsString,
+  IsBoolean,
   IsIn,
   IsInt,
   Min,
@@ -41,6 +42,9 @@ export class AdminUserDto {
   isAdmin!: boolean;
 
   @ApiProperty()
+  isArtist!: boolean;
+
+  @ApiProperty()
   createdAt!: string;
 
   @ApiProperty()
@@ -69,6 +73,22 @@ export class UpdateAdminUserDto extends PartialType(
   @IsOptional()
   @IsString()
   override timezone?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Grant or revoke the admin role',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isAdmin?: boolean;
+
+  @ApiProperty({
+    required: false,
+    description: 'Grant or revoke the artist role',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isArtist?: boolean;
 }
 
 export class AdminUserQueryDto {

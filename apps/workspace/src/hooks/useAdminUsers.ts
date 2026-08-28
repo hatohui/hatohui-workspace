@@ -43,7 +43,7 @@ export function useAdminUsers() {
   const updateField = (
     id: string,
     key: keyof UpdateAdminUserDto,
-    value: string,
+    value: string | boolean,
   ) => {
     const previous = queryClient.getQueryData<{ data: PaginatedAdminUsersDto }>(
       queryKey,

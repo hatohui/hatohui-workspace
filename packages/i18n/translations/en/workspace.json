@@ -27,8 +27,11 @@
       "timezone": "Timezone",
       "onboardingStatus": "Onboarding",
       "isAdmin": "Admin",
+      "isArtist": "Artist",
       "createdAt": "Created"
     },
+    "yes": "Yes",
+    "no": "No",
     "saveError": "Couldn't save that change.",
     "searchPlaceholder": "Search name or email...",
     "selectPlaceholder": "Select...",

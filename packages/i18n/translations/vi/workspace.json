@@ -27,8 +27,11 @@
       "timezone": "Múi giờ",
       "onboardingStatus": "Trạng thái",
       "isAdmin": "Quản trị",
+      "isArtist": "Nghệ sĩ",
       "createdAt": "Ngày tạo"
     },
+    "yes": "Có",
+    "no": "Không",
     "saveError": "Không thể lưu thay đổi.",
     "searchPlaceholder": "Tìm theo tên hoặc email...",
     "selectPlaceholder": "Chọn...",

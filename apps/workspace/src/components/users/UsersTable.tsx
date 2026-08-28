@@ -12,9 +12,18 @@ const TIMEZONE_OPTIONS = listTimezones().map((name) => ({
   value: name,
 }));
 
+const BOOLEAN_FIELDS = new Set<keyof UpdateAdminUserDto>([
+  'isAdmin',
+  'isArtist',
+]);
+
 interface UsersTableProps {
   users: AdminUserDto[];
-  onCommit: (id: string, key: keyof UpdateAdminUserDto, value: string) => void;
+  onCommit: (
+    id: string,
+    key: keyof UpdateAdminUserDto,
+    value: string | boolean,
+  ) => void;
   sortBy: AdminUserSortOption;
   sortDirection: AdminSortDirection;
   onSortChange: (key: AdminUserSortOption) => void;
@@ -28,6 +37,11 @@ function UsersTable({
   onSortChange,
 }: UsersTableProps) {
   const { t } = useTranslation('workspace');
+
+  const BOOLEAN_OPTIONS = [
+    { label: t('users.yes'), value: 'true' },
+    { label: t('users.no'), value: 'false' },
+  ];
 
   const columns: EditableColumn<AdminUserDto>[] = [
     {
@@ -64,8 +78,17 @@ function UsersTable({
     {
       key: 'isAdmin',
       label: t('users.columns.isAdmin'),
-      editable: false,
-      render: (row) => (row.isAdmin ? 'Yes' : 'No'),
+      editable: true,
+      options: BOOLEAN_OPTIONS,
+      render: (row) => (row.isAdmin ? t('users.yes') : t('users.no')),
+      size: 100,
+    },
+    {
+      key: 'isArtist',
+      label: t('users.columns.isArtist'),
+      editable: true,
+      options: BOOLEAN_OPTIONS,
+      render: (row) => (row.isArtist ? t('users.yes') : t('users.no')),
       size: 100,
     },
     {
@@ -83,9 +106,14 @@ function UsersTable({
       columns={columns}
       rows={users}
       storageKey="users"
-      onCommit={(id, key, value) =>
-        onCommit(id, key as keyof UpdateAdminUserDto, value)
-      }
+      onCommit={(id, key, value) => {
+        const typedKey = key as keyof UpdateAdminUserDto;
+        onCommit(
+          id,
+          typedKey,
+          BOOLEAN_FIELDS.has(typedKey) ? value === 'true' : value,
+        );
+      }}
       sortBy={sortBy}
       sortDirection={sortDirection}
       onSortChange={(key) => onSortChange(key as AdminUserSortOption)}

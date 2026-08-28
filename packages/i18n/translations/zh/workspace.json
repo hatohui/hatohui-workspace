@@ -27,8 +27,11 @@
       "timezone": "时区",
       "onboardingStatus": "状态",
       "isAdmin": "管理员",
+      "isArtist": "画师",
       "createdAt": "创建时间"
     },
+    "yes": "是",
+    "no": "否",
     "saveError": "无法保存该更改。",
     "searchPlaceholder": "搜索姓名或邮箱...",
     "selectPlaceholder": "选择...",

@@ -27,8 +27,11 @@
       "timezone": "タイムゾーン",
       "onboardingStatus": "状態",
       "isAdmin": "管理者",
+      "isArtist": "アーティスト",
       "createdAt": "作成日"
     },
+    "yes": "はい",
+    "no": "いいえ",
     "saveError": "変更を保存できませんでした。",
     "searchPlaceholder": "名前またはメールで検索...",
     "selectPlaceholder": "選択...",
