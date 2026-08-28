@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Database } from '@/infra/db';
 import {
+  AppScope,
   PriceMode,
   type CommissionAddon,
   type CommissionOption,
@@ -12,23 +13,26 @@ import {
 import { uniqueSlug } from '@/common/utils/slugify';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
+import { PaymentMethodsService } from '@/modules/payment-methods/services/payment-methods.service';
+import { DEFAULT_CURRENCY } from '@/modules/commission-pricing/commission-pricing.constants';
 import {
   CommissionAddonPricingDto,
   CommissionOptionPricingDto,
   CommissionPricingDto,
   CommissionRushFeeSettingDto,
+  CommissionSettingsDto,
   UpsertCommissionAddonPricingDto,
   UpsertCommissionOptionPricingDto,
   UpsertCommissionRushFeeSettingDto,
+  UpsertCommissionSettingsDto,
 } from '@/modules/commission-pricing/dto/commission-pricing.dto';
-
-const DEFAULT_CURRENCY = 'USD';
 
 @Injectable()
 export class CommissionPricingService {
   constructor(
     private readonly db: Database,
     private readonly userSettings: UserSettingsService,
+    private readonly paymentMethods: PaymentMethodsService,
   ) {}
 
   async getActive(artistId: string): Promise<CommissionPricingDto> {
@@ -83,6 +87,88 @@ export class CommissionPricingService {
       JSON.stringify(dto),
     );
     return dto;
+  }
+
+  async getSettings(artistId: string): Promise<CommissionSettingsDto> {
+    const scope = USER_SETTING_TYPES.commissionCurrency.scope;
+    const stored = await this.userSettings.getForScope(artistId, scope);
+
+    const rawKeys = stored.get(
+      USER_SETTING_TYPES.commissionPaymentMethods.type,
+    );
+    const parsedKeys = this.parseKeys(rawKeys);
+    const known = await this.paymentMethods.keysExist(parsedKeys);
+
+    return {
+      currency:
+        stored.get(USER_SETTING_TYPES.commissionCurrency.type) ??
+        DEFAULT_CURRENCY,
+      autoAccept:
+        stored.get(USER_SETTING_TYPES.commissionAutoAccept.type) === 'true',
+      notificationEmail:
+        stored.get(USER_SETTING_TYPES.commissionNotificationEmail.type) ?? null,
+      paymentMethodKeys: parsedKeys.filter((key) => known.has(key)),
+    };
+  }
+
+  async updateSettings(
+    artistId: string,
+    dto: UpsertCommissionSettingsDto,
+  ): Promise<CommissionSettingsDto> {
+    const known = await this.paymentMethods.keysExist(dto.paymentMethodKeys);
+    const unknown = dto.paymentMethodKeys.filter((key) => !known.has(key));
+    if (unknown.length > 0) {
+      throw new BadRequestException(
+        `Unknown payment method(s): ${unknown.join(', ')}`,
+      );
+    }
+
+    await this.setSetting(
+      artistId,
+      USER_SETTING_TYPES.commissionCurrency,
+      dto.currency,
+    );
+    await this.setSetting(
+      artistId,
+      USER_SETTING_TYPES.commissionAutoAccept,
+      String(dto.autoAccept),
+    );
+    await this.setSetting(
+      artistId,
+      USER_SETTING_TYPES.commissionNotificationEmail,
+      dto.notificationEmail?.trim() || null,
+    );
+    await this.setSetting(
+      artistId,
+      USER_SETTING_TYPES.commissionPaymentMethods,
+      JSON.stringify(dto.paymentMethodKeys),
+    );
+
+    return this.getSettings(artistId);
+  }
+
+  private parseKeys(raw: string | undefined): string[] {
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      return Array.isArray(parsed)
+        ? parsed.filter((entry): entry is string => typeof entry === 'string')
+        : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private async setSetting(
+    artistId: string,
+    setting: { scope: AppScope; type: string },
+    value: string | null,
+  ): Promise<void> {
+    if (value === null) {
+      await this.userSettings.clear(artistId, setting.scope, setting.type);
+    } else {
+      await this.userSettings.set(artistId, setting.scope, setting.type, value);
+    }
   }
 
   listOptions(

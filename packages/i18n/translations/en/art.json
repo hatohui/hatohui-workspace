@@ -440,7 +440,22 @@
       "addons": "Add-ons",
       "addonsHint": "Optional extras clients can add on top of a commission.",
       "rushFee": "Rush fee",
-      "rushFeeHint": "Charge extra when a deadline is closer than the threshold. Turn it off to disable it entirely."
+      "rushFeeHint": "Charge extra when a deadline is closer than the threshold. Turn it off to disable it entirely.",
+      "settings": "General",
+      "settingsHint": "Currency, triage, and how you get paid. Currency applies to every price below.",
+      "currency": "Currency",
+      "currencyHint": "The currency all your prices and quotes are in.",
+      "autoAccept": "Auto-accept requests",
+      "autoAcceptHint": "Skip manual triage — new submissions are accepted automatically.",
+      "notificationEmail": "Notification email",
+      "notificationEmailHint": "Where new-request emails go. Leave blank to use your account email.",
+      "notificationEmailPlaceholder": "you@example.com",
+      "paymentMethods": "Payment methods you accept",
+      "paymentMethodsHint": "Clients pick from these when they request a commission.",
+      "paymentMethodsEmpty": "No payment methods are configured yet.",
+      "save": "Save settings",
+      "saved": "Settings saved.",
+      "saveFailed": "Couldn't save settings."
     },
     "dashboard": {
       "title": "Dashboard",

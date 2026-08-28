@@ -439,7 +439,22 @@
       "addons": "追加オプション",
       "addonsHint": "コミッションに追加できる任意のオプションです。",
       "rushFee": "特急料金",
-      "rushFeeHint": "納期がしきい値より近い場合に追加料金を請求します。オフにすると完全に無効化されます。"
+      "rushFeeHint": "納期がしきい値より近い場合に追加料金を請求します。オフにすると完全に無効化されます。",
+      "settings": "一般",
+      "settingsHint": "通貨、受付、支払い方法。通貨は以下のすべての価格に適用されます。",
+      "currency": "通貨",
+      "currencyHint": "すべての価格と見積もりに使う通貨です。",
+      "autoAccept": "依頼を自動承認",
+      "autoAcceptHint": "手動の選別を省略し、新しい依頼を自動的に承認します。",
+      "notificationEmail": "通知メール",
+      "notificationEmailHint": "新規依頼メールの送信先。空欄の場合はアカウントのメールを使用します。",
+      "notificationEmailPlaceholder": "you@example.com",
+      "paymentMethods": "受け付ける支払い方法",
+      "paymentMethodsHint": "クライアントは依頼時にこの中から選びます。",
+      "paymentMethodsEmpty": "支払い方法がまだ設定されていません。",
+      "save": "設定を保存",
+      "saved": "設定を保存しました。",
+      "saveFailed": "設定を保存できませんでした。"
     },
     "dashboard": {
       "title": "ダッシュボード",

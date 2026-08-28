@@ -62,6 +62,29 @@ export type OpeningDashboardTab = (typeof OPENING_DASHBOARD_TABS)[number];
 
 export const OPENING_SAVED_FLASH_MS = 2500;
 
+export const SUPPORTED_CURRENCIES = [
+  'USD',
+  'EUR',
+  'GBP',
+  'JPY',
+  'CAD',
+  'AUD',
+  'NZD',
+  'SGD',
+  'VND',
+  'THB',
+  'PHP',
+  'IDR',
+  'MYR',
+  'KRW',
+  'CNY',
+  'HKD',
+  'TWD',
+  'INR',
+  'BRL',
+  'MXN',
+] as const;
+
 export const PREFERRED_CONTACT_METHODS = [
   'EMAIL',
   'DISCORD',

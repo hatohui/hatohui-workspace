@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from '@hatohui/i18n';
+import { CommissionArtSettingsSection } from './CommissionArtSettingsSection';
 import { CommissionTypesTable } from './CommissionTypesTable';
 import { CommissionAddonPricingSection } from './CommissionAddonPricingSection';
 import { CommissionRushFeeSection } from './CommissionRushFeeSection';
@@ -18,6 +19,8 @@ export function CommissionSettings({ artistId }: { artistId: string }) {
           {t('app.commissionSettings.subtitle')}
         </p>
       </header>
+
+      <CommissionArtSettingsSection />
 
       <section className="space-y-3">
         <div className="max-w-2xl space-y-1">

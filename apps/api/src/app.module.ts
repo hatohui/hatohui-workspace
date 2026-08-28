@@ -30,6 +30,7 @@ import { CommissionProgressModule } from '@/modules/commission-progress/commissi
 import { ClientsModule } from '@/modules/clients/clients.module';
 import { CommissionFollowersModule } from '@/modules/commission-followers/commission-followers.module';
 import { CommissionGroupsModule } from '@/modules/commission-groups/commission-groups.module';
+import { PaymentMethodsModule } from '@/modules/payment-methods/payment-methods.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { CommissionGroupsModule } from '@/modules/commission-groups/commission-g
     ClientsModule,
     CommissionFollowersModule,
     CommissionGroupsModule,
+    PaymentMethodsModule,
   ],
 })
 export class AppModule {}

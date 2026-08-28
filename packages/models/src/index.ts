@@ -19,6 +19,7 @@ export * from './generated/commission-progress/commission-progress';
 export * from './generated/clients/clients';
 export * from './generated/commission-followers/commission-followers';
 export * from './generated/commission-groups/commission-groups';
+export * from './generated/payment-methods/payment-methods';
 export * from './generated/schemas';
 export {
   setApiBaseUrl,

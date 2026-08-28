@@ -3287,6 +3287,58 @@
         ]
       }
     },
+    "/commission-pricing/settings": {
+      "get": {
+        "operationId": "commissionSettings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionSettingsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Your own commission settings — currency, auto-accept, notification email, accepted payment methods",
+        "tags": [
+          "commission-pricing"
+        ]
+      },
+      "put": {
+        "operationId": "updateCommissionSettings",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionSettingsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update your own commission settings",
+        "tags": [
+          "commission-pricing"
+        ]
+      }
+    },
     "/commission-pricing/options": {
       "get": {
         "operationId": "commissionOptionPricings",
@@ -3529,6 +3581,31 @@
         "summary": "Delete one of your own commission add-on pricing rows",
         "tags": [
           "commission-pricing"
+        ]
+      }
+    },
+    "/payment-methods": {
+      "get": {
+        "operationId": "paymentMethods",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentMethodDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List the active payment-method catalog entries",
+        "tags": [
+          "payment-methods"
         ]
       }
     },
@@ -4325,6 +4402,10 @@
     },
     {
       "name": "commission-pricing",
+      "description": ""
+    },
+    {
+      "name": "payment-methods",
       "description": ""
     },
     {
@@ -7623,6 +7704,108 @@
           "feeAmount"
         ]
       },
+      "CommissionSettingsDto": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP",
+              "JPY",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SGD",
+              "VND",
+              "THB",
+              "PHP",
+              "IDR",
+              "MYR",
+              "KRW",
+              "CNY",
+              "HKD",
+              "TWD",
+              "INR",
+              "BRL",
+              "MXN"
+            ],
+            "example": "USD"
+          },
+          "autoAccept": {
+            "type": "boolean",
+            "description": "Skip manual triage — accept submissions automatically"
+          },
+          "notificationEmail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Where commission notifications go; falls back to the account email when unset"
+          },
+          "paymentMethodKeys": {
+            "description": "Keys of the payment methods this artist accepts",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "currency",
+          "autoAccept",
+          "notificationEmail",
+          "paymentMethodKeys"
+        ]
+      },
+      "UpsertCommissionSettingsDto": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP",
+              "JPY",
+              "CAD",
+              "AUD",
+              "NZD",
+              "SGD",
+              "VND",
+              "THB",
+              "PHP",
+              "IDR",
+              "MYR",
+              "KRW",
+              "CNY",
+              "HKD",
+              "TWD",
+              "INR",
+              "BRL",
+              "MXN"
+            ],
+            "example": "USD"
+          },
+          "autoAccept": {
+            "type": "boolean"
+          },
+          "notificationEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethodKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "currency",
+          "autoAccept",
+          "paymentMethodKeys"
+        ]
+      },
       "UpsertCommissionOptionPricingDto": {
         "type": "object",
         "properties": {
@@ -7705,6 +7888,24 @@
         "required": [
           "label",
           "priceMode"
+        ]
+      },
+      "PaymentMethodDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "paypal",
+            "description": "Stable identifier"
+          },
+          "name": {
+            "type": "string",
+            "example": "PayPal"
+          }
+        },
+        "required": [
+          "key",
+          "name"
         ]
       },
       "ProjectDto": {

@@ -440,7 +440,22 @@
       "addons": "Dịch vụ thêm",
       "addonsHint": "Các tùy chọn bổ sung khách có thể thêm vào một commission.",
       "rushFee": "Phụ phí gấp",
-      "rushFeeHint": "Tính thêm phí khi hạn chót gần hơn ngưỡng. Tắt đi để vô hiệu hóa hoàn toàn."
+      "rushFeeHint": "Tính thêm phí khi hạn chót gần hơn ngưỡng. Tắt đi để vô hiệu hóa hoàn toàn.",
+      "settings": "Chung",
+      "settingsHint": "Tiền tệ, duyệt yêu cầu và cách nhận thanh toán. Tiền tệ áp dụng cho mọi mức giá bên dưới.",
+      "currency": "Tiền tệ",
+      "currencyHint": "Đơn vị tiền tệ cho mọi mức giá và báo giá của bạn.",
+      "autoAccept": "Tự động nhận yêu cầu",
+      "autoAcceptHint": "Bỏ qua bước duyệt thủ công — yêu cầu mới được nhận tự động.",
+      "notificationEmail": "Email thông báo",
+      "notificationEmailHint": "Nơi nhận email yêu cầu mới. Để trống để dùng email tài khoản.",
+      "notificationEmailPlaceholder": "ban@example.com",
+      "paymentMethods": "Phương thức thanh toán bạn chấp nhận",
+      "paymentMethodsHint": "Khách chọn trong số này khi gửi yêu cầu commission.",
+      "paymentMethodsEmpty": "Chưa có phương thức thanh toán nào được cấu hình.",
+      "save": "Lưu cài đặt",
+      "saved": "Đã lưu cài đặt.",
+      "saveFailed": "Không thể lưu cài đặt."
     },
     "dashboard": {
       "title": "Bảng điều khiển",

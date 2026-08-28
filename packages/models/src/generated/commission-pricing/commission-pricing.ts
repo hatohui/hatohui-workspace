@@ -31,9 +31,11 @@ import type {
   CommissionPricingDto,
   CommissionPricingParams,
   CommissionRushFeeSettingDto,
+  CommissionSettingsDto,
   UpsertCommissionAddonPricingDto,
   UpsertCommissionOptionPricingDto,
-  UpsertCommissionRushFeeSettingDto
+  UpsertCommissionRushFeeSettingDto,
+  UpsertCommissionSettingsDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -258,6 +260,200 @@ export const useUpdateCommissionRushFee = <TError = unknown,
         TContext
       > => {
       return useMutation(getUpdateCommissionRushFeeMutationOptions(options), queryClient);
+    }
+    export type commissionSettingsResponse200 = {
+  data: CommissionSettingsDto
+  status: 200
+}
+
+export type commissionSettingsResponseSuccess = (commissionSettingsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type commissionSettingsResponse = (commissionSettingsResponseSuccess)
+
+export const getCommissionSettingsUrl = () => {
+
+
+
+
+  return `/commission-pricing/settings`
+}
+
+/**
+ * @summary Your own commission settings — currency, auto-accept, notification email, accepted payment methods
+ */
+export const commissionSettings = async ( options?: RequestInit): Promise<commissionSettingsResponse> => {
+
+  return customFetch<commissionSettingsResponse>(getCommissionSettingsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getCommissionSettingsQueryKey = () => {
+    return [
+    `/commission-pricing/settings`
+    ] as const;
+    }
+
+
+export const getCommissionSettingsQueryOptions = <TData = Awaited<ReturnType<typeof commissionSettings>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCommissionSettingsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commissionSettings>>> = ({ signal }) => commissionSettings({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof commissionSettings>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CommissionSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof commissionSettings>>>
+export type CommissionSettingsQueryError = unknown
+
+
+export function useCommissionSettings<TData = Awaited<ReturnType<typeof commissionSettings>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionSettings>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commissionSettings>>,
+          TError,
+          Awaited<ReturnType<typeof commissionSettings>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommissionSettings<TData = Awaited<ReturnType<typeof commissionSettings>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionSettings>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commissionSettings>>,
+          TError,
+          Awaited<ReturnType<typeof commissionSettings>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommissionSettings<TData = Awaited<ReturnType<typeof commissionSettings>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Your own commission settings — currency, auto-accept, notification email, accepted payment methods
+ */
+
+export function useCommissionSettings<TData = Awaited<ReturnType<typeof commissionSettings>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commissionSettings>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCommissionSettingsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type updateCommissionSettingsResponse200 = {
+  data: CommissionSettingsDto
+  status: 200
+}
+
+export type updateCommissionSettingsResponseSuccess = (updateCommissionSettingsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateCommissionSettingsResponse = (updateCommissionSettingsResponseSuccess)
+
+export const getUpdateCommissionSettingsUrl = () => {
+
+
+
+
+  return `/commission-pricing/settings`
+}
+
+/**
+ * @summary Update your own commission settings
+ */
+export const updateCommissionSettings = async (upsertCommissionSettingsDto: UpsertCommissionSettingsDto, options?: RequestInit): Promise<updateCommissionSettingsResponse> => {
+
+  return customFetch<updateCommissionSettingsResponse>(getUpdateCommissionSettingsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(upsertCommissionSettingsDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateCommissionSettingsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionSettings>>, TError,{data: UpsertCommissionSettingsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCommissionSettings>>, TError,{data: UpsertCommissionSettingsDto}, TContext> => {
+
+const mutationKey = ['updateCommissionSettings'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCommissionSettings>>, {data: UpsertCommissionSettingsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateCommissionSettings(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCommissionSettingsMutationResult = NonNullable<Awaited<ReturnType<typeof updateCommissionSettings>>>
+    export type UpdateCommissionSettingsMutationBody = UpsertCommissionSettingsDto
+    export type UpdateCommissionSettingsMutationError = unknown
+
+    /**
+ * @summary Update your own commission settings
+ */
+export const useUpdateCommissionSettings = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCommissionSettings>>, TError,{data: UpsertCommissionSettingsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCommissionSettings>>,
+        TError,
+        {data: UpsertCommissionSettingsDto},
+        TContext
+      > => {
+      return useMutation(getUpdateCommissionSettingsMutationOptions(options), queryClient);
     }
     export type commissionOptionPricingsResponse200 = {
   data: CommissionOptionPricingDto[]

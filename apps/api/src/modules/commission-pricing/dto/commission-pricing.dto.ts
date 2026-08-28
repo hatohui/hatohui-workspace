@@ -1,7 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayUnique,
+  IsArray,
   IsBoolean,
+  IsEmail,
   IsEnum,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -10,6 +14,7 @@ import {
   Min,
 } from 'class-validator';
 import { PriceMode } from '@prisma/client';
+import { SUPPORTED_CURRENCIES } from '@/modules/commission-pricing/commission-pricing.constants';
 
 export { PriceMode };
 
@@ -233,6 +238,51 @@ export class UpsertCommissionRushFeeSettingDto {
   @IsInt()
   @Min(0)
   feeAmount: number;
+}
+
+export class CommissionSettingsDto {
+  @ApiProperty({ enum: SUPPORTED_CURRENCIES, example: 'USD' })
+  currency: string;
+
+  @ApiProperty({
+    description: 'Skip manual triage — accept submissions automatically',
+  })
+  autoAccept: boolean;
+
+  @ApiProperty({
+    nullable: true,
+    description:
+      'Where commission notifications go; falls back to the account email when unset',
+  })
+  notificationEmail: string | null;
+
+  @ApiProperty({
+    type: String,
+    isArray: true,
+    description: 'Keys of the payment methods this artist accepts',
+  })
+  paymentMethodKeys: string[];
+}
+
+export class UpsertCommissionSettingsDto {
+  @ApiProperty({ enum: SUPPORTED_CURRENCIES, example: 'USD' })
+  @IsIn(SUPPORTED_CURRENCIES)
+  currency: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  autoAccept: boolean;
+
+  @ApiProperty({ required: false, nullable: true })
+  @IsOptional()
+  @IsEmail()
+  notificationEmail?: string | null;
+
+  @ApiProperty({ type: String, isArray: true })
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayUnique()
+  paymentMethodKeys: string[];
 }
 
 export class CommissionPricingDto {

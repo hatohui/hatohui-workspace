@@ -27,9 +27,11 @@ import {
   CommissionOptionPricingDto,
   CommissionPricingDto,
   CommissionRushFeeSettingDto,
+  CommissionSettingsDto,
   UpsertCommissionAddonPricingDto,
   UpsertCommissionOptionPricingDto,
   UpsertCommissionRushFeeSettingDto,
+  UpsertCommissionSettingsDto,
 } from '@/modules/commission-pricing/dto/commission-pricing.dto';
 
 @ApiTags('commission-pricing')
@@ -67,6 +69,33 @@ export class CommissionPricingController {
   ): Promise<CommissionRushFeeSettingDto> {
     await this.assertArtist(user);
     return this.pricingService.updateRushFee(user.id, dto);
+  }
+
+  @Get('settings')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'commissionSettings',
+    summary:
+      'Your own commission settings — currency, auto-accept, notification email, accepted payment methods',
+  })
+  @ApiOkResponse({ type: CommissionSettingsDto })
+  getSettings(@CurrentUser() user: User): Promise<CommissionSettingsDto> {
+    return this.pricingService.getSettings(user.id);
+  }
+
+  @Put('settings')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'updateCommissionSettings',
+    summary: 'Update your own commission settings',
+  })
+  @ApiOkResponse({ type: CommissionSettingsDto })
+  async updateSettings(
+    @Body() dto: UpsertCommissionSettingsDto,
+    @CurrentUser() user: User,
+  ): Promise<CommissionSettingsDto> {
+    await this.assertArtist(user);
+    return this.pricingService.updateSettings(user.id, dto);
   }
 
   @Get('options')
