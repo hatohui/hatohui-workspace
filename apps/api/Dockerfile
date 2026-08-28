@@ -15,6 +15,7 @@ COPY packages/models/package.json packages/models/package.json
 COPY packages/ui/package.json packages/ui/package.json
 COPY packages/tools/package.json packages/tools/package.json
 COPY apps/api/prisma apps/api/prisma
+COPY apps/api/prisma.config.ts apps/api/prisma.config.ts
 
 ENV DATABASE_URL=postgresql://user:password@localhost:5432/placeholder
 
@@ -30,7 +31,7 @@ RUN bun run build
 
 FROM base AS deps
 RUN --mount=type=cache,target=/root/.bun/install/cache \
-  bun install --frozen-lockfile --production --filter=./apps/api
+  bun install --frozen-lockfile --filter=./apps/api
 
 WORKDIR /repo/apps/api
 RUN --mount=type=cache,target=/root/.bun/install/cache \
