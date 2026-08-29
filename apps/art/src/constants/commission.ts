@@ -62,28 +62,33 @@ export type OpeningDashboardTab = (typeof OPENING_DASHBOARD_TABS)[number];
 
 export const OPENING_SAVED_FLASH_MS = 2500;
 
-export const SUPPORTED_CURRENCIES = [
-  'USD',
-  'EUR',
-  'GBP',
-  'JPY',
-  'CAD',
-  'AUD',
-  'NZD',
-  'SGD',
-  'VND',
-  'THB',
-  'PHP',
-  'IDR',
-  'MYR',
-  'KRW',
-  'CNY',
-  'HKD',
-  'TWD',
-  'INR',
-  'BRL',
-  'MXN',
-] as const;
+export const CURRENCY_NAMES: Record<string, string> = {
+  USD: 'US Dollar',
+  EUR: 'Euro',
+  GBP: 'British Pound',
+  JPY: 'Japanese Yen',
+  CAD: 'Canadian Dollar',
+  AUD: 'Australian Dollar',
+  NZD: 'New Zealand Dollar',
+  SGD: 'Singapore Dollar',
+  VND: 'Vietnamese Dong',
+  THB: 'Thai Baht',
+  PHP: 'Philippine Peso',
+  IDR: 'Indonesian Rupiah',
+  MYR: 'Malaysian Ringgit',
+  KRW: 'South Korean Won',
+  CNY: 'Chinese Yuan',
+  HKD: 'Hong Kong Dollar',
+  TWD: 'New Taiwan Dollar',
+  INR: 'Indian Rupee',
+  BRL: 'Brazilian Real',
+  MXN: 'Mexican Peso',
+};
+
+export const SUPPORTED_CURRENCIES = Object.keys(CURRENCY_NAMES);
+
+export const COMMISSION_SETTINGS_TABS = ['general', 'pricing'] as const;
+export type CommissionSettingsTab = (typeof COMMISSION_SETTINGS_TABS)[number];
 
 export const PREFERRED_CONTACT_METHODS = [
   'EMAIL',

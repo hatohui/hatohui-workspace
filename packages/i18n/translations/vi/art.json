@@ -455,7 +455,13 @@
       "paymentMethodsEmpty": "Chưa có phương thức thanh toán nào được cấu hình.",
       "save": "Lưu cài đặt",
       "saved": "Đã lưu cài đặt.",
-      "saveFailed": "Không thể lưu cài đặt."
+      "saveFailed": "Không thể lưu cài đặt.",
+      "tabs": {
+        "general": "Chung",
+        "pricing": "Định giá"
+      },
+      "currencySearchPlaceholder": "Tìm tiền tệ…",
+      "currencyEmpty": "Không tìm thấy tiền tệ."
     },
     "dashboard": {
       "title": "Bảng điều khiển",

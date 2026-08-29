@@ -454,7 +454,13 @@
       "paymentMethodsEmpty": "支払い方法がまだ設定されていません。",
       "save": "設定を保存",
       "saved": "設定を保存しました。",
-      "saveFailed": "設定を保存できませんでした。"
+      "saveFailed": "設定を保存できませんでした。",
+      "tabs": {
+        "general": "一般",
+        "pricing": "料金"
+      },
+      "currencySearchPlaceholder": "通貨を検索…",
+      "currencyEmpty": "通貨が見つかりません。"
     },
     "dashboard": {
       "title": "ダッシュボード",

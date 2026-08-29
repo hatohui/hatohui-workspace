@@ -6,11 +6,7 @@ import {
   Button,
   Input,
   Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SearchableSelect,
   Spinner,
   Switch,
   useToast,
@@ -20,8 +16,13 @@ import type {
   PaymentMethodDto,
   UpsertCommissionSettingsDto,
 } from '@hatohui/models';
-import { SUPPORTED_CURRENCIES } from '@/constants/commission';
+import { CURRENCY_NAMES, SUPPORTED_CURRENCIES } from '@/constants/commission';
 import { PaymentMethodChecklist } from './PaymentMethodChecklist';
+
+const CURRENCY_OPTIONS = SUPPORTED_CURRENCIES.map((code) => ({
+  value: code,
+  label: `${code} — ${CURRENCY_NAMES[code]}`,
+}));
 
 export function CommissionArtSettingsForm({
   initial,
@@ -64,23 +65,19 @@ export function CommissionArtSettingsForm({
           <Label htmlFor="art-currency">
             {t('app.commissionSettings.currency')}
           </Label>
-          <Select
+          <SearchableSelect
+            id="art-currency"
             value={currency}
-            onValueChange={(value) =>
+            options={CURRENCY_OPTIONS}
+            placeholder={t('app.commissionSettings.currency')}
+            searchPlaceholder={t(
+              'app.commissionSettings.currencySearchPlaceholder',
+            )}
+            emptyLabel={t('app.commissionSettings.currencyEmpty')}
+            onChange={(value) =>
               setCurrency(value as CommissionSettingsDto['currency'])
             }
-          >
-            <SelectTrigger id="art-currency" className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {SUPPORTED_CURRENCIES.map((code) => (
-                <SelectItem key={code} value={code}>
-                  {code}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
           <p className="text-xs text-muted-foreground">
             {t('app.commissionSettings.currencyHint')}
           </p>

@@ -45,8 +45,8 @@ function RushFeeForm({
   };
 
   return (
-    <div className="flex flex-wrap items-end gap-4">
-      <div className="flex items-center gap-2">
+    <div className="max-w-2xl space-y-5">
+      <div className="flex items-center gap-3">
         <Switch
           id="rush-fee-enabled"
           checked={enabled}
@@ -59,36 +59,38 @@ function RushFeeForm({
           {t('commission.admin.pricing.rushFeeEnabled')}
         </Label>
       </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="rush-days">
-          {t('commission.admin.pricing.rushFeeDays')}
-        </Label>
-        <Input
-          id="rush-days"
-          type="number"
-          inputMode="numeric"
-          min={1}
-          className="w-32"
-          disabled={!enabled}
-          value={thresholdDays}
-          onChange={(event) => setThresholdDays(event.target.value)}
-        />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label htmlFor="rush-days">
+            {t('commission.admin.pricing.rushFeeDays')}
+          </Label>
+          <Input
+            id="rush-days"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            disabled={!enabled}
+            value={thresholdDays}
+            onChange={(event) => setThresholdDays(event.target.value)}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="rush-amount">
+            {t('commission.admin.pricing.rushFeeAmount')}
+          </Label>
+          <Input
+            id="rush-amount"
+            type="number"
+            inputMode="decimal"
+            min={0}
+            disabled={!enabled}
+            value={feeDollars}
+            onChange={(event) => setFeeDollars(event.target.value)}
+          />
+        </div>
       </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="rush-amount">
-          {t('commission.admin.pricing.rushFeeAmount')}
-        </Label>
-        <Input
-          id="rush-amount"
-          type="number"
-          inputMode="decimal"
-          min={0}
-          className="w-32"
-          disabled={!enabled}
-          value={feeDollars}
-          onChange={(event) => setFeeDollars(event.target.value)}
-        />
-      </div>
+
       <Button
         disabled={!enabled || saving}
         onClick={() => void runSave(enabled, true)}

@@ -455,7 +455,13 @@
       "paymentMethodsEmpty": "No payment methods are configured yet.",
       "save": "Save settings",
       "saved": "Settings saved.",
-      "saveFailed": "Couldn't save settings."
+      "saveFailed": "Couldn't save settings.",
+      "tabs": {
+        "general": "General",
+        "pricing": "Pricing"
+      },
+      "currencySearchPlaceholder": "Search currency…",
+      "currencyEmpty": "No currency found."
     },
     "dashboard": {
       "title": "Dashboard",
