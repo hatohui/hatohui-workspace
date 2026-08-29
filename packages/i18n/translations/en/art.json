@@ -464,7 +464,19 @@
       "paymentMethodNamePlaceholder": "PayPal, Bank transfer…",
       "paymentMethodInstructionsPlaceholder": "Handle, link, or account details",
       "paymentMethodAdd": "Add payment method",
-      "paymentMethodRemove": "Remove payment method"
+      "paymentMethodRemove": "Remove payment method",
+      "typeFrom": "from {{price}}",
+      "typeNeedsPrice": "Needs a price",
+      "addVariant": "Add a variant",
+      "newVariant": "New variant",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "noTypes": "No commission types available.",
+      "priceLine": {
+        "mode": "Price mode",
+        "price": "Price ($)",
+        "upTo": "Up to ($)"
+      }
     },
     "dashboard": {
       "title": "Dashboard",

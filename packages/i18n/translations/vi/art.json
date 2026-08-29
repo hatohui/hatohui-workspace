@@ -464,7 +464,19 @@
       "paymentMethodNamePlaceholder": "PayPal, chuyển khoản…",
       "paymentMethodInstructionsPlaceholder": "Tên tài khoản, liên kết hoặc chi tiết tài khoản",
       "paymentMethodAdd": "Thêm phương thức thanh toán",
-      "paymentMethodRemove": "Xóa phương thức thanh toán"
+      "paymentMethodRemove": "Xóa phương thức thanh toán",
+      "typeFrom": "từ {{price}}",
+      "typeNeedsPrice": "Chưa có giá",
+      "addVariant": "Thêm biến thể",
+      "newVariant": "Biến thể mới",
+      "moveUp": "Di chuyển lên",
+      "moveDown": "Di chuyển xuống",
+      "noTypes": "Không có loại commission nào.",
+      "priceLine": {
+        "mode": "Kiểu giá",
+        "price": "Giá ($)",
+        "upTo": "Tối đa ($)"
+      }
     },
     "dashboard": {
       "title": "Bảng điều khiển",

@@ -9,6 +9,7 @@ import {
   useUpdateCommissionOptionPricing,
   useDeleteCommissionOptionPricing,
   getCommissionOptionPricingsQueryKey,
+  getMyCommissionTypesQueryKey,
   useCommissionAddonPricings,
   useCreateCommissionAddonPricing,
   useUpdateCommissionAddonPricing,
@@ -25,7 +26,12 @@ export function useCommissionOptionPricingAdmin(commissionTypeId: string) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const queryKey = getCommissionOptionPricingsQueryKey({ commissionTypeId });
-  const invalidate = () => queryClient.invalidateQueries({ queryKey });
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey });
+    void queryClient.invalidateQueries({
+      queryKey: getMyCommissionTypesQueryKey(),
+    });
+  };
 
   const listQuery = useCommissionOptionPricings({ commissionTypeId });
   type Cache = NonNullable<typeof listQuery.data>;

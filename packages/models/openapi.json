@@ -7423,6 +7423,15 @@
           "enabled": {
             "type": "boolean",
             "description": "Whether the artist has this type turned on"
+          },
+          "optionCount": {
+            "type": "number",
+            "description": "How many options the artist has configured under this type"
+          },
+          "startingPrice": {
+            "type": "number",
+            "nullable": true,
+            "description": "Lowest priced option's price in the artist's currency's smallest unit; null when nothing under this type is priced yet"
           }
         },
         "required": [
@@ -7431,7 +7440,9 @@
           "key",
           "label",
           "no",
-          "enabled"
+          "enabled",
+          "optionCount",
+          "startingPrice"
         ]
       },
       "UpsertArtistCommissionTypeDto": {

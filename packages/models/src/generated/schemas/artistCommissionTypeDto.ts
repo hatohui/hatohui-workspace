@@ -19,4 +19,11 @@ export interface ArtistCommissionTypeDto {
   no: number;
   /** Whether the artist has this type turned on */
   enabled: boolean;
+  /** How many options the artist has configured under this type */
+  optionCount: number;
+  /**
+     * Lowest priced option's price in the artist's currency's smallest unit; null when nothing under this type is priced yet
+     * @nullable
+     */
+  startingPrice: number | null;
 }

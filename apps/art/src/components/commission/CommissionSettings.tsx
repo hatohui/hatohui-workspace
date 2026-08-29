@@ -8,7 +8,7 @@ import {
   type CommissionSettingsTab,
 } from '@/constants/commission';
 import { CommissionArtSettingsSection } from './CommissionArtSettingsSection';
-import { CommissionTypesTable } from './CommissionTypesTable';
+import { CommissionTypesEditor } from './CommissionTypesEditor';
 import { CommissionAddonPricingSection } from './CommissionAddonPricingSection';
 import { CommissionRushFeeSection } from './CommissionRushFeeSection';
 
@@ -53,7 +53,7 @@ export function CommissionSettings({ artistId }: { artistId: string }) {
                 {t('app.commissionSettings.typesHint')}
               </p>
             </div>
-            <CommissionTypesTable />
+            <CommissionTypesEditor />
           </section>
 
           <CommissionAddonPricingSection />

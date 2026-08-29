@@ -37,7 +37,7 @@ export class CommissionPricingService {
   async getActive(artistId: string): Promise<CommissionPricingDto> {
     const [options, addons, rushFee, currency] = await Promise.all([
       this.db.commissionOption.findMany({
-        where: { artistId, active: true },
+        where: { artistId, active: true, minPrice: { gt: 0 } },
       }),
       this.db.commissionAddon.findMany({ where: { artistId, active: true } }),
       this.getRushFee(artistId),

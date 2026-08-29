@@ -3,6 +3,10 @@ import { Database } from '@/infra/db';
 import type { CommissionType, Tag } from '@prisma/client';
 import { uniqueSlug } from '@/common/utils/slugify';
 import {
+  DEFAULT_OPTION_KEY,
+  DEFAULT_OPTION_LABEL,
+} from '@/modules/commission-types/commission-types.constants';
+import {
   ArtistCommissionTypeDto,
   CommissionTypeDto,
   UpsertArtistCommissionTypeDto,
@@ -26,20 +30,44 @@ export class CommissionTypesService {
       .then((rows) => rows.map(toDto));
   }
 
-  /** The catalog joined with one artist's enablement of each entry. */
+  /** The catalog joined with one artist's enablement of each entry, plus a
+   * per-type option count and starting price for the settings cards. */
   async listForArtist(artistId: string): Promise<ArtistCommissionTypeDto[]> {
-    const [types, enablements] = await Promise.all([
+    const [types, enablements, options] = await Promise.all([
       this.db.commissionType.findMany({
         where: { active: true },
         orderBy: { no: 'asc' },
       }),
       this.db.artistCommissionType.findMany({ where: { artistId } }),
+      this.db.commissionOption.findMany({
+        where: { artistId, active: true },
+        select: { commissionTypeId: true, minPrice: true },
+      }),
     ]);
     const enablementByType = new Map(
       enablements.map((row) => [row.commissionTypeId, row]),
     );
+    const optionsByType = new Map<
+      string,
+      { count: number; startingPrice: number | null }
+    >();
+    for (const option of options) {
+      const agg = optionsByType.get(option.commissionTypeId) ?? {
+        count: 0,
+        startingPrice: null,
+      };
+      agg.count += 1;
+      if (option.minPrice > 0) {
+        agg.startingPrice =
+          agg.startingPrice == null
+            ? option.minPrice
+            : Math.min(agg.startingPrice, option.minPrice);
+      }
+      optionsByType.set(option.commissionTypeId, agg);
+    }
     return types.map((type) => {
       const enablement = enablementByType.get(type.id);
+      const agg = optionsByType.get(type.id);
       return {
         id: enablement?.id ?? null,
         commissionTypeId: type.id,
@@ -47,16 +75,19 @@ export class CommissionTypesService {
         label: type.label,
         no: enablement?.no ?? type.no,
         enabled: enablement?.active ?? false,
+        optionCount: agg?.count ?? 0,
+        startingPrice: agg?.startingPrice ?? null,
       };
     });
   }
 
-  /** Public storefront view: only the types this artist has actually turned
-   * on, no enablement bookkeeping exposed. */
+  /** Public storefront view: only the types this artist has turned on *and*
+   * priced (a type whose sole option is still the unpriced default is not
+   * offered), no enablement bookkeeping exposed. */
   async listEnabledForArtist(artistId: string): Promise<CommissionTypeDto[]> {
-    const enabled = await this.listForArtist(artistId);
-    const ids = enabled
-      .filter((row) => row.enabled)
+    const rows = await this.listForArtist(artistId);
+    const ids = rows
+      .filter((row) => row.enabled && row.startingPrice != null)
       .map((row) => row.commissionTypeId);
     if (ids.length === 0) return [];
     return this.db.commissionType
@@ -91,6 +122,38 @@ export class CommissionTypesService {
         no: dto.no ?? type.no,
       },
     });
+
+    let optionCount = await this.db.commissionOption.count({
+      where: { artistId, commissionTypeId },
+    });
+    if (dto.active && optionCount === 0) {
+      await this.db.commissionOption.create({
+        data: {
+          artistId,
+          commissionTypeId,
+          key: DEFAULT_OPTION_KEY,
+          label: DEFAULT_OPTION_LABEL,
+          priceMode: 'FIXED',
+          minPrice: 0,
+          no: 0,
+          active: true,
+        },
+      });
+      optionCount = 1;
+    }
+
+    const startingPrice = await this.db.commissionOption
+      .aggregate({
+        where: {
+          artistId,
+          commissionTypeId,
+          active: true,
+          minPrice: { gt: 0 },
+        },
+        _min: { minPrice: true },
+      })
+      .then((agg) => agg._min.minPrice);
+
     return {
       id: row.id,
       commissionTypeId: type.id,
@@ -98,6 +161,8 @@ export class CommissionTypesService {
       label: type.label,
       no: row.no,
       enabled: row.active,
+      optionCount,
+      startingPrice,
     };
   }
 

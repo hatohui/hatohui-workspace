@@ -51,9 +51,33 @@ export function useCommissionTypesAdmin() {
     },
   });
 
+  const items = listQuery.data?.data ?? [];
+
+  const move = async (commissionTypeId: string, direction: 'up' | 'down') => {
+    const ordered = [...items].sort((a, b) => a.no - b.no);
+    const index = ordered.findIndex(
+      (row) => row.commissionTypeId === commissionTypeId,
+    );
+    const swapWith = direction === 'up' ? index - 1 : index + 1;
+    if (index < 0 || swapWith < 0 || swapWith >= ordered.length) return;
+    const a = ordered[index];
+    const b = ordered[swapWith];
+    await Promise.all([
+      setEnabled.mutateAsync({
+        id: a.commissionTypeId,
+        data: { active: a.enabled, no: b.no },
+      }),
+      setEnabled.mutateAsync({
+        id: b.commissionTypeId,
+        data: { active: b.enabled, no: a.no },
+      }),
+    ]);
+  };
+
   return {
-    items: listQuery.data?.data ?? [],
+    items,
     isLoading: listQuery.isPending,
     setEnabled: setEnabled.mutateAsync,
+    move,
   };
 }

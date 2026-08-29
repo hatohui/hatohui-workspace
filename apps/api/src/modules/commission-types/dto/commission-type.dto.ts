@@ -90,6 +90,18 @@ export class ArtistCommissionTypeDto {
 
   @ApiProperty({ description: 'Whether the artist has this type turned on' })
   enabled: boolean;
+
+  @ApiProperty({
+    description: 'How many options the artist has configured under this type',
+  })
+  optionCount: number;
+
+  @ApiProperty({
+    nullable: true,
+    description:
+      "Lowest priced option's price in the artist's currency's smallest unit; null when nothing under this type is priced yet",
+  })
+  startingPrice: number | null;
 }
 
 export class UpsertArtistCommissionTypeDto {
