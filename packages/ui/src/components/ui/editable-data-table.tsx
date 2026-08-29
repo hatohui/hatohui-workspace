@@ -122,52 +122,38 @@ export function EditableDataTable<T extends { id: string }>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const availableWidth = Math.max(
-    0,
-    containerWidth - (onDeleteRow ? DELETE_COLUMN_WIDTH : 0),
-  );
-
-  const lastColumnKey =
-    [...columns].reverse().find((column) => !column.toggle)?.key ??
-    columns.at(-1)?.key;
-  const lastColumnSize = lastColumnKey
-    ? (table.getColumn(lastColumnKey)?.getSize() ?? 0)
-    : 0;
-  const rawOtherColumnsSize = table.getTotalSize() - lastColumnSize;
-
-  const shrinkScale =
-    availableWidth > 0 && rawOtherColumnsSize > availableWidth
-      ? Math.min(1, availableWidth / rawOtherColumnsSize)
-      : 1;
-
-  const shrunkColumnWidth = (rawSize: number) =>
-    Math.max(MIN_COLUMN_WIDTH, Math.round(rawSize * shrinkScale));
-
-  const otherColumnsSize =
-    shrinkScale === 1
-      ? rawOtherColumnsSize
-      : columns
-          .filter((column) => column.key !== lastColumnKey)
-          .reduce(
-            (sum, column) =>
-              sum +
-              shrunkColumnWidth(table.getColumn(column.key)?.getSize() ?? 0),
-            0,
-          );
-
-  const effectiveLastColumnSize = Math.max(
-    MIN_COLUMN_WIDTH,
-    availableWidth - otherColumnsSize,
-  );
-  const tableWidth =
-    otherColumnsSize +
-    effectiveLastColumnSize +
+  const fixedColumnsSize =
+    columns.filter((column) => column.toggle).length * TOGGLE_COLUMN_WIDTH +
     (onDeleteRow ? DELETE_COLUMN_WIDTH : 0);
 
+  const rawFlexSize = columns
+    .filter((column) => !column.toggle)
+    .reduce(
+      (sum, column) => sum + (table.getColumn(column.key)?.getSize() ?? 0),
+      0,
+    );
+
+  const flexAvailable = Math.max(0, containerWidth - fixedColumnsSize);
+
+  const flexScale =
+    rawFlexSize > 0 && flexAvailable > 0 ? flexAvailable / rawFlexSize : 1;
+
   const getColumnWidth = (columnId: string, rawSize: number) =>
-    columnId === lastColumnKey
-      ? effectiveLastColumnSize
-      : shrunkColumnWidth(rawSize);
+    columnsByKey.get(columnId as keyof T & string)?.toggle
+      ? TOGGLE_COLUMN_WIDTH
+      : Math.max(MIN_COLUMN_WIDTH, Math.round(rawSize * flexScale));
+
+  const tableWidth = containerWidth
+    ? columns.reduce(
+        (sum, column) =>
+          sum +
+          getColumnWidth(
+            column.key,
+            table.getColumn(column.key)?.getSize() ?? 0,
+          ),
+        onDeleteRow ? DELETE_COLUMN_WIDTH : 0,
+      )
+    : table.getTotalSize();
 
   const focusCell = (rowIndex: number, colIndex: number) => {
     const target = tableRef.current?.querySelector<HTMLButtonElement>(
@@ -239,17 +225,16 @@ export function EditableDataTable<T extends { id: string }>({
                       ) : (
                         (header.column.columnDef.header as string)
                       )}
-                      {header.column.id !== lastColumnKey &&
-                        !column?.toggle && (
-                          <div
-                            onPointerDown={header.getResizeHandler()}
-                            onTouchStart={header.getResizeHandler()}
-                            className={cn(
-                              'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none transition-colors duration-150 ease-out hover:bg-ring motion-reduce:transition-none',
-                              header.column.getIsResizing() && 'bg-ring',
-                            )}
-                          />
-                        )}
+                      {!column?.toggle && (
+                        <div
+                          onPointerDown={header.getResizeHandler()}
+                          onTouchStart={header.getResizeHandler()}
+                          className={cn(
+                            'absolute top-0 right-0 h-full w-1.5 cursor-col-resize touch-none select-none transition-colors duration-150 ease-out hover:bg-ring motion-reduce:transition-none',
+                            header.column.getIsResizing() && 'bg-ring',
+                          )}
+                        />
+                      )}
                     </th>
                   );
                 })}

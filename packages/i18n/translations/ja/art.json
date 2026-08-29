@@ -316,12 +316,12 @@
         "slotCapHint": "自動的に受付を終了するまでに引き受けるコミッションの件数です。",
         "slotCapError": "1以上の受付上限数を入力してください。",
         "slotsTaken": "{{taken}} / {{cap}} 件",
-        "scheduledAt": "開始日時（任意）",
+        "scheduledAt": "開始日時",
         "scheduledAtHint": "空欄の場合はすぐに開始します。",
         "scheduledAtTimezoneHint": "時刻は {{timezone}} です。空欄の場合はすぐに開始します。",
         "scheduledAtPastError": "未来の日時を選択してください。",
         "clear": "クリア",
-        "postTitle": "告知タイトル（任意）",
+        "postTitle": "告知タイトル",
         "postTitlePlaceholder": "例: 6月のコミッション受付中",
         "postTitleHint": "公開コミッションページに見出しとして表示されます。",
         "saveNew": "募集を開始",
@@ -369,7 +369,7 @@
           "stillOpen": "受付中",
           "announcement": "告知",
           "noAnnouncement": "告知タイトルが設定されていません。",
-          "none": "—"
+          "none": "-"
         }
       },
       "pricing": {
@@ -450,8 +450,7 @@
       "notificationEmailHint": "新規依頼メールの送信先。空欄の場合はアカウントのメールを使用します。",
       "notificationEmailPlaceholder": "you@example.com",
       "paymentMethods": "受け付ける支払い方法",
-      "paymentMethodsHint": "クライアントは依頼時にこの中から選びます。",
-      "paymentMethodsEmpty": "支払い方法がまだ設定されていません。",
+      "paymentMethodsHint": "クライアントが支払える方法と手順を追加します。依頼時に表示されます。",
       "save": "設定を保存",
       "saved": "設定を保存しました。",
       "saveFailed": "設定を保存できませんでした。",
@@ -460,7 +459,11 @@
         "pricing": "料金"
       },
       "currencySearchPlaceholder": "通貨を検索…",
-      "currencyEmpty": "通貨が見つかりません。"
+      "currencyEmpty": "通貨が見つかりません。",
+      "paymentMethodNamePlaceholder": "PayPal、銀行振込…",
+      "paymentMethodInstructionsPlaceholder": "ハンドル、リンク、または口座情報",
+      "paymentMethodAdd": "支払い方法を追加",
+      "paymentMethodRemove": "支払い方法を削除"
     },
     "dashboard": {
       "title": "ダッシュボード",

@@ -6,11 +6,12 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { UpsertCommissionSettingsDtoCurrency } from './upsertCommissionSettingsDtoCurrency';
+import type { UpsertPaymentMethodEntryDto } from './upsertPaymentMethodEntryDto';
 
 export interface UpsertCommissionSettingsDto {
   currency: UpsertCommissionSettingsDtoCurrency;
   autoAccept: boolean;
   /** @nullable */
   notificationEmail?: string | null;
-  paymentMethodKeys: string[];
+  paymentMethods: UpsertPaymentMethodEntryDto[];
 }

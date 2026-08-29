@@ -185,7 +185,7 @@
       "memberEmail": "Email",
       "memberNameHint": "Tên (nếu là thành viên mới)",
       "addMember": "Thêm",
-      "shareWarning": "Chỉ chia sẻ đường link này với nhóm — hãy coi nó như mật khẩu."
+      "shareWarning": "Chỉ chia sẻ đường link này với nhóm - hãy coi nó như mật khẩu."
     },
     "admin": {
       "title": "Đơn đặt vẽ",
@@ -317,12 +317,12 @@
         "slotCapHint": "Số commission bạn sẽ nhận trước khi yêu cầu tự động đóng.",
         "slotCapError": "Nhập số slot tối đa từ 1 trở lên.",
         "slotsTaken": "Đã nhận {{taken}}/{{cap}} slot",
-        "scheduledAt": "Mở lúc (tùy chọn)",
+        "scheduledAt": "Mở lúc",
         "scheduledAtHint": "Để trống nếu muốn mở ngay.",
         "scheduledAtTimezoneHint": "Giờ theo múi {{timezone}}. Để trống nếu muốn mở ngay.",
         "scheduledAtPastError": "Chọn thời điểm trong tương lai.",
         "clear": "Xóa",
-        "postTitle": "Tiêu đề thông báo (tùy chọn)",
+        "postTitle": "Tiêu đề thông báo",
         "postTitlePlaceholder": "vd: Đã mở nhận commission tháng 6",
         "postTitleHint": "Hiển thị làm tiêu đề trên trang commission công khai của bạn.",
         "saveNew": "Mở đợt nhận",
@@ -370,7 +370,7 @@
           "stillOpen": "Vẫn đang mở",
           "announcement": "Thông báo",
           "noAnnouncement": "Chưa đặt tiêu đề thông báo.",
-          "none": "—"
+          "none": "-"
         }
       },
       "pricing": {
@@ -380,7 +380,7 @@
         "rushFeeDays": "Ngưỡng (ngày)",
         "rushFeeAmount": "Phí ($)",
         "saved": "Đã lưu.",
-        "saveFailed": "Không lưu được — thay đổi đã được hoàn tác.",
+        "saveFailed": "Không lưu được - thay đổi đã được hoàn tác.",
         "removed": "Đã xóa.",
         "priceMode": {
           "FIXED": "Giá cố định",
@@ -446,13 +446,12 @@
       "currency": "Tiền tệ",
       "currencyHint": "Đơn vị tiền tệ cho mọi mức giá và báo giá của bạn.",
       "autoAccept": "Tự động nhận yêu cầu",
-      "autoAcceptHint": "Bỏ qua bước duyệt thủ công — yêu cầu mới được nhận tự động.",
+      "autoAcceptHint": "Bỏ qua bước duyệt thủ công - yêu cầu mới được nhận tự động.",
       "notificationEmail": "Email thông báo",
       "notificationEmailHint": "Nơi nhận email yêu cầu mới. Để trống để dùng email tài khoản.",
       "notificationEmailPlaceholder": "ban@example.com",
       "paymentMethods": "Phương thức thanh toán bạn chấp nhận",
-      "paymentMethodsHint": "Khách chọn trong số này khi gửi yêu cầu commission.",
-      "paymentMethodsEmpty": "Chưa có phương thức thanh toán nào được cấu hình.",
+      "paymentMethodsHint": "Thêm các cách khách có thể thanh toán cho bạn và hướng dẫn. Hiển thị khi khách gửi yêu cầu commission.",
       "save": "Lưu cài đặt",
       "saved": "Đã lưu cài đặt.",
       "saveFailed": "Không thể lưu cài đặt.",
@@ -461,7 +460,11 @@
         "pricing": "Định giá"
       },
       "currencySearchPlaceholder": "Tìm tiền tệ…",
-      "currencyEmpty": "Không tìm thấy tiền tệ."
+      "currencyEmpty": "Không tìm thấy tiền tệ.",
+      "paymentMethodNamePlaceholder": "PayPal, chuyển khoản…",
+      "paymentMethodInstructionsPlaceholder": "Tên tài khoản, liên kết hoặc chi tiết tài khoản",
+      "paymentMethodAdd": "Thêm phương thức thanh toán",
+      "paymentMethodRemove": "Xóa phương thức thanh toán"
     },
     "dashboard": {
       "title": "Bảng điều khiển",

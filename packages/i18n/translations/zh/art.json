@@ -239,12 +239,12 @@
         "slotCapHint": "在请求自动关闭前你会接受的约稿数量。",
         "slotCapError": "请输入不小于 1 的名额上限。",
         "slotsTaken": "已占用 {{taken}} / {{cap}} 个名额",
-        "scheduledAt": "开放时间（可选）",
+        "scheduledAt": "开放时间",
         "scheduledAtHint": "留空则立即开放。",
         "scheduledAtTimezoneHint": "时间以 {{timezone}} 为准。留空则立即开放。",
         "scheduledAtPastError": "请选择将来的时间。",
         "clear": "清除",
-        "postTitle": "公告标题（可选）",
+        "postTitle": "公告标题",
         "postTitlePlaceholder": "例如：六月约稿开放",
         "postTitleHint": "作为标题显示在你的公开约稿页面上。",
         "saveNew": "开放约稿",
@@ -292,7 +292,7 @@
           "stillOpen": "仍在开放",
           "announcement": "公告",
           "noAnnouncement": "未设置公告标题。",
-          "none": "—"
+          "none": "-"
         }
       },
       "pricing": {

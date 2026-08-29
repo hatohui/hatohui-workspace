@@ -125,7 +125,7 @@
       },
       "ICON": {
         "label": "Icon",
-        "description": "A close-up headshot illustration — face and shoulders only."
+        "description": "A close-up headshot illustration - face and shoulders only."
       },
       "BUST": {
         "label": "Bust",
@@ -185,7 +185,7 @@
       "memberEmail": "Email",
       "memberNameHint": "Name (if new)",
       "addMember": "Add",
-      "shareWarning": "Share this link with the group — treat it like a password."
+      "shareWarning": "Share this link with the group - treat it like a password."
     },
     "admin": {
       "title": "Commissions",
@@ -317,12 +317,12 @@
         "slotCapHint": "How many commissions you'll take before requests close automatically.",
         "slotCapError": "Enter a slot cap of 1 or more.",
         "slotsTaken": "{{taken}} of {{cap}} slots taken",
-        "scheduledAt": "Open at (optional)",
+        "scheduledAt": "Open at",
         "scheduledAtHint": "Leave blank to open immediately.",
         "scheduledAtTimezoneHint": "Times are in {{timezone}}. Leave blank to open immediately.",
         "scheduledAtPastError": "Pick a time in the future.",
         "clear": "Clear",
-        "postTitle": "Announcement title (optional)",
+        "postTitle": "Announcement title",
         "postTitlePlaceholder": "e.g. June commissions are open",
         "postTitleHint": "Shown as the headline on your public commissions page.",
         "saveNew": "Open window",
@@ -370,7 +370,7 @@
           "stillOpen": "Still open",
           "announcement": "Announcement",
           "noAnnouncement": "No announcement title set.",
-          "none": "—"
+          "none": "-"
         }
       },
       "pricing": {
@@ -380,7 +380,7 @@
         "rushFeeDays": "Threshold (days)",
         "rushFeeAmount": "Fee ($)",
         "saved": "Saved.",
-        "saveFailed": "Couldn't save — your change was reverted.",
+        "saveFailed": "Couldn't save - your change was reverted.",
         "removed": "Removed.",
         "priceMode": {
           "FIXED": "Fixed price",
@@ -446,13 +446,12 @@
       "currency": "Currency",
       "currencyHint": "The currency all your prices and quotes are in.",
       "autoAccept": "Auto-accept requests",
-      "autoAcceptHint": "Skip manual triage — new submissions are accepted automatically.",
+      "autoAcceptHint": "Skip manual triage - new submissions are accepted automatically.",
       "notificationEmail": "Notification email",
       "notificationEmailHint": "Where new-request emails go. Leave blank to use your account email.",
       "notificationEmailPlaceholder": "you@example.com",
       "paymentMethods": "Payment methods you accept",
-      "paymentMethodsHint": "Clients pick from these when they request a commission.",
-      "paymentMethodsEmpty": "No payment methods are configured yet.",
+      "paymentMethodsHint": "Add the ways clients can pay you and how. Shown when they request a commission.",
       "save": "Save settings",
       "saved": "Settings saved.",
       "saveFailed": "Couldn't save settings.",
@@ -461,7 +460,11 @@
         "pricing": "Pricing"
       },
       "currencySearchPlaceholder": "Search currency…",
-      "currencyEmpty": "No currency found."
+      "currencyEmpty": "No currency found.",
+      "paymentMethodNamePlaceholder": "PayPal, Bank transfer…",
+      "paymentMethodInstructionsPlaceholder": "Handle, link, or account details",
+      "paymentMethodAdd": "Add payment method",
+      "paymentMethodRemove": "Remove payment method"
     },
     "dashboard": {
       "title": "Dashboard",

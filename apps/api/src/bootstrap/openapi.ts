@@ -16,7 +16,6 @@ export function buildOpenApiDocument(app: INestApplication) {
     .addTag('assets')
     .addTag('commissions')
     .addTag('commission-pricing')
-    .addTag('payment-methods')
     .addTag('projects')
     .build();
 

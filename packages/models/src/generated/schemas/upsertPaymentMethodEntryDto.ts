@@ -6,8 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface PaymentMethodDto {
-  /** Stable identifier */
-  key: string;
+export interface UpsertPaymentMethodEntryDto {
   name: string;
+  /** @nullable */
+  instructions?: string | null;
 }

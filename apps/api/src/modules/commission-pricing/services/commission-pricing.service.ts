@@ -13,7 +13,6 @@ import {
 import { uniqueSlug } from '@/common/utils/slugify';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
-import { PaymentMethodsService } from '@/modules/payment-methods/services/payment-methods.service';
 import { DEFAULT_CURRENCY } from '@/modules/commission-pricing/commission-pricing.constants';
 import {
   CommissionAddonPricingDto,
@@ -21,6 +20,7 @@ import {
   CommissionPricingDto,
   CommissionRushFeeSettingDto,
   CommissionSettingsDto,
+  PaymentMethodEntryDto,
   UpsertCommissionAddonPricingDto,
   UpsertCommissionOptionPricingDto,
   UpsertCommissionRushFeeSettingDto,
@@ -32,7 +32,6 @@ export class CommissionPricingService {
   constructor(
     private readonly db: Database,
     private readonly userSettings: UserSettingsService,
-    private readonly paymentMethods: PaymentMethodsService,
   ) {}
 
   async getActive(artistId: string): Promise<CommissionPricingDto> {
@@ -93,12 +92,6 @@ export class CommissionPricingService {
     const scope = USER_SETTING_TYPES.commissionCurrency.scope;
     const stored = await this.userSettings.getForScope(artistId, scope);
 
-    const rawKeys = stored.get(
-      USER_SETTING_TYPES.commissionPaymentMethods.type,
-    );
-    const parsedKeys = this.parseKeys(rawKeys);
-    const known = await this.paymentMethods.keysExist(parsedKeys);
-
     return {
       currency:
         stored.get(USER_SETTING_TYPES.commissionCurrency.type) ??
@@ -107,7 +100,9 @@ export class CommissionPricingService {
         stored.get(USER_SETTING_TYPES.commissionAutoAccept.type) === 'true',
       notificationEmail:
         stored.get(USER_SETTING_TYPES.commissionNotificationEmail.type) ?? null,
-      paymentMethodKeys: parsedKeys.filter((key) => known.has(key)),
+      paymentMethods: this.parseMethods(
+        stored.get(USER_SETTING_TYPES.commissionPaymentMethods.type),
+      ),
     };
   }
 
@@ -115,13 +110,12 @@ export class CommissionPricingService {
     artistId: string,
     dto: UpsertCommissionSettingsDto,
   ): Promise<CommissionSettingsDto> {
-    const known = await this.paymentMethods.keysExist(dto.paymentMethodKeys);
-    const unknown = dto.paymentMethodKeys.filter((key) => !known.has(key));
-    if (unknown.length > 0) {
-      throw new BadRequestException(
-        `Unknown payment method(s): ${unknown.join(', ')}`,
-      );
-    }
+    const methods: PaymentMethodEntryDto[] = dto.paymentMethods.map(
+      (entry) => ({
+        name: entry.name.trim(),
+        instructions: entry.instructions?.trim() || null,
+      }),
+    );
 
     await this.setSetting(
       artistId,
@@ -141,19 +135,30 @@ export class CommissionPricingService {
     await this.setSetting(
       artistId,
       USER_SETTING_TYPES.commissionPaymentMethods,
-      JSON.stringify(dto.paymentMethodKeys),
+      methods.length > 0 ? JSON.stringify(methods) : null,
     );
 
     return this.getSettings(artistId);
   }
 
-  private parseKeys(raw: string | undefined): string[] {
+  private parseMethods(raw: string | undefined): PaymentMethodEntryDto[] {
     if (!raw) return [];
     try {
       const parsed = JSON.parse(raw) as unknown;
-      return Array.isArray(parsed)
-        ? parsed.filter((entry): entry is string => typeof entry === 'string')
-        : [];
+      if (!Array.isArray(parsed)) return [];
+      return parsed
+        .filter(
+          (entry): entry is { name: unknown; instructions?: unknown } =>
+            typeof entry === 'object' && entry !== null,
+        )
+        .filter((entry) => typeof entry.name === 'string' && entry.name !== '')
+        .map((entry) => ({
+          name: entry.name as string,
+          instructions:
+            typeof entry.instructions === 'string' && entry.instructions !== ''
+              ? entry.instructions
+              : null,
+        }));
     } catch {
       return [];
     }

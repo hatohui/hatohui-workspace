@@ -4,7 +4,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   useCommissionSettings,
   useUpdateCommissionSettings,
-  usePaymentMethods,
   getCommissionSettingsQueryKey,
 } from '@hatohui/models';
 import type { CommissionSettingsDto } from '@hatohui/models';
@@ -14,7 +13,6 @@ export type CommissionArtSettings = CommissionSettingsDto;
 export function useCommissionArtSettings() {
   const queryClient = useQueryClient();
   const settingsQuery = useCommissionSettings();
-  const paymentMethodsQuery = usePaymentMethods();
   const update = useUpdateCommissionSettings({
     mutation: {
       onSuccess: () =>
@@ -26,8 +24,7 @@ export function useCommissionArtSettings() {
 
   return {
     settings: settingsQuery.data?.data,
-    paymentMethods: paymentMethodsQuery.data?.data ?? [],
-    isLoading: settingsQuery.isPending || paymentMethodsQuery.isPending,
+    isLoading: settingsQuery.isPending,
     isSaving: update.isPending,
     save: update.mutateAsync,
   };

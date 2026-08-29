@@ -3584,31 +3584,6 @@
         ]
       }
     },
-    "/payment-methods": {
-      "get": {
-        "operationId": "paymentMethods",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PaymentMethodDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List the active payment-method catalog entries",
-        "tags": [
-          "payment-methods"
-        ]
-      }
-    },
     "/projects": {
       "get": {
         "operationId": "projects",
@@ -4402,10 +4377,6 @@
     },
     {
       "name": "commission-pricing",
-      "description": ""
-    },
-    {
-      "name": "payment-methods",
       "description": ""
     },
     {
@@ -7704,6 +7675,25 @@
           "feeAmount"
         ]
       },
+      "PaymentMethodEntryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "PayPal"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "example": "paypal.me/myhandle",
+            "description": "How the client actually pays — handle, link, or account note"
+          }
+        },
+        "required": [
+          "name",
+          "instructions"
+        ]
+      },
       "CommissionSettingsDto": {
         "type": "object",
         "properties": {
@@ -7742,11 +7732,10 @@
             "nullable": true,
             "description": "Where commission notifications go; falls back to the account email when unset"
           },
-          "paymentMethodKeys": {
-            "description": "Keys of the payment methods this artist accepts",
+          "paymentMethods": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/PaymentMethodEntryDto"
             }
           }
         },
@@ -7754,7 +7743,24 @@
           "currency",
           "autoAccept",
           "notificationEmail",
-          "paymentMethodKeys"
+          "paymentMethods"
+        ]
+      },
+      "UpsertPaymentMethodEntryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "PayPal"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "example": "paypal.me/myhandle"
+          }
+        },
+        "required": [
+          "name"
         ]
       },
       "UpsertCommissionSettingsDto": {
@@ -7793,17 +7799,17 @@
             "type": "string",
             "nullable": true
           },
-          "paymentMethodKeys": {
+          "paymentMethods": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/UpsertPaymentMethodEntryDto"
             }
           }
         },
         "required": [
           "currency",
           "autoAccept",
-          "paymentMethodKeys"
+          "paymentMethods"
         ]
       },
       "UpsertCommissionOptionPricingDto": {
@@ -7888,24 +7894,6 @@
         "required": [
           "label",
           "priceMode"
-        ]
-      },
-      "PaymentMethodDto": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "example": "paypal",
-            "description": "Stable identifier"
-          },
-          "name": {
-            "type": "string",
-            "example": "PayPal"
-          }
-        },
-        "required": [
-          "key",
-          "name"
         ]
       },
       "ProjectDto": {

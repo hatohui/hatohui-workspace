@@ -21,11 +21,10 @@ function SettingsSkeleton() {
       <Skeleton className="h-6 w-56" />
       <div className="space-y-2">
         <Skeleton className="h-4 w-40" />
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-full" />
-          ))}
-        </div>
+        {Array.from({ length: 2 }).map((_, i) => (
+          <Skeleton key={i} className="h-14 w-full" />
+        ))}
+        <Skeleton className="h-8 w-40" />
       </div>
       <Skeleton className="h-9 w-32" />
     </div>
@@ -34,8 +33,7 @@ function SettingsSkeleton() {
 
 export function CommissionArtSettingsSection() {
   const { t } = useTranslation('art');
-  const { settings, paymentMethods, isLoading, isSaving, save } =
-    useCommissionArtSettings();
+  const { settings, isLoading, isSaving, save } = useCommissionArtSettings();
 
   return (
     <div className="space-y-3">
@@ -46,9 +44,11 @@ export function CommissionArtSettingsSection() {
         <SettingsSkeleton />
       ) : (
         <CommissionArtSettingsForm
-          key={settings.currency + settings.paymentMethodKeys.join(',')}
+          key={
+            settings.currency +
+            settings.paymentMethods.map((m) => m.name).join(',')
+          }
           initial={settings}
-          paymentMethods={paymentMethods}
           saving={isSaving}
           onSave={(dto) => save({ data: dto })}
         />

@@ -57,7 +57,7 @@ export function EditableCell({
 
   if (!editable) {
     return (
-      <div className="truncate px-3 py-2 text-sm text-muted-foreground/60">
+      <div className="h-full min-h-9 truncate bg-muted/40 px-3 py-2 text-sm text-muted-foreground/60">
         {displayValue ?? value}
       </div>
     );

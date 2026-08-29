@@ -5,6 +5,7 @@ import { useTranslation } from '@hatohui/i18n';
 import { CheckCircle2 } from 'lucide-react';
 import {
   Button,
+  DateTimeField,
   Input,
   Label,
   Select,
@@ -46,7 +47,6 @@ export function OpeningForm({
 }) {
   const { t } = useTranslation('art');
   const slotCapRef = useRef<HTMLInputElement>(null);
-  const scheduledAtRef = useRef<HTMLInputElement>(null);
 
   const [endMode, setEndMode] = useState<EndMode>(initial?.endMode ?? 'MANUAL');
   const [slotCap, setSlotCap] = useState(
@@ -88,7 +88,11 @@ export function OpeningForm({
     setScheduledIsPast(past);
     if (slotCapError || past) {
       setShowErrors(true);
-      (slotCapError ? slotCapRef : scheduledAtRef).current?.focus();
+      if (slotCapError) {
+        slotCapRef.current?.focus();
+      } else {
+        document.getElementById('scheduled-at')?.focus();
+      }
       return;
     }
     setBusy(true);
@@ -136,7 +140,7 @@ export function OpeningForm({
 
       {endMode === 'SLOT_CAP' && (
         <div className="space-y-1.5">
-          <Label htmlFor="slot-cap">
+          <Label htmlFor="slot-cap" required>
             {t('commission.admin.opening.slotCap')}
           </Label>
           <Input
@@ -145,6 +149,8 @@ export function OpeningForm({
             type="number"
             inputMode="numeric"
             min={1}
+            required
+            aria-required
             value={slotCap}
             aria-invalid={showErrors && slotCapError ? true : undefined}
             onBlur={() => setShowErrors(true)}
@@ -164,33 +170,17 @@ export function OpeningForm({
 
       {!initial && (
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="scheduled-at">
-              {t('commission.admin.opening.scheduledAt')}
-            </Label>
-            {scheduledAt && (
-              <button
-                type="button"
-                className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
-                onClick={() => setScheduledAt('')}
-              >
-                {t('commission.admin.opening.clear')}
-              </button>
-            )}
-          </div>
-          <Input
+          <Label htmlFor="scheduled-at">
+            {t('commission.admin.opening.scheduledAt')}
+          </Label>
+          <DateTimeField
             id="scheduled-at"
-            ref={scheduledAtRef}
-            type="datetime-local"
             value={scheduledAt}
-            aria-invalid={showErrors && scheduledError ? true : undefined}
-            onBlur={() => {
-              setShowErrors(true);
-              setScheduledIsPast(isPast(scheduledAt));
-            }}
-            onChange={(event) => {
-              setScheduledAt(event.target.value);
-              setScheduledIsPast(isPast(event.target.value));
+            invalid={showErrors && Boolean(scheduledError)}
+            clearLabel={t('commission.admin.opening.clear')}
+            onChange={(next) => {
+              setScheduledAt(next);
+              setScheduledIsPast(isPast(next));
             }}
           />
           {showErrors && scheduledError ? (

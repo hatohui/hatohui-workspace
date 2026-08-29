@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { CommissionSettingsDtoCurrency } from './commissionSettingsDtoCurrency';
+import type { PaymentMethodEntryDto } from './paymentMethodEntryDto';
 
 export interface CommissionSettingsDto {
   currency: CommissionSettingsDtoCurrency;
@@ -16,6 +17,5 @@ export interface CommissionSettingsDto {
      * @nullable
      */
   notificationEmail: string | null;
-  /** Keys of the payment methods this artist accepts */
-  paymentMethodKeys: string[];
+  paymentMethods: PaymentMethodEntryDto[];
 }

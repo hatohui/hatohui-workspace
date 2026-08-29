@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
-  ArrayUnique,
+  ArrayMaxSize,
   IsArray,
   IsBoolean,
   IsEmail,
@@ -10,8 +11,10 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  MaxLength,
   Max,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { PriceMode } from '@prisma/client';
 import { SUPPORTED_CURRENCIES } from '@/modules/commission-pricing/commission-pricing.constants';
@@ -240,6 +243,36 @@ export class UpsertCommissionRushFeeSettingDto {
   feeAmount: number;
 }
 
+export class PaymentMethodEntryDto {
+  @ApiProperty({ example: 'PayPal' })
+  name: string;
+
+  @ApiProperty({
+    nullable: true,
+    example: 'paypal.me/myhandle',
+    description: 'How the client actually pays — handle, link, or account note',
+  })
+  instructions: string | null;
+}
+
+export class UpsertPaymentMethodEntryDto {
+  @ApiProperty({ example: 'PayPal' })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(60)
+  name: string;
+
+  @ApiProperty({
+    required: false,
+    nullable: true,
+    example: 'paypal.me/myhandle',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(280)
+  instructions?: string | null;
+}
+
 export class CommissionSettingsDto {
   @ApiProperty({ enum: SUPPORTED_CURRENCIES, example: 'USD' })
   currency: string;
@@ -256,12 +289,8 @@ export class CommissionSettingsDto {
   })
   notificationEmail: string | null;
 
-  @ApiProperty({
-    type: String,
-    isArray: true,
-    description: 'Keys of the payment methods this artist accepts',
-  })
-  paymentMethodKeys: string[];
+  @ApiProperty({ type: PaymentMethodEntryDto, isArray: true })
+  paymentMethods: PaymentMethodEntryDto[];
 }
 
 export class UpsertCommissionSettingsDto {
@@ -278,11 +307,12 @@ export class UpsertCommissionSettingsDto {
   @IsEmail()
   notificationEmail?: string | null;
 
-  @ApiProperty({ type: String, isArray: true })
+  @ApiProperty({ type: UpsertPaymentMethodEntryDto, isArray: true })
   @IsArray()
-  @IsString({ each: true })
-  @ArrayUnique()
-  paymentMethodKeys: string[];
+  @ArrayMaxSize(20)
+  @ValidateNested({ each: true })
+  @Type(() => UpsertPaymentMethodEntryDto)
+  paymentMethods: UpsertPaymentMethodEntryDto[];
 }
 
 export class CommissionPricingDto {

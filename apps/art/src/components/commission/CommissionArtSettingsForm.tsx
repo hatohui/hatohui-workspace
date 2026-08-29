@@ -13,11 +13,13 @@ import {
 } from '@hatohui/ui';
 import type {
   CommissionSettingsDto,
-  PaymentMethodDto,
   UpsertCommissionSettingsDto,
 } from '@hatohui/models';
 import { CURRENCY_NAMES, SUPPORTED_CURRENCIES } from '@/constants/commission';
-import { PaymentMethodChecklist } from './PaymentMethodChecklist';
+import {
+  PaymentMethodListEditor,
+  type PaymentMethodDraft,
+} from './PaymentMethodListEditor';
 
 const CURRENCY_OPTIONS = SUPPORTED_CURRENCIES.map((code) => ({
   value: code,
@@ -26,12 +28,10 @@ const CURRENCY_OPTIONS = SUPPORTED_CURRENCIES.map((code) => ({
 
 export function CommissionArtSettingsForm({
   initial,
-  paymentMethods,
   saving,
   onSave,
 }: {
   initial: CommissionSettingsDto;
-  paymentMethods: PaymentMethodDto[];
   saving: boolean;
   onSave: (dto: UpsertCommissionSettingsDto) => Promise<unknown>;
 }) {
@@ -42,7 +42,12 @@ export function CommissionArtSettingsForm({
   );
   const [autoAccept, setAutoAccept] = useState(initial.autoAccept);
   const [email, setEmail] = useState(initial.notificationEmail ?? '');
-  const [methods, setMethods] = useState<string[]>(initial.paymentMethodKeys);
+  const [methods, setMethods] = useState<PaymentMethodDraft[]>(
+    initial.paymentMethods.map((m) => ({
+      name: m.name,
+      instructions: m.instructions ?? '',
+    })),
+  );
 
   const save = async () => {
     try {
@@ -50,7 +55,12 @@ export function CommissionArtSettingsForm({
         currency,
         autoAccept,
         notificationEmail: email.trim() || null,
-        paymentMethodKeys: methods,
+        paymentMethods: methods
+          .filter((m) => m.name.trim())
+          .map((m) => ({
+            name: m.name.trim(),
+            instructions: m.instructions.trim() || null,
+          })),
       });
       toast.success(t('app.commissionSettings.saved'));
     } catch {
@@ -125,15 +135,7 @@ export function CommissionArtSettingsForm({
         <p className="text-xs text-muted-foreground">
           {t('app.commissionSettings.paymentMethodsHint')}
         </p>
-        <PaymentMethodChecklist
-          methods={paymentMethods}
-          selected={methods}
-          onToggle={(key, checked) =>
-            setMethods((prev) =>
-              checked ? [...prev, key] : prev.filter((k) => k !== key),
-            )
-          }
-        />
+        <PaymentMethodListEditor methods={methods} onChange={setMethods} />
       </div>
 
       <Button disabled={saving} onClick={() => void save()}>
