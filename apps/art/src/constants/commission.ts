@@ -62,6 +62,8 @@ export type OpeningDashboardTab = (typeof OPENING_DASHBOARD_TABS)[number];
 
 export const OPENING_SAVED_FLASH_MS = 2500;
 
+export const COMMISSION_PRICING_STALE_MS = 10 * 60 * 1000;
+
 export const CURRENCY_NAMES: Record<string, string> = {
   USD: 'US Dollar',
   EUR: 'Euro',

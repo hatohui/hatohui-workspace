@@ -106,7 +106,9 @@
       "draftRestored": "前回の未送信の下書きを復元しました。",
       "clear": "フォームをクリア",
       "clearTitle": "このフォームをクリアしますか？",
-      "clearDescription": "入力済みの内容と保存された下書きがすべて削除されます。この操作は元に戻せません。"
+      "clearDescription": "入力済みの内容と保存された下書きがすべて削除されます。この操作は元に戻せません。",
+      "estimateFrom": "{{price}} 〜",
+      "estimateRange": "{{low}} 〜 {{high}}"
     },
     "preferredContactMethod": {
       "EMAIL": "メール",
@@ -468,14 +470,13 @@
       "typeNeedsPrice": "価格未設定",
       "addVariant": "バリエーションを追加",
       "newVariant": "新しいバリエーション",
-      "moveUp": "上へ移動",
-      "moveDown": "下へ移動",
       "noTypes": "利用できるコミッションタイプがありません。",
       "priceLine": {
         "mode": "価格タイプ",
         "price": "価格 ($)",
         "upTo": "上限 ($)"
-      }
+      },
+      "reorderHandle": "ドラッグして並べ替え"
     },
     "dashboard": {
       "title": "ダッシュボード",

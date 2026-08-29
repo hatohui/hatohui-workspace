@@ -10,10 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@hatohui/ui';
-import type { CommissionAddonPricingDto } from '@hatohui/models';
+import type {
+  CommissionAddonPricingDto,
+  CommissionOptionPricingDto,
+} from '@hatohui/models';
 import type { useCommissionForm } from '@/hooks/useCommissionForm';
 import { CommissionReferenceExamples } from './CommissionReferenceExamples';
 import { InfoTooltip } from '@/components/shared/InfoTooltip';
+
+const asDollars = (cents: number) => `$${(cents / 100).toFixed(0)}`;
 
 function formatAddonPrice(addon: CommissionAddonPricingDto): string {
   const min = addon.minPrice != null ? (addon.minPrice / 100).toFixed(0) : '0';
@@ -28,6 +33,19 @@ function formatAddonPrice(addon: CommissionAddonPricingDto): string {
       return `${addon.percent ?? 0}%`;
     default:
       return `$${min}+`;
+  }
+}
+
+function formatOptionPrice(option: CommissionOptionPricingDto): string {
+  switch (option.priceMode) {
+    case 'RANGE':
+      return option.maxPrice != null
+        ? `${asDollars(option.minPrice)}–${asDollars(option.maxPrice)}`
+        : `${asDollars(option.minPrice)}+`;
+    case 'STARTING_FROM':
+      return `${asDollars(option.minPrice)}+`;
+    default:
+      return asDollars(option.minPrice);
   }
 }
 
@@ -101,7 +119,7 @@ export function CommissionTypeFields({
             <SelectContent>
               {optionsForType.map((option) => (
                 <SelectItem key={option.key} value={option.key}>
-                  {option.label}
+                  {option.label} · {formatOptionPrice(option)}
                 </SelectItem>
               ))}
             </SelectContent>

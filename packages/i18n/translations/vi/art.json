@@ -105,7 +105,9 @@
       "draftRestored": "Chúng tôi đã khôi phục bản nháp chưa lưu của bạn.",
       "clear": "Xóa form",
       "clearTitle": "Xóa toàn bộ form này?",
-      "clearDescription": "Thao tác này sẽ xóa hết những gì bạn đã nhập, kể cả bản nháp đã lưu. Không thể hoàn tác."
+      "clearDescription": "Thao tác này sẽ xóa hết những gì bạn đã nhập, kể cả bản nháp đã lưu. Không thể hoàn tác.",
+      "estimateFrom": "từ {{price}}",
+      "estimateRange": "{{low}} – {{high}}"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -469,14 +471,13 @@
       "typeNeedsPrice": "Chưa có giá",
       "addVariant": "Thêm biến thể",
       "newVariant": "Biến thể mới",
-      "moveUp": "Di chuyển lên",
-      "moveDown": "Di chuyển xuống",
       "noTypes": "Không có loại commission nào.",
       "priceLine": {
         "mode": "Kiểu giá",
         "price": "Giá ($)",
         "upTo": "Tối đa ($)"
-      }
+      },
+      "reorderHandle": "Kéo để sắp xếp lại"
     },
     "dashboard": {
       "title": "Bảng điều khiển",

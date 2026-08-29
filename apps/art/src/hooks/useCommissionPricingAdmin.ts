@@ -20,6 +20,7 @@ import type {
   CommissionOptionPricingDto,
   CommissionAddonPricingDto,
 } from '@hatohui/models';
+import { invalidatePublicCommissionCache } from './invalidatePublicCommissionCache';
 
 export function useCommissionOptionPricingAdmin(commissionTypeId: string) {
   const { t } = useTranslation('art');
@@ -31,6 +32,7 @@ export function useCommissionOptionPricingAdmin(commissionTypeId: string) {
     void queryClient.invalidateQueries({
       queryKey: getMyCommissionTypesQueryKey(),
     });
+    invalidatePublicCommissionCache(queryClient);
   };
 
   const listQuery = useCommissionOptionPricings({ commissionTypeId });
@@ -113,7 +115,10 @@ export function useCommissionAddonPricingAdmin() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const queryKey = getCommissionAddonPricingsQueryKey();
-  const invalidate = () => queryClient.invalidateQueries({ queryKey });
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey });
+    invalidatePublicCommissionCache(queryClient);
+  };
 
   const listQuery = useCommissionAddonPricings();
   type Cache = NonNullable<typeof listQuery.data>;

@@ -101,7 +101,9 @@
       "draftRestored": "已为你恢复上次未提交的草稿。",
       "clear": "清空表单",
       "clearTitle": "清空这个表单？",
-      "clearDescription": "此操作将删除你已填写的所有内容，包括已保存的草稿，且无法撤销。"
+      "clearDescription": "此操作将删除你已填写的所有内容，包括已保存的草稿，且无法撤销。",
+      "estimateFrom": "{{price}} 起",
+      "estimateRange": "{{low}} – {{high}}"
     },
     "preferredContactMethod": {
       "EMAIL": "邮箱",

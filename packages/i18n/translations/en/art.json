@@ -105,7 +105,9 @@
       "draftRestored": "We restored your unsaved draft from last time.",
       "clear": "Clear form",
       "clearTitle": "Clear this form?",
-      "clearDescription": "This deletes everything you've entered, including your saved draft. This can't be undone."
+      "clearDescription": "This deletes everything you've entered, including your saved draft. This can't be undone.",
+      "estimateFrom": "from {{price}}",
+      "estimateRange": "{{low}} – {{high}}"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -469,14 +471,13 @@
       "typeNeedsPrice": "Needs a price",
       "addVariant": "Add a variant",
       "newVariant": "New variant",
-      "moveUp": "Move up",
-      "moveDown": "Move down",
       "noTypes": "No commission types available.",
       "priceLine": {
         "mode": "Price mode",
         "price": "Price ($)",
         "upTo": "Up to ($)"
-      }
+      },
+      "reorderHandle": "Drag to reorder"
     },
     "dashboard": {
       "title": "Dashboard",

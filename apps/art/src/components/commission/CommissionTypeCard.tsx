@@ -2,7 +2,9 @@
 
 import { useTranslation } from '@hatohui/i18n';
 import { cn, Switch } from '@hatohui/ui';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import type { ArtistCommissionTypeDto } from '@hatohui/models';
 import { CommissionTypeCardBody } from './CommissionTypeCardBody';
 
@@ -20,48 +22,47 @@ function priceSummary(
 
 export function CommissionTypeCard({
   type,
-  isFirst,
-  isLast,
   onToggle,
-  onMove,
 }: {
   type: ArtistCommissionTypeDto;
-  isFirst: boolean;
-  isLast: boolean;
   onToggle: (enabled: boolean) => void;
-  onMove: (direction: 'up' | 'down') => void;
 }) {
   const { t } = useTranslation('art');
   const summary = priceSummary(type, t);
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: type.commissionTypeId });
+
   return (
-    <div className="overflow-hidden rounded-lg border border-border">
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn(
+        'overflow-hidden rounded-lg border border-border bg-background',
+        isDragging && 'relative z-10 shadow-lg',
+      )}
+    >
       <div
         className={cn(
-          'flex items-center gap-3 px-3 py-2.5',
+          'flex items-center gap-2 px-3 py-2.5',
           !type.enabled && 'bg-muted/30',
         )}
       >
-        <div className="flex flex-col">
-          <button
-            type="button"
-            disabled={isFirst}
-            aria-label={t('app.commissionSettings.moveUp')}
-            onClick={() => onMove('up')}
-            className="cursor-pointer text-muted-foreground hover:text-foreground disabled:opacity-30"
-          >
-            <ChevronUp className="size-4" aria-hidden />
-          </button>
-          <button
-            type="button"
-            disabled={isLast}
-            aria-label={t('app.commissionSettings.moveDown')}
-            onClick={() => onMove('down')}
-            className="cursor-pointer text-muted-foreground hover:text-foreground disabled:opacity-30"
-          >
-            <ChevronDown className="size-4" aria-hidden />
-          </button>
-        </div>
+        <button
+          type="button"
+          aria-label={t('app.commissionSettings.reorderHandle')}
+          className="-ml-1 cursor-grab touch-none text-muted-foreground hover:text-foreground active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="size-4" aria-hidden />
+        </button>
 
         <span
           className={cn(

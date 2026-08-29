@@ -3,6 +3,8 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { useCommissionPricingEstimate } from '@/hooks/useCommissionPricingEstimate';
 
+const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+
 export function CommissionQuoteEstimate({
   pricing,
 }: {
@@ -10,12 +12,23 @@ export function CommissionQuoteEstimate({
 }) {
   const { t } = useTranslation('art');
 
-  if (pricing.estimate === null) return null;
+  if (pricing.estimate === null || pricing.estimateMode === null) return null;
+
+  const value =
+    pricing.estimateMode === 'range' && pricing.estimateHigh != null
+      ? t('commission.form.estimateRange', {
+          low: dollars(pricing.estimate),
+          high: dollars(pricing.estimateHigh),
+        })
+      : pricing.estimateMode === 'from'
+        ? t('commission.form.estimateFrom', {
+            price: dollars(pricing.estimate),
+          })
+        : dollars(pricing.estimate);
 
   return (
     <p className="text-sm text-muted-foreground">
-      {t('commission.form.estimateLabel')}: $
-      {(pricing.estimate / 100).toFixed(2)}
+      {t('commission.form.estimateLabel')}: {value}
       {pricing.isRush && pricing.rushFee && (
         <span>
           {' ('}

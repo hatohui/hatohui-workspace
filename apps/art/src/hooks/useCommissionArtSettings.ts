@@ -7,6 +7,7 @@ import {
   getCommissionSettingsQueryKey,
 } from '@hatohui/models';
 import type { CommissionSettingsDto } from '@hatohui/models';
+import { invalidatePublicCommissionCache } from './invalidatePublicCommissionCache';
 
 export type CommissionArtSettings = CommissionSettingsDto;
 
@@ -15,10 +16,12 @@ export function useCommissionArtSettings() {
   const settingsQuery = useCommissionSettings();
   const update = useUpdateCommissionSettings({
     mutation: {
-      onSuccess: () =>
-        queryClient.invalidateQueries({
+      onSuccess: () => {
+        void queryClient.invalidateQueries({
           queryKey: getCommissionSettingsQueryKey(),
-        }),
+        });
+        invalidatePublicCommissionCache(queryClient);
+      },
     },
   });
 

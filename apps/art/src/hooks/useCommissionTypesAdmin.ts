@@ -9,13 +9,17 @@ import {
   getMyCommissionTypesQueryKey,
 } from '@hatohui/models';
 import type { ArtistCommissionTypeDto } from '@hatohui/models';
+import { invalidatePublicCommissionCache } from './invalidatePublicCommissionCache';
 
 export function useCommissionTypesAdmin() {
   const { t } = useTranslation('art');
   const toast = useToast();
   const queryClient = useQueryClient();
   const queryKey = getMyCommissionTypesQueryKey();
-  const invalidate = () => queryClient.invalidateQueries({ queryKey });
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey });
+    invalidatePublicCommissionCache(queryClient);
+  };
 
   const listQuery = useMyCommissionTypes();
   type Cache = NonNullable<typeof listQuery.data>;
@@ -53,31 +57,46 @@ export function useCommissionTypesAdmin() {
 
   const items = listQuery.data?.data ?? [];
 
-  const move = async (commissionTypeId: string, direction: 'up' | 'down') => {
-    const ordered = [...items].sort((a, b) => a.no - b.no);
-    const index = ordered.findIndex(
-      (row) => row.commissionTypeId === commissionTypeId,
+  const reorder = async (orderedIds: string[]) => {
+    const previous = queryClient.getQueryData<Cache>(queryKey);
+    const enabledById = new Map(
+      (previous?.data ?? items).map((row) => [
+        row.commissionTypeId,
+        row.enabled,
+      ]),
     );
-    const swapWith = direction === 'up' ? index - 1 : index + 1;
-    if (index < 0 || swapWith < 0 || swapWith >= ordered.length) return;
-    const a = ordered[index];
-    const b = ordered[swapWith];
-    await Promise.all([
-      setEnabled.mutateAsync({
-        id: a.commissionTypeId,
-        data: { active: a.enabled, no: b.no },
-      }),
-      setEnabled.mutateAsync({
-        id: b.commissionTypeId,
-        data: { active: b.enabled, no: a.no },
-      }),
-    ]);
+    if (previous) {
+      const rankById = new Map(orderedIds.map((id, index) => [id, index]));
+      queryClient.setQueryData<Cache>(queryKey, {
+        ...previous,
+        data: [...previous.data]
+          .map((row) => ({
+            ...row,
+            no: rankById.get(row.commissionTypeId) ?? row.no,
+          }))
+          .sort((a, b) => a.no - b.no),
+      });
+    }
+    try {
+      for (let index = 0; index < orderedIds.length; index += 1) {
+        const id = orderedIds[index];
+        await setEnabled.mutateAsync({
+          id,
+          data: { active: enabledById.get(id) ?? false, no: index },
+        });
+      }
+    } catch {
+      if (previous) queryClient.setQueryData(queryKey, previous);
+      toast.error(t('commission.admin.pricing.saveFailed'));
+    } finally {
+      void invalidate();
+    }
   };
 
   return {
     items,
     isLoading: listQuery.isPending,
     setEnabled: setEnabled.mutateAsync,
-    move,
+    reorder,
   };
 }
