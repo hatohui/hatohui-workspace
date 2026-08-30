@@ -80,3 +80,4 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           ecr-repository-url: ${{ vars.ECR_REPOSITORY_URL }}
           lambda-function-name: ${{ vars.LAMBDA_FUNCTION_NAME }}
+          dockerfile-path: apps/api/Dockerfile
