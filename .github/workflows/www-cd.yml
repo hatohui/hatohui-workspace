@@ -4,9 +4,9 @@ on:
   push:
     branches: [master]
     paths:
-      - 'apps/www/**'
-      - 'packages/**'
-      - '.github/workflows/www-cd.yml'
+      - "apps/www/**"
+      - "packages/**"
+      - ".github/workflows/www-cd.yml"
 
 jobs:
   deploy:
@@ -15,21 +15,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build
-        run: bun run --cwd apps/www build
-        env:
-          VITE_API_URL: ${{ vars.API_URL }}
-          VITE_GOOGLE_OAUTH_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_CLIENT_ID }}
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v4
+      - name: Deploy www
+        uses: hatohui/publish-cloudflare-pages@v2
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy apps/www/dist --project-name=www
+          dist: apps/www/dist
+          package: apps/www/package.json
+          project_name: www
+          cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          build_environments: |
+            VITE_API_URL=${{ vars.API_URL }}
+            VITE_GOOGLE_OAUTH_CLIENT_ID=${{ vars.GOOGLE_OAUTH_CLIENT_ID }}
