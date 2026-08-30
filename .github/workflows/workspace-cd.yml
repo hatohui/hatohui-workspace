@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Deploy Workspace
-        uses: hatohui/publish-cloudflare-pages@v2.0.0
+        uses: hatohui/publish-cloudflare-pages@v2.1.0
         with:
           dist: apps/workspace/dist
           package: apps/workspace/package.json
