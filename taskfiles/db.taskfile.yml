@@ -31,9 +31,6 @@ tasks:
   prod:seed:
     desc: 'Seed the production database with core data only (social platforms, admin config, commission pricing) — safe to re-run, never touches dev-only seed data'
     dir: apps/api
-    # NODE_ENV=production is set explicitly here (not sourced from Doppler's
-    # prod_api config, which only holds DATABASE_URL etc.) so seed.ts's dev-only
-    # branch (seedDevelopment, e.g. friends test data) never runs against prod.
     cmd: doppler run --project hatohui-workspace --config prod_api -- bunx prisma db seed
     env:
       NODE_ENV: production
