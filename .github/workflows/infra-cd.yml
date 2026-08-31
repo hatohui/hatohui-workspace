@@ -4,8 +4,8 @@ on:
   push:
     branches: [master]
     paths:
-      - 'infra/**'
-      - '.github/workflows/infra-cd.yml'
+      - "infra/**"
+      - ".github/workflows/infra-cd.yml"
   workflow_dispatch: {}
 
 permissions:
@@ -21,21 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.15.8
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v3
-
-      - name: Terraform init
-        run: doppler run --project hatohui-workspace --config tf --name-transformer tf-var -- terraform init
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-
       - name: Terraform apply
-        run: doppler run --project hatohui-workspace --config tf --name-transformer tf-var -- terraform apply -auto-approve
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        uses: hatohui/doppler-terraform-apply@v0
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: hatohui-workspace
+          doppler-config: tf
+          working-directory: infra
+          terraform-version: 1.15.8
+          tf-api-token: ${{ secrets.TF_API_TOKEN }}
