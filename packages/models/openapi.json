@@ -1831,7 +1831,8 @@
             "schema": {
               "type": "string",
               "enum": [
-                "ASSET_THUMBNAIL"
+                "ASSET_THUMBNAIL",
+                "NOTIFICATION_EMAIL"
               ]
             }
           }
@@ -5836,7 +5837,8 @@
           "type": {
             "type": "string",
             "enum": [
-              "ASSET_THUMBNAIL"
+              "ASSET_THUMBNAIL",
+              "NOTIFICATION_EMAIL"
             ],
             "nullable": true,
             "example": null

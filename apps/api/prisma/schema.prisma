@@ -213,6 +213,7 @@ model Notification {
   subjectId   String?
   data        Json?
   readAt      DateTime?
+  emailedAt   DateTime?
   createdAt   DateTime         @default(now())
 
   @@unique([recipientId, type, subjectId])
@@ -294,6 +295,7 @@ model Asset {
 
 enum ProcessType {
   ASSET_THUMBNAIL
+  NOTIFICATION_EMAIL
 }
 
 model ProcessQueue {

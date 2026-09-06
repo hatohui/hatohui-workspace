@@ -5,6 +5,7 @@ import { UserSettingsModule } from '@/modules/user-settings/user-settings.module
 import { AssetsModule } from '@/modules/assets/assets.module';
 import { ProcessQueueModule } from '@/modules/process-queue/process-queue.module';
 import { AssetThumbnailExecutor } from '@/modules/assets/services/asset-thumbnail-executor.service';
+import { NotificationEmailExecutor } from '@/modules/notifications/services/notification-email.executor';
 import { PROCESS_EXECUTORS } from '@/modules/process-queue/process-queue.constants';
 import { BirthdayConfigModule } from './birthday-config.module';
 import { BirthdayCronController } from '@/modules/cron/birthday-cron.controller';
@@ -29,8 +30,11 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
     ProcessQueueRunnerService,
     {
       provide: PROCESS_EXECUTORS,
-      useFactory: (assetThumbnail: AssetThumbnailExecutor) => [assetThumbnail],
-      inject: [AssetThumbnailExecutor],
+      useFactory: (
+        assetThumbnail: AssetThumbnailExecutor,
+        notificationEmail: NotificationEmailExecutor,
+      ) => [assetThumbnail, notificationEmail],
+      inject: [AssetThumbnailExecutor, NotificationEmailExecutor],
     },
   ],
 })

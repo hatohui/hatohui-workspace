@@ -195,17 +195,18 @@ export class ConnectionsService {
         data: { requesterId: viewer.id, addresseeId: targetUserId },
         include: withUsers,
       });
-      await this.notifications.emit(tx, {
+      const notification = await this.notifications.emit(tx, {
         recipientId: targetUserId,
         actorId: viewer.id,
         type: NotificationType.CONNECTION_REQUEST,
         subjectId: connection.id,
       });
-      return connection;
+      return { connection, notificationId: notification.id };
     });
 
     await this.invalidateFor(viewer.id, targetUserId);
-    return toConnectionDto(created, viewer);
+    await this.notifications.flushEmail([created.notificationId]);
+    return toConnectionDto(created.connection, viewer);
   }
 
   async accept(id: string, viewer: User): Promise<ConnectionDto> {
@@ -240,17 +241,21 @@ export class ConnectionsService {
         subjectId: id,
         read: true,
       });
-      await this.notifications.emit(tx, {
+      const notification = await this.notifications.emit(tx, {
         recipientId: updated.requesterId,
         actorId: viewer.id,
         type: NotificationType.CONNECTION_ACCEPTED,
         subjectId: id,
       });
-      return updated;
+      return { updated, notificationId: notification.id };
     });
 
-    await this.invalidateFor(accepted.requesterId, accepted.addresseeId);
-    return toConnectionDto(accepted, viewer);
+    await this.invalidateFor(
+      accepted.updated.requesterId,
+      accepted.updated.addresseeId,
+    );
+    await this.notifications.flushEmail([accepted.notificationId]);
+    return toConnectionDto(accepted.updated, viewer);
   }
 
   /// Decline or withdraw — the row goes away either way. A decline (the

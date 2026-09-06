@@ -29,4 +29,8 @@ export const USER_SETTING_TYPES = {
     scope: AppScope.ART,
     type: 'art.commission.notificationemail',
   },
+  notificationEmailEnabled: {
+    scope: AppScope.FRIENDS,
+    type: 'friends.notifications.emailenabled',
+  },
 } as const;

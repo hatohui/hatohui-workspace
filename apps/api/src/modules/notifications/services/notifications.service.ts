@@ -1,10 +1,13 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Database, type PrismaTransactionClient } from '@/infra/db';
 import { Cache, CACHE_KEYS } from '@/infra/cache';
+import { ProcessQueueService } from '@/modules/process-queue/services/process-queue.service';
+import { NotificationEmailService } from '@/modules/notifications/services/notification-email.service';
 import {
   PUBLIC_USER_SELECT,
   toPublicUserDto,
@@ -14,6 +17,7 @@ import {
   ConnectionStatus,
   NotificationType,
   Prisma,
+  ProcessType,
   type AppScope,
   type Notification,
   type User,
@@ -25,6 +29,7 @@ import {
 } from '@/modules/notifications/dto/notification.dto';
 import {
   CONNECTION_LIFECYCLE_TYPES,
+  EMAILED_NOTIFICATION_TYPES,
   UNREAD_COUNT_TTL_SECONDS,
 } from '@/modules/notifications/notifications.constants';
 
@@ -47,9 +52,13 @@ interface CreateNotificationInput {
 
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
+
   constructor(
     private readonly db: Database,
     private readonly cache: Cache,
+    private readonly processQueue: ProcessQueueService,
+    private readonly notificationEmail: NotificationEmailService,
   ) {}
 
   async list(
@@ -168,8 +177,10 @@ export class NotificationsService {
   }
 
   /// Upserts on (recipient, type, subject) so a retried or double-submitted
-  /// action cannot produce two identical inbox items.
-  emit(
+  /// action cannot produce two identical inbox items. An emailable type also
+  /// gets a NOTIFICATION_EMAIL queue row in the same transaction — the
+  /// guaranteed delivery path; flushEmail() is the best-effort fast path.
+  async emit(
     tx: PrismaTransactionClient,
     input: CreateNotificationInput,
   ): Promise<Notification> {
@@ -187,21 +198,60 @@ export class NotificationsService {
     // Postgres treats NULLs as distinct, so a subject-less notification can't
     // be addressed by the unique triple — there's nothing to collide with
     // either, so a plain create is both correct and the only option.
-    if (input.subjectId == null) {
-      return tx.notification.create({ data });
+    const notification =
+      input.subjectId == null
+        ? await tx.notification.create({ data })
+        : await tx.notification.upsert({
+            where: {
+              recipientId_type_subjectId: {
+                recipientId: input.recipientId,
+                type: input.type,
+                subjectId: input.subjectId,
+              },
+            },
+            create: data,
+            update: { ...data, readAt },
+          });
+
+    if (!input.read && EMAILED_NOTIFICATION_TYPES.has(input.type)) {
+      await tx.processQueue.upsert({
+        where: {
+          type_refId: {
+            type: ProcessType.NOTIFICATION_EMAIL,
+            refId: notification.id,
+          },
+        },
+        create: {
+          type: ProcessType.NOTIFICATION_EMAIL,
+          refId: notification.id,
+        },
+        update: {},
+      });
     }
 
-    return tx.notification.upsert({
-      where: {
-        recipientId_type_subjectId: {
-          recipientId: input.recipientId,
-          type: input.type,
-          subjectId: input.subjectId,
-        },
-      },
-      create: data,
-      update: { ...data, readAt },
-    });
+    return notification;
+  }
+
+  /// Tries to send the notification email now so a request under quota lands
+  /// immediately. A rate-limited or failed attempt is left for the cron,
+  /// which drains the NOTIFICATION_EMAIL queue rows emit() wrote.
+  async flushEmail(notificationIds: string[]): Promise<void> {
+    for (const id of notificationIds) {
+      try {
+        const result = await this.notificationEmail.deliver(id);
+        if (result !== 'queued') {
+          await this.processQueue.clearForRef(
+            ProcessType.NOTIFICATION_EMAIL,
+            id,
+          );
+        }
+      } catch (error) {
+        this.logger.warn(
+          `Immediate notification email failed for ${id}; left queued`,
+          error instanceof Error ? error.stack : error,
+        );
+      }
+    }
   }
 
   /// Used when the subject is deleted, so the inbox never shows a dead item

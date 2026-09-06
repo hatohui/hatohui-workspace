@@ -3,12 +3,14 @@ import { AppScope, type PrismaClient } from '@prisma/client';
 const ADMIN_EMAIL_CONFIG_TYPE = 'admin.email';
 const ADMIN_EMAIL = 'hatohui@gmail.com';
 
-const BIRTHDAY_DEFAULTS: [type: string, value: string][] = [
+const FRIENDS_DEFAULTS: [type: string, value: string][] = [
   ['friends.birthday.reminderdays', '7'],
   ['friends.birthday.dailysendcap', '250'],
   ['friends.birthday.senderemail', 'noreply@hatohui.com'],
   ['friends.birthday.sendername', 'Friends - Hatohui Notifications'],
   ['friends.birthday.avatarurl', 'https://assets.hatohui.com/assets/wqee.jpg'],
+  ['friends.notifications.senderemail', 'noreply@hatohui.com'],
+  ['friends.notifications.sendername', 'Friends - Hatohui Notifications'],
 ];
 
 export async function seedSystemParameters(prisma: PrismaClient) {
@@ -24,7 +26,7 @@ export async function seedSystemParameters(prisma: PrismaClient) {
     },
   });
 
-  for (const [type, value] of BIRTHDAY_DEFAULTS) {
+  for (const [type, value] of FRIENDS_DEFAULTS) {
     await prisma.systemParameters.upsert({
       where: { type_scope: { type, scope: AppScope.FRIENDS } },
       update: {},
