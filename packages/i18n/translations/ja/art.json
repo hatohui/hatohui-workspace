@@ -10,7 +10,7 @@
       "commission": "コミッション依頼",
       "queue": "キュー",
       "projects": "プロジェクト",
-      "admin": "管理"
+      "workspace": "ワークスペース"
     }
   },
   "projects": {
@@ -430,12 +430,15 @@
   "app": {
     "nav": {
       "toggle": "サイドバーを切り替え",
-      "dashboard": "ダッシュボード",
-      "commissionSettings": "コミッション設定",
+      "dashboard": "ホーム",
       "commissionOpening": "コミッション募集",
       "openLabel": "アプリ",
       "backToSite": "サイトに戻る",
-      "requests": "リクエスト"
+      "commissions": "コミッション",
+      "gallery": "ギャラリー",
+      "projects": "プロジェクト",
+      "groups": "グループ",
+      "configure": "設定"
     },
     "commissionSettings": {
       "title": "コミッション設定",

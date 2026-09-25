@@ -39,8 +39,8 @@ export function SiteHeader() {
               {t('site.nav.commission')}
             </Link>
             <Link href={`/${artist}/queue`}>{t('site.nav.queue')}</Link>
-            {user?.isAdmin && (
-              <Link href="/admin/commissions">{t('site.nav.admin')}</Link>
+            {user?.isArtist && (
+              <Link href="/app/commissions">{t('site.nav.workspace')}</Link>
             )}
           </nav>
         )}

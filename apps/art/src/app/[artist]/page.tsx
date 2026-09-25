@@ -22,12 +22,14 @@ export default async function ArtistGalleryPage({
   });
 
   return (
-    <GalleryGrid
-      artistId={artistUser.id}
-      initialData={{
-        items: response.data.items,
-        total: response.data.total,
-      }}
-    />
+    <main className="mx-auto max-w-6xl px-6 py-10">
+      <GalleryGrid
+        artistId={artistUser.id}
+        initialData={{
+          items: response.data.items,
+          total: response.data.total,
+        }}
+      />
+    </main>
   );
 }

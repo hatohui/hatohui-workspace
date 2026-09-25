@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslation } from '@hatohui/i18n';
-import { useAuth } from '@hatohui/libs';
 import { useCommission } from '@hatohui/models';
 import { EMPTY_VALUE } from '@/constants/commission';
 import { useCommissionFormatters } from './useCommissionFormatters';
@@ -9,7 +8,6 @@ import { useCommissionRequestActions } from './useCommissionRequestActions';
 
 export function useCommissionRequestPanel(id: string | null) {
   const { t } = useTranslation('art');
-  const { user } = useAuth();
   const format = useCommissionFormatters();
   const actions = useCommissionRequestActions();
   const query = useCommission(id ?? '', { query: { enabled: id !== null } });
@@ -52,9 +50,7 @@ export function useCommissionRequestPanel(id: string | null) {
             : contact || EMPTY_VALUE,
         },
       ],
-      fullPageHref: user?.isAdmin
-        ? `/admin/commissions/${commission.id}`
-        : null,
+      fullPageHref: `/app/commissions/${commission.id}`,
     },
     accept: () => actions.accept(commission.id),
     decline: () => actions.decline(commission.id),

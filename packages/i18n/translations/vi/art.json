@@ -10,7 +10,7 @@
       "commission": "Đặt vẽ tranh",
       "queue": "Hàng đợi",
       "projects": "Dự án",
-      "admin": "Quản trị"
+      "workspace": "Không gian làm việc"
     }
   },
   "projects": {
@@ -431,12 +431,15 @@
   "app": {
     "nav": {
       "toggle": "Thu gọn thanh bên",
-      "dashboard": "Bảng điều khiển",
-      "commissionSettings": "Cài đặt commission",
+      "dashboard": "Trang chủ",
       "commissionOpening": "Đợt nhận commission",
       "openLabel": "Ứng dụng",
       "backToSite": "Về trang chính",
-      "requests": "Yêu cầu"
+      "commissions": "Đơn đặt tranh",
+      "gallery": "Thư viện",
+      "projects": "Dự án",
+      "groups": "Nhóm",
+      "configure": "Thiết lập"
     },
     "commissionSettings": {
       "title": "Cài đặt commission",

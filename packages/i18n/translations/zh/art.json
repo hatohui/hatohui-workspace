@@ -6,7 +6,7 @@
       "commission": "委托绘画",
       "queue": "队列",
       "projects": "项目",
-      "admin": "管理"
+      "workspace": "工作区"
     }
   },
   "projects": {
@@ -323,6 +323,14 @@
       "previewEmpty": "为委托类型设置价格后，将在此显示。",
       "autosaving": "正在保存…",
       "autosaved": "所有更改已保存"
+    },
+    "nav": {
+      "commissions": "委托",
+      "gallery": "作品集",
+      "projects": "项目",
+      "groups": "群组",
+      "configure": "设置",
+      "dashboard": "主页"
     }
   }
 }

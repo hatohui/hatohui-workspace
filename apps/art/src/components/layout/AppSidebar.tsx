@@ -30,19 +30,34 @@ export function AppSidebar() {
         />
       </SidebarHeader>
       <SidebarContent>
-        {navItems.map((item) => (
-          <SidebarNavItem
-            key={item.href}
-            as={Link}
-            href={item.href}
-            active={item.active}
-            icon={item.icon}
-          >
-            {item.label}
-          </SidebarNavItem>
-        ))}
+        {navItems
+          .filter((item) => item.placement === 'main')
+          .map((item) => (
+            <SidebarNavItem
+              key={item.href}
+              as={Link}
+              href={item.href}
+              active={item.active}
+              icon={item.icon}
+            >
+              {item.label}
+            </SidebarNavItem>
+          ))}
       </SidebarContent>
       <SidebarFooter>
+        {navItems
+          .filter((item) => item.placement === 'footer')
+          .map((item) => (
+            <SidebarNavItem
+              key={item.href}
+              as={Link}
+              href={item.href}
+              active={item.active}
+              icon={item.icon}
+            >
+              {item.label}
+            </SidebarNavItem>
+          ))}
         <SidebarNavItem
           as={Link}
           href={user?.handle ? `/${user.handle}` : '/'}
