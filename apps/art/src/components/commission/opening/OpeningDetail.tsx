@@ -5,11 +5,8 @@ import { ArrowLeft } from 'lucide-react';
 import { Button, RichTextView } from '@hatohui/ui';
 import type { JSONContent } from '@tiptap/react';
 import type { CommissionOpeningDto } from '@hatohui/models';
+import { useCommissionFormatters } from '@/hooks/useCommissionFormatters';
 import { OpeningStatusBadge } from './OpeningStatusBadge';
-
-function formatDateTime(value: string | null): string | null {
-  return value ? new Date(value).toLocaleString() : null;
-}
 
 export function OpeningDetail({
   opening,
@@ -19,6 +16,9 @@ export function OpeningDetail({
   onBack: () => void;
 }) {
   const { t } = useTranslation('art');
+  const formatters = useCommissionFormatters();
+  const formatDateTime = (value: string | null) =>
+    value ? formatters.dateTime(value) : null;
   const none = t('commission.admin.opening.detail.none');
 
   const rows: [string, string][] = [

@@ -56,7 +56,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
         </p>
       )}
 
-      <div>
+      <div className="space-y-1.5">
         <Label htmlFor="idea">{t('commission.form.ideaLabel')}</Label>
         <RichTextField
           id="idea"
@@ -68,7 +68,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
       <CommissionTypeFields form={form} artistId={artistId} />
       <CommissionQuoteEstimate pricing={form.pricing} />
 
-      <div>
+      <div className="space-y-1.5">
         <Label>{t('commission.form.deadlineLabel')}</Label>
         <DateField
           value={form.state.deadline}
@@ -76,7 +76,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
         />
       </div>
 
-      <div>
+      <div className="space-y-1.5">
         <Label htmlFor="clientName">
           {t('commission.form.clientNameLabel')}
         </Label>
@@ -88,7 +88,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
         />
       </div>
 
-      <div>
+      <div className="space-y-1.5">
         <Label htmlFor="clientEmail">
           {t('commission.form.clientEmailLabel')}
         </Label>
@@ -103,7 +103,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
         />
       </div>
 
-      <div>
+      <div className="space-y-1.5">
         <Label>{t('commission.form.preferredContactLabel')}</Label>
         <Select
           value={form.state.preferredContactMethod}
@@ -128,7 +128,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
       </div>
 
       {form.state.preferredContactMethod !== 'EMAIL' && (
-        <div>
+        <div className="space-y-1.5">
           <Label htmlFor="contactHandle">
             {t('commission.form.contactHandleLabel')}
           </Label>

@@ -84,13 +84,14 @@
       "subtitle": "Tell me about what you'd like made. I'll follow up by email.",
       "ideaLabel": "Your idea",
       "commissionTypeLabel": "Commission type",
+      "priceListLabel": "Price list",
       "commissionTypePlaceholder": "Choose a type",
       "optionLabel": "Rendering option",
       "optionPlaceholder": "Choose an option",
       "addonsLabel": "Add-ons",
       "examplesLabel": "Examples",
       "estimateLabel": "Calculated estimate",
-      "rushFeeIncluded": "includes +${{amount}} rush fee, deadline under {{days}} days",
+      "rushFeeIncluded": "includes +{{amount}} rush fee, deadline under {{days}} days",
       "deadlineLabel": "Deadline (optional)",
       "clientNameLabel": "Your name",
       "clientEmailLabel": "Your email",
@@ -471,7 +472,12 @@
         "price": "Price ($)",
         "upTo": "Up to ($)"
       },
-      "reorderHandle": "Drag to reorder"
+      "reorderHandle": "Drag to reorder",
+      "jumpTo": "Jump to section",
+      "previewTitle": "What clients see",
+      "previewEmpty": "Give a commission type a price and it will show up here.",
+      "autosaving": "Saving…",
+      "autosaved": "All changes saved"
     },
     "dashboard": {
       "title": "Dashboard",

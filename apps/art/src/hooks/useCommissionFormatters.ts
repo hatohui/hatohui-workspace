@@ -10,6 +10,9 @@ export function useCommissionFormatters() {
     date: (value: string | null) =>
       value ? new Date(value).toLocaleDateString(i18n.language) : EMPTY_VALUE,
 
+    dateTime: (value: string | null) =>
+      value ? new Date(value).toLocaleString(i18n.language) : EMPTY_VALUE,
+
     money: (amount: number | null, currency: string) =>
       amount == null
         ? EMPTY_VALUE

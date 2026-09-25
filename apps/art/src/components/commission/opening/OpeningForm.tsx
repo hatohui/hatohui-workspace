@@ -1,42 +1,15 @@
 'use client';
 
-import { useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { CheckCircle2 } from 'lucide-react';
-import {
-  Button,
-  DateTimeField,
-  Input,
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Spinner,
-} from '@hatohui/ui';
+import { Button, DateTimeField, Input, Label, Spinner } from '@hatohui/ui';
 import type {
   CommissionOpeningDto,
   UpsertCommissionOpeningDto,
 } from '@hatohui/models';
-import { OPENING_SAVED_FLASH_MS } from '@/constants/commission';
-
-type EndMode = UpsertCommissionOpeningDto['endMode'];
-
-const END_MODES: EndMode[] = ['MANUAL', 'SLOT_CAP', 'INDEFINITE'];
-
-const CLIENT_TIMEZONE =
-  typeof window === 'undefined'
-    ? ''
-    : Intl.DateTimeFormat().resolvedOptions().timeZone;
-const noopSubscribe = () => () => {};
-
-function isPast(localDateTime: string): boolean {
-  return (
-    localDateTime !== '' &&
-    new Date(localDateTime).getTime() < Date.now() - 60_000
-  );
-}
+import { useOpeningForm } from '@/hooks/useOpeningForm';
+import { OpeningEndModePicker } from './OpeningEndModePicker';
+import { OpeningFieldHint } from './OpeningFieldHint';
 
 export function OpeningForm({
   initial,
@@ -46,156 +19,58 @@ export function OpeningForm({
   onSubmit: (dto: UpsertCommissionOpeningDto) => Promise<unknown>;
 }) {
   const { t } = useTranslation('art');
-  const slotCapRef = useRef<HTMLInputElement>(null);
-
-  const [endMode, setEndMode] = useState<EndMode>(initial?.endMode ?? 'MANUAL');
-  const [slotCap, setSlotCap] = useState(
-    initial?.slotCap != null ? String(initial.slotCap) : '',
-  );
-  const [scheduledAt, setScheduledAt] = useState(
-    initial?.scheduledAt ? initial.scheduledAt.slice(0, 16) : '',
-  );
-  const [postTitle, setPostTitle] = useState(initial?.postTitle ?? '');
-
-  const [showErrors, setShowErrors] = useState(false);
-  const [scheduledIsPast, setScheduledIsPast] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [saved, setSaved] = useState(false);
-
-  const tz = useSyncExternalStore(
-    noopSubscribe,
-    () => CLIENT_TIMEZONE,
-    () => '',
-  );
-
-  const slotCapError =
-    endMode === 'SLOT_CAP' && !(Number(slotCap) > 0)
-      ? t('commission.admin.opening.slotCapError')
-      : null;
-  const scheduledError =
-    !initial && scheduledIsPast
-      ? t('commission.admin.opening.scheduledAtPastError')
-      : null;
-
-  const submitLabel = initial
-    ? t('commission.admin.opening.saveChanges')
-    : scheduledAt
-      ? t('commission.admin.opening.saveScheduled')
-      : t('commission.admin.opening.saveNew');
-
-  async function handleSubmit() {
-    const past = !initial && isPast(scheduledAt);
-    setScheduledIsPast(past);
-    if (slotCapError || past) {
-      setShowErrors(true);
-      if (slotCapError) {
-        slotCapRef.current?.focus();
-      } else {
-        document.getElementById('scheduled-at')?.focus();
-      }
-      return;
-    }
-    setBusy(true);
-    try {
-      await onSubmit({
-        endMode,
-        slotCap: endMode === 'SLOT_CAP' ? Number(slotCap) : undefined,
-        scheduledAt: scheduledAt
-          ? new Date(scheduledAt).toISOString()
-          : undefined,
-        postTitle: postTitle.trim() || undefined,
-      });
-      setSaved(true);
-      window.setTimeout(() => setSaved(false), OPENING_SAVED_FLASH_MS);
-    } finally {
-      setBusy(false);
-    }
-  }
+  const form = useOpeningForm(initial, onSubmit);
 
   return (
     <div className="space-y-5">
-      <div className="space-y-1.5">
-        <Label htmlFor="end-mode">
-          {t('commission.admin.opening.endMode')}
-        </Label>
-        <Select
-          value={endMode}
-          onValueChange={(value) => setEndMode(value as EndMode)}
-        >
-          <SelectTrigger id="end-mode" className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {END_MODES.map((mode) => (
-              <SelectItem key={mode} value={mode}>
-                {t(`commission.admin.opening.endModeOption.${mode}`)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <p className="text-xs text-muted-foreground">
-          {t(`commission.admin.opening.endModeHint.${endMode}`)}
-        </p>
-      </div>
+      <OpeningEndModePicker value={form.endMode} onChange={form.setEndMode} />
 
-      {endMode === 'SLOT_CAP' && (
+      {form.endMode === 'SLOT_CAP' && (
         <div className="space-y-1.5">
           <Label htmlFor="slot-cap" required>
             {t('commission.admin.opening.slotCap')}
           </Label>
           <Input
             id="slot-cap"
-            ref={slotCapRef}
             type="number"
             inputMode="numeric"
             min={1}
             required
-            aria-required
-            value={slotCap}
-            aria-invalid={showErrors && slotCapError ? true : undefined}
-            onBlur={() => setShowErrors(true)}
-            onChange={(event) => setSlotCap(event.target.value)}
+            className="max-w-40"
+            value={form.slotCap}
+            aria-invalid={form.slotCapError ? true : undefined}
+            onBlur={form.revealErrors}
+            onChange={(event) => form.setSlotCap(event.target.value)}
           />
-          {showErrors && slotCapError ? (
-            <p className="text-xs text-destructive" role="alert">
-              {slotCapError}
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              {t('commission.admin.opening.slotCapHint')}
-            </p>
-          )}
+          <OpeningFieldHint
+            error={form.slotCapError}
+            hint={t('commission.admin.opening.slotCapHint')}
+          />
         </div>
       )}
 
-      {!initial && (
+      {form.isNew && (
         <div className="space-y-1.5">
           <Label htmlFor="scheduled-at">
             {t('commission.admin.opening.scheduledAt')}
           </Label>
           <DateTimeField
             id="scheduled-at"
-            value={scheduledAt}
-            invalid={showErrors && Boolean(scheduledError)}
+            value={form.scheduledAt}
+            invalid={Boolean(form.scheduledError)}
             clearLabel={t('commission.admin.opening.clear')}
-            onChange={(next) => {
-              setScheduledAt(next);
-              setScheduledIsPast(isPast(next));
-            }}
+            onChange={form.setScheduledAt}
           />
-          {showErrors && scheduledError ? (
-            <p className="text-xs text-destructive" role="alert">
-              {scheduledError}
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              {tz
+          <OpeningFieldHint
+            error={form.scheduledError}
+            hint={
+              form.timezone
                 ? t('commission.admin.opening.scheduledAtTimezoneHint', {
-                    timezone: tz,
+                    timezone: form.timezone,
                   })
-                : t('commission.admin.opening.scheduledAtHint')}
-            </p>
-          )}
+                : t('commission.admin.opening.scheduledAtHint')
+            }
+          />
         </div>
       )}
 
@@ -205,9 +80,9 @@ export function OpeningForm({
         </Label>
         <Input
           id="post-title"
-          value={postTitle}
+          value={form.postTitle}
           placeholder={t('commission.admin.opening.postTitlePlaceholder')}
-          onChange={(event) => setPostTitle(event.target.value)}
+          onChange={(event) => form.setPostTitle(event.target.value)}
         />
         <p className="text-xs text-muted-foreground">
           {t('commission.admin.opening.postTitleHint')}
@@ -215,11 +90,11 @@ export function OpeningForm({
       </div>
 
       <div className="flex items-center gap-3 pt-1">
-        <Button disabled={busy} onClick={() => void handleSubmit()}>
-          {busy && <Spinner className="size-4" />}
-          {submitLabel}
+        <Button disabled={form.isBusy} onClick={form.submit}>
+          {form.isBusy && <Spinner className="size-4" />}
+          {form.submitLabel}
         </Button>
-        {saved && (
+        {form.isSaved && (
           <span className="flex items-center gap-1 text-sm text-muted-foreground">
             <CheckCircle2 className="size-4 text-primary" aria-hidden />
             {t('commission.admin.opening.saved')}

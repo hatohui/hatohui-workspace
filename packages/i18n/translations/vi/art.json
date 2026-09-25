@@ -84,13 +84,14 @@
       "subtitle": "Kể cho Hato nghe bạn muốn vẽ gì nhé, Hato sẽ liên hệ lại qua email.",
       "ideaLabel": "Ý tưởng của bạn",
       "commissionTypeLabel": "Loại tranh",
+      "priceListLabel": "Bảng giá",
       "commissionTypePlaceholder": "Chọn loại",
       "optionLabel": "Kiểu vẽ",
       "optionPlaceholder": "Chọn kiểu",
       "addonsLabel": "Tùy chọn thêm",
       "examplesLabel": "Ví dụ",
       "estimateLabel": "Ước tính tự động",
-      "rushFeeIncluded": "đã gồm phụ phí gấp +${{amount}}, thời hạn dưới {{days}} ngày",
+      "rushFeeIncluded": "đã gồm phụ phí gấp +{{amount}}, thời hạn dưới {{days}} ngày",
       "deadlineLabel": "Thời hạn (không bắt buộc)",
       "clientNameLabel": "Tên của bạn",
       "clientEmailLabel": "Email của bạn",
@@ -471,7 +472,12 @@
         "price": "Giá ($)",
         "upTo": "Tối đa ($)"
       },
-      "reorderHandle": "Kéo để sắp xếp lại"
+      "reorderHandle": "Kéo để sắp xếp lại",
+      "jumpTo": "Chuyển đến mục",
+      "previewTitle": "Khách hàng sẽ thấy",
+      "previewEmpty": "Đặt giá cho một loại tranh để hiển thị tại đây.",
+      "autosaving": "Đang lưu…",
+      "autosaved": "Đã lưu mọi thay đổi"
     },
     "dashboard": {
       "title": "Bảng điều khiển",

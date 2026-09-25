@@ -28,4 +28,5 @@ export * from './components/ui/toast';
 export * from './components/ui/pagination';
 export * from './components/ui/sidebar';
 export * from './components/ui/switch';
+export * from './components/ui/tabs';
 export * from './lib/utils';

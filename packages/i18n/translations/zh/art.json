@@ -80,13 +80,14 @@
       "subtitle": "告诉我你想要什么，我会通过邮件与你联系。",
       "ideaLabel": "你的想法",
       "commissionTypeLabel": "委托类型",
+      "priceListLabel": "价目表",
       "commissionTypePlaceholder": "选择类型",
       "optionLabel": "绘制方式",
       "optionPlaceholder": "选择方式",
       "addonsLabel": "附加选项",
       "examplesLabel": "示例",
       "estimateLabel": "自动估算",
-      "rushFeeIncluded": "已含加急费 +${{amount}}，截止日期不足 {{days}} 天",
+      "rushFeeIncluded": "已含加急费 +{{amount}}，截止日期不足 {{days}} 天",
       "deadlineLabel": "截止日期（可选）",
       "clientNameLabel": "你的名字",
       "clientEmailLabel": "你的邮箱",
@@ -312,6 +313,15 @@
       "opensAt": "预计 {{date}} 开放",
       "lastOpenAt": "上次开放 {{date}}",
       "seeQueue": "查看队列"
+    }
+  },
+  "app": {
+    "commissionSettings": {
+      "jumpTo": "跳转到板块",
+      "previewTitle": "委托人看到的内容",
+      "previewEmpty": "为委托类型设置价格后，将在此显示。",
+      "autosaving": "正在保存…",
+      "autosaved": "所有更改已保存"
     }
   }
 }

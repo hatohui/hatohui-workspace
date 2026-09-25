@@ -85,13 +85,14 @@
       "subtitle": "ご希望の内容を教えてください。メールでご連絡します。",
       "ideaLabel": "アイデア",
       "commissionTypeLabel": "コミッションタイプ",
+      "priceListLabel": "料金表",
       "commissionTypePlaceholder": "タイプを選択",
       "optionLabel": "描画オプション",
       "optionPlaceholder": "オプションを選択",
       "addonsLabel": "追加オプション",
       "examplesLabel": "参考例",
       "estimateLabel": "見積もり",
-      "rushFeeIncluded": "特急料金 +${{amount}} を含む（納期まで{{days}}日未満）",
+      "rushFeeIncluded": "特急料金 +{{amount}} を含む（納期まで{{days}}日未満）",
       "deadlineLabel": "希望納期（任意）",
       "clientNameLabel": "お名前",
       "clientEmailLabel": "メールアドレス",
@@ -470,7 +471,12 @@
         "price": "価格 ($)",
         "upTo": "上限 ($)"
       },
-      "reorderHandle": "ドラッグして並べ替え"
+      "reorderHandle": "ドラッグして並べ替え",
+      "jumpTo": "セクションへ移動",
+      "previewTitle": "依頼者に表示される内容",
+      "previewEmpty": "コミッションタイプに価格を設定すると、ここに表示されます。",
+      "autosaving": "保存中…",
+      "autosaved": "すべての変更を保存しました"
     },
     "dashboard": {
       "title": "ダッシュボード",

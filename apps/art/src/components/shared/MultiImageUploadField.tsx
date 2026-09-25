@@ -23,9 +23,9 @@ export function MultiImageUploadField({
     onChange(files.filter((_, i) => i !== index));
 
   return (
-    <div>
+    <div className="space-y-1.5">
       <Label>{label}</Label>
-      <div className="mt-1 space-y-3">
+      <div className="space-y-3">
         <ImageDropzone
           onFilesSelected={addFiles}
           disabled={isUploading}

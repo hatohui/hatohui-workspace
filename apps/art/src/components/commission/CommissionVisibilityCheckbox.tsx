@@ -1,8 +1,8 @@
 'use client';
 
-import { Info } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
-import { Checkbox, Tooltip, TooltipContent, TooltipTrigger } from '@hatohui/ui';
+import { Checkbox } from '@hatohui/ui';
+import { InfoTooltip } from '@/components/shared/InfoTooltip';
 
 export function CommissionVisibilityCheckbox({
   isPublic,
@@ -14,18 +14,15 @@ export function CommissionVisibilityCheckbox({
   const { t } = useTranslation('art');
 
   return (
-    <label className="flex items-center gap-2 text-sm">
-      <Checkbox
-        checked={isPublic}
-        onCheckedChange={(value) => onChange(value === true)}
-      />
-      {t('commission.form.isPublicLabel')}
-      <Tooltip>
-        <TooltipTrigger type="button">
-          <Info className="size-4 text-muted-foreground" />
-        </TooltipTrigger>
-        <TooltipContent>{t('commission.form.isPublicTooltip')}</TooltipContent>
-      </Tooltip>
-    </label>
+    <div className="flex items-center gap-2">
+      <label className="flex items-center gap-2 text-sm">
+        <Checkbox
+          checked={isPublic}
+          onCheckedChange={(value) => onChange(value === true)}
+        />
+        {t('commission.form.isPublicLabel')}
+      </label>
+      <InfoTooltip content={t('commission.form.isPublicTooltip')} />
+    </div>
   );
 }

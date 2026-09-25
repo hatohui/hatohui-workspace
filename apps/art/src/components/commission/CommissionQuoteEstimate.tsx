@@ -2,8 +2,7 @@
 
 import { useTranslation } from '@hatohui/i18n';
 import type { useCommissionPricingEstimate } from '@/hooks/useCommissionPricingEstimate';
-
-const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+import { useCommissionPriceLabels } from '@/hooks/useCommissionPriceLabels';
 
 export function CommissionQuoteEstimate({
   pricing,
@@ -11,20 +10,21 @@ export function CommissionQuoteEstimate({
   pricing: ReturnType<typeof useCommissionPricingEstimate>;
 }) {
   const { t } = useTranslation('art');
+  const { money } = useCommissionPriceLabels(pricing);
 
   if (pricing.estimate === null || pricing.estimateMode === null) return null;
 
   const value =
     pricing.estimateMode === 'range' && pricing.estimateHigh != null
       ? t('commission.form.estimateRange', {
-          low: dollars(pricing.estimate),
-          high: dollars(pricing.estimateHigh),
+          low: money(pricing.estimate),
+          high: money(pricing.estimateHigh),
         })
       : pricing.estimateMode === 'from'
         ? t('commission.form.estimateFrom', {
-            price: dollars(pricing.estimate),
+            price: money(pricing.estimate),
           })
-        : dollars(pricing.estimate);
+        : money(pricing.estimate);
 
   return (
     <p className="text-sm text-muted-foreground">
@@ -33,7 +33,7 @@ export function CommissionQuoteEstimate({
         <span>
           {' ('}
           {t('commission.form.rushFeeIncluded', {
-            amount: (pricing.rushFee.feeAmount / 100).toFixed(0),
+            amount: money(pricing.rushFee.feeAmount),
             days: pricing.rushFee.thresholdDays,
           })}
           {')'}
