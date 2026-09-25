@@ -25,7 +25,10 @@ export function useCommissionRequestPanel(id: string | null) {
     isLoading: false,
     request: {
       id: commission.id,
-      title: format.type(commission.commissionTypeKey),
+      title: format.type(
+        commission.commissionTypeKey,
+        commission.commissionTypeLabel,
+      ),
       clientName: commission.clientName,
       clientEmail: commission.clientEmail,
       status: commission.status,

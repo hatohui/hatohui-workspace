@@ -20,6 +20,7 @@ import {
 } from '@prisma/client';
 import type {
   CommissionSortOption,
+  CommissionView,
   SortDirection,
 } from '@/modules/commissions/commissions.constants';
 import { PaginatedCommissionsDto } from '@/modules/commissions/dto/commission-query.dto';
@@ -49,6 +50,7 @@ import {
 import { CommissionStatusHistoryDto } from '@/modules/commissions/dto/commission-history.dto';
 import { CommissionQueueDto } from '@/modules/commissions/dto/commission-queue.dto';
 import {
+  COMMISSION_VIEW_STATUSES,
   CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE,
   DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE,
   NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE,
@@ -156,6 +158,7 @@ export class CommissionsService {
     artistId: string,
     query: string | undefined,
     status: Commission['status'] | undefined,
+    view: CommissionView | undefined,
     sort: CommissionSortOption,
     direction: SortDirection,
     page: number,
@@ -165,8 +168,16 @@ export class CommissionsService {
       artistId,
       AND: [
         status ? { status } : {},
+        view ? { status: { in: COMMISSION_VIEW_STATUSES[view] } } : {},
         query
-          ? { client: { name: { contains: query, mode: 'insensitive' } } }
+          ? {
+              client: {
+                OR: [
+                  { name: { contains: query, mode: 'insensitive' } },
+                  { email: { contains: query, mode: 'insensitive' } },
+                ],
+              },
+            }
           : {},
       ],
     };
@@ -769,6 +780,7 @@ function toCommissionDto(commission: CommissionWithRelations): CommissionDto {
     isHiddenInQueue: detail.isHiddenInQueue,
     commissionTypeId: detail.commissionTypeId,
     commissionTypeKey: detail.commissionType?.key ?? null,
+    commissionTypeLabel: detail.commissionType?.label ?? null,
     optionKey: detail.optionKey,
     addonKeys: detail.addonKeys,
     currency: detail.currency,

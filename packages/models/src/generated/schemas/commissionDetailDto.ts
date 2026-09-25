@@ -44,6 +44,11 @@ export interface CommissionDetailDto {
      */
   commissionTypeKey: string | null;
   /**
+     * The artist's own name for the type, for keys without a translation
+     * @nullable
+     */
+  commissionTypeLabel: string | null;
+  /**
      * Key of the selected CommissionOption
      * @nullable
      */

@@ -3,15 +3,19 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { CommissionRequestRow as Row } from '@/hooks/useCommissionRequests';
 import { useCommissionRequestActions } from '@/hooks/useCommissionRequestActions';
-import { REQUESTS_TABLE_COLUMNS } from '@/constants/commission';
+import type { CommissionTableColumn } from '@/constants/commission';
 import { CommissionRequestRow } from './CommissionRequestRow';
 
 export function CommissionRequestsTable({
   rows,
+  columns,
   onOpen,
+  onOpenClient,
 }: {
   rows: Row[];
+  columns: readonly CommissionTableColumn[];
   onOpen: (id: string) => void;
+  onOpenClient: (clientId: string) => void;
 }) {
   const { t } = useTranslation('art');
   const actions = useCommissionRequestActions();
@@ -21,7 +25,7 @@ export function CommissionRequestsTable({
       <table className="w-full text-sm">
         <thead className="bg-muted/50 text-muted-foreground">
           <tr>
-            {REQUESTS_TABLE_COLUMNS.map((column) => (
+            {columns.map((column) => (
               <th
                 key={column}
                 className="px-4 py-2.5 text-left font-medium whitespace-nowrap"
@@ -42,7 +46,9 @@ export function CommissionRequestsTable({
             <CommissionRequestRow
               key={row.id}
               row={row}
+              columns={columns}
               onOpen={() => onOpen(row.id)}
+              onOpenClient={() => onOpenClient(row.clientId)}
               onAccept={() => actions.accept(row.id)}
               onDecline={() => actions.decline(row.id)}
             />

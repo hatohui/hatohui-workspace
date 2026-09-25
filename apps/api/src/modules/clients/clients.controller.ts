@@ -1,4 +1,14 @@
-import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import type { User } from '@prisma/client';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -7,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { ClientsService } from '@/modules/clients/services/clients.service';
 import { ClientPrefillDto } from '@/modules/clients/dto/client.dto';
+import { ClientDetailDto } from '@/modules/clients/dto/client-detail.dto';
 
 @ApiTags('clients')
 @Controller('clients')
@@ -27,5 +38,20 @@ export class ClientsController {
       throw new NotFoundException(`No client found for ${email}`);
     }
     return prefill;
+  }
+
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'client',
+    summary:
+      'A client of yours, with their linked account and their commissions with you',
+  })
+  @ApiOkResponse({ type: ClientDetailDto })
+  detail(
+    @Param('id') id: string,
+    @CurrentUser() artist: User,
+  ): Promise<ClientDetailDto> {
+    return this.clientsService.detailForArtist(artist.id, id);
   }
 }

@@ -2,8 +2,6 @@ import {
   CommissionDtoStatus,
   CommissionDtoPaymentStatus,
   CommissionOpeningDtoStatus,
-  CommissionsSort,
-  CommissionsDirection,
 } from '@hatohui/models';
 import type { CommissionOpeningDto } from '@hatohui/models';
 
@@ -13,34 +11,17 @@ export const COMMISSION_STATUS_OPTIONS = Object.values(CommissionDtoStatus);
 export const PAYMENT_STATUS_OPTIONS = Object.values(CommissionDtoPaymentStatus);
 
 export const COMMISSION_KANBAN_COLUMNS: CommissionDtoStatus[] = [
+  CommissionDtoStatus.ACCEPTED,
   CommissionDtoStatus.NOT_YET_STARTED,
   CommissionDtoStatus.QUEUED,
   CommissionDtoStatus.SKETCH,
   CommissionDtoStatus.CONFIRMED,
   CommissionDtoStatus.ONGOING,
-  CommissionDtoStatus.COMPLETED,
-  CommissionDtoStatus.CANCELLED,
 ];
 
-export const COMMISSION_SORT_OPTIONS = Object.values(CommissionsSort);
-export const COMMISSION_SORT_DIRECTIONS = Object.values(CommissionsDirection);
+export const COMMISSION_HUB_TABS = ['requests', 'queue', 'past'] as const;
 
-export const TRIAGE_TABS: CommissionDtoStatus[] = [
-  CommissionDtoStatus.PENDING,
-  CommissionDtoStatus.ACCEPTED,
-  CommissionDtoStatus.DECLINED,
-];
-
-/// Only the sort modes the PRD's triage use case actually asks for -
-/// first-come-first-serve (createdAt), custom priority, and by-deadline.
-export const TRIAGE_SORT_OPTIONS: CommissionsSort[] = [
-  CommissionsSort.createdAt,
-  CommissionsSort.priority,
-  CommissionsSort.deadline,
-];
-
-export const TRIAGE_VIEW_MODES = ['card', 'table'] as const;
-export type TriageViewMode = (typeof TRIAGE_VIEW_MODES)[number];
+export type CommissionListView = 'requests' | 'past';
 
 export const COMMISSION_STEP_KEYS = [
   'ideaConfirmedAt',
@@ -59,9 +40,6 @@ export const OPENING_ACTIVE_STATUSES: CommissionOpeningDto['status'][] = [
   CommissionOpeningDtoStatus.SCHEDULED,
 ];
 
-export const OPENING_DASHBOARD_TABS = ['overview', 'history'] as const;
-export type OpeningDashboardTab = (typeof OPENING_DASHBOARD_TABS)[number];
-
 export const OPENING_SAVED_FLASH_MS = 2500;
 export const AUTOSAVE_SAVED_FLASH_MS = 2500;
 
@@ -73,7 +51,6 @@ export const PUBLIC_COMMISSION_QUERY_PREFIXES = [
 export const OPENING_END_MODES = ['MANUAL', 'SLOT_CAP', 'INDEFINITE'] as const;
 
 export const PRICING_SECTIONS = ['types', 'addons', 'rushFee'] as const;
-export type PricingSection = (typeof PRICING_SECTIONS)[number];
 
 export const COMMISSION_PRICING_STALE_MS = 10 * 60 * 1000;
 
@@ -103,7 +80,6 @@ export const CURRENCY_NAMES: Record<string, string> = {
 export const SUPPORTED_CURRENCIES = Object.keys(CURRENCY_NAMES);
 
 export const COMMISSION_SETTINGS_TABS = ['general', 'pricing'] as const;
-export type CommissionSettingsTab = (typeof COMMISSION_SETTINGS_TABS)[number];
 
 export const PREFERRED_CONTACT_METHODS = [
   'EMAIL',
@@ -118,8 +94,6 @@ export const EMPTY_COMMISSION_IDEA: { type: string; content: never[] } = {
   content: [],
 };
 
-export const REQUESTS_ALL_STATUSES = 'ALL';
-
 export const COMMISSION_STATUS_TONES: Record<CommissionDtoStatus, string> = {
   PENDING: 'bg-primary/10 text-primary',
   ACCEPTED: 'bg-secondary text-secondary-foreground',
@@ -133,14 +107,17 @@ export const COMMISSION_STATUS_TONES: Record<CommissionDtoStatus, string> = {
   CANCELLED: 'bg-muted text-muted-foreground',
 };
 
-export const REQUESTS_TABLE_COLUMNS = [
-  'submitted',
-  'client',
-  'type',
-  'deadline',
-  'quote',
-  'status',
-  'actions',
-] as const;
+export type CommissionTableColumn =
+  'submitted' | 'client' | 'type' | 'deadline' | 'price' | 'status' | 'actions';
+
+export const COMMISSION_TABLE_COLUMNS: Record<
+  CommissionListView,
+  readonly CommissionTableColumn[]
+> = {
+  requests: ['submitted', 'client', 'type', 'deadline', 'actions'],
+  past: ['submitted', 'client', 'type', 'price', 'status'],
+};
+
+export const COMMISSION_LIST_ORDERS = ['desc', 'asc'] as const;
 
 export const EMPTY_VALUE = '-';

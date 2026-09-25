@@ -165,6 +165,7 @@ export class CommissionsController {
       user.id,
       query.query,
       query.status,
+      query.view,
       query.sort ?? 'createdAt',
       query.direction ?? 'desc',
       query.page ?? 1,

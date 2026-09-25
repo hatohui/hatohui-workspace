@@ -8,13 +8,18 @@
 import type { CommissionsDirection } from './commissionsDirection';
 import type { CommissionsSort } from './commissionsSort';
 import type { CommissionsStatus } from './commissionsStatus';
+import type { CommissionsView } from './commissionsView';
 
 export type CommissionsParams = {
 /**
- * Match against client name
+ * Match against client name or email
  */
 query?: string;
 status?: CommissionsStatus;
+/**
+ * Workspace grouping: new requests, accepted work in progress, or finished/declined
+ */
+view?: CommissionsView;
 sort?: CommissionsSort;
 direction?: CommissionsDirection;
 page?: number;

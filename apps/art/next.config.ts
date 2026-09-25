@@ -6,13 +6,15 @@ const parsedAssetUrl = assetPublicUrl ? new URL(assetPublicUrl) : undefined;
 const WORKSPACE_REDIRECTS: [string, string][] = [
   ['/admin', '/app/commissions'],
   ['/admin/commissions', '/app/commissions'],
-  ['/admin/commissions/production', '/app/commissions/queue'],
+  ['/admin/commissions/production', '/app/commissions?tab=queue'],
   ['/admin/commissions/:id', '/app/commissions/:id'],
   ['/admin/assets', '/app/gallery'],
   ['/admin/projects', '/app/projects'],
   ['/admin/groups', '/app/groups'],
   ['/admin/pricing', '/app/configure'],
   ['/app/requests', '/app/commissions'],
+  ['/app/commission-opening', '/app/commissions'],
+  ['/app/commissions/queue', '/app/commissions?tab=queue'],
   ['/app/commission-settings', '/app/configure'],
 ];
 

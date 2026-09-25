@@ -2,43 +2,51 @@
 
 import { useTranslation } from '@hatohui/i18n';
 import { Pagination, Skeleton } from '@hatohui/ui';
-import { COMMISSION_PAGE_SIZE } from '@/constants/commission';
+import {
+  COMMISSION_PAGE_SIZE,
+  type CommissionListView,
+} from '@/constants/commission';
 import { useCommissionRequests } from '@/hooks/useCommissionRequests';
+import { ClientPanel } from '@/components/clients/ClientPanel';
 import { CommissionRequestsToolbar } from './CommissionRequestsToolbar';
 import { CommissionRequestsTable } from './CommissionRequestsTable';
 import { CommissionRequestPanel } from './CommissionRequestPanel';
 
-export function CommissionRequestsView() {
+export function CommissionRequestsView({ view }: { view: CommissionListView }) {
   const { t } = useTranslation('art');
-  const requests = useCommissionRequests();
+  const requests = useCommissionRequests(view);
 
   return (
-    <div className="space-y-6">
-      <h1 className="font-serif text-2xl">{t('app.requests.title')}</h1>
-
+    <div className="space-y-4">
       <CommissionRequestsToolbar
         query={requests.query}
         onQueryChange={requests.setQuery}
-        status={requests.status}
-        onStatusChange={requests.setStatus}
+        direction={requests.direction}
+        onDirectionChange={requests.setDirection}
       />
 
       {requests.isLoading ? (
         <Skeleton className="h-64 w-full" />
       ) : requests.rows.length === 0 ? (
         <p className="py-12 text-center text-sm text-muted-foreground">
-          {t('app.requests.empty')}
+          {t(`app.commissions.empty.${view}`)}
         </p>
       ) : (
         <CommissionRequestsTable
           rows={requests.rows}
+          columns={requests.columns}
           onOpen={requests.select}
+          onOpenClient={requests.openClient}
         />
       )}
 
       <CommissionRequestPanel
         id={requests.selectedId}
         onClose={() => requests.select(null)}
+      />
+      <ClientPanel
+        clientId={requests.clientId}
+        onClose={() => requests.openClient(null)}
       />
 
       {requests.total > COMMISSION_PAGE_SIZE && (

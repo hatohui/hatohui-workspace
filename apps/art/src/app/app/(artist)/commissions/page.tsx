@@ -1,5 +1,5 @@
-import { CommissionRequestsView } from '@/components/requests/CommissionRequestsView';
+import { CommissionsHub } from '@/components/commission/CommissionsHub';
 
 export default function CommissionsPage() {
-  return <CommissionRequestsView />;
+  return <CommissionsHub />;
 }

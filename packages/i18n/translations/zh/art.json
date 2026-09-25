@@ -331,6 +331,47 @@
       "groups": "群组",
       "configure": "设置",
       "dashboard": "主页"
+    },
+    "commissions": {
+      "title": "委托",
+      "tabs": {
+        "requests": "请求",
+        "queue": "进行中",
+        "past": "历史"
+      },
+      "empty": {
+        "requests": "暂时没有新请求。",
+        "past": "这里还没有内容。"
+      },
+      "opening": {
+        "open": "正在接稿",
+        "closed": "暂停接稿",
+        "scheduled": "将于 {{date}} 开放",
+        "slotsOfCap": "已占 {{taken}}/{{cap}} 个名额",
+        "slotsTaken_other": "已接受 {{count}} 个",
+        "waiting_other": "{{count}} 个请求等待你处理",
+        "options": "开放设置",
+        "openCommissions": "开放委托",
+        "optionsTitle": "委托开放"
+      }
+    },
+    "requests": {
+      "order": "排序",
+      "orders": {
+        "desc": "最新优先",
+        "asc": "最早优先"
+      },
+      "columns": {
+        "price": "价格"
+      }
+    },
+    "clients": {
+      "title": "委托人",
+      "contact": "首选联系方式",
+      "guest": "无账户 - 以访客身份提交",
+      "linkedAccount": "已有账户",
+      "viewProfile": "查看主页",
+      "history_other": "与你的 {{count}} 个委托"
     }
   }
 }

@@ -3,7 +3,6 @@
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import {
-  DoorOpen,
   FolderKanban,
   Images,
   Inbox,
@@ -46,7 +45,6 @@ export function useAppNav(): AppNavItem[] {
   return [
     home,
     item('/app/commissions', 'commissions', <Inbox />),
-    item('/app/commission-opening', 'commissionOpening', <DoorOpen />),
     item('/app/gallery', 'gallery', <Images />),
     item('/app/projects', 'projects', <FolderKanban />),
     item('/app/groups', 'groups', <UsersRound />),

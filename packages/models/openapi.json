@@ -2069,7 +2069,7 @@
             "name": "query",
             "required": false,
             "in": "query",
-            "description": "Match against client name",
+            "description": "Match against client name or email",
             "schema": {
               "type": "string"
             }
@@ -2091,6 +2091,20 @@
                 "ONGOING",
                 "COMPLETED",
                 "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "view",
+            "required": false,
+            "in": "query",
+            "description": "Workspace grouping: new requests, accepted work in progress, or finished/declined",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "requests",
+                "active",
+                "past"
               ]
             }
           },
@@ -4032,6 +4046,37 @@
           }
         },
         "summary": "Prefill data for a returning client. 404 if this email hasn't commissioned before.",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
+    "/clients/{id}": {
+      "get": {
+        "operationId": "client",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A client of yours, with their linked account and their commissions with you",
         "tags": [
           "clients"
         ]
@@ -6285,6 +6330,11 @@
             "nullable": true,
             "description": "Also the i18n key: commission.type.<key>"
           },
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true,
+            "description": "The artist's own name for the type, for keys without a translation"
+          },
           "optionKey": {
             "type": "string",
             "nullable": true,
@@ -6370,6 +6420,7 @@
           "isHiddenInQueue",
           "commissionTypeId",
           "commissionTypeKey",
+          "commissionTypeLabel",
           "optionKey",
           "addonKeys",
           "currency",
@@ -6999,6 +7050,11 @@
             "nullable": true,
             "description": "Also the i18n key: commission.type.<key>"
           },
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true,
+            "description": "The artist's own name for the type, for keys without a translation"
+          },
           "optionKey": {
             "type": "string",
             "nullable": true,
@@ -7096,6 +7152,7 @@
           "isHiddenInQueue",
           "commissionTypeId",
           "commissionTypeKey",
+          "commissionTypeLabel",
           "optionKey",
           "addonKeys",
           "currency",
@@ -8317,6 +8374,136 @@
           "name",
           "preferredContactMethod",
           "contactHandle"
+        ]
+      },
+      "ClientAccountDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "userId",
+          "name",
+          "handle",
+          "avatarUrl"
+        ]
+      },
+      "ClientCommissionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "quote": {
+            "type": "number",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "commissionTypeKey",
+          "commissionTypeLabel",
+          "quote",
+          "currency",
+          "createdAt"
+        ]
+      },
+      "ClientDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ]
+          },
+          "contactHandle": {
+            "type": "string",
+            "nullable": true
+          },
+          "account": {
+            "nullable": true,
+            "description": "The hatohui account this client is linked to, if any",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ClientAccountDto"
+              }
+            ]
+          },
+          "commissions": {
+            "description": "Every commission this client has had with you, newest first",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientCommissionSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "preferredContactMethod",
+          "contactHandle",
+          "account",
+          "commissions"
         ]
       },
       "SubscribeCommissionFollowerDto": {

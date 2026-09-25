@@ -12,15 +12,17 @@ import { CommissionStatus } from '@prisma/client';
 import { CommissionDto } from './commission.dto';
 import {
   COMMISSION_SORT_OPTIONS,
+  COMMISSION_VIEWS,
   SORT_DIRECTIONS,
   type CommissionSortOption,
+  type CommissionView,
   type SortDirection,
 } from '@/modules/commissions/commissions.constants';
 
 export class CommissionQueryDto {
   @ApiProperty({
     required: false,
-    description: 'Match against client name',
+    description: 'Match against client name or email',
   })
   @IsOptional()
   @IsString()
@@ -30,6 +32,16 @@ export class CommissionQueryDto {
   @IsOptional()
   @IsEnum(CommissionStatus)
   status?: CommissionStatus;
+
+  @ApiProperty({
+    enum: COMMISSION_VIEWS,
+    required: false,
+    description:
+      'Workspace grouping: new requests, accepted work in progress, or finished/declined',
+  })
+  @IsOptional()
+  @IsIn(COMMISSION_VIEWS)
+  view?: CommissionView;
 
   @ApiProperty({
     enum: COMMISSION_SORT_OPTIONS,

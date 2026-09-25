@@ -10,22 +10,19 @@ import {
   SelectValue,
 } from '@hatohui/ui';
 import { Search } from 'lucide-react';
-import type { CommissionDtoStatus } from '@hatohui/models';
-import {
-  COMMISSION_STATUS_OPTIONS,
-  REQUESTS_ALL_STATUSES,
-} from '@/constants/commission';
+import type { CommissionsDirection } from '@hatohui/models';
+import { COMMISSION_LIST_ORDERS } from '@/constants/commission';
 
 export function CommissionRequestsToolbar({
   query,
   onQueryChange,
-  status,
-  onStatusChange,
+  direction,
+  onDirectionChange,
 }: {
   query: string;
   onQueryChange: (value: string) => void;
-  status: CommissionDtoStatus | undefined;
-  onStatusChange: (value: CommissionDtoStatus | undefined) => void;
+  direction: CommissionsDirection;
+  onDirectionChange: (value: CommissionsDirection) => void;
 }) {
   const { t } = useTranslation('art');
 
@@ -45,25 +42,18 @@ export function CommissionRequestsToolbar({
         />
       </div>
       <Select
-        value={status ?? REQUESTS_ALL_STATUSES}
+        value={direction}
         onValueChange={(value) =>
-          onStatusChange(
-            value === REQUESTS_ALL_STATUSES
-              ? undefined
-              : (value as CommissionDtoStatus),
-          )
+          onDirectionChange(value as CommissionsDirection)
         }
       >
-        <SelectTrigger className="sm:w-48">
+        <SelectTrigger className="sm:w-44" aria-label={t('app.requests.order')}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={REQUESTS_ALL_STATUSES}>
-            {t('app.requests.allStatuses')}
-          </SelectItem>
-          {COMMISSION_STATUS_OPTIONS.map((option) => (
-            <SelectItem key={option} value={option}>
-              {t(`commission.status.${option}`)}
+          {COMMISSION_LIST_ORDERS.map((order) => (
+            <SelectItem key={order} value={order}>
+              {t(`app.requests.orders.${order}`)}
             </SelectItem>
           ))}
         </SelectContent>

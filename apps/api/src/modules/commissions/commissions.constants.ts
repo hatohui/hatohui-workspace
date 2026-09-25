@@ -39,3 +39,19 @@ export const DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissiondelivered.templateid';
 export const CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissionconfirmation.templateid';
+
+export const COMMISSION_VIEWS = ['requests', 'active', 'past'] as const;
+export type CommissionView = (typeof COMMISSION_VIEWS)[number];
+
+export const COMMISSION_VIEW_STATUSES: Record<
+  CommissionView,
+  CommissionStatus[]
+> = {
+  requests: [CommissionStatus.PENDING],
+  active: [CommissionStatus.ACCEPTED, ...QUEUE_STATUSES],
+  past: [
+    CommissionStatus.DECLINED,
+    CommissionStatus.COMPLETED,
+    CommissionStatus.CANCELLED,
+  ],
+};
