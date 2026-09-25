@@ -534,6 +534,11 @@
         "waiting_other": "Bạn có {{count}} yêu cầu mới đang chờ",
         "openQuiet": "Đang nhận đơn. Yêu cầu mới sẽ hiện ở đây.",
         "review": "Xem ngay"
+      },
+      "setup": {
+        "title": "Hoàn tất thiết lập nhận đơn",
+        "progress": "Đã xong {{done}}/{{total}} bước",
+        "cta": "Tiếp tục thiết lập"
       }
     },
     "requests": {
@@ -630,6 +635,35 @@
       "sent_quote": "Đã gửi báo giá.",
       "sent_accept": "Đã nhận yêu cầu.",
       "failed": "Không gửi được. Vui lòng thử lại."
+    },
+    "setup": {
+      "progress": "Bước {{current}}/{{total}}",
+      "skip": "Để sau",
+      "back": "Quay lại",
+      "continue": "Tiếp tục",
+      "examplesNeedTypes": "Hãy bật ít nhất một loại tranh trước, rồi thêm tranh mẫu ở đây.",
+      "steps": {
+        "payment": {
+          "short": "Thanh toán",
+          "title": "Khách trả tiền thế nào",
+          "description": "Chọn đơn vị tiền tệ và thêm các cách khách có thể thanh toán. Bạn có thể đổi sau trong Thiết lập."
+        },
+        "pricing": {
+          "short": "Giá",
+          "title": "Bạn nhận vẽ gì",
+          "description": "Bật các loại tranh bạn nhận và đặt giá cho từng loại. Khách sẽ thấy dưới dạng bảng giá."
+        },
+        "examples": {
+          "short": "Tranh mẫu",
+          "title": "Khoe tranh của bạn",
+          "description": "Thêm vài tranh mẫu cho từng loại. Chúng hiện trên form đặt tranh và trong thư viện."
+        },
+        "opening": {
+          "short": "Mở đơn",
+          "title": "Mở nhận đơn",
+          "description": "Chọn cách kết thúc đợt mở đơn, hoặc hẹn giờ mở. Xong bạn sẽ được chuyển đến trang đơn đặt tranh."
+        }
+      }
     }
   }
 }

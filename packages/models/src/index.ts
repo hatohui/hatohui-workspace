@@ -20,6 +20,7 @@ export * from './generated/clients/clients';
 export * from './generated/commission-followers/commission-followers';
 export * from './generated/commission-groups/commission-groups';
 export * from './generated/artist-dashboard/artist-dashboard';
+export * from './generated/artist-setup/artist-setup';
 export * from './generated/schemas';
 export {
   setApiBaseUrl,

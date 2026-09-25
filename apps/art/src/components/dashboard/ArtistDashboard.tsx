@@ -7,6 +7,7 @@ import { CommissionRequestPanel } from '@/components/requests/CommissionRequestP
 import { DashboardHeader } from './DashboardHeader';
 import { DashboardStats } from './DashboardStats';
 import { DashboardAttention } from './DashboardAttention';
+import { DashboardSetupCard } from './DashboardSetupCard';
 import { DashboardOpeningCard } from './DashboardOpeningCard';
 import { DashboardPanel } from './DashboardPanel';
 import { DashboardRequestItem } from './DashboardRequestItem';
@@ -25,6 +26,7 @@ export function ArtistDashboard() {
         <DashboardSkeleton />
       ) : (
         <>
+          {view.setup && <DashboardSetupCard progress={view.setup} />}
           <DashboardAttention
             message={view.attention}
             hasWaiting={view.hasWaiting}

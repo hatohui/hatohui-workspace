@@ -3857,6 +3857,50 @@
         ]
       }
     },
+    "/artist-setup": {
+      "get": {
+        "operationId": "artistSetup",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistSetupDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Where you are in first-time commission setup",
+        "tags": [
+          "artist-setup"
+        ]
+      }
+    },
+    "/artist-setup/dismiss": {
+      "post": {
+        "operationId": "dismissArtistSetup",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistSetupDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Skip first-time setup; the workspace stops sending you there",
+        "tags": [
+          "artist-setup"
+        ]
+      }
+    },
     "/commission-progress": {
       "get": {
         "operationId": "commissionProgress",
@@ -8305,6 +8349,64 @@
           "opening",
           "recentRequests",
           "upcomingDeadlines"
+        ]
+      },
+      "ArtistSetupStepDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "payment",
+              "pricing",
+              "examples",
+              "opening"
+            ]
+          },
+          "done": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "key",
+          "done"
+        ]
+      },
+      "ArtistSetupDto": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "description": "Setup steps in order, each marked done from real data",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArtistSetupStepDto"
+            }
+          },
+          "nextStep": {
+            "type": "string",
+            "enum": [
+              "payment",
+              "pricing",
+              "examples",
+              "opening"
+            ],
+            "nullable": true,
+            "description": "First step not done yet; null when everything is done"
+          },
+          "dismissed": {
+            "type": "boolean",
+            "description": "Whether the artist chose to skip setup"
+          },
+          "shouldShow": {
+            "type": "boolean",
+            "description": "Whether the workspace should send the artist to setup"
+          }
+        },
+        "required": [
+          "steps",
+          "nextStep",
+          "dismissed",
+          "shouldShow"
         ]
       },
       "CommissionProgressDto": {

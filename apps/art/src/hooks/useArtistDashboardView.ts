@@ -5,6 +5,7 @@ import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
 import {
   useArtistDashboard,
+  useArtistSetup,
   type ArtistDashboardDto,
   type CommissionDto,
 } from '@hatohui/models';
@@ -32,6 +33,8 @@ export function useArtistDashboardView() {
   const { user } = useAuth();
   const format = useCommissionFormatters();
   const query = useArtistDashboard();
+  const setupQuery = useArtistSetup();
+  const setup = setupQuery.data?.data;
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [now] = useState(() => Date.now());
   const data: ArtistDashboardDto | undefined = query.data?.data;
@@ -102,6 +105,13 @@ export function useArtistDashboardView() {
     }),
     attention,
     hasWaiting: pending > 0,
+    setup:
+      setup?.nextStep != null
+        ? {
+            done: setup.steps.filter((step) => step.done).length,
+            total: setup.steps.length,
+          }
+        : null,
     stats: data
       ? (
           [
