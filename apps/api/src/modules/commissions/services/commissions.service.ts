@@ -85,7 +85,10 @@ export class CommissionsService {
     dto: SubmitCommissionDto,
     submitter: User | null,
   ): Promise<CommissionDto> {
-    const currency = await this.currencyFor(dto.artistId);
+    const [currency, commissionOpeningId] = await Promise.all([
+      this.currencyFor(dto.artistId),
+      this.commissionOpenings.openIdFor(dto.artistId),
+    ]);
     const client = submitter
       ? await this.resolveAccountClient(submitter, dto)
       : await this.resolveClient(requireClientIdentity(dto));
@@ -94,7 +97,7 @@ export class CommissionsService {
       data: {
         artistId: dto.artistId,
         clientId: client.id,
-        commissionOpeningId: dto.commissionOpeningId ?? null,
+        commissionOpeningId,
         status: 'PENDING',
         detail: {
           create: {

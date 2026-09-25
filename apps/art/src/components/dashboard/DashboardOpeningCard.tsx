@@ -14,6 +14,7 @@ export function DashboardOpeningCard({
     status: CommissionOpeningDto['status'];
     slotsTaken: number;
     slotCap: number | null;
+    slotSummary: string;
     fill: number | null;
     since: string | null;
     scheduledFor: string | null;
@@ -43,6 +44,7 @@ export function DashboardOpeningCard({
 
       {isOpen && (
         <DashboardSlotMeter
+          summary={opening.slotSummary}
           taken={opening.slotsTaken}
           cap={opening.slotCap}
           fill={opening.fill}
@@ -63,7 +65,7 @@ export function DashboardOpeningCard({
         variant={isOpen ? 'secondary' : 'default'}
         className="w-full"
       >
-        <Link href={DASHBOARD_ROUTES.opening}>
+        <Link href={DASHBOARD_ROUTES.commissions}>
           {t(
             isOpen
               ? 'app.dashboard.opening.manage'

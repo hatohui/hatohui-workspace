@@ -480,7 +480,13 @@
       "previewTitle": "依頼者に表示される内容",
       "previewEmpty": "コミッションタイプに価格を設定すると、ここに表示されます。",
       "autosaving": "保存中…",
-      "autosaved": "すべての変更を保存しました"
+      "autosaved": "すべての変更を保存しました",
+      "examples": {
+        "title": "作例",
+        "hint": "どんな仕上がりか依頼者に見せましょう。作例は依頼フォームとギャラリーに表示されます。",
+        "add": "作例画像を追加",
+        "uploadFailed": "画像をアップロードできませんでした。"
+      }
     },
     "dashboard": {
       "title": "ダッシュボード",
@@ -492,7 +498,7 @@
       },
       "actions": {
         "requests": "リクエスト",
-        "settings": "設定"
+        "queue": "進行中"
       },
       "stats": {
         "pending": "確認待ち",
@@ -505,11 +511,13 @@
         "OPEN": "募集中",
         "CLOSED": "募集停止中",
         "SCHEDULED": "募集予定",
-        "slots": "枠",
         "since": "{{date}} から募集中",
         "scheduledFor": "{{date}} に募集開始",
         "manage": "募集を管理",
-        "cta": "募集を開始"
+        "cta": "募集を開始",
+        "slotsOfCap": "{{cap}} 枠中 {{taken}} 枠埋まり・残り {{left}} 枠",
+        "accepted_other": "これまでに {{count}} 件承諾",
+        "noneTaken": "まだ枠は埋まっていません"
       },
       "recent": {
         "title": "最近のリクエスト",
@@ -520,7 +528,12 @@
         "empty": "近い納期はありません。",
         "overdue": "期限切れ"
       },
-      "viewAll": "すべて表示"
+      "viewAll": "すべて表示",
+      "attention": {
+        "waiting_other": "新しい依頼が {{count}} 件届いています",
+        "openQuiet": "受付中です。新しい依頼はここに表示されます。",
+        "review": "確認する"
+      }
     },
     "requests": {
       "title": "リクエスト",

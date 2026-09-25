@@ -102,6 +102,14 @@ export class ArtistCommissionTypeDto {
       "Lowest priced option's price in the artist's currency's smallest unit; null when nothing under this type is priced yet",
   })
   startingPrice: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description:
+      'Gallery tag whose images show as examples for this type on the request form',
+  })
+  tagName: string | null;
 }
 
 export class UpsertArtistCommissionTypeDto {

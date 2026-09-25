@@ -11,8 +11,6 @@ import type { CreatePrivateCommissionDtoPreferredContactMethod } from './createP
 export interface CreatePrivateCommissionDto {
   /** Id of the artist being commissioned */
   artistId: string;
-  /** Id of the CommissionOpening this is submitted through, if any */
-  commissionOpeningId?: string;
   /** Tiptap/ProseMirror JSON document describing the idea */
   idea: CreatePrivateCommissionDtoIdea;
   deadline?: string;

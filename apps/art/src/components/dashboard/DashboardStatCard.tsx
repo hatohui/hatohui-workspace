@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslation } from '@hatohui/i18n';
 import { cn } from '@hatohui/ui';
 import {
@@ -12,24 +13,29 @@ export function DashboardStatCard({
   value,
   highlight,
   caption,
+  href,
 }: {
   statKey: DashboardStatKey;
   value: string;
   highlight: boolean;
   caption?: string;
+  href?: string;
 }) {
   const { t } = useTranslation('art');
   const Icon = DASHBOARD_STAT_ICONS[statKey];
 
+  const className = cn(
+    'flex flex-col justify-between gap-6 rounded-xl border p-5',
+    highlight
+      ? 'border-primary/30 bg-primary/10'
+      : 'border-transparent bg-card',
+    href &&
+      'transition-colors duration-200 hover:border-border focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none motion-reduce:transition-none',
+  );
+  const Root = href ? Link : 'div';
+
   return (
-    <div
-      className={cn(
-        'flex flex-col justify-between gap-6 rounded-xl border p-5',
-        highlight
-          ? 'border-primary/30 bg-primary/10'
-          : 'border-transparent bg-card',
-      )}
-    >
+    <Root href={href ?? ''} className={className}>
       <div className="flex items-center justify-between gap-2">
         <span className="text-sm text-muted-foreground">
           {t(`app.dashboard.stats.${statKey}`)}
@@ -52,6 +58,6 @@ export function DashboardStatCard({
           </p>
         )}
       </div>
-    </div>
+    </Root>
   );
 }

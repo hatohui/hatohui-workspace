@@ -36,6 +36,7 @@ export class CommissionTypesService {
     const [types, enablements, options] = await Promise.all([
       this.db.commissionType.findMany({
         where: { active: true },
+        include: { tag: true },
         orderBy: { no: 'asc' },
       }),
       this.db.artistCommissionType.findMany({ where: { artistId } }),
@@ -77,6 +78,7 @@ export class CommissionTypesService {
         enabled: enablement?.active ?? false,
         optionCount: agg?.count ?? 0,
         startingPrice: agg?.startingPrice ?? null,
+        tagName: type.tag?.name ?? null,
       };
     });
   }
@@ -106,6 +108,7 @@ export class CommissionTypesService {
   ): Promise<ArtistCommissionTypeDto> {
     const type = await this.db.commissionType.findUnique({
       where: { id: commissionTypeId },
+      include: { tag: true },
     });
     if (!type) {
       throw new NotFoundException(
@@ -163,6 +166,7 @@ export class CommissionTypesService {
       enabled: row.active,
       optionCount,
       startingPrice,
+      tagName: type.tag?.name ?? null,
     };
   }
 

@@ -481,7 +481,13 @@
       "previewTitle": "What clients see",
       "previewEmpty": "Give a commission type a price and it will show up here.",
       "autosaving": "Saving…",
-      "autosaved": "All changes saved"
+      "autosaved": "All changes saved",
+      "examples": {
+        "title": "Examples",
+        "hint": "Show clients what this looks like. Examples appear on your request form and in your gallery.",
+        "add": "Add example images",
+        "uploadFailed": "Couldn't upload that image."
+      }
     },
     "dashboard": {
       "title": "Dashboard",
@@ -493,7 +499,7 @@
       },
       "actions": {
         "requests": "Requests",
-        "settings": "Settings"
+        "queue": "Queue"
       },
       "stats": {
         "pending": "Awaiting review",
@@ -506,11 +512,14 @@
         "OPEN": "Commissions open",
         "CLOSED": "Commissions closed",
         "SCHEDULED": "Opening scheduled",
-        "slots": "slots",
         "since": "Open since {{date}}",
         "scheduledFor": "Opens {{date}}",
         "manage": "Manage opening",
-        "cta": "Open commissions"
+        "cta": "Open commissions",
+        "slotsOfCap": "{{taken}} of {{cap}} slots filled · {{left}} left",
+        "accepted_one": "{{count}} accepted so far",
+        "accepted_other": "{{count}} accepted so far",
+        "noneTaken": "No slots taken yet"
       },
       "recent": {
         "title": "Recent requests",
@@ -521,7 +530,13 @@
         "empty": "Nothing due soon.",
         "overdue": "Overdue"
       },
-      "viewAll": "View all"
+      "viewAll": "View all",
+      "attention": {
+        "waiting_one": "You have {{count}} new request waiting",
+        "waiting_other": "You have {{count}} new requests waiting",
+        "openQuiet": "Commissions are open. New requests will show up here.",
+        "review": "Review"
+      }
     },
     "requests": {
       "title": "Requests",

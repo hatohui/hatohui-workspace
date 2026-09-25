@@ -3,11 +3,13 @@
 import { useTranslation } from '@hatohui/i18n';
 
 export function DashboardSlotMeter({
+  summary,
   taken,
   cap,
   fill,
   since,
 }: {
+  summary: string;
   taken: number;
   cap: number | null;
   fill: number | null;
@@ -17,12 +19,7 @@ export function DashboardSlotMeter({
 
   return (
     <div className="space-y-2">
-      <p className="font-serif text-3xl leading-none tabular-nums">
-        {cap != null ? `${taken} / ${cap}` : taken}
-        <span className="ml-2 font-sans text-sm opacity-70">
-          {t('app.dashboard.opening.slots')}
-        </span>
-      </p>
+      <p className="font-serif text-xl leading-snug tabular-nums">{summary}</p>
       {fill != null && (
         <div
           className="h-1.5 overflow-hidden rounded-full bg-background/20"

@@ -6,6 +6,7 @@ import { DASHBOARD_ROUTES } from '@/constants/dashboard';
 import { CommissionRequestPanel } from '@/components/requests/CommissionRequestPanel';
 import { DashboardHeader } from './DashboardHeader';
 import { DashboardStats } from './DashboardStats';
+import { DashboardAttention } from './DashboardAttention';
 import { DashboardOpeningCard } from './DashboardOpeningCard';
 import { DashboardPanel } from './DashboardPanel';
 import { DashboardRequestItem } from './DashboardRequestItem';
@@ -24,6 +25,10 @@ export function ArtistDashboard() {
         <DashboardSkeleton />
       ) : (
         <>
+          <DashboardAttention
+            message={view.attention}
+            hasWaiting={view.hasWaiting}
+          />
           <DashboardStats stats={view.stats} />
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

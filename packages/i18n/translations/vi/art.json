@@ -481,7 +481,13 @@
       "previewTitle": "Khách hàng sẽ thấy",
       "previewEmpty": "Đặt giá cho một loại tranh để hiển thị tại đây.",
       "autosaving": "Đang lưu…",
-      "autosaved": "Đã lưu mọi thay đổi"
+      "autosaved": "Đã lưu mọi thay đổi",
+      "examples": {
+        "title": "Tranh mẫu",
+        "hint": "Cho khách thấy thành phẩm trông thế nào. Tranh mẫu hiện trên form đặt tranh và trong thư viện của bạn.",
+        "add": "Thêm ảnh mẫu",
+        "uploadFailed": "Không tải ảnh lên được."
+      }
     },
     "dashboard": {
       "title": "Bảng điều khiển",
@@ -493,7 +499,7 @@
       },
       "actions": {
         "requests": "Yêu cầu",
-        "settings": "Cài đặt"
+        "queue": "Đang làm"
       },
       "stats": {
         "pending": "Chờ duyệt",
@@ -506,11 +512,13 @@
         "OPEN": "Đang nhận commission",
         "CLOSED": "Đã đóng commission",
         "SCHEDULED": "Đã lên lịch mở",
-        "slots": "suất",
         "since": "Mở từ {{date}}",
         "scheduledFor": "Mở vào {{date}}",
         "manage": "Quản lý đợt nhận",
-        "cta": "Mở nhận commission"
+        "cta": "Mở nhận commission",
+        "slotsOfCap": "Đã nhận {{taken}}/{{cap}} suất · còn {{left}}",
+        "accepted_other": "Đã nhận {{count}} đơn",
+        "noneTaken": "Chưa nhận suất nào"
       },
       "recent": {
         "title": "Yêu cầu gần đây",
@@ -521,7 +529,12 @@
         "empty": "Chưa có gì sắp đến hạn.",
         "overdue": "Quá hạn"
       },
-      "viewAll": "Xem tất cả"
+      "viewAll": "Xem tất cả",
+      "attention": {
+        "waiting_other": "Bạn có {{count}} yêu cầu mới đang chờ",
+        "openQuiet": "Đang nhận đơn. Yêu cầu mới sẽ hiện ở đây.",
+        "review": "Xem ngay"
+      }
     },
     "requests": {
       "title": "Yêu cầu",
