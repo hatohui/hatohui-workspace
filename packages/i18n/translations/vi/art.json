@@ -433,29 +433,21 @@
       "commissionSettings": "Cài đặt commission",
       "commissionOpening": "Đợt nhận commission",
       "openLabel": "Ứng dụng",
-      "backToSite": "Về trang chính"
+      "backToSite": "Về trang chính",
+      "requests": "Yêu cầu"
     },
     "commissionSettings": {
       "title": "Cài đặt commission",
-      "subtitle": "Thiết lập những gì khách có thể yêu cầu, cách tính giá từng tùy chọn, và chính sách phụ phí gấp.",
       "types": "Loại commission",
-      "typesHint": "Chọn một loại để sửa tùy chọn và giá. Công tắc quyết định khách có được chọn loại đó không.",
       "options": "Tùy chọn",
       "addons": "Dịch vụ thêm",
-      "addonsHint": "Các tùy chọn bổ sung khách có thể thêm vào một commission.",
       "rushFee": "Phụ phí gấp",
-      "rushFeeHint": "Tính thêm phí khi hạn chót gần hơn ngưỡng. Tắt đi để vô hiệu hóa hoàn toàn.",
       "settings": "Chung",
-      "settingsHint": "Tiền tệ, duyệt yêu cầu và cách nhận thanh toán. Tiền tệ áp dụng cho mọi mức giá bên dưới.",
       "currency": "Tiền tệ",
-      "currencyHint": "Đơn vị tiền tệ cho mọi mức giá và báo giá của bạn.",
       "autoAccept": "Tự động nhận yêu cầu",
-      "autoAcceptHint": "Bỏ qua bước duyệt thủ công - yêu cầu mới được nhận tự động.",
       "notificationEmail": "Email thông báo",
-      "notificationEmailHint": "Nơi nhận email yêu cầu mới. Để trống để dùng email tài khoản.",
       "notificationEmailPlaceholder": "ban@example.com",
-      "paymentMethods": "Phương thức thanh toán bạn chấp nhận",
-      "paymentMethodsHint": "Thêm các cách khách có thể thanh toán cho bạn và hướng dẫn. Hiển thị khi khách gửi yêu cầu commission.",
+      "paymentMethods": "Phương thức thanh toán",
       "save": "Lưu cài đặt",
       "saved": "Đã lưu cài đặt.",
       "saveFailed": "Không thể lưu cài đặt.",
@@ -483,7 +475,74 @@
     },
     "dashboard": {
       "title": "Bảng điều khiển",
-      "welcome": "Chào mừng trở lại, {{name}}."
+      "welcome": "Chào mừng trở lại, {{name}}.",
+      "greeting": {
+        "morning": "Chào buổi sáng, {{name}}",
+        "afternoon": "Chào buổi chiều, {{name}}",
+        "evening": "Chào buổi tối, {{name}}"
+      },
+      "actions": {
+        "requests": "Yêu cầu",
+        "settings": "Cài đặt"
+      },
+      "stats": {
+        "pending": "Chờ duyệt",
+        "inProgress": "Đang làm",
+        "completed": "Hoàn thành",
+        "paidThisMonth": "Đã thanh toán tháng này",
+        "inProgressValue": "{{amount}} đang làm"
+      },
+      "opening": {
+        "OPEN": "Đang nhận commission",
+        "CLOSED": "Đã đóng commission",
+        "SCHEDULED": "Đã lên lịch mở",
+        "slots": "suất",
+        "since": "Mở từ {{date}}",
+        "scheduledFor": "Mở vào {{date}}",
+        "manage": "Quản lý đợt nhận",
+        "cta": "Mở nhận commission"
+      },
+      "recent": {
+        "title": "Yêu cầu gần đây",
+        "empty": "Chưa có yêu cầu nào."
+      },
+      "deadlines": {
+        "title": "Sắp đến hạn",
+        "empty": "Chưa có gì sắp đến hạn.",
+        "overdue": "Quá hạn"
+      },
+      "viewAll": "Xem tất cả"
+    },
+    "requests": {
+      "title": "Yêu cầu",
+      "searchPlaceholder": "Tìm theo tên hoặc email khách",
+      "allStatuses": "Tất cả trạng thái",
+      "empty": "Chưa có yêu cầu nào.",
+      "columns": {
+        "submitted": "Ngày gửi",
+        "client": "Khách hàng",
+        "type": "Loại",
+        "deadline": "Thời hạn",
+        "quote": "Báo giá",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "prev": "Trước",
+      "next": "Sau",
+      "page": "Trang {{page}} / {{total}}",
+      "statusFailed": "Không thể cập nhật trạng thái.",
+      "panel": {
+        "close": "Đóng",
+        "idea": "Ý tưởng",
+        "references": "Ảnh tham khảo",
+        "submitted": "Ngày gửi",
+        "deadline": "Thời hạn",
+        "quote": "Báo giá",
+        "payment": "Thanh toán",
+        "contact": "Liên hệ",
+        "status": "Trạng thái",
+        "openFullPage": "Xem chi tiết"
+      }
     }
   }
 }

@@ -205,6 +205,34 @@ export class CommissionsService {
     };
   }
 
+  async recent(artistId: string, take: number): Promise<CommissionDto[]> {
+    const items = await this.db.commission.findMany({
+      where: { artistId },
+      include: commissionInclude,
+      orderBy: { createdAt: 'desc' },
+      take,
+    });
+    return items.map(toCommissionDto);
+  }
+
+  async upcomingDeadlines(
+    artistId: string,
+    statuses: Commission['status'][],
+    take: number,
+  ): Promise<CommissionDto[]> {
+    const items = await this.db.commission.findMany({
+      where: {
+        artistId,
+        status: { in: statuses },
+        detail: { deadline: { not: null } },
+      },
+      include: commissionInclude,
+      orderBy: { detail: { deadline: 'asc' } },
+      take,
+    });
+    return items.map(toCommissionDto);
+  }
+
   async findOne(artistId: string, id: string): Promise<CommissionDetailDto> {
     const commission = await this.findOwnedOrThrow(artistId, id);
     return this.withCommentsAndHistory(commission);
@@ -548,7 +576,7 @@ export class CommissionsService {
     return toCommentDto(comment);
   }
 
-  private async currencyFor(artistId: string): Promise<string> {
+  async currencyFor(artistId: string): Promise<string> {
     const setting = USER_SETTING_TYPES.commissionCurrency;
     const value = await this.userSettings.get(
       artistId,

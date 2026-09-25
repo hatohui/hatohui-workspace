@@ -432,29 +432,21 @@
       "commissionSettings": "コミッション設定",
       "commissionOpening": "コミッション募集",
       "openLabel": "アプリ",
-      "backToSite": "サイトに戻る"
+      "backToSite": "サイトに戻る",
+      "requests": "リクエスト"
     },
     "commissionSettings": {
       "title": "コミッション設定",
-      "subtitle": "受け付ける依頼内容、各オプションの料金、特急料金のルールを設定します。",
       "types": "コミッション種別",
-      "typesHint": "種別を選ぶとオプションと料金を編集できます。トグルで依頼者が選べるかどうかを切り替えます。",
       "options": "オプション",
       "addons": "追加オプション",
-      "addonsHint": "コミッションに追加できる任意のオプションです。",
       "rushFee": "特急料金",
-      "rushFeeHint": "納期がしきい値より近い場合に追加料金を請求します。オフにすると完全に無効化されます。",
       "settings": "一般",
-      "settingsHint": "通貨、受付、支払い方法。通貨は以下のすべての価格に適用されます。",
       "currency": "通貨",
-      "currencyHint": "すべての価格と見積もりに使う通貨です。",
       "autoAccept": "依頼を自動承認",
-      "autoAcceptHint": "手動の選別を省略し、新しい依頼を自動的に承認します。",
       "notificationEmail": "通知メール",
-      "notificationEmailHint": "新規依頼メールの送信先。空欄の場合はアカウントのメールを使用します。",
       "notificationEmailPlaceholder": "you@example.com",
-      "paymentMethods": "受け付ける支払い方法",
-      "paymentMethodsHint": "クライアントが支払える方法と手順を追加します。依頼時に表示されます。",
+      "paymentMethods": "支払い方法",
       "save": "設定を保存",
       "saved": "設定を保存しました。",
       "saveFailed": "設定を保存できませんでした。",
@@ -482,7 +474,74 @@
     },
     "dashboard": {
       "title": "ダッシュボード",
-      "welcome": "おかえりなさい、{{name}}さん。"
+      "welcome": "おかえりなさい、{{name}}さん。",
+      "greeting": {
+        "morning": "おはようございます、{{name}}さん",
+        "afternoon": "こんにちは、{{name}}さん",
+        "evening": "こんばんは、{{name}}さん"
+      },
+      "actions": {
+        "requests": "リクエスト",
+        "settings": "設定"
+      },
+      "stats": {
+        "pending": "確認待ち",
+        "inProgress": "進行中",
+        "completed": "完了",
+        "paidThisMonth": "今月の入金",
+        "inProgressValue": "進行中 {{amount}}"
+      },
+      "opening": {
+        "OPEN": "募集中",
+        "CLOSED": "募集停止中",
+        "SCHEDULED": "募集予定",
+        "slots": "枠",
+        "since": "{{date}} から募集中",
+        "scheduledFor": "{{date}} に募集開始",
+        "manage": "募集を管理",
+        "cta": "募集を開始"
+      },
+      "recent": {
+        "title": "最近のリクエスト",
+        "empty": "リクエストはまだありません。"
+      },
+      "deadlines": {
+        "title": "近日の納期",
+        "empty": "近い納期はありません。",
+        "overdue": "期限切れ"
+      },
+      "viewAll": "すべて表示"
+    },
+    "requests": {
+      "title": "リクエスト",
+      "searchPlaceholder": "依頼者名・メールで検索",
+      "allStatuses": "すべてのステータス",
+      "empty": "リクエストはまだありません。",
+      "columns": {
+        "submitted": "受付日",
+        "client": "依頼者",
+        "type": "種類",
+        "deadline": "納期",
+        "quote": "見積もり",
+        "status": "ステータス",
+        "actions": "操作"
+      },
+      "prev": "前へ",
+      "next": "次へ",
+      "page": "{{page}} / {{total}} ページ",
+      "statusFailed": "ステータスを更新できませんでした。",
+      "panel": {
+        "close": "閉じる",
+        "idea": "内容",
+        "references": "参考画像",
+        "submitted": "受付日",
+        "deadline": "納期",
+        "quote": "見積もり",
+        "payment": "支払い",
+        "contact": "連絡先",
+        "status": "ステータス",
+        "openFullPage": "詳細ページ"
+      }
     }
   }
 }

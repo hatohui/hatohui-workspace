@@ -113,7 +113,7 @@ export function AcceptedSlotsTable({
                 <td className="px-3 py-2 text-muted-foreground">
                   {item.deadline
                     ? new Date(item.deadline).toLocaleDateString()
-                    : '—'}
+                    : '-'}
                 </td>
                 <td className="max-w-64 px-3 py-2">
                   <RichTextView

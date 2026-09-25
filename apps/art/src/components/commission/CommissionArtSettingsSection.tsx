@@ -1,6 +1,5 @@
 'use client';
 
-import { useTranslation } from '@hatohui/i18n';
 import { Skeleton } from '@hatohui/ui';
 import { useCommissionArtSettings } from '@/hooks/useCommissionArtSettings';
 import { CommissionArtSettingsForm } from './CommissionArtSettingsForm';
@@ -32,14 +31,10 @@ function SettingsSkeleton() {
 }
 
 export function CommissionArtSettingsSection() {
-  const { t } = useTranslation('art');
   const { settings, isLoading, isSaving, save } = useCommissionArtSettings();
 
   return (
-    <div className="space-y-3">
-      <p className="max-w-2xl text-sm text-muted-foreground">
-        {t('app.commissionSettings.settingsHint')}
-      </p>
+    <>
       {isLoading || !settings ? (
         <SettingsSkeleton />
       ) : (
@@ -53,6 +48,6 @@ export function CommissionArtSettingsSection() {
           onSave={(dto) => save({ data: dto })}
         />
       )}
-    </div>
+    </>
   );
 }

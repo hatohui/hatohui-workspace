@@ -31,7 +31,7 @@ export const TRIAGE_TABS: CommissionDtoStatus[] = [
   CommissionDtoStatus.DECLINED,
 ];
 
-/// Only the sort modes the PRD's triage use case actually asks for —
+/// Only the sort modes the PRD's triage use case actually asks for -
 /// first-come-first-serve (createdAt), custom priority, and by-deadline.
 export const TRIAGE_SORT_OPTIONS: CommissionsSort[] = [
   CommissionsSort.createdAt,
@@ -106,3 +106,30 @@ export const EMPTY_COMMISSION_IDEA: { type: string; content: never[] } = {
   type: 'doc',
   content: [],
 };
+
+export const REQUESTS_ALL_STATUSES = 'ALL';
+
+export const COMMISSION_STATUS_TONES: Record<CommissionDtoStatus, string> = {
+  PENDING: 'bg-primary/10 text-primary',
+  ACCEPTED: 'bg-secondary text-secondary-foreground',
+  DECLINED: 'bg-muted text-muted-foreground',
+  NOT_YET_STARTED: 'bg-secondary text-secondary-foreground',
+  QUEUED: 'bg-secondary text-secondary-foreground',
+  SKETCH: 'bg-secondary text-secondary-foreground',
+  CONFIRMED: 'bg-secondary text-secondary-foreground',
+  ONGOING: 'bg-secondary text-secondary-foreground',
+  COMPLETED: 'bg-muted text-foreground',
+  CANCELLED: 'bg-muted text-muted-foreground',
+};
+
+export const REQUESTS_TABLE_COLUMNS = [
+  'submitted',
+  'client',
+  'type',
+  'deadline',
+  'quote',
+  'status',
+  'actions',
+] as const;
+
+export const EMPTY_VALUE = '-';

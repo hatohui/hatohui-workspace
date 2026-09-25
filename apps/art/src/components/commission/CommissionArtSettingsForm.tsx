@@ -23,7 +23,7 @@ import {
 
 const CURRENCY_OPTIONS = SUPPORTED_CURRENCIES.map((code) => ({
   value: code,
-  label: `${code} — ${CURRENCY_NAMES[code]}`,
+  label: `${code} - ${CURRENCY_NAMES[code]}`,
 }));
 
 export function CommissionArtSettingsForm({
@@ -88,9 +88,6 @@ export function CommissionArtSettingsForm({
               setCurrency(value as CommissionSettingsDto['currency'])
             }
           />
-          <p className="text-xs text-muted-foreground">
-            {t('app.commissionSettings.currencyHint')}
-          </p>
         </div>
 
         <div className="space-y-1.5">
@@ -108,33 +105,22 @@ export function CommissionArtSettingsForm({
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
-          <p className="text-xs text-muted-foreground">
-            {t('app.commissionSettings.notificationEmailHint')}
-          </p>
         </div>
       </div>
 
-      <div className="flex items-start gap-3">
+      <div className="flex items-center gap-3">
         <Switch
           id="art-auto-accept"
           checked={autoAccept}
           onCheckedChange={setAutoAccept}
         />
-        <div className="space-y-0.5">
-          <Label htmlFor="art-auto-accept">
-            {t('app.commissionSettings.autoAccept')}
-          </Label>
-          <p className="text-xs text-muted-foreground">
-            {t('app.commissionSettings.autoAcceptHint')}
-          </p>
-        </div>
+        <Label htmlFor="art-auto-accept">
+          {t('app.commissionSettings.autoAccept')}
+        </Label>
       </div>
 
       <div className="space-y-2">
         <Label>{t('app.commissionSettings.paymentMethods')}</Label>
-        <p className="text-xs text-muted-foreground">
-          {t('app.commissionSettings.paymentMethodsHint')}
-        </p>
         <PaymentMethodListEditor methods={methods} onChange={setMethods} />
       </div>
 

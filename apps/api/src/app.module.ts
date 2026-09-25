@@ -26,6 +26,7 @@ import { CommissionTypesModule } from '@/modules/commission-types/commission-typ
 import { CommissionPricingModule } from '@/modules/commission-pricing/commission-pricing.module';
 import { ProjectsModule } from '@/modules/projects/projects.module';
 import { CommissionOpeningsModule } from '@/modules/commission-openings/commission-openings.module';
+import { ArtistDashboardModule } from '@/modules/artist-dashboard/artist-dashboard.module';
 import { CommissionProgressModule } from '@/modules/commission-progress/commission-progress.module';
 import { ClientsModule } from '@/modules/clients/clients.module';
 import { CommissionFollowersModule } from '@/modules/commission-followers/commission-followers.module';
@@ -63,6 +64,7 @@ import { CommissionGroupsModule } from '@/modules/commission-groups/commission-g
     CommissionPricingModule,
     ProjectsModule,
     CommissionOpeningsModule,
+    ArtistDashboardModule,
     CommissionProgressModule,
     ClientsModule,
     CommissionFollowersModule,

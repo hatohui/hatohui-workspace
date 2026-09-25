@@ -433,29 +433,21 @@
       "commissionSettings": "Commission settings",
       "commissionOpening": "Commission opening",
       "openLabel": "App",
-      "backToSite": "Back to site"
+      "backToSite": "Back to site",
+      "requests": "Requests"
     },
     "commissionSettings": {
       "title": "Commission settings",
-      "subtitle": "Set what clients can request, how each option is priced, and your rush-fee policy.",
       "types": "Commission types",
-      "typesHint": "Pick a type to edit its options and pricing. The toggle controls whether clients can choose it.",
       "options": "Options",
       "addons": "Add-ons",
-      "addonsHint": "Optional extras clients can add on top of a commission.",
       "rushFee": "Rush fee",
-      "rushFeeHint": "Charge extra when a deadline is closer than the threshold. Turn it off to disable it entirely.",
       "settings": "General",
-      "settingsHint": "Currency, triage, and how you get paid. Currency applies to every price below.",
       "currency": "Currency",
-      "currencyHint": "The currency all your prices and quotes are in.",
       "autoAccept": "Auto-accept requests",
-      "autoAcceptHint": "Skip manual triage - new submissions are accepted automatically.",
       "notificationEmail": "Notification email",
-      "notificationEmailHint": "Where new-request emails go. Leave blank to use your account email.",
       "notificationEmailPlaceholder": "you@example.com",
-      "paymentMethods": "Payment methods you accept",
-      "paymentMethodsHint": "Add the ways clients can pay you and how. Shown when they request a commission.",
+      "paymentMethods": "Payment methods",
       "save": "Save settings",
       "saved": "Settings saved.",
       "saveFailed": "Couldn't save settings.",
@@ -483,7 +475,74 @@
     },
     "dashboard": {
       "title": "Dashboard",
-      "welcome": "Welcome back, {{name}}."
+      "welcome": "Welcome back, {{name}}.",
+      "greeting": {
+        "morning": "Good morning, {{name}}",
+        "afternoon": "Good afternoon, {{name}}",
+        "evening": "Good evening, {{name}}"
+      },
+      "actions": {
+        "requests": "Requests",
+        "settings": "Settings"
+      },
+      "stats": {
+        "pending": "Awaiting review",
+        "inProgress": "In progress",
+        "completed": "Completed",
+        "paidThisMonth": "Paid this month",
+        "inProgressValue": "{{amount}} in progress"
+      },
+      "opening": {
+        "OPEN": "Commissions open",
+        "CLOSED": "Commissions closed",
+        "SCHEDULED": "Opening scheduled",
+        "slots": "slots",
+        "since": "Open since {{date}}",
+        "scheduledFor": "Opens {{date}}",
+        "manage": "Manage opening",
+        "cta": "Open commissions"
+      },
+      "recent": {
+        "title": "Recent requests",
+        "empty": "No requests yet."
+      },
+      "deadlines": {
+        "title": "Upcoming deadlines",
+        "empty": "Nothing due soon.",
+        "overdue": "Overdue"
+      },
+      "viewAll": "View all"
+    },
+    "requests": {
+      "title": "Requests",
+      "searchPlaceholder": "Search by client or email",
+      "allStatuses": "All statuses",
+      "empty": "No requests yet.",
+      "columns": {
+        "submitted": "Submitted",
+        "client": "Client",
+        "type": "Type",
+        "deadline": "Deadline",
+        "quote": "Quote",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {{page}} of {{total}}",
+      "statusFailed": "Couldn't update the status.",
+      "panel": {
+        "close": "Close",
+        "idea": "Idea",
+        "references": "References",
+        "submitted": "Submitted",
+        "deadline": "Deadline",
+        "quote": "Quote",
+        "payment": "Payment",
+        "contact": "Contact",
+        "status": "Status",
+        "openFullPage": "Full details"
+      }
     }
   }
 }

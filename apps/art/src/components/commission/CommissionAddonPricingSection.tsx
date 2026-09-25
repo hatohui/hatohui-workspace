@@ -156,12 +156,7 @@ export function CommissionAddonPricingSection() {
 
   return (
     <section className="space-y-3">
-      <div className="max-w-2xl space-y-1">
-        <h2 className="font-medium">{t('app.commissionSettings.addons')}</h2>
-        <p className="text-sm text-muted-foreground">
-          {t('app.commissionSettings.addonsHint')}
-        </p>
-      </div>
+      <h2 className="font-medium">{t('app.commissionSettings.addons')}</h2>
       <EditableDataTable
         columns={columns}
         rows={draft ? [...rows, draft] : rows}

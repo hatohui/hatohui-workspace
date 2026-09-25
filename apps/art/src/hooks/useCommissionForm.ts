@@ -61,7 +61,7 @@ export function useCommissionForm(artistId: string) {
   // Restoring a draft must happen post-mount, not in a lazy initializer:
   // localStorage doesn't exist during the server render, so an initializer
   // that read it would disagree with the client's first paint and fail
-  // hydration. This is exactly what an effect is for — syncing from an
+  // hydration. This is exactly what an effect is for - syncing from an
   // external system unavailable at render time.
   useEffect(() => {
     const draft = loadDraft();

@@ -12,7 +12,7 @@ export function useCommissionDisplayLabel() {
         })
       : null;
 
-    if (typeLabel && clientName) return `${typeLabel} — ${clientName}`;
+    if (typeLabel && clientName) return `${typeLabel} - ${clientName}`;
     return typeLabel ?? clientName ?? t('commission.admin.title');
   };
 }
