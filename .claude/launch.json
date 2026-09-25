@@ -5,7 +5,8 @@
       "name": "api",
       "runtimeExecutable": "bun",
       "runtimeArgs": ["--cwd=apps/api", "run", "start:dev"],
-      "port": 3000
+      "port": 4310,
+      "autoPort": true
     },
     {
       "name": "art",

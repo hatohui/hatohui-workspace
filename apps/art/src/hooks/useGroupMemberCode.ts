@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 const STORAGE_PREFIX = 'hatohui:art:group-member-code:';
 
 /** Remembers which of the visitor's own commission access codes proves
- * their membership in this group — a browser-local convenience, not the
+ * their membership in this group - a browser-local convenience, not the
  * credential itself (the PRD: "what the browser remembers is the
  * convenience... keyed per access code"). Read after mount only, since
  * localStorage doesn't exist during SSR. */
@@ -20,7 +20,7 @@ export function useGroupMemberCode(groupCode: string) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing from localStorage, unavailable at render/SSR time
       setMemberCodeState(stored);
     } catch {
-      // localStorage unavailable — the visitor just re-enters their code.
+      // localStorage unavailable - the visitor just re-enters their code.
     }
   }, [groupCode]);
 

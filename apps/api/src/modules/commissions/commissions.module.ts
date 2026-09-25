@@ -9,5 +9,6 @@ import { CommissionsService } from '@/modules/commissions/services/commissions.s
   imports: [AuthModule, UserSettingsModule, CommissionOpeningsModule],
   controllers: [CommissionsController],
   providers: [CommissionsService],
+  exports: [CommissionsService],
 })
 export class CommissionsModule {}

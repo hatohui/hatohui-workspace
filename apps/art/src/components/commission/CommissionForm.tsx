@@ -13,7 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@hatohui/ui';
-import { PREFERRED_CONTACT_METHODS } from '@/constants/commission';
+import {
+  EMAIL_INPUT_PATTERN,
+  PREFERRED_CONTACT_METHODS,
+} from '@/constants/commission';
 import { useCommissionForm } from '@/hooks/useCommissionForm';
 import { CommissionTypeFields } from './CommissionTypeFields';
 import { CommissionQuoteEstimate } from './CommissionQuoteEstimate';
@@ -93,6 +96,8 @@ export function CommissionForm({ artistId }: { artistId: string }) {
           id="clientEmail"
           type="email"
           required
+          pattern={EMAIL_INPUT_PATTERN}
+          title={t('commission.form.invalidEmail')}
           value={form.state.clientEmail}
           onChange={(event) => form.update('clientEmail', event.target.value)}
         />
@@ -147,6 +152,12 @@ export function CommissionForm({ artistId }: { artistId: string }) {
         isPublic={form.state.isPublic}
         onChange={(value) => form.update('isPublic', value)}
       />
+
+      {form.hasSubmitError && (
+        <p className="text-sm text-destructive" role="alert">
+          {t('commission.form.submitFailed')}
+        </p>
+      )}
 
       <div className="flex gap-2">
         <Button

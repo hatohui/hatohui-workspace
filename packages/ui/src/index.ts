@@ -15,6 +15,7 @@ export * from './components/ui/popover';
 export * from './components/ui/calendar';
 export * from './components/ui/date-time-field';
 export * from './components/ui/dialog';
+export * from './components/ui/sheet';
 export * from './components/ui/tooltip';
 export * from './components/ui/loading-dots';
 export * from './components/ui/spinner';

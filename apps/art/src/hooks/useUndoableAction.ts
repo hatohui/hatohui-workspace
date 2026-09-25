@@ -7,7 +7,7 @@ export interface PendingUndo {
   undo: () => void;
 }
 
-/** Fire-and-forget action with a transient "Undo" affordance — matches the
+/** Fire-and-forget action with a transient "Undo" affordance - matches the
  * PRD's "accept/decline take effect immediately with no confirmation
  * dialog; an undo button is the safety net." */
 export function useUndoableAction(timeoutMs = 6000) {

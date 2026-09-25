@@ -26,12 +26,14 @@ export class Storage {
   getSignedUploadUrl(
     key: string,
     contentType: string,
+    contentLength: number,
     expiresInSeconds: number,
   ): Promise<string> {
     const command = new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,
       ContentType: contentType,
+      ContentLength: contentLength,
     });
     return getSignedUrl(this.client, command, {
       expiresIn: expiresInSeconds,

@@ -8,7 +8,7 @@ import { OpeningStatusBadge } from './OpeningStatusBadge';
 const COLUMNS = ['status', 'endMode', 'slots', 'opened', 'closed'] as const;
 
 function formatDate(value: string | null): string {
-  return value ? new Date(value).toLocaleDateString() : '—';
+  return value ? new Date(value).toLocaleDateString() : '-';
 }
 
 export function OpeningHistoryTable({

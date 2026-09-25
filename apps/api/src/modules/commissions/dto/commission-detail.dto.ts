@@ -12,6 +12,9 @@ export class CommissionDetailDto extends CommissionDto {
 }
 
 export class CommissionPublicDetailDto extends CommissionPublicDto {
+  @ApiProperty({ example: 'Jane Doe' })
+  clientName: string;
+
   @ApiProperty({ type: CommentDto, isArray: true })
   comments: CommentDto[];
 }

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Storage } from '@/infra/storage';
-import { stagedUploadKey } from '@/common/utils/asset-paths';
+import { pathSegmentOf, stagedUploadKey } from '@/common/utils/asset-paths';
 import {
   SignImageDto,
   SignedImageDto,
@@ -23,13 +23,17 @@ export class ImagesService {
   /// home: the record that will own it (a profile, a commission) often does
   /// not exist yet at this point. Whichever service persists the returned key
   /// relocates the object — see `@/common/utils/asset-paths`.
-  async sign(dto: SignImageDto, uploaderId: string): Promise<SignedImageDto> {
+  async sign(
+    dto: SignImageDto,
+    uploaderId: string | null,
+  ): Promise<SignedImageDto> {
     const extension = EXTENSION_BY_CONTENT_TYPE[dto.contentType];
-    const key = stagedUploadKey(uploaderId, extension);
+    const key = stagedUploadKey(this.ownerOf(dto, uploaderId), extension);
 
     const uploadUrl = await this.storage.getSignedUploadUrl(
       key,
       dto.contentType,
+      dto.size,
       UPLOAD_URL_EXPIRY_SECONDS,
     );
 
@@ -39,5 +43,15 @@ export class ImagesService {
       publicUrl: this.storage.getPublicUrl(key),
       expiresIn: UPLOAD_URL_EXPIRY_SECONDS,
     };
+  }
+
+  private ownerOf(dto: SignImageDto, uploaderId: string | null): string {
+    if (uploaderId) return uploaderId;
+    if (!dto.uploaderName) {
+      throw new BadRequestException(
+        'uploaderName is required when not signed in',
+      );
+    }
+    return pathSegmentOf(dto.uploaderName);
   }
 }

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Settings, DoorOpen } from 'lucide-react';
+import { LayoutDashboard, Settings, DoorOpen, Inbox } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
 
@@ -29,6 +29,12 @@ export function useAppNav(): AppNavItem[] {
 
   if (user?.isArtist) {
     items.push(
+      {
+        href: '/app/requests',
+        label: t('app.nav.requests'),
+        icon: <Inbox />,
+        active: pathname?.startsWith('/app/requests') ?? false,
+      },
       {
         href: '/app/commission-settings',
         label: t('app.nav.commissionSettings'),

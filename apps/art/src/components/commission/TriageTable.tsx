@@ -56,10 +56,10 @@ export function TriageTable({
               <td className="px-3 py-2 text-muted-foreground">
                 {item.deadline
                   ? new Date(item.deadline).toLocaleDateString()
-                  : '—'}
+                  : '-'}
               </td>
               <td className="px-3 py-2">
-                {item.quote != null ? `$${(item.quote / 100).toFixed(2)}` : '—'}
+                {item.quote != null ? `$${(item.quote / 100).toFixed(2)}` : '-'}
               </td>
               <td className="max-w-64 px-3 py-2">
                 <RichTextView

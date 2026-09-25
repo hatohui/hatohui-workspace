@@ -28,7 +28,7 @@ export function CommissionHistoryList({
           <li key={entry.id}>
             {entry.fromStatus
               ? t(`commission.status.${entry.fromStatus}`)
-              : '—'}{' '}
+              : '-'}{' '}
             → {t(`commission.status.${entry.toStatus}`)} ·{' '}
             {new Date(entry.createdAt).toLocaleString()}
           </li>

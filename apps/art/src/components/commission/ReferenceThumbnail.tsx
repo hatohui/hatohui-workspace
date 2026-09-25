@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@hatohui/ui';
 import { LinkIcon } from 'lucide-react';
 
 /** Renders the first reference as an image; if it fails to load (a client
- * pasted a link rather than uploading — the API stores both the same way),
+ * pasted a link rather than uploading - the API stores both the same way),
  * falls back to a linked icon with the URL in a tooltip. */
 export function ReferenceThumbnail({ url }: { url: string | undefined }) {
   const { t } = useTranslation('art');
@@ -38,7 +38,7 @@ export function ReferenceThumbnail({ url }: { url: string | undefined }) {
     );
   }
 
-  // Arbitrary external/uploaded hosts — next/image can't optimize these.
+  // Arbitrary external/uploaded hosts - next/image can't optimize these.
   return (
     <img
       src={url}

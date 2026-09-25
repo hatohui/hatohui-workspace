@@ -35,5 +35,6 @@ export interface CommissionPublicDetailDto {
   deliveredAt: string | null;
   createdAt: string;
   updatedAt: string;
+  clientName: string;
   comments: CommentDto[];
 }

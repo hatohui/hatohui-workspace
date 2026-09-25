@@ -65,7 +65,7 @@ export function OpeningStatTiles({
       </div>
       <Tile
         label={t('commission.admin.opening.stat.daysOpen')}
-        value={open != null ? String(open) : '—'}
+        value={open != null ? String(open) : '-'}
       />
       <Tile
         label={t('commission.admin.opening.stat.status')}

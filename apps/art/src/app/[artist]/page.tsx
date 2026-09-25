@@ -5,7 +5,7 @@ import { GALLERY_PAGE_SIZE } from '@/constants/gallery';
 import { resolveArtist } from '@/lib/artist';
 
 // The gallery must reflect live uploads, and the CI build has no reachable
-// API to prerender against anyway — always render this route per-request.
+// API to prerender against anyway - always render this route per-request.
 export const dynamic = 'force-dynamic';
 
 export default async function ArtistGalleryPage({
