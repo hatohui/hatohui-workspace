@@ -226,15 +226,6 @@ class CommissionRequestBaseDto {
   artistId: string;
 
   @ApiProperty({
-    required: false,
-    description:
-      'Id of the CommissionOpening this is submitted through, if any',
-  })
-  @IsOptional()
-  @IsString()
-  commissionOpeningId?: string;
-
-  @ApiProperty({
     type: 'object',
     additionalProperties: true,
     description: 'Tiptap/ProseMirror JSON document describing the idea',

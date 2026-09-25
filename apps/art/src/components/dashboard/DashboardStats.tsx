@@ -11,6 +11,7 @@ export function DashboardStats({
     value: string;
     highlight: boolean;
     caption?: string;
+    href?: string;
   }[];
 }) {
   return (
@@ -22,6 +23,7 @@ export function DashboardStats({
           value={stat.value}
           highlight={stat.highlight}
           caption={stat.caption}
+          href={stat.href}
         />
       ))}
     </div>

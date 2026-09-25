@@ -322,7 +322,13 @@
       "previewTitle": "委托人看到的内容",
       "previewEmpty": "为委托类型设置价格后，将在此显示。",
       "autosaving": "正在保存…",
-      "autosaved": "所有更改已保存"
+      "autosaved": "所有更改已保存",
+      "examples": {
+        "title": "样例",
+        "hint": "让委托人看看成品效果。样例会显示在委托表单和你的作品集中。",
+        "add": "添加样例图片",
+        "uploadFailed": "图片上传失败。"
+      }
     },
     "nav": {
       "commissions": "委托",
@@ -372,6 +378,21 @@
       "linkedAccount": "已有账户",
       "viewProfile": "查看主页",
       "history_other": "与你的 {{count}} 个委托"
+    },
+    "dashboard": {
+      "actions": {
+        "queue": "进行中"
+      },
+      "attention": {
+        "waiting_other": "你有 {{count}} 个新请求待处理",
+        "openQuiet": "正在接稿。新请求会显示在这里。",
+        "review": "去查看"
+      },
+      "opening": {
+        "slotsOfCap": "已占 {{taken}}/{{cap}} 个名额 · 剩余 {{left}} 个",
+        "accepted_other": "已接受 {{count}} 个",
+        "noneTaken": "还没有名额被占用"
+      }
     }
   }
 }

@@ -58,6 +58,14 @@ export class CommissionOpeningsService {
     return this.toDto(opening);
   }
 
+  async openIdFor(artistId: string): Promise<string | null> {
+    const opening = await this.db.commissionOpening.findFirst({
+      where: { artistId, status: CommissionOpeningStatus.OPEN },
+      select: { id: true },
+    });
+    return opening?.id ?? null;
+  }
+
   async listMine(artistId: string): Promise<CommissionOpeningDto[]> {
     const rows = await this.db.commissionOpening.findMany({
       where: { artistId },

@@ -26,4 +26,9 @@ export interface ArtistCommissionTypeDto {
      * @nullable
      */
   startingPrice: number | null;
+  /**
+     * Gallery tag whose images show as examples for this type on the request form
+     * @nullable
+     */
+  tagName: string | null;
 }

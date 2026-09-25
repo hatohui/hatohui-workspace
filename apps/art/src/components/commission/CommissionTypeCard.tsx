@@ -7,6 +7,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { ArtistCommissionTypeDto } from '@hatohui/models';
 import { CommissionTypeCardBody } from './CommissionTypeCardBody';
+import { CommissionTypeExamples } from './CommissionTypeExamples';
 
 function priceSummary(
   type: ArtistCommissionTypeDto,
@@ -94,11 +95,12 @@ export function CommissionTypeCard({
       </div>
 
       {type.enabled && (
-        <div className="border-t border-border p-4">
+        <div className="space-y-5 border-t border-border p-4">
           <CommissionTypeCardBody
             commissionTypeId={type.commissionTypeId}
             typeLabel={type.label}
           />
+          <CommissionTypeExamples tagName={type.tagName} />
         </div>
       )}
     </div>
