@@ -536,6 +536,11 @@
         "waiting_other": "You have {{count}} new requests waiting",
         "openQuiet": "Commissions are open. New requests will show up here.",
         "review": "Review"
+      },
+      "setup": {
+        "title": "Finish setting up commissions",
+        "progress": "{{done}} of {{total}} steps done",
+        "cta": "Continue setup"
       }
     },
     "requests": {
@@ -633,6 +638,35 @@
       "sent_quote": "Quote sent.",
       "sent_accept": "Request accepted.",
       "failed": "Couldn't send that. Try again."
+    },
+    "setup": {
+      "progress": "Step {{current}} of {{total}}",
+      "skip": "Skip for now",
+      "back": "Back",
+      "continue": "Continue",
+      "examplesNeedTypes": "Turn on at least one commission type first, then add examples here.",
+      "steps": {
+        "payment": {
+          "short": "Payment",
+          "title": "How clients pay you",
+          "description": "Pick your currency and add the ways clients can pay. You can change these later in Configure."
+        },
+        "pricing": {
+          "short": "Prices",
+          "title": "What you offer",
+          "description": "Turn on the commission types you take and give each a price. Clients see these as a price list."
+        },
+        "examples": {
+          "short": "Examples",
+          "title": "Show your work",
+          "description": "Add a few example pieces for each type. They show on your request form and in your gallery."
+        },
+        "opening": {
+          "short": "Open",
+          "title": "Open commissions",
+          "description": "Choose how this opening ends, or schedule it for later. You'll land on your commissions page when it's done."
+        }
+      }
     }
   }
 }

@@ -397,6 +397,11 @@
         "slotsOfCap": "已占 {{taken}}/{{cap}} 个名额 · 剩余 {{left}} 个",
         "accepted_other": "已接受 {{count}} 个",
         "noneTaken": "还没有名额被占用"
+      },
+      "setup": {
+        "title": "完成委托设置",
+        "progress": "已完成 {{done}}/{{total}} 步",
+        "cta": "继续设置"
       }
     },
     "quotes": {
@@ -422,6 +427,35 @@
       "sent_quote": "报价已发送。",
       "sent_accept": "已接受请求。",
       "failed": "发送失败，请重试。"
+    },
+    "setup": {
+      "progress": "第 {{current}}/{{total}} 步",
+      "skip": "稍后再说",
+      "back": "上一步",
+      "continue": "继续",
+      "examplesNeedTypes": "请先开启至少一种委托类型，再在这里添加样例。",
+      "steps": {
+        "payment": {
+          "short": "付款",
+          "title": "委托人如何付款",
+          "description": "选择货币并添加付款方式。之后可以在“设置”中修改。"
+        },
+        "pricing": {
+          "short": "价格",
+          "title": "你提供什么",
+          "description": "开启你接受的委托类型并为每种设定价格。委托人会看到价目表。"
+        },
+        "examples": {
+          "short": "样例",
+          "title": "展示你的作品",
+          "description": "为每种类型添加几张样例。它们会显示在委托表单和你的作品集中。"
+        },
+        "opening": {
+          "short": "开放",
+          "title": "开放委托",
+          "description": "选择本次开放如何结束，或预约开放时间。完成后会跳转到委托页面。"
+        }
+      }
     }
   }
 }

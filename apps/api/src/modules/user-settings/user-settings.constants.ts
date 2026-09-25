@@ -29,6 +29,10 @@ export const USER_SETTING_TYPES = {
     scope: AppScope.ART,
     type: 'art.commission.notificationemail',
   },
+  artistSetupDismissed: {
+    scope: AppScope.ART,
+    type: 'art.setup.dismissed',
+  },
   notificationEmailEnabled: {
     scope: AppScope.FRIENDS,
     type: 'friends.notifications.emailenabled',
