@@ -1,8 +1,9 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { User } from '@prisma/client';
-import { AuthGuard } from '@/modules/auth/guards/auth.guard';
-import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { OptionalAuthGuard } from '@/modules/auth/guards/optional-auth.guard';
+import { OptionalCurrentUser } from '@/modules/auth/decorators/optional-current-user.decorator';
+import { SignRateLimitGuard } from '@/modules/images/guards/sign-rate-limit.guard';
 import {
   SignImageDto,
   SignedImageDto,
@@ -15,7 +16,7 @@ export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Post('sign')
-  @UseGuards(AuthGuard)
+  @UseGuards(OptionalAuthGuard, SignRateLimitGuard)
   @ApiOperation({
     operationId: 'signImage',
     summary: 'Get a presigned URL to upload an image directly to storage',
@@ -23,8 +24,8 @@ export class ImagesController {
   @ApiOkResponse({ type: SignedImageDto })
   sign(
     @Body() dto: SignImageDto,
-    @CurrentUser() uploader: User,
+    @OptionalCurrentUser() uploader: User | null,
   ): Promise<SignedImageDto> {
-    return this.imagesService.sign(dto, uploader.id);
+    return this.imagesService.sign(dto, uploader?.id ?? null);
   }
 }

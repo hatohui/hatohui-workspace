@@ -11,6 +11,7 @@
 /// Layout, under the bucket served at R2_PUBLIC_URL:
 ///
 ///   uploads/<uploaderUserId>/<uuid>.<ext>   staging, pre-relocation
+///   uploads/<client-name>/<uuid>.<ext>      staging for logged-out clients
 ///   avatars/<profileId>/<uuid>.<ext>        live avatar + its version history
 ///   art/commissions/<userId>/<uuid>.<ext>   delivered commission artwork
 ///   art/references/<userId>/<uuid>.<ext>    client-supplied reference images
@@ -22,14 +23,29 @@
 import { randomUUID } from 'node:crypto';
 
 export const STAGING_PREFIX = 'uploads';
+export const UNNAMED_UPLOADER_SEGMENT = 'client';
+export const MAX_PATH_SEGMENT_LENGTH = 40;
 export const AVATARS_PREFIX = 'avatars';
 export const COMMISSIONS_PREFIX = 'art/commissions';
 export const REFERENCES_PREFIX = 'art/references';
 export const ASSET_THUMBNAILS_PREFIX = 'art/assets/thumbnails';
 
 /// Where a freshly signed upload goes before its owning record exists.
-export function stagedUploadKey(uploaderId: string, extension: string): string {
-  return `${STAGING_PREFIX}/${uploaderId}/${randomUUID()}.${extension}`;
+export function stagedUploadKey(owner: string, extension: string): string {
+  return `${STAGING_PREFIX}/${owner}/${randomUUID()}.${extension}`;
+}
+
+/// Turns a free-text name into a safe single path segment.
+export function pathSegmentOf(label: string): string {
+  const segment = label
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, MAX_PATH_SEGMENT_LENGTH)
+    .replace(/-+$/, '');
+  return segment || UNNAMED_UPLOADER_SEGMENT;
 }
 
 export function isStagedKey(key: string): boolean {

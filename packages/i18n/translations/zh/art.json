@@ -97,6 +97,8 @@
       "isPublicTooltip": "勾选后，类型和当前状态将在公开的 /queue 页面显示。你的姓名、邮箱、联系方式、想法和参考图片始终保密。",
       "submit": "提交请求",
       "submitting": "正在提交...",
+      "invalidEmail": "请输入完整的邮箱地址，例如 name@example.com",
+      "submitFailed": "无法提交请求。请检查填写的信息后重试。",
       "success": "你的请求已提交，我会尽快回复你。",
       "draftRestored": "已为你恢复上次未提交的草稿。",
       "clear": "清空表单",

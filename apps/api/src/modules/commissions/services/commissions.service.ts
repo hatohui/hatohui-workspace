@@ -216,7 +216,11 @@ export class CommissionsService {
       where: { commissionId: commission.id, visibility: Visibility.CLIENT },
       orderBy: { createdAt: 'desc' },
     });
-    return { ...toPublicDto(commission), comments: comments.map(toCommentDto) };
+    return {
+      ...toPublicDto(commission),
+      clientName: commission.client.name,
+      comments: comments.map(toCommentDto),
+    };
   }
 
   async findByEmail(email: string): Promise<CommissionPublicDto[]> {

@@ -101,6 +101,8 @@
       "isPublicTooltip": "If checked, your commission type and current status will be visible on the public /queue page. Your name, email, contact info, idea, and reference images always stay private.",
       "submit": "Submit request",
       "submitting": "Submitting...",
+      "invalidEmail": "Enter a full email address, e.g. name@example.com",
+      "submitFailed": "Couldn't submit your request. Check your details and try again.",
       "success": "Your request has been submitted. You'll hear back soon.",
       "draftRestored": "We restored your unsaved draft from last time.",
       "clear": "Clear form",

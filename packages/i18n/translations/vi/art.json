@@ -101,6 +101,8 @@
       "isPublicTooltip": "Nếu chọn, loại tranh và trạng thái hiện tại sẽ hiển thị công khai trên trang /queue. Tên, email, thông tin liên hệ, ý tưởng và ảnh tham khảo của bạn luôn được giữ riêng tư.",
       "submit": "Gửi yêu cầu",
       "submitting": "Đang gửi...",
+      "invalidEmail": "Nhập địa chỉ email đầy đủ, ví dụ name@example.com",
+      "submitFailed": "Không thể gửi yêu cầu. Vui lòng kiểm tra thông tin và thử lại.",
       "success": "Yêu cầu của bạn đã được gửi. Bạn sẽ sớm nhận được phản hồi.",
       "draftRestored": "Chúng tôi đã khôi phục bản nháp chưa lưu của bạn.",
       "clear": "Xóa form",

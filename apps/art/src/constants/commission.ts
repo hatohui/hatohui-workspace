@@ -7,6 +7,8 @@ import {
 } from '@hatohui/models';
 import type { CommissionOpeningDto } from '@hatohui/models';
 
+export const EMAIL_INPUT_PATTERN = String.raw`[^@\s]+@[^@\s]+\.[^@\s]+`;
+
 export const COMMISSION_STATUS_OPTIONS = Object.values(CommissionDtoStatus);
 export const PAYMENT_STATUS_OPTIONS = Object.values(CommissionDtoPaymentStatus);
 

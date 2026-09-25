@@ -56,6 +56,7 @@ export function useCommissionForm(artistId: string) {
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isDraftRestored, setIsDraftRestored] = useState(false);
+  const [hasSubmitError, setHasSubmitError] = useState(false);
 
   // Restoring a draft must happen post-mount, not in a lazy initializer:
   // localStorage doesn't exist during the server render, so an initializer
@@ -100,8 +101,23 @@ export function useCommissionForm(artistId: string) {
 
   const submit = async () => {
     if (isIdeaEmpty) return;
+    setHasSubmitError(false);
 
-    const uploaded = await Promise.all(files.map((file) => uploadImage(file)));
+    try {
+      await submitWithUploads();
+    } catch {
+      setHasSubmitError(true);
+      return;
+    }
+
+    window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+    setIsSubmitted(true);
+  };
+
+  const submitWithUploads = async () => {
+    const uploaded = await Promise.all(
+      files.map((file) => uploadImage(file, state.clientName)),
+    );
 
     await submitCommission.mutateAsync({
       data: {
@@ -119,9 +135,6 @@ export function useCommissionForm(artistId: string) {
         isPublic: state.isPublic,
       },
     });
-
-    window.localStorage.removeItem(DRAFT_STORAGE_KEY);
-    setIsSubmitted(true);
   };
 
   const reset = () => {
@@ -140,6 +153,7 @@ export function useCommissionForm(artistId: string) {
     reset,
     isSubmitting: submitCommission.isPending || isUploading,
     isSubmitted,
+    hasSubmitError,
     isDraftRestored,
     isIdeaEmpty,
     pricing,

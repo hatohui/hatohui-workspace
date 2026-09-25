@@ -52,7 +52,9 @@ export function useCommissionCodeLookup(code: string) {
 
     addReferenceAssets: async (files: File[], urls: string[] = []) => {
       const uploaded = await Promise.all(
-        files.map((file) => uploadImage(file)),
+        files.map((file) =>
+          uploadImage(file, detailQuery.data?.data.clientName),
+        ),
       );
       return addReferenceAssets.mutateAsync({
         code,

@@ -5183,11 +5183,23 @@
               "image/gif",
               "image/avif"
             ]
+          },
+          "size": {
+            "type": "number",
+            "example": 204800,
+            "description": "File size in bytes; the upload must match it exactly",
+            "maximum": 10485760
+          },
+          "uploaderName": {
+            "type": "string",
+            "example": "Jane Doe",
+            "description": "Required when not signed in; names the upload folder"
           }
         },
         "required": [
           "fileName",
-          "contentType"
+          "contentType",
+          "size"
         ]
       },
       "SignedImageDto": {
@@ -6723,6 +6735,10 @@
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
           },
+          "clientName": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
           "comments": {
             "type": "array",
             "items": {
@@ -6745,6 +6761,7 @@
           "deliveredAt",
           "createdAt",
           "updatedAt",
+          "clientName",
           "comments"
         ]
       },
