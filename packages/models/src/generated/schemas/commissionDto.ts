@@ -64,6 +64,21 @@ export interface CommissionDto {
      * @nullable
      */
   originalQuote: number | null;
+  /**
+     * Lower bound of the price calculated at submission
+     * @nullable
+     */
+  estimateLow: number | null;
+  /**
+     * Upper bound of the calculated price; null when open-ended or no estimate
+     * @nullable
+     */
+  estimateHigh: number | null;
+  /**
+     * When a quote was last sent to the client
+     * @nullable
+     */
+  quoteSentAt: string | null;
   clientName: string;
   clientEmail: string;
   preferredContactMethod: CommissionDtoPreferredContactMethod;

@@ -549,7 +549,8 @@
         "deadline": "Deadline",
         "status": "Status",
         "actions": "Actions",
-        "price": "Price"
+        "price": "Price",
+        "estimate": "Price"
       },
       "prev": "Previous",
       "next": "Next",
@@ -565,13 +566,15 @@
         "payment": "Payment",
         "contact": "Contact",
         "status": "Status",
-        "openFullPage": "Full details"
+        "openFullPage": "Full details",
+        "estimate": "Estimate"
       },
       "order": "Order",
       "orders": {
         "desc": "Newest first",
         "asc": "Oldest first"
-      }
+      },
+      "quoteSent": "Quote sent"
     },
     "commissions": {
       "title": "Commissions",
@@ -606,6 +609,30 @@
       "viewProfile": "View profile",
       "history_one": "{{count}} commission with you",
       "history_other": "{{count}} commissions with you"
+    },
+    "quotes": {
+      "title": {
+        "quote": "Send a quote",
+        "accept": "Accept request"
+      },
+      "description": {
+        "quote": "Tell {{name}} your price. They'll see it on their commission page and by email; you can accept once you've agreed.",
+        "accept": "Accept {{name}}'s request at this price. They'll be told by email."
+      },
+      "amount": "Price ({{currency}})",
+      "estimate": "Calculated from your prices: {{estimate}}",
+      "message": "Message (optional)",
+      "messagePlaceholder": "e.g. Happy to take this! The extra character adds a bit, so it comes to…",
+      "messageHint": "Shown to the client on their commission page and in the email.",
+      "cancel": "Cancel",
+      "submit": {
+        "quote": "Send quote",
+        "accept": "Accept at this price"
+      },
+      "sendQuote": "Send quote",
+      "sent_quote": "Quote sent.",
+      "sent_accept": "Request accepted.",
+      "failed": "Couldn't send that. Try again."
     }
   }
 }

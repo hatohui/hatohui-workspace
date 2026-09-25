@@ -41,6 +41,7 @@ import type {
   LookupCommissionsByEmailParams,
   PaginatedCommissionsDto,
   SendConfirmationEmailDto,
+  SendQuoteDto,
   SubmitCommissionDto,
   UpdateCommissionPriorityDto,
   UpdateCommissionQuoteDto,
@@ -1396,6 +1397,89 @@ export const useUpdateCommissionQuote = <TError = unknown,
         TContext
       > => {
       return useMutation(getUpdateCommissionQuoteMutationOptions(options), queryClient);
+    }
+    export type sendCommissionQuoteResponse200 = {
+  data: CommissionDto
+  status: 200
+}
+
+export type sendCommissionQuoteResponseSuccess = (sendCommissionQuoteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type sendCommissionQuoteResponse = (sendCommissionQuoteResponseSuccess)
+
+export const getSendCommissionQuoteUrl = (id: string,) => {
+
+
+
+
+  return `/commissions/${id}/quote`
+}
+
+/**
+ * @summary Send the client a price, optionally with a message, and optionally accept at that price
+ */
+export const sendCommissionQuote = async (id: string,
+    sendQuoteDto: SendQuoteDto, options?: RequestInit): Promise<sendCommissionQuoteResponse> => {
+
+  return customFetch<sendCommissionQuoteResponse>(getSendCommissionQuoteUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(sendQuoteDto)
+  }
+);}
+
+
+
+
+
+export const getSendCommissionQuoteMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCommissionQuote>>, TError,{id: string;data: SendQuoteDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof sendCommissionQuote>>, TError,{id: string;data: SendQuoteDto}, TContext> => {
+
+const mutationKey = ['sendCommissionQuote'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendCommissionQuote>>, {id: string;data: SendQuoteDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  sendCommissionQuote(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SendCommissionQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof sendCommissionQuote>>>
+    export type SendCommissionQuoteMutationBody = SendQuoteDto
+    export type SendCommissionQuoteMutationError = unknown
+
+    /**
+ * @summary Send the client a price, optionally with a message, and optionally accept at that price
+ */
+export const useSendCommissionQuote = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCommissionQuote>>, TError,{id: string;data: SendQuoteDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof sendCommissionQuote>>,
+        TError,
+        {id: string;data: SendQuoteDto},
+        TContext
+      > => {
+      return useMutation(getSendCommissionQuoteMutationOptions(options), queryClient);
     }
     export type updateCommissionVisibilityResponse200 = {
   data: CommissionDto

@@ -11,11 +11,13 @@ export function CommissionRequestsTable({
   columns,
   onOpen,
   onOpenClient,
+  onAccept,
 }: {
   rows: Row[];
   columns: readonly CommissionTableColumn[];
   onOpen: (id: string) => void;
   onOpenClient: (clientId: string) => void;
+  onAccept: (row: Row) => void;
 }) {
   const { t } = useTranslation('art');
   const actions = useCommissionRequestActions();
@@ -49,7 +51,7 @@ export function CommissionRequestsTable({
               columns={columns}
               onOpen={() => onOpen(row.id)}
               onOpenClient={() => onOpenClient(row.clientId)}
-              onAccept={() => actions.accept(row.id)}
+              onAccept={() => onAccept(row)}
               onDecline={() => actions.decline(row.id)}
             />
           ))}

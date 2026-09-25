@@ -39,6 +39,8 @@ export const DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissiondelivered.templateid';
 export const CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissionconfirmation.templateid';
+export const QUOTE_EMAIL_TEMPLATE_CONFIG_TYPE =
+  'art.commissionquote.templateid';
 
 export const COMMISSION_VIEWS = ['requests', 'active', 'past'] as const;
 export type CommissionView = (typeof COMMISSION_VIEWS)[number];

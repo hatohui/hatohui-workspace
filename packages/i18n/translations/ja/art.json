@@ -548,7 +548,8 @@
         "quote": "見積もり",
         "status": "ステータス",
         "actions": "操作",
-        "price": "価格"
+        "price": "価格",
+        "estimate": "価格"
       },
       "prev": "前へ",
       "next": "次へ",
@@ -564,13 +565,15 @@
         "payment": "支払い",
         "contact": "連絡先",
         "status": "ステータス",
-        "openFullPage": "詳細ページ"
+        "openFullPage": "詳細ページ",
+        "estimate": "概算"
       },
       "order": "並び順",
       "orders": {
         "desc": "新しい順",
         "asc": "古い順"
-      }
+      },
+      "quoteSent": "見積もり送信済み"
     },
     "commissions": {
       "title": "コミッション",
@@ -602,6 +605,30 @@
       "linkedAccount": "アカウントあり",
       "viewProfile": "プロフィールを見る",
       "history_other": "あなたへの依頼 {{count}} 件"
+    },
+    "quotes": {
+      "title": {
+        "quote": "見積もりを送る",
+        "accept": "依頼を承諾"
+      },
+      "description": {
+        "quote": "{{name}} さんに価格を伝えましょう。依頼ページとメールで確認できます。合意したら承諾してください。",
+        "accept": "この価格で {{name}} さんの依頼を承諾します。メールで通知されます。"
+      },
+      "amount": "価格（{{currency}}）",
+      "estimate": "料金設定からの計算: {{estimate}}",
+      "message": "メッセージ（任意）",
+      "messagePlaceholder": "例：喜んでお受けします！キャラクター追加分を含めると…",
+      "messageHint": "依頼者の依頼ページとメールに表示されます。",
+      "cancel": "キャンセル",
+      "submit": {
+        "quote": "見積もりを送る",
+        "accept": "この価格で承諾"
+      },
+      "sendQuote": "見積もりを送る",
+      "sent_quote": "見積もりを送りました。",
+      "sent_accept": "依頼を承諾しました。",
+      "failed": "送信できませんでした。もう一度お試しください。"
     }
   }
 }

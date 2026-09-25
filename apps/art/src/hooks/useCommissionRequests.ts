@@ -8,6 +8,7 @@ import {
 } from '@/constants/commission';
 import { useCommissionsList } from './useCommissionsList';
 import { useCommissionFormatters } from './useCommissionFormatters';
+import type { QuoteTarget } from './useQuoteDialog';
 
 export interface CommissionRequestRow {
   id: string;
@@ -17,8 +18,11 @@ export interface CommissionRequestRow {
   clientEmail: string;
   type: string;
   deadline: string;
+  estimate: string;
+  isQuoted: boolean;
   price: string;
   status: CommissionDto['status'];
+  quoteTarget: QuoteTarget;
 }
 
 export function useCommissionRequests(view: CommissionListView) {
@@ -35,8 +39,21 @@ export function useCommissionRequests(view: CommissionListView) {
     clientEmail: item.clientEmail,
     type: format.type(item.commissionTypeKey, item.commissionTypeLabel),
     deadline: format.date(item.deadline),
+    estimate:
+      item.quote != null
+        ? format.money(item.quote, item.currency)
+        : format.range(item.estimateLow, item.estimateHigh, item.currency),
+    isQuoted: item.quoteSentAt != null,
     price: format.money(item.quote, item.currency),
     status: item.status,
+    quoteTarget: {
+      id: item.id,
+      clientName: item.clientName,
+      currency: item.currency,
+      quote: item.quote,
+      estimateLow: item.estimateLow,
+      estimateHigh: item.estimateHigh,
+    },
   }));
 
   return {

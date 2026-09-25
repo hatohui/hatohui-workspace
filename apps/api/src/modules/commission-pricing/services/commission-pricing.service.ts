@@ -27,6 +27,12 @@ import {
   UpsertCommissionSettingsDto,
 } from '@/modules/commission-pricing/dto/commission-pricing.dto';
 
+import {
+  estimateCommission,
+  type Estimate,
+  type EstimateSelection,
+} from '@/modules/commission-pricing/utils/estimate';
+
 @Injectable()
 export class CommissionPricingService {
   constructor(
@@ -49,6 +55,13 @@ export class CommissionPricingService {
       rushFee,
       currency,
     };
+  }
+
+  async estimate(
+    artistId: string,
+    selection: EstimateSelection,
+  ): Promise<Estimate | null> {
+    return estimateCommission(await this.getActive(artistId), selection);
   }
 
   async getCurrency(artistId: string): Promise<string> {

@@ -549,7 +549,8 @@
         "quote": "Báo giá",
         "status": "Trạng thái",
         "actions": "Thao tác",
-        "price": "Giá"
+        "price": "Giá",
+        "estimate": "Giá"
       },
       "prev": "Trước",
       "next": "Sau",
@@ -565,13 +566,15 @@
         "payment": "Thanh toán",
         "contact": "Liên hệ",
         "status": "Trạng thái",
-        "openFullPage": "Xem chi tiết"
+        "openFullPage": "Xem chi tiết",
+        "estimate": "Ước tính"
       },
       "order": "Thứ tự",
       "orders": {
         "desc": "Mới nhất trước",
         "asc": "Cũ nhất trước"
-      }
+      },
+      "quoteSent": "Đã gửi báo giá"
     },
     "commissions": {
       "title": "Đơn đặt tranh",
@@ -603,6 +606,30 @@
       "linkedAccount": "Có tài khoản",
       "viewProfile": "Xem hồ sơ",
       "history_other": "{{count}} đơn với bạn"
+    },
+    "quotes": {
+      "title": {
+        "quote": "Gửi báo giá",
+        "accept": "Nhận yêu cầu"
+      },
+      "description": {
+        "quote": "Báo giá cho {{name}}. Họ sẽ thấy trên trang đơn và qua email; bạn có thể nhận đơn khi hai bên đã thống nhất.",
+        "accept": "Nhận yêu cầu của {{name}} với giá này. Họ sẽ được báo qua email."
+      },
+      "amount": "Giá ({{currency}})",
+      "estimate": "Tính theo bảng giá của bạn: {{estimate}}",
+      "message": "Lời nhắn (không bắt buộc)",
+      "messagePlaceholder": "VD: Mình nhận nhé! Thêm nhân vật nên giá sẽ là…",
+      "messageHint": "Hiển thị cho khách trên trang đơn và trong email.",
+      "cancel": "Hủy",
+      "submit": {
+        "quote": "Gửi báo giá",
+        "accept": "Nhận với giá này"
+      },
+      "sendQuote": "Gửi báo giá",
+      "sent_quote": "Đã gửi báo giá.",
+      "sent_accept": "Đã nhận yêu cầu.",
+      "failed": "Không gửi được. Vui lòng thử lại."
     }
   }
 }

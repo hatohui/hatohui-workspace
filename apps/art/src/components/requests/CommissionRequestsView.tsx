@@ -7,14 +7,17 @@ import {
   type CommissionListView,
 } from '@/constants/commission';
 import { useCommissionRequests } from '@/hooks/useCommissionRequests';
+import { useQuoteDialog } from '@/hooks/useQuoteDialog';
 import { ClientPanel } from '@/components/clients/ClientPanel';
 import { CommissionRequestsToolbar } from './CommissionRequestsToolbar';
 import { CommissionRequestsTable } from './CommissionRequestsTable';
 import { CommissionRequestPanel } from './CommissionRequestPanel';
+import { QuoteDialog } from './QuoteDialog';
 
 export function CommissionRequestsView({ view }: { view: CommissionListView }) {
   const { t } = useTranslation('art');
   const requests = useCommissionRequests(view);
+  const quote = useQuoteDialog();
 
   return (
     <div className="space-y-4">
@@ -37,6 +40,7 @@ export function CommissionRequestsView({ view }: { view: CommissionListView }) {
           columns={requests.columns}
           onOpen={requests.select}
           onOpenClient={requests.openClient}
+          onAccept={(row) => quote.open(row.quoteTarget, 'accept')}
         />
       )}
 
@@ -44,6 +48,7 @@ export function CommissionRequestsView({ view }: { view: CommissionListView }) {
         id={requests.selectedId}
         onClose={() => requests.select(null)}
       />
+      <QuoteDialog dialog={quote} />
       <ClientPanel
         clientId={requests.clientId}
         onClose={() => requests.openClient(null)}

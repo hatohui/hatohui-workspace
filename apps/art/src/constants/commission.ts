@@ -108,13 +108,20 @@ export const COMMISSION_STATUS_TONES: Record<CommissionDtoStatus, string> = {
 };
 
 export type CommissionTableColumn =
-  'submitted' | 'client' | 'type' | 'deadline' | 'price' | 'status' | 'actions';
+  | 'submitted'
+  | 'client'
+  | 'type'
+  | 'deadline'
+  | 'estimate'
+  | 'price'
+  | 'status'
+  | 'actions';
 
 export const COMMISSION_TABLE_COLUMNS: Record<
   CommissionListView,
   readonly CommissionTableColumn[]
 > = {
-  requests: ['submitted', 'client', 'type', 'deadline', 'actions'],
+  requests: ['submitted', 'client', 'type', 'deadline', 'estimate', 'actions'],
   past: ['submitted', 'client', 'type', 'price', 'status'],
 };
 
