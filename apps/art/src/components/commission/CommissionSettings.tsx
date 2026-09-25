@@ -1,20 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button } from '@hatohui/ui';
-import {
-  COMMISSION_SETTINGS_TABS,
-  type CommissionSettingsTab,
-} from '@/constants/commission';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hatohui/ui';
+import { COMMISSION_SETTINGS_TABS } from '@/constants/commission';
+import { useTabParam } from '@/hooks/useTabParam';
 import { CommissionArtSettingsSection } from './CommissionArtSettingsSection';
-import { CommissionTypesEditor } from './CommissionTypesEditor';
-import { CommissionAddonPricingSection } from './CommissionAddonPricingSection';
-import { CommissionRushFeeSection } from './CommissionRushFeeSection';
+import { CommissionPricingTab } from './CommissionPricingTab';
 
 export function CommissionSettings({ artistId }: { artistId: string }) {
   const { t } = useTranslation('art');
-  const [tab, setTab] = useState<CommissionSettingsTab>('general');
+  const { tab, setTab } = useTabParam(COMMISSION_SETTINGS_TABS, 'general');
 
   return (
     <div className="space-y-6">
@@ -22,32 +17,21 @@ export function CommissionSettings({ artistId }: { artistId: string }) {
         {t('app.commissionSettings.title')}
       </h1>
 
-      <div className="flex gap-1 border-b border-border pb-2">
-        {COMMISSION_SETTINGS_TABS.map((name) => (
-          <Button
-            key={name}
-            size="sm"
-            variant={tab === name ? 'default' : 'ghost'}
-            onClick={() => setTab(name)}
-          >
-            {t(`app.commissionSettings.tabs.${name}`)}
-          </Button>
-        ))}
-      </div>
-
-      {tab === 'general' ? (
-        <CommissionArtSettingsSection />
-      ) : (
-        <div className="space-y-10">
-          <section className="space-y-3">
-            <h2 className="font-medium">{t('app.commissionSettings.types')}</h2>
-            <CommissionTypesEditor />
-          </section>
-
-          <CommissionAddonPricingSection />
-          <CommissionRushFeeSection artistId={artistId} />
-        </div>
-      )}
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList>
+          {COMMISSION_SETTINGS_TABS.map((name) => (
+            <TabsTrigger key={name} value={name}>
+              {t(`app.commissionSettings.tabs.${name}`)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsContent value="general">
+          <CommissionArtSettingsSection />
+        </TabsContent>
+        <TabsContent value="pricing">
+          <CommissionPricingTab artistId={artistId} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

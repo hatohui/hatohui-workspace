@@ -108,6 +108,7 @@ export function useCommissionPricingEstimate(
 
   return {
     types,
+    allOptions: pricing?.options ?? [],
     optionsForType,
     selectedOption,
     addons: pricing?.addons ?? [],

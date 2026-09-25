@@ -1,35 +1,24 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, ConfirmDialog } from '@hatohui/ui';
+import {
+  Button,
+  ConfirmDialog,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@hatohui/ui';
 import type {
   CommissionOpeningDto,
   UpsertCommissionOpeningDto,
 } from '@hatohui/models';
-import {
-  OPENING_DASHBOARD_TABS,
-  type OpeningDashboardTab,
-} from '@/constants/commission';
+import { OPENING_DASHBOARD_TABS } from '@/constants/commission';
+import { useOpeningDashboard } from '@/hooks/useOpeningDashboard';
 import { OpeningStatusBadge } from './OpeningStatusBadge';
 import { OpeningStatTiles } from './OpeningStatTiles';
 import { OpeningHistoryTable } from './OpeningHistoryTable';
 import { OpeningForm } from './OpeningForm';
-
-function supportingLine(
-  active: CommissionOpeningDto,
-  t: (key: string, opts?: Record<string, unknown>) => string,
-): string | null {
-  if (active.status === 'SCHEDULED' && active.scheduledAt)
-    return t('commission.admin.opening.scheduledFor', {
-      date: new Date(active.scheduledAt).toLocaleString(),
-    });
-  if (active.status === 'OPEN' && active.openedAt)
-    return t('commission.admin.opening.openSince', {
-      date: new Date(active.openedAt).toLocaleDateString(),
-    });
-  return null;
-}
 
 export function OpeningDashboard({
   active,
@@ -47,18 +36,7 @@ export function OpeningDashboard({
   onSelectHistory: (id: string) => void;
 }) {
   const { t } = useTranslation('art');
-  const [tab, setTab] = useState<OpeningDashboardTab>('overview');
-  const [confirmingClose, setConfirmingClose] = useState(false);
-  const [busy, setBusy] = useState(false);
-
-  async function run(fn: () => Promise<unknown>) {
-    setBusy(true);
-    try {
-      await fn();
-    } finally {
-      setBusy(false);
-    }
-  }
+  const dashboard = useOpeningDashboard(active, onOpenNow, onClose);
 
   return (
     <div className="space-y-6">
@@ -66,28 +44,28 @@ export function OpeningDashboard({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1.5">
             <OpeningStatusBadge status={active.status} />
-            {supportingLine(active, t) && (
+            {dashboard.supportingLine && (
               <p className="text-sm text-muted-foreground">
-                {supportingLine(active, t)}
+                {dashboard.supportingLine}
               </p>
             )}
           </div>
           <div className="flex shrink-0 gap-2">
-            {active.status === 'SCHEDULED' && (
+            {dashboard.canOpenNow && (
               <Button
                 size="sm"
-                disabled={busy}
-                onClick={() => void run(onOpenNow)}
+                disabled={dashboard.isBusy}
+                onClick={dashboard.openNow}
               >
                 {t('commission.admin.opening.openNow')}
               </Button>
             )}
-            {active.status === 'OPEN' && (
+            {dashboard.canClose && (
               <Button
                 size="sm"
                 variant="outline"
-                disabled={busy}
-                onClick={() => setConfirmingClose(true)}
+                disabled={dashboard.isBusy}
+                onClick={dashboard.requestClose}
               >
                 {t('commission.admin.opening.closeNow')}
               </Button>
@@ -97,41 +75,35 @@ export function OpeningDashboard({
         <OpeningStatTiles opening={active} />
       </section>
 
-      <div className="flex gap-1 border-b border-border pb-2">
-        {OPENING_DASHBOARD_TABS.map((name) => (
-          <Button
-            key={name}
-            size="sm"
-            variant={tab === name ? 'default' : 'ghost'}
-            onClick={() => setTab(name)}
-          >
-            {t(`commission.admin.opening.tabs.${name}`)}
-          </Button>
-        ))}
-      </div>
-
-      {tab === 'overview' ? (
-        <section className="rounded-lg border border-border p-6">
-          <h2 className="mb-4 text-sm font-medium text-muted-foreground">
-            {t('commission.admin.opening.editHeading')}
-          </h2>
-          <OpeningForm key={active.id} initial={active} onSubmit={onUpdate} />
-        </section>
-      ) : (
-        <OpeningHistoryTable items={history} onSelect={onSelectHistory} />
-      )}
+      <Tabs value={dashboard.tab} onValueChange={dashboard.setTab}>
+        <TabsList>
+          {OPENING_DASHBOARD_TABS.map((name) => (
+            <TabsTrigger key={name} value={name}>
+              {t(`commission.admin.opening.tabs.${name}`)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsContent value="overview">
+          <section className="rounded-lg border border-border p-6">
+            <h2 className="mb-4 text-sm font-medium text-muted-foreground">
+              {t('commission.admin.opening.editHeading')}
+            </h2>
+            <OpeningForm key={active.id} initial={active} onSubmit={onUpdate} />
+          </section>
+        </TabsContent>
+        <TabsContent value="history">
+          <OpeningHistoryTable items={history} onSelect={onSelectHistory} />
+        </TabsContent>
+      </Tabs>
 
       <ConfirmDialog
-        open={confirmingClose}
+        open={dashboard.isConfirmingClose}
         title={t('commission.admin.opening.closeConfirmTitle')}
         description={t('commission.admin.opening.closeConfirmBody')}
         cancelLabel={t('commission.admin.opening.closeConfirmCancel')}
         confirmLabel={t('commission.admin.opening.closeConfirmSubmit')}
-        onCancel={() => setConfirmingClose(false)}
-        onConfirm={() => {
-          setConfirmingClose(false);
-          void run(onClose);
-        }}
+        onCancel={dashboard.cancelClose}
+        onConfirm={dashboard.confirmClose}
       />
     </div>
   );

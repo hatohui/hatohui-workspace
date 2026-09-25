@@ -63,6 +63,17 @@ export const OPENING_DASHBOARD_TABS = ['overview', 'history'] as const;
 export type OpeningDashboardTab = (typeof OPENING_DASHBOARD_TABS)[number];
 
 export const OPENING_SAVED_FLASH_MS = 2500;
+export const AUTOSAVE_SAVED_FLASH_MS = 2500;
+
+export const PUBLIC_COMMISSION_QUERY_PREFIXES = [
+  '/commission-pricing',
+  '/commission-types/by-artist/',
+] as const;
+
+export const OPENING_END_MODES = ['MANUAL', 'SLOT_CAP', 'INDEFINITE'] as const;
+
+export const PRICING_SECTIONS = ['types', 'addons', 'rushFee'] as const;
+export type PricingSection = (typeof PRICING_SECTIONS)[number];
 
 export const COMMISSION_PRICING_STALE_MS = 10 * 60 * 1000;
 

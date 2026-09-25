@@ -3,13 +3,10 @@
 import { useTranslation } from '@hatohui/i18n';
 import { ChevronRight } from 'lucide-react';
 import type { CommissionOpeningDto } from '@hatohui/models';
+import { useCommissionFormatters } from '@/hooks/useCommissionFormatters';
 import { OpeningStatusBadge } from './OpeningStatusBadge';
 
 const COLUMNS = ['status', 'endMode', 'slots', 'opened', 'closed'] as const;
-
-function formatDate(value: string | null): string {
-  return value ? new Date(value).toLocaleDateString() : '-';
-}
 
 export function OpeningHistoryTable({
   items,
@@ -19,6 +16,7 @@ export function OpeningHistoryTable({
   onSelect: (id: string) => void;
 }) {
   const { t } = useTranslation('art');
+  const { date: formatDate } = useCommissionFormatters();
 
   if (items.length === 0) {
     return (
