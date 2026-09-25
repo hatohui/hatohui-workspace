@@ -6,7 +6,7 @@ import {
   useSubmitCommission,
   type SubmitCommissionDtoPreferredContactMethod,
 } from '@hatohui/models';
-import { useImageUpload, isTiptapDocEmpty } from '@hatohui/libs';
+import { useAuth, useImageUpload, isTiptapDocEmpty } from '@hatohui/libs';
 import { EMPTY_COMMISSION_IDEA } from '@/constants/commission';
 import { useCommissionPricingEstimate } from './useCommissionPricingEstimate';
 
@@ -82,6 +82,7 @@ export function useCommissionForm(artistId: string) {
     window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(state));
   }, [state, isSubmitted]);
 
+  const { user, isLoading: isAuthLoading } = useAuth();
   const submitCommission = useSubmitCommission();
   const { uploadImage, isUploading } = useImageUpload();
   const pricing = useCommissionPricingEstimate(
@@ -127,8 +128,9 @@ export function useCommissionForm(artistId: string) {
         commissionTypeId: state.commissionTypeId || undefined,
         optionKey: pricing.selectedOption?.key ?? state.optionKey ?? undefined,
         addonKeys: state.addonKeys,
-        clientName: state.clientName,
-        clientEmail: state.clientEmail,
+        ...(user
+          ? {}
+          : { clientName: state.clientName, clientEmail: state.clientEmail }),
         preferredContactMethod: state.preferredContactMethod,
         contactHandle: state.contactHandle || undefined,
         referenceAssets: uploaded.map((asset) => asset.key),
@@ -153,6 +155,8 @@ export function useCommissionForm(artistId: string) {
     reset,
     isSubmitting: submitCommission.isPending || isUploading,
     isSubmitted,
+    signedInName: user?.name ?? null,
+    needsIdentity: !isAuthLoading && !user,
     hasSubmitError,
     isDraftRestored,
     isIdeaEmpty,

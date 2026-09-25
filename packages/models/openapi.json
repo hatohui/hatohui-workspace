@@ -6127,14 +6127,6 @@
               "type": "string"
             }
           },
-          "clientName": {
-            "type": "string",
-            "example": "Jane Doe"
-          },
-          "clientEmail": {
-            "type": "string",
-            "example": "jane@example.com"
-          },
           "preferredContactMethod": {
             "type": "string",
             "enum": [
@@ -6160,13 +6152,21 @@
             "type": "boolean",
             "default": false,
             "description": "Whether this commission (status, type) should show in the public /queue"
+          },
+          "clientName": {
+            "type": "string",
+            "example": "Jane Doe",
+            "description": "Required when not signed in; taken from the account otherwise"
+          },
+          "clientEmail": {
+            "type": "string",
+            "example": "jane@example.com",
+            "description": "Required when not signed in; taken from the account otherwise"
           }
         },
         "required": [
           "artistId",
-          "idea",
-          "clientName",
-          "clientEmail"
+          "idea"
         ]
       },
       "CommissionStepsDto": {
@@ -6420,14 +6420,6 @@
               "type": "string"
             }
           },
-          "clientName": {
-            "type": "string",
-            "example": "Jane Doe"
-          },
-          "clientEmail": {
-            "type": "string",
-            "example": "jane@example.com"
-          },
           "preferredContactMethod": {
             "type": "string",
             "enum": [
@@ -6453,6 +6445,14 @@
             "type": "boolean",
             "default": false,
             "description": "Whether this commission (status, type) should show in the public /queue"
+          },
+          "clientName": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "clientEmail": {
+            "type": "string",
+            "example": "jane@example.com"
           }
         },
         "required": [

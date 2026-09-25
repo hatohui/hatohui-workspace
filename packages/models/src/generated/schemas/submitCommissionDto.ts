@@ -21,12 +21,14 @@ export interface SubmitCommissionDto {
   /** Key of a CommissionOption */
   optionKey?: string;
   addonKeys?: string[];
-  clientName: string;
-  clientEmail: string;
   preferredContactMethod?: SubmitCommissionDtoPreferredContactMethod;
   contactHandle?: string;
   /** Object keys returned by POST /images/sign */
   referenceAssets?: string[];
   /** Whether this commission (status, type) should show in the public /queue */
   isPublic?: boolean;
+  /** Required when not signed in; taken from the account otherwise */
+  clientName?: string;
+  /** Required when not signed in; taken from the account otherwise */
+  clientEmail?: string;
 }

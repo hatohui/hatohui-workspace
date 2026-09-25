@@ -95,6 +95,7 @@
       "deadlineLabel": "Thời hạn (không bắt buộc)",
       "clientNameLabel": "Tên của bạn",
       "clientEmailLabel": "Email của bạn",
+      "submittingAs": "Gửi với tên {{name}}. Phản hồi sẽ được gửi tới email tài khoản của bạn.",
       "preferredContactLabel": "Phương thức liên hệ ưu tiên",
       "contactHandleLabel": "Tên tài khoản liên hệ",
       "attachmentsLabel": "Ảnh tham khảo (không bắt buộc)",

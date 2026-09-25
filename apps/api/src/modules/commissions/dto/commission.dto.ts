@@ -211,7 +211,7 @@ export class CommissionPublicDto {
   updatedAt: string;
 }
 
-export class SubmitCommissionDto {
+class CommissionRequestBaseDto {
   @ApiProperty({ description: 'Id of the artist being commissioned' })
   @IsString()
   @IsNotEmpty()
@@ -261,15 +261,6 @@ export class SubmitCommissionDto {
   @IsString({ each: true })
   addonKeys?: string[];
 
-  @ApiProperty({ example: 'Jane Doe' })
-  @IsString()
-  @IsNotEmpty()
-  clientName: string;
-
-  @ApiProperty({ example: 'jane@example.com' })
-  @IsEmail()
-  clientEmail: string;
-
   @ApiProperty({
     enum: PreferredContactMethod,
     default: PreferredContactMethod.EMAIL,
@@ -305,7 +296,39 @@ export class SubmitCommissionDto {
   isPublic?: boolean;
 }
 
-export class CreatePrivateCommissionDto extends SubmitCommissionDto {}
+export class SubmitCommissionDto extends CommissionRequestBaseDto {
+  @ApiProperty({
+    example: 'Jane Doe',
+    required: false,
+    description:
+      'Required when not signed in; taken from the account otherwise',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  clientName?: string;
+
+  @ApiProperty({
+    example: 'jane@example.com',
+    required: false,
+    description:
+      'Required when not signed in; taken from the account otherwise',
+  })
+  @IsOptional()
+  @IsEmail()
+  clientEmail?: string;
+}
+
+export class CreatePrivateCommissionDto extends CommissionRequestBaseDto {
+  @ApiProperty({ example: 'Jane Doe' })
+  @IsString()
+  @IsNotEmpty()
+  clientName: string;
+
+  @ApiProperty({ example: 'jane@example.com' })
+  @IsEmail()
+  clientEmail: string;
+}
 
 export class UpdateCommissionStatusDto {
   @ApiProperty({ enum: CommissionStatus })

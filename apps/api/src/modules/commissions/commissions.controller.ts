@@ -13,6 +13,8 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { OptionalAuthGuard } from '@/modules/auth/guards/optional-auth.guard';
+import { OptionalCurrentUser } from '@/modules/auth/decorators/optional-current-user.decorator';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { AuthService } from '@/modules/auth/services/auth.service';
 import type { User } from '@prisma/client';
@@ -59,13 +61,17 @@ export class CommissionsController {
   ) {}
 
   @Post()
+  @UseGuards(OptionalAuthGuard)
   @ApiOperation({
     operationId: 'submitCommission',
     summary: 'Submit a new commission request to an artist',
   })
   @ApiOkResponse({ type: CommissionDto })
-  submit(@Body() dto: SubmitCommissionDto): Promise<CommissionDto> {
-    return this.commissionsService.submit(dto);
+  submit(
+    @Body() dto: SubmitCommissionDto,
+    @OptionalCurrentUser() submitter: User | null,
+  ): Promise<CommissionDto> {
+    return this.commissionsService.submit(dto, submitter);
   }
 
   @Post('private')
