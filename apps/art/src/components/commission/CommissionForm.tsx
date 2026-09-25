@@ -13,13 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@hatohui/ui';
-import {
-  EMAIL_INPUT_PATTERN,
-  PREFERRED_CONTACT_METHODS,
-} from '@/constants/commission';
+import { PREFERRED_CONTACT_METHODS } from '@/constants/commission';
 import { useCommissionForm } from '@/hooks/useCommissionForm';
 import { CommissionTypeFields } from './CommissionTypeFields';
 import { CommissionQuoteEstimate } from './CommissionQuoteEstimate';
+import { CommissionIdentityFields } from './CommissionIdentityFields';
 import { MultiImageUploadField } from '@/components/shared/MultiImageUploadField';
 import { DateField } from '@/components/shared/DateField';
 import { CommissionVisibilityCheckbox } from './CommissionVisibilityCheckbox';
@@ -76,32 +74,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
         />
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="clientName">
-          {t('commission.form.clientNameLabel')}
-        </Label>
-        <Input
-          id="clientName"
-          required
-          value={form.state.clientName}
-          onChange={(event) => form.update('clientName', event.target.value)}
-        />
-      </div>
-
-      <div className="space-y-1.5">
-        <Label htmlFor="clientEmail">
-          {t('commission.form.clientEmailLabel')}
-        </Label>
-        <Input
-          id="clientEmail"
-          type="email"
-          required
-          pattern={EMAIL_INPUT_PATTERN}
-          title={t('commission.form.invalidEmail')}
-          value={form.state.clientEmail}
-          onChange={(event) => form.update('clientEmail', event.target.value)}
-        />
-      </div>
+      <CommissionIdentityFields form={form} />
 
       <div className="space-y-1.5">
         <Label>{t('commission.form.preferredContactLabel')}</Label>

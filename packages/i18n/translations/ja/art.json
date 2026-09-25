@@ -96,6 +96,7 @@
       "deadlineLabel": "希望納期（任意）",
       "clientNameLabel": "お名前",
       "clientEmailLabel": "メールアドレス",
+      "submittingAs": "{{name}} として送信します。返信はアカウントのメールアドレスに届きます。",
       "preferredContactLabel": "希望連絡方法",
       "contactHandleLabel": "連絡先アカウント",
       "attachmentsLabel": "参考画像（任意）",

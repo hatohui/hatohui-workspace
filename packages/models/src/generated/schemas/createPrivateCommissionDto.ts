@@ -21,12 +21,12 @@ export interface CreatePrivateCommissionDto {
   /** Key of a CommissionOption */
   optionKey?: string;
   addonKeys?: string[];
-  clientName: string;
-  clientEmail: string;
   preferredContactMethod?: CreatePrivateCommissionDtoPreferredContactMethod;
   contactHandle?: string;
   /** Object keys returned by POST /images/sign */
   referenceAssets?: string[];
   /** Whether this commission (status, type) should show in the public /queue */
   isPublic?: boolean;
+  clientName: string;
+  clientEmail: string;
 }

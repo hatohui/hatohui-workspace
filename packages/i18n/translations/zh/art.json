@@ -91,6 +91,7 @@
       "deadlineLabel": "截止日期（可选）",
       "clientNameLabel": "你的名字",
       "clientEmailLabel": "你的邮箱",
+      "submittingAs": "将以 {{name}} 的身份提交。回复会发送到你的账户邮箱。",
       "preferredContactLabel": "首选联系方式",
       "contactHandleLabel": "联系账号",
       "attachmentsLabel": "参考图片（可选）",

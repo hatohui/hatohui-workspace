@@ -79,9 +79,14 @@ export class CommissionsService {
     private readonly commissionOpenings: CommissionOpeningsService,
   ) {}
 
-  async submit(dto: SubmitCommissionDto): Promise<CommissionDto> {
+  async submit(
+    dto: SubmitCommissionDto,
+    submitter: User | null,
+  ): Promise<CommissionDto> {
     const currency = await this.currencyFor(dto.artistId);
-    const client = await this.resolveClient(dto);
+    const client = submitter
+      ? await this.resolveAccountClient(submitter, dto)
+      : await this.resolveClient(requireClientIdentity(dto));
 
     const commission = await this.db.commission.create({
       data: {
@@ -602,6 +607,28 @@ export class CommissionsService {
     return artist?.email ?? null;
   }
 
+  private async resolveAccountClient(
+    user: User,
+    dto: SubmitCommissionDto,
+  ): Promise<Client> {
+    const contact = {
+      name: user.name,
+      preferredContactMethod: dto.preferredContactMethod ?? undefined,
+      contactHandle: dto.contactHandle ?? undefined,
+    };
+    const linked = await this.db.client.findUnique({
+      where: { userId: user.id },
+    });
+    if (linked) {
+      return this.db.client.update({ where: { id: linked.id }, data: contact });
+    }
+    return this.db.client.upsert({
+      where: { email: user.email },
+      update: { ...contact, userId: user.id },
+      create: { ...contact, email: user.email, userId: user.id },
+    });
+  }
+
   private async resolveClient(dto: {
     clientName: string;
     clientEmail: string;
@@ -804,4 +831,15 @@ function toHistoryDto(history: {
     note: history.note,
     createdAt: history.createdAt.toISOString(),
   };
+}
+
+function requireClientIdentity(
+  dto: SubmitCommissionDto,
+): SubmitCommissionDto & { clientName: string; clientEmail: string } {
+  if (!dto.clientName || !dto.clientEmail) {
+    throw new BadRequestException(
+      'clientName and clientEmail are required when not signed in',
+    );
+  }
+  return { ...dto, clientName: dto.clientName, clientEmail: dto.clientEmail };
 }

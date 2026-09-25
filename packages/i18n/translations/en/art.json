@@ -95,6 +95,7 @@
       "deadlineLabel": "Deadline (optional)",
       "clientNameLabel": "Your name",
       "clientEmailLabel": "Your email",
+      "submittingAs": "Submitting as {{name}}. Replies go to your account email.",
       "preferredContactLabel": "Preferred contact method",
       "contactHandleLabel": "Contact handle",
       "attachmentsLabel": "Reference images (optional)",
