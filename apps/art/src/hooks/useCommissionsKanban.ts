@@ -8,6 +8,7 @@ const KANBAN_FETCH_SIZE = 200;
 
 export function useCommissionsKanban() {
   const commissionsQuery = useCommissions({
+    view: 'active',
     sort: 'createdAt',
     direction: 'desc',
     page: 1,

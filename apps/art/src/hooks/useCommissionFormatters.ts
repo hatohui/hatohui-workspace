@@ -11,7 +11,12 @@ export function useCommissionFormatters() {
       value ? new Date(value).toLocaleDateString(i18n.language) : EMPTY_VALUE,
 
     dateTime: (value: string | null) =>
-      value ? new Date(value).toLocaleString(i18n.language) : EMPTY_VALUE,
+      value
+        ? new Date(value).toLocaleString(i18n.language, {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          })
+        : EMPTY_VALUE,
 
     money: (amount: number | null, currency: string) =>
       amount == null
@@ -21,10 +26,10 @@ export function useCommissionFormatters() {
             currency,
           }).format(amount / 100),
 
-    type: (commissionTypeKey: string | null) =>
+    type: (commissionTypeKey: string | null, label?: string | null) =>
       commissionTypeKey
         ? t(`commission.type.${commissionTypeKey}.label`, {
-            defaultValue: commissionTypeKey,
+            defaultValue: label ?? commissionTypeKey,
           })
         : EMPTY_VALUE,
   };

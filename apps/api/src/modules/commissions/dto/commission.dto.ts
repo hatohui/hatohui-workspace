@@ -102,6 +102,14 @@ export class CommissionDto {
 
   @ApiProperty({
     nullable: true,
+    type: String,
+    description:
+      "The artist's own name for the type, for keys without a translation",
+  })
+  commissionTypeLabel: string | null;
+
+  @ApiProperty({
+    nullable: true,
     description: 'Key of the selected CommissionOption',
   })
   optionKey: string | null;

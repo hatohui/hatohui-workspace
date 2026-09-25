@@ -534,7 +534,8 @@
         "deadline": "納期",
         "quote": "見積もり",
         "status": "ステータス",
-        "actions": "操作"
+        "actions": "操作",
+        "price": "価格"
       },
       "prev": "前へ",
       "next": "次へ",
@@ -551,7 +552,43 @@
         "contact": "連絡先",
         "status": "ステータス",
         "openFullPage": "詳細ページ"
+      },
+      "order": "並び順",
+      "orders": {
+        "desc": "新しい順",
+        "asc": "古い順"
       }
+    },
+    "commissions": {
+      "title": "コミッション",
+      "tabs": {
+        "requests": "依頼",
+        "queue": "進行中",
+        "past": "過去"
+      },
+      "empty": {
+        "requests": "新しい依頼はまだありません。",
+        "past": "まだ何もありません。"
+      },
+      "opening": {
+        "open": "受付中",
+        "closed": "受付停止中",
+        "scheduled": "{{date}} に受付開始",
+        "slotsOfCap": "{{cap}} 枠中 {{taken}} 枠埋まり",
+        "slotsTaken_other": "{{count}} 件承諾済み",
+        "waiting_other": "{{count}} 件の依頼が返事待ち",
+        "options": "受付設定",
+        "openCommissions": "受付を開始",
+        "optionsTitle": "コミッション受付"
+      }
+    },
+    "clients": {
+      "title": "依頼者",
+      "contact": "希望の連絡方法",
+      "guest": "アカウントなし（ゲストとして送信）",
+      "linkedAccount": "アカウントあり",
+      "viewProfile": "プロフィールを見る",
+      "history_other": "あなたへの依頼 {{count}} 件"
     }
   }
 }

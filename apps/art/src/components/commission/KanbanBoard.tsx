@@ -11,9 +11,6 @@ export function KanbanBoard() {
 
   return (
     <div>
-      <h1 className="mb-4 font-serif text-3xl">
-        {t('commission.admin.production.title')}
-      </h1>
       {isLoading ? (
         <p className="text-muted-foreground">{t('common:loading')}</p>
       ) : (

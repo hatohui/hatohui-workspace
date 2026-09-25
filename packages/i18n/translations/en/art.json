@@ -526,16 +526,15 @@
     "requests": {
       "title": "Requests",
       "searchPlaceholder": "Search by client or email",
-      "allStatuses": "All statuses",
       "empty": "No requests yet.",
       "columns": {
         "submitted": "Submitted",
         "client": "Client",
         "type": "Type",
         "deadline": "Deadline",
-        "quote": "Quote",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "price": "Price"
       },
       "prev": "Previous",
       "next": "Next",
@@ -552,7 +551,46 @@
         "contact": "Contact",
         "status": "Status",
         "openFullPage": "Full details"
+      },
+      "order": "Order",
+      "orders": {
+        "desc": "Newest first",
+        "asc": "Oldest first"
       }
+    },
+    "commissions": {
+      "title": "Commissions",
+      "tabs": {
+        "requests": "Requests",
+        "queue": "Queue",
+        "past": "Past"
+      },
+      "empty": {
+        "requests": "No new requests right now.",
+        "past": "Nothing here yet."
+      },
+      "opening": {
+        "open": "Commissions are open",
+        "closed": "Commissions are closed",
+        "scheduled": "Opens {{date}}",
+        "slotsOfCap": "{{taken}} of {{cap}} slots filled",
+        "slotsTaken_one": "{{count}} accepted",
+        "slotsTaken_other": "{{count}} accepted",
+        "waiting_one": "{{count}} request waiting for you",
+        "waiting_other": "{{count}} requests waiting for you",
+        "options": "Opening options",
+        "openCommissions": "Open commissions",
+        "optionsTitle": "Commission opening"
+      }
+    },
+    "clients": {
+      "title": "Client",
+      "contact": "Preferred contact",
+      "guest": "No account - sent as a guest",
+      "linkedAccount": "Has an account",
+      "viewProfile": "View profile",
+      "history_one": "{{count}} commission with you",
+      "history_other": "{{count}} commissions with you"
     }
   }
 }

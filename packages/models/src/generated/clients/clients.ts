@@ -21,6 +21,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ClientDetailDto,
   ClientPrefillDto,
   LookupClientByEmailParams
 } from '../schemas';
@@ -155,6 +156,118 @@ export function useLookupClientByEmail<TData = Awaited<ReturnType<typeof lookupC
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getLookupClientByEmailQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type clientResponse200 = {
+  data: ClientDetailDto
+  status: 200
+}
+
+export type clientResponseSuccess = (clientResponse200) & {
+  headers: Headers;
+};
+;
+
+export type clientResponse = (clientResponseSuccess)
+
+export const getClientUrl = (id: string,) => {
+
+
+
+
+  return `/clients/${id}`
+}
+
+/**
+ * @summary A client of yours, with their linked account and their commissions with you
+ */
+export const client = async (id: string, options?: RequestInit): Promise<clientResponse> => {
+
+  return customFetch<clientResponse>(getClientUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getClientQueryKey = (id: string,) => {
+    return [
+    `/clients/${id}`
+    ] as const;
+    }
+
+
+export const getClientQueryOptions = <TData = Awaited<ReturnType<typeof client>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof client>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getClientQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof client>>> = ({ signal }) => client(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof client>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ClientQueryResult = NonNullable<Awaited<ReturnType<typeof client>>>
+export type ClientQueryError = unknown
+
+
+export function useClient<TData = Awaited<ReturnType<typeof client>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof client>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof client>>,
+          TError,
+          Awaited<ReturnType<typeof client>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useClient<TData = Awaited<ReturnType<typeof client>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof client>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof client>>,
+          TError,
+          Awaited<ReturnType<typeof client>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useClient<TData = Awaited<ReturnType<typeof client>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof client>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary A client of yours, with their linked account and their commissions with you
+ */
+
+export function useClient<TData = Awaited<ReturnType<typeof client>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof client>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getClientQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -535,7 +535,8 @@
         "deadline": "Thời hạn",
         "quote": "Báo giá",
         "status": "Trạng thái",
-        "actions": "Thao tác"
+        "actions": "Thao tác",
+        "price": "Giá"
       },
       "prev": "Trước",
       "next": "Sau",
@@ -552,7 +553,43 @@
         "contact": "Liên hệ",
         "status": "Trạng thái",
         "openFullPage": "Xem chi tiết"
+      },
+      "order": "Thứ tự",
+      "orders": {
+        "desc": "Mới nhất trước",
+        "asc": "Cũ nhất trước"
       }
+    },
+    "commissions": {
+      "title": "Đơn đặt tranh",
+      "tabs": {
+        "requests": "Yêu cầu",
+        "queue": "Đang làm",
+        "past": "Đã xong"
+      },
+      "empty": {
+        "requests": "Chưa có yêu cầu mới.",
+        "past": "Chưa có gì ở đây."
+      },
+      "opening": {
+        "open": "Đang nhận đơn",
+        "closed": "Đang đóng đơn",
+        "scheduled": "Mở vào {{date}}",
+        "slotsOfCap": "Đã nhận {{taken}}/{{cap}} suất",
+        "slotsTaken_other": "Đã nhận {{count}} đơn",
+        "waiting_other": "{{count}} yêu cầu đang chờ bạn",
+        "options": "Tùy chọn mở đơn",
+        "openCommissions": "Mở nhận đơn",
+        "optionsTitle": "Mở nhận đơn"
+      }
+    },
+    "clients": {
+      "title": "Khách hàng",
+      "contact": "Cách liên hệ ưu tiên",
+      "guest": "Không có tài khoản - gửi với tư cách khách",
+      "linkedAccount": "Có tài khoản",
+      "viewProfile": "Xem hồ sơ",
+      "history_other": "{{count}} đơn với bạn"
     }
   }
 }
