@@ -39,6 +39,14 @@ export function useCommissionRequestPanel(id: string | null) {
         { key: 'submitted', value: format.date(commission.createdAt) },
         { key: 'deadline', value: format.date(commission.deadline) },
         {
+          key: 'estimate',
+          value: format.range(
+            commission.estimateLow,
+            commission.estimateHigh,
+            commission.currency,
+          ),
+        },
+        {
           key: 'quote',
           value: format.money(commission.quote, commission.currency),
         },
@@ -54,8 +62,15 @@ export function useCommissionRequestPanel(id: string | null) {
         },
       ],
       fullPageHref: `/app/commissions/${commission.id}`,
+      quoteTarget: {
+        id: commission.id,
+        clientName: commission.clientName,
+        currency: commission.currency,
+        quote: commission.quote,
+        estimateLow: commission.estimateLow,
+        estimateHigh: commission.estimateHigh,
+      },
     },
-    accept: () => actions.accept(commission.id),
     decline: () => actions.decline(commission.id),
     setStatus: (status: typeof commission.status) =>
       actions.setStatus(commission.id, status),

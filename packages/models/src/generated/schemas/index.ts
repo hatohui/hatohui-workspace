@@ -170,6 +170,7 @@ export * from './publicUserDto';
 export * from './searchFriendsParams';
 export * from './searchUsersParams';
 export * from './sendConfirmationEmailDto';
+export * from './sendQuoteDto';
 export * from './setBirthdayDto';
 export * from './setBirthdayDtoVisibility';
 export * from './setProfileDto';

@@ -26,6 +26,22 @@ export function useCommissionFormatters() {
             currency,
           }).format(amount / 100),
 
+    range: (low: number | null, high: number | null, currency: string) => {
+      if (low == null) return EMPTY_VALUE;
+      const money = (amount: number) =>
+        new Intl.NumberFormat(i18n.language, {
+          style: 'currency',
+          currency,
+        }).format(amount / 100);
+      if (high == null)
+        return t('commission.form.estimateFrom', { price: money(low) });
+      if (high === low) return money(low);
+      return t('commission.form.estimateRange', {
+        low: money(low),
+        high: money(high),
+      });
+    },
+
     type: (commissionTypeKey: string | null, label?: string | null) =>
       commissionTypeKey
         ? t(`commission.type.${commissionTypeKey}.label`, {

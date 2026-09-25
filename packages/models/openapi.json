@@ -2599,6 +2599,45 @@
         "tags": [
           "commissions"
         ]
+      },
+      "post": {
+        "operationId": "sendCommissionQuote",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendQuoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Send the client a price, optionally with a message, and optionally accept at that price",
+        "tags": [
+          "commissions"
+        ]
       }
     },
     "/commissions/{id}/visibility": {
@@ -3012,233 +3051,6 @@
         ]
       }
     },
-    "/commission-types": {
-      "get": {
-        "operationId": "commissionTypes",
-        "parameters": [
-          {
-            "name": "includeInactive",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CommissionTypeDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List the platform commission-type catalog (active only unless includeInactive=true)",
-        "tags": [
-          "commission-types"
-        ]
-      },
-      "post": {
-        "operationId": "createCommissionType",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpsertCommissionTypeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommissionTypeDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Add a commission type to the platform catalog (also creates/reuses its linked Tag)",
-        "tags": [
-          "commission-types"
-        ]
-      }
-    },
-    "/commission-types/by-artist/{artistId}": {
-      "get": {
-        "operationId": "commissionTypesByArtist",
-        "parameters": [
-          {
-            "name": "artistId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CommissionTypeDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List one artist's enabled commission types (public storefront view)",
-        "tags": [
-          "commission-types"
-        ]
-      }
-    },
-    "/commission-types/mine": {
-      "get": {
-        "operationId": "myCommissionTypes",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ArtistCommissionTypeDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List the catalog joined with your own enablement of each entry",
-        "tags": [
-          "commission-types"
-        ]
-      }
-    },
-    "/commission-types/{id}/enable": {
-      "put": {
-        "operationId": "setArtistCommissionTypeEnabled",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpsertArtistCommissionTypeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArtistCommissionTypeDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Enable/disable a catalog type for yourself, and set its order",
-        "tags": [
-          "commission-types"
-        ]
-      }
-    },
-    "/commission-types/{id}": {
-      "put": {
-        "operationId": "updateCommissionType",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpsertCommissionTypeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommissionTypeDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Update a catalog commission type",
-        "tags": [
-          "commission-types"
-        ]
-      },
-      "delete": {
-        "operationId": "deleteCommissionType",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "summary": "Remove a commission type from the platform catalog",
-        "tags": [
-          "commission-types"
-        ]
-      }
-    },
     "/commission-pricing": {
       "get": {
         "operationId": "commissionPricing",
@@ -3596,6 +3408,233 @@
         "summary": "Delete one of your own commission add-on pricing rows",
         "tags": [
           "commission-pricing"
+        ]
+      }
+    },
+    "/commission-types": {
+      "get": {
+        "operationId": "commissionTypes",
+        "parameters": [
+          {
+            "name": "includeInactive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionTypeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List the platform commission-type catalog (active only unless includeInactive=true)",
+        "tags": [
+          "commission-types"
+        ]
+      },
+      "post": {
+        "operationId": "createCommissionType",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add a commission type to the platform catalog (also creates/reuses its linked Tag)",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/by-artist/{artistId}": {
+      "get": {
+        "operationId": "commissionTypesByArtist",
+        "parameters": [
+          {
+            "name": "artistId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionTypeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List one artist's enabled commission types (public storefront view)",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/mine": {
+      "get": {
+        "operationId": "myCommissionTypes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArtistCommissionTypeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List the catalog joined with your own enablement of each entry",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/{id}/enable": {
+      "put": {
+        "operationId": "setArtistCommissionTypeEnabled",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertArtistCommissionTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistCommissionTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Enable/disable a catalog type for yourself, and set its order",
+        "tags": [
+          "commission-types"
+        ]
+      }
+    },
+    "/commission-types/{id}": {
+      "put": {
+        "operationId": "updateCommissionType",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertCommissionTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update a catalog commission type",
+        "tags": [
+          "commission-types"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCommissionType",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Remove a commission type from the platform catalog",
+        "tags": [
+          "commission-types"
         ]
       }
     },
@@ -6357,6 +6396,21 @@
             "nullable": true,
             "description": "Quote snapshotted at accept time, to detect later changes"
           },
+          "estimateLow": {
+            "type": "number",
+            "nullable": true,
+            "description": "Lower bound of the price calculated at submission"
+          },
+          "estimateHigh": {
+            "type": "number",
+            "nullable": true,
+            "description": "Upper bound of the calculated price; null when open-ended or no estimate"
+          },
+          "quoteSentAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "When a quote was last sent to the client"
+          },
           "clientName": {
             "type": "string",
             "example": "Jane Doe"
@@ -6422,6 +6476,9 @@
           "currency",
           "quote",
           "originalQuote",
+          "estimateLow",
+          "estimateHigh",
+          "quoteSentAt",
           "clientName",
           "clientEmail",
           "preferredContactMethod",
@@ -7073,6 +7130,21 @@
             "nullable": true,
             "description": "Quote snapshotted at accept time, to detect later changes"
           },
+          "estimateLow": {
+            "type": "number",
+            "nullable": true,
+            "description": "Lower bound of the price calculated at submission"
+          },
+          "estimateHigh": {
+            "type": "number",
+            "nullable": true,
+            "description": "Upper bound of the calculated price; null when open-ended or no estimate"
+          },
+          "quoteSentAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "When a quote was last sent to the client"
+          },
           "clientName": {
             "type": "string",
             "example": "Jane Doe"
@@ -7150,6 +7222,9 @@
           "currency",
           "quote",
           "originalQuote",
+          "estimateLow",
+          "estimateHigh",
+          "quoteSentAt",
           "clientName",
           "clientEmail",
           "preferredContactMethod",
@@ -7276,6 +7351,28 @@
         },
         "required": [
           "priority"
+        ]
+      },
+      "SendQuoteDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 6900,
+            "description": "Quoted price, in the currency's smallest unit"
+          },
+          "message": {
+            "type": "string",
+            "description": "Shown to the client as a note and in the email"
+          },
+          "accept": {
+            "type": "boolean",
+            "default": false,
+            "description": "Also accept the request at this price"
+          }
+        },
+        "required": [
+          "amount"
         ]
       },
       "SendConfirmationEmailDto": {
@@ -7438,145 +7535,6 @@
         },
         "required": [
           "endMode"
-        ]
-      },
-      "CommissionTypeDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "key": {
-            "type": "string",
-            "example": "ICON",
-            "description": "Internal slug, derived from label at creation"
-          },
-          "label": {
-            "type": "string",
-            "example": "Icon"
-          },
-          "no": {
-            "type": "number",
-            "description": "Display order, ascending"
-          },
-          "active": {
-            "type": "boolean",
-            "description": "Whether this type exists in the platform catalog at all"
-          },
-          "tagId": {
-            "type": "string",
-            "nullable": true
-          },
-          "tagName": {
-            "type": "string",
-            "nullable": true,
-            "description": "Name of the linked Tag, used for gallery filtering"
-          },
-          "createdAt": {
-            "type": "string"
-          },
-          "updatedAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "key",
-          "label",
-          "no",
-          "active",
-          "tagId",
-          "tagName",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "ArtistCommissionTypeDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "nullable": true,
-            "description": "Id of the ArtistCommissionType row, null if never enabled"
-          },
-          "commissionTypeId": {
-            "type": "string"
-          },
-          "key": {
-            "type": "string",
-            "example": "ICON"
-          },
-          "label": {
-            "type": "string",
-            "example": "Icon"
-          },
-          "no": {
-            "type": "number",
-            "description": "Display order, ascending"
-          },
-          "enabled": {
-            "type": "boolean",
-            "description": "Whether the artist has this type turned on"
-          },
-          "optionCount": {
-            "type": "number",
-            "description": "How many options the artist has configured under this type"
-          },
-          "startingPrice": {
-            "type": "number",
-            "nullable": true,
-            "description": "Lowest priced option's price in the artist's currency's smallest unit; null when nothing under this type is priced yet"
-          },
-          "tagName": {
-            "type": "string",
-            "nullable": true,
-            "description": "Gallery tag whose images show as examples for this type on the request form"
-          }
-        },
-        "required": [
-          "id",
-          "commissionTypeId",
-          "key",
-          "label",
-          "no",
-          "enabled",
-          "optionCount",
-          "startingPrice",
-          "tagName"
-        ]
-      },
-      "UpsertArtistCommissionTypeDto": {
-        "type": "object",
-        "properties": {
-          "active": {
-            "type": "boolean"
-          },
-          "no": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "active"
-        ]
-      },
-      "UpsertCommissionTypeDto": {
-        "type": "object",
-        "properties": {
-          "label": {
-            "type": "string",
-            "example": "Icon"
-          },
-          "no": {
-            "type": "number",
-            "default": 0
-          },
-          "active": {
-            "type": "boolean",
-            "default": true
-          }
-        },
-        "required": [
-          "label"
         ]
       },
       "CommissionOptionPricingDto": {
@@ -8005,6 +7963,145 @@
         "required": [
           "label",
           "priceMode"
+        ]
+      },
+      "CommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "example": "ICON",
+            "description": "Internal slug, derived from label at creation"
+          },
+          "label": {
+            "type": "string",
+            "example": "Icon"
+          },
+          "no": {
+            "type": "number",
+            "description": "Display order, ascending"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether this type exists in the platform catalog at all"
+          },
+          "tagId": {
+            "type": "string",
+            "nullable": true
+          },
+          "tagName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the linked Tag, used for gallery filtering"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "label",
+          "no",
+          "active",
+          "tagId",
+          "tagName",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ArtistCommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the ArtistCommissionType row, null if never enabled"
+          },
+          "commissionTypeId": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "example": "ICON"
+          },
+          "label": {
+            "type": "string",
+            "example": "Icon"
+          },
+          "no": {
+            "type": "number",
+            "description": "Display order, ascending"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the artist has this type turned on"
+          },
+          "optionCount": {
+            "type": "number",
+            "description": "How many options the artist has configured under this type"
+          },
+          "startingPrice": {
+            "type": "number",
+            "nullable": true,
+            "description": "Lowest priced option's price in the artist's currency's smallest unit; null when nothing under this type is priced yet"
+          },
+          "tagName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Gallery tag whose images show as examples for this type on the request form"
+          }
+        },
+        "required": [
+          "id",
+          "commissionTypeId",
+          "key",
+          "label",
+          "no",
+          "enabled",
+          "optionCount",
+          "startingPrice",
+          "tagName"
+        ]
+      },
+      "UpsertArtistCommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "no": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "active"
+        ]
+      },
+      "UpsertCommissionTypeDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Icon"
+          },
+          "no": {
+            "type": "number",
+            "default": 0
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "label"
         ]
       },
       "ProjectDto": {

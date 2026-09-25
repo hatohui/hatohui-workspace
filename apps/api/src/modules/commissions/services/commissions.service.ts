@@ -31,6 +31,7 @@ import {
   CreatePrivateCommissionDto,
   DeliverCommissionDto,
   SendConfirmationEmailDto,
+  SendQuoteDto,
   SubmitCommissionDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
@@ -54,10 +55,12 @@ import {
   CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE,
   DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE,
   NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE,
+  QUOTE_EMAIL_TEMPLATE_CONFIG_TYPE,
   QUEUE_STATUSES,
   QUEUE_STATUS_RANK,
 } from '@/modules/commissions/commissions.constants';
 import { CommissionOpeningsService } from '@/modules/commission-openings/services/commission-openings.service';
+import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
 
 const DEFAULT_CURRENCY = 'USD';
 
@@ -79,15 +82,17 @@ export class CommissionsService {
     private readonly email: EmailService,
     private readonly userSettings: UserSettingsService,
     private readonly commissionOpenings: CommissionOpeningsService,
+    private readonly pricing: CommissionPricingService,
   ) {}
 
   async submit(
     dto: SubmitCommissionDto,
     submitter: User | null,
   ): Promise<CommissionDto> {
-    const [currency, commissionOpeningId] = await Promise.all([
+    const [currency, commissionOpeningId, estimate] = await Promise.all([
       this.currencyFor(dto.artistId),
       this.commissionOpenings.openIdFor(dto.artistId),
+      this.pricing.estimate(dto.artistId, dto),
     ]);
     const client = submitter
       ? await this.resolveAccountClient(submitter, dto)
@@ -107,6 +112,8 @@ export class CommissionsService {
             optionKey: dto.optionKey ?? null,
             addonKeys: dto.addonKeys ?? [],
             currency,
+            estimateLow: estimate?.low ?? null,
+            estimateHigh: estimate?.high ?? null,
             referenceAssets:
               dto.referenceAssets?.map((key) =>
                 this.storage.getPublicUrl(key),
@@ -542,6 +549,42 @@ export class CommissionsService {
   /// confirm the accepted quote. Requires an explanatory note if the quote
   /// has changed since acceptance (`originalQuote`), since silently emailing
   /// a different number than what the client agreed to isn't acceptable.
+  async sendQuote(
+    artistId: string,
+    id: string,
+    dto: SendQuoteDto,
+    viewer: User,
+  ): Promise<CommissionDto> {
+    const existing = await this.findOwnedOrThrow(artistId, id);
+
+    await this.db.$transaction([
+      this.db.commissionDetail.update({
+        where: { commissionId: id },
+        data: { quote: dto.amount, quoteSentAt: new Date() },
+      }),
+      ...(dto.message
+        ? [
+            this.db.comment.create({
+              data: {
+                commissionId: id,
+                authorRole: 'ARTIST',
+                visibility: Visibility.CLIENT,
+                body: dto.message,
+              },
+            }),
+          ]
+        : []),
+    ]);
+
+    const accepting = dto.accept === true && existing.status !== 'ACCEPTED';
+    const result = accepting
+      ? await this.updateStatus(artistId, id, { status: 'ACCEPTED' }, viewer)
+      : toCommissionDto(await this.findOwnedOrThrow(artistId, id));
+
+    await this.emailQuote(existing, dto, accepting);
+    return result;
+  }
+
   async sendConfirmationEmail(
     artistId: string,
     id: string,
@@ -712,6 +755,34 @@ export class CommissionsService {
     });
   }
 
+  private async emailQuote(
+    commission: CommissionWithRelations,
+    dto: SendQuoteDto,
+    accepted: boolean,
+  ): Promise<void> {
+    const templateId = await this.getTemplateId(
+      QUOTE_EMAIL_TEMPLATE_CONFIG_TYPE,
+    );
+    if (!templateId) return;
+
+    const detail = requireDetail(commission);
+    await this.email.sendTemplateEmail({
+      to: [{ email: commission.client.email, name: commission.client.name }],
+      templateId,
+      params: {
+        label: commissionDisplayLabel(
+          detail.commissionType ?? null,
+          commission.client.name,
+        ),
+        quote: dto.amount,
+        currency: detail.currency,
+        note: dto.message ?? null,
+        accepted,
+        accessCode: commission.accessCode,
+      },
+    });
+  }
+
   private async getTemplateId(configType: string): Promise<number | null> {
     const config = await this.db.systemParameters.findUnique({
       where: { type_scope: { type: configType, scope: AppScope.ART } },
@@ -789,6 +860,9 @@ function toCommissionDto(commission: CommissionWithRelations): CommissionDto {
     currency: detail.currency,
     quote: detail.quote,
     originalQuote: detail.originalQuote,
+    estimateLow: detail.estimateLow,
+    estimateHigh: detail.estimateHigh,
+    quoteSentAt: detail.quoteSentAt?.toISOString() ?? null,
     clientName: commission.client.name,
     clientEmail: commission.client.email,
     preferredContactMethod: commission.client.preferredContactMethod,

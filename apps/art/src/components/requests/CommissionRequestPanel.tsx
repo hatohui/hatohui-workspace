@@ -12,10 +12,12 @@ import {
   Skeleton,
 } from '@hatohui/ui';
 import { useCommissionRequestPanel } from '@/hooks/useCommissionRequestPanel';
+import { useQuoteDialog } from '@/hooks/useQuoteDialog';
 import { CommissionStatusBadge } from './CommissionStatusBadge';
 import { CommissionRequestFacts } from './CommissionRequestFacts';
 import { CommissionRequestReferences } from './CommissionRequestReferences';
 import { CommissionRequestPanelFooter } from './CommissionRequestPanelFooter';
+import { QuoteDialog } from './QuoteDialog';
 
 export function CommissionRequestPanel({
   id,
@@ -26,6 +28,7 @@ export function CommissionRequestPanel({
 }) {
   const { t } = useTranslation('art');
   const panel = useCommissionRequestPanel(id);
+  const quote = useQuoteDialog();
   const request = panel.request;
 
   return (
@@ -58,7 +61,8 @@ export function CommissionRequestPanel({
             <CommissionRequestPanelFooter
               status={panel.request.status}
               fullPageHref={panel.request.fullPageHref}
-              onAccept={panel.accept}
+              onQuote={() => quote.open(panel.request.quoteTarget, 'quote')}
+              onAccept={() => quote.open(panel.request.quoteTarget, 'accept')}
               onDecline={panel.decline}
               onStatusChange={panel.setStatus}
             />
@@ -70,6 +74,7 @@ export function CommissionRequestPanel({
           </div>
         )}
       </SheetContent>
+      <QuoteDialog dialog={quote} />
     </Sheet>
   );
 }

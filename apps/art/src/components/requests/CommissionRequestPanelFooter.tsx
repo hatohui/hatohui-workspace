@@ -20,12 +20,14 @@ type Status = CommissionDto['status'];
 export function CommissionRequestPanelFooter({
   status,
   fullPageHref,
+  onQuote,
   onAccept,
   onDecline,
   onStatusChange,
 }: {
   status: Status;
   fullPageHref: string | null;
+  onQuote: () => void;
   onAccept: () => void;
   onDecline: () => void;
   onStatusChange: (status: Status) => void;
@@ -39,7 +41,10 @@ export function CommissionRequestPanelFooter({
           <Button onClick={onAccept}>
             {t('commission.admin.triage.accept')}
           </Button>
-          <Button variant="outline" onClick={onDecline}>
+          <Button variant="outline" onClick={onQuote}>
+            {t('app.quotes.sendQuote')}
+          </Button>
+          <Button variant="ghost" onClick={onDecline}>
             {t('commission.admin.triage.decline')}
           </Button>
         </>

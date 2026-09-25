@@ -368,7 +368,12 @@
         "asc": "最早优先"
       },
       "columns": {
-        "price": "价格"
+        "price": "价格",
+        "estimate": "价格"
+      },
+      "quoteSent": "已发送报价",
+      "panel": {
+        "estimate": "估算"
       }
     },
     "clients": {
@@ -393,6 +398,30 @@
         "accepted_other": "已接受 {{count}} 个",
         "noneTaken": "还没有名额被占用"
       }
+    },
+    "quotes": {
+      "title": {
+        "quote": "发送报价",
+        "accept": "接受请求"
+      },
+      "description": {
+        "quote": "告诉 {{name}} 你的价格。对方会在委托页面和邮件中看到；达成一致后即可接受。",
+        "accept": "以此价格接受 {{name}} 的请求，对方会收到邮件通知。"
+      },
+      "amount": "价格（{{currency}}）",
+      "estimate": "按你的价目计算：{{estimate}}",
+      "message": "留言（可选）",
+      "messagePlaceholder": "例如：很乐意接这单！加一个角色的话价格是……",
+      "messageHint": "会显示在委托人的委托页面和邮件中。",
+      "cancel": "取消",
+      "submit": {
+        "quote": "发送报价",
+        "accept": "以此价格接受"
+      },
+      "sendQuote": "发送报价",
+      "sent_quote": "报价已发送。",
+      "sent_accept": "已接受请求。",
+      "failed": "发送失败，请重试。"
     }
   }
 }

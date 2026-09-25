@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from '@hatohui/i18n';
 import type { CommissionRequestRow as Row } from '@/hooks/useCommissionRequests';
 import type { CommissionTableColumn } from '@/constants/commission';
 import { CommissionStatusBadge } from './CommissionStatusBadge';
@@ -18,6 +19,8 @@ export function CommissionRequestCell({
   onAccept: () => void;
   onDecline: () => void;
 }) {
+  const { t } = useTranslation('art');
+
   switch (column) {
     case 'submitted':
       return (
@@ -47,6 +50,17 @@ export function CommissionRequestCell({
       return (
         <span className="whitespace-nowrap text-muted-foreground tabular-nums">
           {row.deadline}
+        </span>
+      );
+    case 'estimate':
+      return (
+        <span className="flex flex-col whitespace-nowrap tabular-nums">
+          {row.estimate}
+          {row.isQuoted && (
+            <span className="text-xs text-primary">
+              {t('app.requests.quoteSent')}
+            </span>
+          )}
         </span>
       );
     case 'price':

@@ -135,6 +135,28 @@ export class CommissionDto {
   })
   originalQuote: number | null;
 
+  @ApiProperty({
+    nullable: true,
+    type: Number,
+    description: 'Lower bound of the price calculated at submission',
+  })
+  estimateLow: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: Number,
+    description:
+      'Upper bound of the calculated price; null when open-ended or no estimate',
+  })
+  estimateHigh: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'When a quote was last sent to the client',
+  })
+  quoteSentAt: string | null;
+
   @ApiProperty({ example: 'Jane Doe' })
   clientName: string;
 
@@ -355,6 +377,34 @@ export class UpdateCommissionPriorityDto {
   @IsOptional()
   @IsInt()
   priority: number | null;
+}
+
+export class SendQuoteDto {
+  @ApiProperty({
+    example: 6900,
+    description: "Quoted price, in the currency's smallest unit",
+  })
+  @IsInt()
+  @Min(0)
+  amount: number;
+
+  @ApiProperty({
+    required: false,
+    description: 'Shown to the client as a note and in the email',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  message?: string;
+
+  @ApiProperty({
+    required: false,
+    default: false,
+    description: 'Also accept the request at this price',
+  })
+  @IsOptional()
+  @IsBoolean()
+  accept?: boolean;
 }
 
 export class SendConfirmationEmailDto {

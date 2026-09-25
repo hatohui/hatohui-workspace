@@ -34,6 +34,7 @@ import {
   CreatePrivateCommissionDto,
   DeliverCommissionDto,
   SendConfirmationEmailDto,
+  SendQuoteDto,
   SubmitCommissionDto,
   UpdateCommissionPriorityDto,
   UpdateCommissionQuoteDto,
@@ -287,6 +288,22 @@ export class CommissionsController {
   })
   remove(@Param('id') id: string, @CurrentUser() user: User): Promise<void> {
     return this.commissionsService.remove(user.id, id);
+  }
+
+  @Post(':id/quote')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'sendCommissionQuote',
+    summary:
+      'Send the client a price, optionally with a message, and optionally accept at that price',
+  })
+  @ApiOkResponse({ type: CommissionDto })
+  sendQuote(
+    @Param('id') id: string,
+    @Body() dto: SendQuoteDto,
+    @CurrentUser() user: User,
+  ): Promise<CommissionDto> {
+    return this.commissionsService.sendQuote(user.id, id, dto, user);
   }
 
   @Post(':id/send-confirmation')
