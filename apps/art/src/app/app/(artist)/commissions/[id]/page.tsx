@@ -1,6 +1,6 @@
 import { CommissionDetailAdmin } from '@/components/commission/CommissionDetailAdmin';
 
-export default async function AdminCommissionDetailPage({
+export default async function CommissionDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;

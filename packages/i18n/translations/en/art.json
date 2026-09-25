@@ -10,7 +10,7 @@
       "commission": "Commission",
       "queue": "Queue",
       "projects": "Projects",
-      "admin": "Admin"
+      "workspace": "Workspace"
     }
   },
   "projects": {
@@ -431,12 +431,15 @@
   "app": {
     "nav": {
       "toggle": "Toggle sidebar",
-      "dashboard": "Dashboard",
-      "commissionSettings": "Commission settings",
+      "dashboard": "Home",
       "commissionOpening": "Commission opening",
       "openLabel": "App",
       "backToSite": "Back to site",
-      "requests": "Requests"
+      "commissions": "Commissions",
+      "gallery": "Gallery",
+      "projects": "Projects",
+      "groups": "Groups",
+      "configure": "Configure"
     },
     "commissionSettings": {
       "title": "Commission settings",

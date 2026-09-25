@@ -9,7 +9,7 @@ export function KanbanCard({ commission }: { commission: CommissionDto }) {
   const displayLabel = useCommissionDisplayLabel();
 
   return (
-    <Link href={`/admin/commissions/${commission.id}`}>
+    <Link href={`/app/commissions/${commission.id}`}>
       <Card className="transition-colors hover:bg-card-hover">
         <CardContent className="space-y-1 p-3">
           <p className="text-sm font-medium">

@@ -1,5 +1,5 @@
 import { CommissionGroupsAdmin } from '@/components/groups/CommissionGroupsAdmin';
 
-export default function AdminGroupsPage() {
+export default function GroupsPage() {
   return <CommissionGroupsAdmin />;
 }

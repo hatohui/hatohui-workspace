@@ -36,7 +36,7 @@ export function GalleryGrid({
   const isOwner = artistId ? user?.id === artistId : (user?.isAdmin ?? false);
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
+    <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div className="flex items-end gap-4">
           <h1 className="font-serif text-3xl">{t('gallery.title')}</h1>
@@ -106,6 +106,6 @@ export function GalleryGrid({
 
       <Lightbox asset={selected} onClose={() => setSelected(null)} />
       <UploadDialog open={isUploadOpen} onOpenChange={setIsUploadOpen} />
-    </main>
+    </div>
   );
 }

@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import type { UserDto } from '@hatohui/models';
 import { API_URL } from './api';
 
@@ -16,4 +17,10 @@ export async function getSessionUser(): Promise<UserDto | null> {
   if (!response.ok) return null;
 
   return (await response.json()) as UserDto;
+}
+
+export async function requireArtist(): Promise<UserDto> {
+  const user = await getSessionUser();
+  if (!user?.isArtist) redirect('/app');
+  return user;
 }
