@@ -21,6 +21,7 @@ const PRICE_MODES: CommissionOptionPricingDtoPriceMode[] = [
 ];
 
 const toCents = (dollars: string) => Math.round(Number(dollars) * 100);
+const isPositivePrice = (dollars: string) => Number(dollars) > 0;
 const toDollars = (cents: number | null | undefined) =>
   cents != null && cents > 0 ? (cents / 100).toFixed(2) : '';
 
@@ -46,7 +47,7 @@ export function CommissionOptionPriceLine({
       priceMode) as CommissionOptionPricingDtoPriceMode;
     const min = next.minPrice ?? minPrice;
     const max = next.maxPrice ?? maxPrice;
-    if (!min.trim()) return;
+    if (!isPositivePrice(min)) return;
     const payload = {
       commissionTypeId,
       label: option?.label ?? 'Default',
@@ -91,12 +92,19 @@ export function CommissionOptionPriceLine({
         <Input
           type="number"
           inputMode="decimal"
-          min={0}
+          min={0.01}
+          step={0.01}
           className="w-32"
           value={minPrice}
+          aria-invalid={minPrice !== '' && !isPositivePrice(minPrice)}
           onChange={(event) => setMinPrice(event.target.value)}
           onBlur={() => commit({})}
         />
+        {minPrice !== '' && !isPositivePrice(minPrice) && (
+          <p className="text-xs text-destructive" role="alert">
+            {t('app.commissionSettings.priceMustBePositive')}
+          </p>
+        )}
       </div>
 
       {priceMode === 'RANGE' && (
@@ -107,7 +115,8 @@ export function CommissionOptionPriceLine({
           <Input
             type="number"
             inputMode="decimal"
-            min={0}
+            min={0.01}
+            step={0.01}
             className="w-32"
             value={maxPrice}
             onChange={(event) => setMaxPrice(event.target.value)}

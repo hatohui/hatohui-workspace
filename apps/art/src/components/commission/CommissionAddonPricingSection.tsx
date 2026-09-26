@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { EditableDataTable, type EditableColumn } from '@hatohui/ui';
+import { EditableDataTable, type EditableColumn, useToast } from '@hatohui/ui';
 import type {
   CommissionAddonPricingDto,
   CommissionAddonPricingDtoPriceMode,
@@ -55,8 +55,11 @@ function toCents(dollars: string): number {
   return Math.round(Number(dollars) * 100);
 }
 
+const isPositivePrice = (dollars: string) => Number(dollars) > 0;
+
 export function CommissionAddonPricingSection() {
   const { t } = useTranslation('art');
+  const toast = useToast();
   const pricing = useCommissionAddonPricingAdmin();
   const [draft, setDraft] = useState<AddonRow | null>(null);
 
@@ -136,8 +139,8 @@ export function CommissionAddonPricingSection() {
       const ready =
         next.label.trim() &&
         (next.priceMode === 'PERCENTAGE'
-          ? next.percent.trim()
-          : next.minPrice.trim() &&
+          ? Number(next.percent) > 0
+          : isPositivePrice(next.minPrice) &&
             (next.priceMode !== 'RANGE' || next.maxPrice.trim()));
       if (ready) {
         void pricing.create({ data: buildPayload(next) });
@@ -148,6 +151,10 @@ export function CommissionAddonPricingSection() {
 
     const existing = pricing.items.find((item) => item.id === id);
     if (!existing) return;
+    if ((key === 'minPrice' || key === 'percent') && !isPositivePrice(value)) {
+      toast.error(t('app.commissionSettings.priceMustBePositive'));
+      return;
+    }
     const next = { ...toRow(existing), [key]: value };
     void pricing.update({ id, data: buildPayload(next) });
   };

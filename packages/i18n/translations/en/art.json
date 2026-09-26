@@ -466,7 +466,6 @@
       "paymentMethodInstructionsPlaceholder": "Handle, link, or account details",
       "paymentMethodAdd": "Add payment method",
       "paymentMethodRemove": "Remove payment method",
-      "typeFrom": "from {{price}}",
       "typeNeedsPrice": "Needs a price",
       "addVariant": "Add a variant",
       "newVariant": "New variant",
@@ -487,7 +486,8 @@
         "hint": "Show clients what this looks like. Examples appear on your request form and in your gallery.",
         "add": "Add example images",
         "uploadFailed": "Couldn't upload that image."
-      }
+      },
+      "priceMustBePositive": "Enter a price above 0."
     },
     "dashboard": {
       "title": "Dashboard",

@@ -328,7 +328,8 @@
         "hint": "让委托人看看成品效果。样例会显示在委托表单和你的作品集中。",
         "add": "添加样例图片",
         "uploadFailed": "图片上传失败。"
-      }
+      },
+      "priceMustBePositive": "请输入大于 0 的价格。"
     },
     "nav": {
       "commissions": "委托",

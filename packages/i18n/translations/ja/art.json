@@ -465,7 +465,6 @@
       "paymentMethodInstructionsPlaceholder": "ハンドル、リンク、または口座情報",
       "paymentMethodAdd": "支払い方法を追加",
       "paymentMethodRemove": "支払い方法を削除",
-      "typeFrom": "{{price}}〜",
       "typeNeedsPrice": "価格未設定",
       "addVariant": "バリエーションを追加",
       "newVariant": "新しいバリエーション",
@@ -486,7 +485,8 @@
         "hint": "どんな仕上がりか依頼者に見せましょう。作例は依頼フォームとギャラリーに表示されます。",
         "add": "作例画像を追加",
         "uploadFailed": "画像をアップロードできませんでした。"
-      }
+      },
+      "priceMustBePositive": "0 より大きい価格を入力してください。"
     },
     "dashboard": {
       "title": "ダッシュボード",

@@ -466,7 +466,6 @@
       "paymentMethodInstructionsPlaceholder": "Tên tài khoản, liên kết hoặc chi tiết tài khoản",
       "paymentMethodAdd": "Thêm phương thức thanh toán",
       "paymentMethodRemove": "Xóa phương thức thanh toán",
-      "typeFrom": "từ {{price}}",
       "typeNeedsPrice": "Chưa có giá",
       "addVariant": "Thêm biến thể",
       "newVariant": "Biến thể mới",
@@ -487,7 +486,8 @@
         "hint": "Cho khách thấy thành phẩm trông thế nào. Tranh mẫu hiện trên form đặt tranh và trong thư viện của bạn.",
         "add": "Thêm ảnh mẫu",
         "uploadFailed": "Không tải ảnh lên được."
-      }
+      },
+      "priceMustBePositive": "Nhập giá lớn hơn 0."
     },
     "dashboard": {
       "title": "Bảng điều khiển",

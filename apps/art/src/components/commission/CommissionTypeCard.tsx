@@ -9,18 +9,6 @@ import type { ArtistCommissionTypeDto } from '@hatohui/models';
 import { CommissionTypeCardBody } from './CommissionTypeCardBody';
 import { CommissionTypeExamples } from './CommissionTypeExamples';
 
-function priceSummary(
-  type: ArtistCommissionTypeDto,
-  t: (key: string, opts?: Record<string, unknown>) => string,
-): string | null {
-  if (!type.enabled) return null;
-  if (type.startingPrice == null)
-    return t('app.commissionSettings.typeNeedsPrice');
-  return t('app.commissionSettings.typeFrom', {
-    price: `$${Math.round(type.startingPrice / 100)}`,
-  });
-}
-
 export function CommissionTypeCard({
   type,
   onToggle,
@@ -29,7 +17,7 @@ export function CommissionTypeCard({
   onToggle: (enabled: boolean) => void;
 }) {
   const { t } = useTranslation('art');
-  const summary = priceSummary(type, t);
+  const needsPrice = type.enabled && type.startingPrice == null;
 
   const {
     attributes,
@@ -74,16 +62,9 @@ export function CommissionTypeCard({
           {type.label}
         </span>
 
-        {summary && (
-          <span
-            className={cn(
-              'text-sm tabular-nums',
-              type.startingPrice == null
-                ? 'text-destructive'
-                : 'text-muted-foreground',
-            )}
-          >
-            {summary}
+        {needsPrice && (
+          <span className="text-sm text-destructive">
+            {t('app.commissionSettings.typeNeedsPrice')}
           </span>
         )}
 

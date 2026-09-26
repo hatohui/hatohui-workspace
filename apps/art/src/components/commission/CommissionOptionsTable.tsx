@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { EditableDataTable, type EditableColumn } from '@hatohui/ui';
+import { EditableDataTable, type EditableColumn, useToast } from '@hatohui/ui';
 import type {
   CommissionOptionPricingDto,
   CommissionOptionPricingDtoPriceMode,
@@ -51,12 +51,15 @@ function toCents(dollars: string): number {
   return Math.round(Number(dollars) * 100);
 }
 
+const isPositivePrice = (dollars: string) => Number(dollars) > 0;
+
 export function CommissionOptionsTable({
   commissionTypeId,
 }: {
   commissionTypeId: string;
 }) {
   const { t } = useTranslation('art');
+  const toast = useToast();
   const { items, create, update, remove } =
     useCommissionOptionPricingAdmin(commissionTypeId);
   const [draft, setDraft] = useState<OptionRow | null>(null);
@@ -107,7 +110,7 @@ export function CommissionOptionsTable({
     if (id === DRAFT_ID) {
       const next = { ...(draft ?? blankDraft()), [key]: value };
       setDraft(next);
-      if (next.label.trim() && next.minPrice.trim()) {
+      if (next.label.trim() && isPositivePrice(next.minPrice)) {
         void create({
           data: {
             commissionTypeId,
@@ -125,6 +128,10 @@ export function CommissionOptionsTable({
 
     const existing = items.find((item) => item.id === id);
     if (!existing) return;
+    if (key === 'minPrice' && !isPositivePrice(value)) {
+      toast.error(t('app.commissionSettings.priceMustBePositive'));
+      return;
+    }
 
     const next = { ...toRow(existing), [key]: value };
     void update({
