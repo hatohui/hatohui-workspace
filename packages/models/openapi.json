@@ -3835,6 +3835,86 @@
         ]
       }
     },
+    "/projects/{id}/assets": {
+      "post": {
+        "operationId": "addProjectAssets",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddProjectAssetsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add pieces from your gallery to a project",
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/projects/{id}/assets/{assetId}": {
+      "delete": {
+        "operationId": "removeProjectAsset",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "assetId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Take a piece out of a project (it stays in your gallery)",
+        "tags": [
+          "projects"
+        ]
+      }
+    },
     "/artist-dashboard": {
       "get": {
         "operationId": "artistDashboard",
@@ -6095,6 +6175,13 @@
               "type": "string"
             }
           },
+          "projectIds": {
+            "description": "Projects this piece is shown in",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "uploadedById": {
             "type": "string",
             "nullable": true,
@@ -6122,6 +6209,7 @@
           "width",
           "height",
           "tags",
+          "projectIds",
           "uploadedById",
           "createdAt",
           "updatedAt"
@@ -8148,6 +8236,29 @@
           "label"
         ]
       },
+      "ProjectArtworkDto": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Gallery asset id; null for older commission-only images"
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "description": "Small image for grids and cards"
+          },
+          "fullUrl": {
+            "type": "string",
+            "description": "Full-size image for close viewing"
+          }
+        },
+        "required": [
+          "assetId",
+          "thumbnailUrl",
+          "fullUrl"
+        ]
+      },
       "ProjectDto": {
         "type": "object",
         "properties": {
@@ -8191,6 +8302,12 @@
               "type": "string"
             }
           },
+          "artworks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectArtworkDto"
+            }
+          },
           "createdAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
@@ -8210,6 +8327,7 @@
           "coverImageUrl",
           "artworkCount",
           "artworkImages",
+          "artworks",
           "createdAt",
           "updatedAt"
         ]
@@ -8265,6 +8383,21 @@
         },
         "required": [
           "isHidden"
+        ]
+      },
+      "AddProjectAssetsDto": {
+        "type": "object",
+        "properties": {
+          "assetIds": {
+            "description": "Your gallery asset ids",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "assetIds"
         ]
       },
       "ArtistDashboardCountsDto": {

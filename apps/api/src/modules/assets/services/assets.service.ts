@@ -30,6 +30,11 @@ const SORT_ORDER_BY: Record<
   alphabetical: { filename: 'asc' },
 };
 
+const assetInclude = {
+  tags: { include: { tag: true } },
+  projects: { select: { projectId: true } },
+} satisfies Prisma.AssetInclude;
+
 @Injectable()
 export class AssetsService {
   private readonly logger = new Logger(AssetsService.name);
@@ -74,7 +79,7 @@ export class AssetsService {
     const [items, total] = await Promise.all([
       this.db.asset.findMany({
         where,
-        include: { tags: { include: { tag: true } } },
+        include: assetInclude,
         orderBy: SORT_ORDER_BY[sort],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -89,6 +94,21 @@ export class AssetsService {
       pageSize,
       hasMore: page * pageSize < total,
     };
+  }
+
+  async ensureForUrl(url: string, uploader: User): Promise<string> {
+    const existing = await this.db.asset.findFirst({
+      where: { publicUrl: url },
+      select: { id: true },
+    });
+    if (existing) return existing.id;
+
+    const key = this.storage.getKeyFromUrl(url);
+    const created = await this.create(
+      key ? { key } : { externalUrl: url },
+      uploader,
+    );
+    return created.id;
   }
 
   async create(dto: CreateAssetDto, uploader: User): Promise<AssetDto> {
@@ -139,7 +159,7 @@ export class AssetsService {
 
     const asset = await this.db.asset.findUniqueOrThrow({
       where: { id: created.id },
-      include: { tags: { include: { tag: true } } },
+      include: assetInclude,
     });
     return toAssetDto(asset);
   }
@@ -162,7 +182,7 @@ export class AssetsService {
           create: tagIds.map((tagId) => ({ tagId })),
         },
       },
-      include: { tags: { include: { tag: true } } },
+      include: assetInclude,
     });
     return toAssetDto(asset);
   }
@@ -228,7 +248,10 @@ function fallbackFilename(publicUrl: string): string {
 }
 
 function toAssetDto(
-  asset: Asset & { tags: (AssetTag & { tag: Tag })[] },
+  asset: Asset & {
+    tags: (AssetTag & { tag: Tag })[];
+    projects: { projectId: string }[];
+  },
 ): AssetDto {
   return {
     id: asset.id,
@@ -243,6 +266,7 @@ function toAssetDto(
     width: asset.width,
     height: asset.height,
     tags: asset.tags.map((assetTag) => assetTag.tag.name),
+    projectIds: asset.projects.map((link) => link.projectId),
     uploadedById: asset.uploadedById,
     createdAt: asset.createdAt.toISOString(),
     updatedAt: asset.updatedAt.toISOString(),

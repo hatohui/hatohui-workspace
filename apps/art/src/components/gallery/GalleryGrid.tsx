@@ -15,20 +15,24 @@ import { Lightbox } from './Lightbox';
 import { UploadDialog } from './UploadDialog';
 import { GallerySectionTabs, type GallerySection } from './GallerySectionTabs';
 import { ProjectsSection } from '@/components/projects/ProjectsSection';
+import { AddToProjectDialog } from '@/components/projects/AddToProjectDialog';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
 
 export function GalleryGrid({
   artistId,
   initialData,
+  projectBasePath,
 }: {
   artistId?: string;
   initialData: GalleryInitialData;
+  projectBasePath: string;
 }) {
   const { t } = useTranslation('art');
   const { user } = useAuth();
   const gallery = useGalleryAssets(artistId, initialData);
   const [selected, setSelected] = useState<AssetDto | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [projectTarget, setProjectTarget] = useState<AssetDto | null>(null);
   const [section, setSection] = useState<GallerySection>('assets');
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [
     gallery.items,
@@ -57,7 +61,11 @@ export function GalleryGrid({
       </div>
 
       {section === 'projects' ? (
-        <ProjectsSection artistId={artistId} />
+        <ProjectsSection
+          artistId={artistId}
+          basePath={projectBasePath}
+          showHidden={isOwner}
+        />
       ) : (
         <>
           <GalleryFilters gallery={gallery} />
@@ -78,6 +86,7 @@ export function GalleryGrid({
                   asset={asset}
                   isAdmin={isOwner}
                   onClick={() => setSelected(asset)}
+                  onAddToProject={() => setProjectTarget(asset)}
                 />
               </div>
             ))}
@@ -106,6 +115,10 @@ export function GalleryGrid({
 
       <Lightbox asset={selected} onClose={() => setSelected(null)} />
       <UploadDialog open={isUploadOpen} onOpenChange={setIsUploadOpen} />
+      <AddToProjectDialog
+        asset={projectTarget}
+        onClose={() => setProjectTarget(null)}
+      />
     </div>
   );
 }

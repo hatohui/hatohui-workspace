@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
+import { AssetsService } from '@/modules/assets/services/assets.service';
 import { Visibility, type CommissionProgress } from '@prisma/client';
 import {
   CommissionProgressDto,
@@ -17,6 +18,7 @@ export class CommissionProgressService {
   constructor(
     private readonly db: Database,
     private readonly storage: Storage,
+    private readonly assets: AssetsService,
   ) {}
 
   /// Full timeline for the owning artist — includes INTERNAL entries.
@@ -101,6 +103,7 @@ export class CommissionProgressService {
     projectId?: string,
   ): Promise<CommissionProgressDto> {
     const existing = await this.assertOwned(artistId, id);
+    if (projectId) await this.assertProjectOwned(artistId, projectId);
     const row = await this.db.commissionProgress.update({
       where: { id },
       data: { isFinal: true, projectId: projectId ?? null },
@@ -109,12 +112,55 @@ export class CommissionProgressService {
       where: { commissionId: existing.commissionId },
       data: { deliveredAt: new Date() },
     });
+    if (projectId)
+      await this.linkImagesToProject(artistId, projectId, row.images);
     return toDto(row);
   }
 
   async remove(artistId: string, id: string): Promise<void> {
     await this.assertOwned(artistId, id);
     await this.db.commissionProgress.delete({ where: { id } });
+  }
+
+  private async linkImagesToProject(
+    artistId: string,
+    projectId: string,
+    images: string[],
+  ): Promise<void> {
+    if (images.length === 0) return;
+    const artist = await this.db.user.findUniqueOrThrow({
+      where: { id: artistId },
+    });
+    const assetIds: string[] = [];
+    for (const url of images) {
+      assetIds.push(await this.assets.ensureForUrl(url, artist));
+    }
+    const last = await this.db.projectAsset.aggregate({
+      where: { projectId },
+      _max: { position: true },
+    });
+    const start = (last._max.position ?? -1) + 1;
+    await this.db.projectAsset.createMany({
+      data: assetIds.map((assetId, index) => ({
+        projectId,
+        assetId,
+        position: start + index,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
+  private async assertProjectOwned(
+    artistId: string,
+    projectId: string,
+  ): Promise<void> {
+    const project = await this.db.project.findUnique({
+      where: { id: projectId },
+      select: { artistId: true },
+    });
+    if (!project || project.artistId !== artistId) {
+      throw new NotFoundException(`Project ${projectId} not found`);
+    }
   }
 
   private async assertCommissionOwned(

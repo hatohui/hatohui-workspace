@@ -57,6 +57,12 @@ export class AssetDto {
   tags: string[];
 
   @ApiProperty({
+    type: [String],
+    description: 'Projects this piece is shown in',
+  })
+  projectIds: string[];
+
+  @ApiProperty({
     nullable: true,
     description: 'Id of the account that uploaded this asset',
   })

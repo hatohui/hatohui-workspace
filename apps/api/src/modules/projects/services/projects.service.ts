@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Database } from '@/infra/db';
 import { AuthService } from '@/modules/auth/services/auth.service';
-import { type Project, type Prisma, type User } from '@prisma/client';
+import { type Prisma, type User } from '@prisma/client';
 import {
   CreateProjectDto,
+  ProjectArtworkDto,
   ProjectDto,
   UpdateProjectDto,
   UpdateProjectVisibilityDto,
@@ -14,11 +19,15 @@ const artworksInclude = {
     where: { isFinal: true },
     select: { images: true },
   },
+  assets: {
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+    include: { asset: true },
+  },
 } satisfies Prisma.ProjectInclude;
 
-type ProjectWithArtworks = Project & {
-  artworks: { images: string[] }[];
-};
+type ProjectWithArtworks = Prisma.ProjectGetPayload<{
+  include: typeof artworksInclude;
+}>;
 
 @Injectable()
 export class ProjectsService {
@@ -95,6 +104,48 @@ export class ProjectsService {
     return toProjectDto(project);
   }
 
+  async addAssets(
+    artistId: string,
+    id: string,
+    assetIds: string[],
+  ): Promise<ProjectDto> {
+    await this.assertOwned(artistId, id);
+    const unique = [...new Set(assetIds)];
+    const owned = await this.db.asset.count({
+      where: { id: { in: unique }, uploadedById: artistId },
+    });
+    if (owned !== unique.length) {
+      throw new BadRequestException('Only your own gallery art can be added');
+    }
+
+    const last = await this.db.projectAsset.aggregate({
+      where: { projectId: id },
+      _max: { position: true },
+    });
+    const start = (last._max.position ?? -1) + 1;
+    await this.db.projectAsset.createMany({
+      data: unique.map((assetId, index) => ({
+        projectId: id,
+        assetId,
+        position: start + index,
+      })),
+      skipDuplicates: true,
+    });
+    return toProjectDto(await this.findOrThrow(id));
+  }
+
+  async removeAsset(
+    artistId: string,
+    id: string,
+    assetId: string,
+  ): Promise<ProjectDto> {
+    await this.assertOwned(artistId, id);
+    await this.db.projectAsset.deleteMany({
+      where: { projectId: id, assetId },
+    });
+    return toProjectDto(await this.findOrThrow(id));
+  }
+
   async remove(artistId: string, id: string): Promise<void> {
     await this.assertOwned(artistId, id);
     await this.db.project.delete({ where: { id } });
@@ -119,8 +170,23 @@ export class ProjectsService {
   }
 }
 
+function toArtworks(project: ProjectWithArtworks): ProjectArtworkDto[] {
+  const fromAssets = project.assets.map(({ asset }) => ({
+    assetId: asset.id,
+    thumbnailUrl: asset.thumbnailUrl ?? asset.publicUrl,
+    fullUrl: asset.publicUrl,
+  }));
+  const linked = new Set(fromAssets.map((artwork) => artwork.fullUrl));
+  const legacy = project.artworks
+    .flatMap((artwork) => artwork.images)
+    .filter((url) => !linked.has(url))
+    .map((url) => ({ assetId: null, thumbnailUrl: url, fullUrl: url }));
+  return [...fromAssets, ...legacy];
+}
+
 function toProjectDto(project: ProjectWithArtworks): ProjectDto {
-  const artworkImages = project.artworks.flatMap((artwork) => artwork.images);
+  const artworks = toArtworks(project);
+  const artworkImages = artworks.map((artwork) => artwork.fullUrl);
   return {
     id: project.id,
     artistId: project.artistId,
@@ -128,9 +194,10 @@ function toProjectDto(project: ProjectWithArtworks): ProjectDto {
     description: project.description,
     brief: project.brief,
     isHidden: project.isHidden,
-    coverImageUrl: artworkImages[0] ?? null,
-    artworkCount: project.artworks.length,
+    coverImageUrl: artworks[0]?.thumbnailUrl ?? null,
+    artworkCount: artworks.length,
     artworkImages,
+    artworks,
     createdAt: project.createdAt.toISOString(),
     updatedAt: project.updatedAt.toISOString(),
   };

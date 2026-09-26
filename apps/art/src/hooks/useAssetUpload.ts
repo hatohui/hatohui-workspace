@@ -18,7 +18,7 @@ export function useAssetUpload() {
     try {
       const uploaded = await uploadImage(file);
       const dimensions = await readImageDimensions(file);
-      await createAsset.mutateAsync({
+      const created = await createAsset.mutateAsync({
         data: {
           key: uploaded.key,
           filename: file.name,
@@ -29,6 +29,7 @@ export function useAssetUpload() {
           tags,
         },
       });
+      return created.data;
     } finally {
       setIsSaving(false);
     }

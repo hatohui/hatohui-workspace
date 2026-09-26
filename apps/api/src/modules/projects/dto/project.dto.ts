@@ -1,5 +1,35 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+
+export class ProjectArtworkDto {
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'Gallery asset id; null for older commission-only images',
+  })
+  assetId: string | null;
+
+  @ApiProperty({ description: 'Small image for grids and cards' })
+  thumbnailUrl: string;
+
+  @ApiProperty({ description: 'Full-size image for close viewing' })
+  fullUrl: string;
+}
+
+export class AddProjectAssetsDto {
+  @ApiProperty({ type: [String], description: 'Your gallery asset ids' })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  assetIds: string[];
+}
 
 export class ProjectDto {
   @ApiProperty({ example: 'clx1234567890' })
@@ -40,6 +70,9 @@ export class ProjectDto {
 
   @ApiProperty({ type: [String] })
   artworkImages: string[];
+
+  @ApiProperty({ type: ProjectArtworkDto, isArray: true })
+  artworks: ProjectArtworkDto[];
 
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   createdAt: string;

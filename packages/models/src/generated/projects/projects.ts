@@ -25,6 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AddProjectAssetsDto,
   CreateProjectDto,
   ProjectDto,
   ProjectsParams,
@@ -614,4 +615,171 @@ export const useUpdateProjectVisibility = <TError = unknown,
         TContext
       > => {
       return useMutation(getUpdateProjectVisibilityMutationOptions(options), queryClient);
+    }
+    export type addProjectAssetsResponse200 = {
+  data: ProjectDto
+  status: 200
+}
+
+export type addProjectAssetsResponseSuccess = (addProjectAssetsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type addProjectAssetsResponse = (addProjectAssetsResponseSuccess)
+
+export const getAddProjectAssetsUrl = (id: string,) => {
+
+
+
+
+  return `/projects/${id}/assets`
+}
+
+/**
+ * @summary Add pieces from your gallery to a project
+ */
+export const addProjectAssets = async (id: string,
+    addProjectAssetsDto: AddProjectAssetsDto, options?: RequestInit): Promise<addProjectAssetsResponse> => {
+
+  return customFetch<addProjectAssetsResponse>(getAddProjectAssetsUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(addProjectAssetsDto)
+  }
+);}
+
+
+
+
+
+export const getAddProjectAssetsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addProjectAssets>>, TError,{id: string;data: AddProjectAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof addProjectAssets>>, TError,{id: string;data: AddProjectAssetsDto}, TContext> => {
+
+const mutationKey = ['addProjectAssets'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addProjectAssets>>, {id: string;data: AddProjectAssetsDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  addProjectAssets(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddProjectAssetsMutationResult = NonNullable<Awaited<ReturnType<typeof addProjectAssets>>>
+    export type AddProjectAssetsMutationBody = AddProjectAssetsDto
+    export type AddProjectAssetsMutationError = unknown
+
+    /**
+ * @summary Add pieces from your gallery to a project
+ */
+export const useAddProjectAssets = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addProjectAssets>>, TError,{id: string;data: AddProjectAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof addProjectAssets>>,
+        TError,
+        {id: string;data: AddProjectAssetsDto},
+        TContext
+      > => {
+      return useMutation(getAddProjectAssetsMutationOptions(options), queryClient);
+    }
+    export type removeProjectAssetResponse200 = {
+  data: ProjectDto
+  status: 200
+}
+
+export type removeProjectAssetResponseSuccess = (removeProjectAssetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type removeProjectAssetResponse = (removeProjectAssetResponseSuccess)
+
+export const getRemoveProjectAssetUrl = (id: string,
+    assetId: string,) => {
+
+
+
+
+  return `/projects/${id}/assets/${assetId}`
+}
+
+/**
+ * @summary Take a piece out of a project (it stays in your gallery)
+ */
+export const removeProjectAsset = async (id: string,
+    assetId: string, options?: RequestInit): Promise<removeProjectAssetResponse> => {
+
+  return customFetch<removeProjectAssetResponse>(getRemoveProjectAssetUrl(id,assetId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveProjectAssetMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeProjectAsset>>, TError,{id: string;assetId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeProjectAsset>>, TError,{id: string;assetId: string}, TContext> => {
+
+const mutationKey = ['removeProjectAsset'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeProjectAsset>>, {id: string;assetId: string}> = (props) => {
+          const {id,assetId} = props ?? {};
+
+          return  removeProjectAsset(id,assetId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveProjectAssetMutationResult = NonNullable<Awaited<ReturnType<typeof removeProjectAsset>>>
+
+    export type RemoveProjectAssetMutationError = unknown
+
+    /**
+ * @summary Take a piece out of a project (it stays in your gallery)
+ */
+export const useRemoveProjectAsset = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeProjectAsset>>, TError,{id: string;assetId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof removeProjectAsset>>,
+        TError,
+        {id: string;assetId: string},
+        TContext
+      > => {
+      return useMutation(getRemoveProjectAssetMutationOptions(options), queryClient);
     }

@@ -9,6 +9,6 @@ import { AssetThumbnailExecutor } from '@/modules/assets/services/asset-thumbnai
   imports: [AuthModule, ProcessQueueModule],
   controllers: [AssetsController],
   providers: [AssetsService, AssetThumbnailExecutor],
-  exports: [AssetThumbnailExecutor],
+  exports: [AssetThumbnailExecutor, AssetsService],
 })
 export class AssetsModule {}
