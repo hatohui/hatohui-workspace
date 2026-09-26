@@ -272,9 +272,9 @@ enum AssetThumbnailStatus {
 }
 
 model Asset {
-  id          String      @id @default(cuid())
-  source      AssetSource @default(UPLOAD)
-  key         String?     @unique
+  id          String         @id @default(cuid())
+  source      AssetSource    @default(UPLOAD)
+  key         String?        @unique
   publicUrl   String
   filename    String
   contentType String
@@ -282,8 +282,9 @@ model Asset {
   width       Int?
   height      Int?
   tags        AssetTag[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  projects    ProjectAsset[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   thumbnailKey    String?
   thumbnailUrl    String?
@@ -358,6 +359,19 @@ model Tag {
 /// Explicit join for the Asset<->Tag many-to-many (was Prisma's implicit
 /// `_AssetToTag` table) — made explicit so it's visible in the schema
 /// instead of being generated and hidden.
+model ProjectAsset {
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assetId   String
+  asset     Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@id([projectId, assetId])
+  @@index([assetId])
+}
+
 model AssetTag {
   assetId String
   asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
@@ -376,11 +390,11 @@ model AssetTag {
 /// types via ArtistCommissionType and price them via their own
 /// CommissionOptions — a type itself carries no price.
 model CommissionType {
-  id     String @id @default(cuid())
-  key    String @unique
-  label  String
-  no     Int      @default(0)
-  active Boolean  @default(true)
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  no        Int      @default(0)
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -444,10 +458,10 @@ model CommissionOption {
   priceMode PriceMode @default(FIXED)
   minPrice  Int
   maxPrice  Int?
-  no        Int      @default(0)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  no        Int       @default(0)
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@unique([artistId, commissionTypeId, key])
 }
@@ -596,7 +610,7 @@ model CommissionDetail {
   optionKey        String?
   addonKeys        String[]        @default([])
 
-  currency      String @default("USD")
+  currency      String    @default("USD")
   quote         Int?
   originalQuote Int?
   estimateLow   Int?
@@ -654,6 +668,7 @@ model Project {
 
   groups   CommissionGroup[]
   artworks CommissionProgress[]
+  assets   ProjectAsset[]
   comments Comment[]
 
   @@index([artistId])
