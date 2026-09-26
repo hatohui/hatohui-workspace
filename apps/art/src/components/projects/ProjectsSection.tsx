@@ -5,7 +5,15 @@ import { useProjects } from '@/hooks/useProjects';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
 import { ProjectCard } from './ProjectCard';
 
-export function ProjectsSection({ artistId }: { artistId?: string }) {
+export function ProjectsSection({
+  artistId,
+  basePath,
+  showHidden = false,
+}: {
+  artistId?: string;
+  basePath: string;
+  showHidden?: boolean;
+}) {
   const { t } = useTranslation('art');
   const { items, isLoading } = useProjects(artistId);
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [items]);
@@ -27,7 +35,11 @@ export function ProjectsSection({ artistId }: { artistId?: string }) {
     >
       {items.map((project) => (
         <div key={project.id} data-reveal>
-          <ProjectCard project={project} />
+          <ProjectCard
+            project={project}
+            href={`${basePath}/${project.id}`}
+            showHidden={showHidden}
+          />
         </div>
       ))}
     </div>

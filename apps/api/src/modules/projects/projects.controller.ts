@@ -29,6 +29,7 @@ import {
   ProjectDto,
   UpdateProjectDto,
   UpdateProjectVisibilityDto,
+  AddProjectAssetsDto,
 } from '@/modules/projects/dto/project.dto';
 
 @ApiTags('projects')
@@ -102,6 +103,36 @@ export class ProjectsController {
     @CurrentUser() user: User,
   ): Promise<ProjectDto> {
     return this.projectsService.updateVisibility(user.id, id, dto);
+  }
+
+  @Post(':id/assets')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'addProjectAssets',
+    summary: 'Add pieces from your gallery to a project',
+  })
+  @ApiOkResponse({ type: ProjectDto })
+  addAssets(
+    @Param('id') id: string,
+    @Body() dto: AddProjectAssetsDto,
+    @CurrentUser() user: User,
+  ): Promise<ProjectDto> {
+    return this.projectsService.addAssets(user.id, id, dto.assetIds);
+  }
+
+  @Delete(':id/assets/:assetId')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'removeProjectAsset',
+    summary: 'Take a piece out of a project (it stays in your gallery)',
+  })
+  @ApiOkResponse({ type: ProjectDto })
+  removeAsset(
+    @Param('id') id: string,
+    @Param('assetId') assetId: string,
+    @CurrentUser() user: User,
+  ): Promise<ProjectDto> {
+    return this.projectsService.removeAsset(user.id, id, assetId);
   }
 
   @Delete(':id')

@@ -28,7 +28,7 @@ export function CommissionReferenceExamples({
             className="relative size-16 shrink-0 overflow-hidden rounded-md"
           >
             <Image
-              src={asset.publicUrl}
+              src={asset.thumbnailUrl ?? asset.publicUrl}
               alt={asset.filename}
               fill
               sizes="64px"

@@ -8,6 +8,7 @@
 
 export * from './addCommissionGroupMemberDto';
 export * from './addConnectionsDto';
+export * from './addProjectAssetsDto';
 export * from './addReferenceAssetsDto';
 export * from './adminListProfilesDirection';
 export * from './adminListProfilesParams';
@@ -167,6 +168,7 @@ export * from './processQueueParams';
 export * from './processQueueRunDto';
 export * from './processQueueRunDtoType';
 export * from './processQueueType';
+export * from './projectArtworkDto';
 export * from './projectDto';
 export * from './projectDtoBrief';
 export * from './projectsParams';

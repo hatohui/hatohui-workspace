@@ -1,7 +1,13 @@
-import Image from 'next/image';
+'use client';
+
 import type { ProjectDto } from '@hatohui/models';
+import { useImageViewer } from '@/hooks/useImageViewer';
+import { ImageViewer } from '@/components/shared/ImageViewer';
+import { ProjectArtworkGrid } from './ProjectArtworkGrid';
 
 export function ProjectDetail({ project }: { project: ProjectDto }) {
+  const viewer = useImageViewer();
+
   return (
     <div className="space-y-6">
       <div>
@@ -10,23 +16,16 @@ export function ProjectDetail({ project }: { project: ProjectDto }) {
           <p className="text-muted-foreground">{project.description}</p>
         )}
       </div>
-
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {project.artworkImages.map((url) => (
-          <div
-            key={url}
-            className="relative aspect-square overflow-hidden rounded-lg bg-card"
-          >
-            <Image
-              src={url}
-              alt={project.title}
-              fill
-              sizes="33vw"
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </div>
+      <ProjectArtworkGrid
+        artworks={project.artworks}
+        alt={project.title}
+        onView={viewer.open}
+      />
+      <ImageViewer
+        src={viewer.src}
+        alt={project.title}
+        onClose={viewer.close}
+      />
     </div>
   );
 }

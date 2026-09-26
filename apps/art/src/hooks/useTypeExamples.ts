@@ -34,7 +34,7 @@ export function useTypeExamples(tagName: string | null) {
     canAdd: tagName !== null,
     items: items.map((asset) => ({
       id: asset.id,
-      src: asset.publicUrl,
+      src: asset.thumbnailUrl ?? asset.publicUrl,
       alt: asset.filename,
     })),
     isUploading,

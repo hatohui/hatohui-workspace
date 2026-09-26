@@ -26,6 +26,8 @@ export interface AssetDto {
   /** @nullable */
   height: number | null;
   tags: string[];
+  /** Projects this piece is shown in */
+  projectIds: string[];
   /**
      * Id of the account that uploaded this asset
      * @nullable

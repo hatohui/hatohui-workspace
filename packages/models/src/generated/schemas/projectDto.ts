@@ -5,6 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { ProjectArtworkDto } from './projectArtworkDto';
 import type { ProjectDtoBrief } from './projectDtoBrief';
 
 export interface ProjectDto {
@@ -28,6 +29,7 @@ export interface ProjectDto {
   /** Number of final artworks attached to this project */
   artworkCount: number;
   artworkImages: string[];
+  artworks: ProjectArtworkDto[];
   createdAt: string;
   updatedAt: string;
 }
