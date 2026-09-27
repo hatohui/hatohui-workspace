@@ -2146,7 +2146,7 @@
             }
           }
         },
-        "summary": "Update an asset's tags",
+        "summary": "Update an asset's tags, title or description",
         "tags": [
           "assets"
         ]
@@ -6493,6 +6493,16 @@
             "type": "string",
             "example": "character-sketch.png"
           },
+          "title": {
+            "type": "string",
+            "example": "Mira at the café",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "example": "Commission for Mira, warm evening palette.",
+            "nullable": true
+          },
           "contentType": {
             "type": "string",
             "example": "image/png"
@@ -6551,6 +6561,8 @@
           "thumbnailUrl",
           "thumbnailStatus",
           "filename",
+          "title",
+          "description",
           "contentType",
           "size",
           "width",
@@ -6660,6 +6672,14 @@
             "items": {
               "type": "string"
             }
+          },
+          "title": {
+            "type": "string",
+            "example": "Mira at the café"
+          },
+          "description": {
+            "type": "string",
+            "example": "Commission for Mira, warm evening palette."
           }
         }
       },
@@ -6761,11 +6781,16 @@
             "items": {
               "type": "string"
             }
+          },
+          "title": {
+            "type": "string",
+            "example": "Mira at the café"
+          },
+          "description": {
+            "type": "string",
+            "example": "Commission for Mira, warm evening palette."
           }
-        },
-        "required": [
-          "tags"
-        ]
+        }
       },
       "SubmitCommissionDto": {
         "type": "object",

@@ -140,7 +140,19 @@
     },
     "loadingMore": "正在加载更多…",
     "searchTagCount_other": "{{count}} 件作品",
-    "clearTagFilter": "取消按 {{tag}} 筛选"
+    "clearTagFilter": "取消按 {{tag}} 筛选",
+    "details": {
+      "titleLabel": "标题",
+      "titlePlaceholder": "未命名",
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "关于这件作品值得一提的内容。",
+      "editTrigger": "{{name}} 的标题和描述",
+      "save": "保存",
+      "saving": "保存中...",
+      "discard": "放弃更改",
+      "saveFailed": "保存失败，请重试。"
+    },
+    "viewLarge": "查看大图"
   },
   "queue": {
     "title": "队列",
@@ -184,14 +196,13 @@
       "deadlineHint": "如果没有截止日期，请留空。",
       "clientNameLabel": "你的名字",
       "clientEmailLabel": "你的邮箱",
-      "submittingAs": "以 {{name}} 的身份提交。",
       "attachmentsLabel": "参考图片",
       "hideFromQueueLabel": "在公开队列中隐藏此委托",
       "hideFromQueueTooltip": "公开队列只显示此委托的类型和进度。你的姓名、联系方式、想法和参考资料不会公开。",
       "acceptTerms": "我已阅读并同意<link>服务条款</link>",
       "submit": "提交请求",
       "submitting": "正在提交...",
-      "invalidEmail": "请输入完整的邮箱地址，例如 name@example.com",
+      "invalidEmail": "邮箱地址无效。",
       "hints": {
         "name": "我会这样称呼你。",
         "email": "用于发送订单链接和进度通知。",
@@ -590,5 +601,12 @@
         }
       }
     }
+  },
+  "imageViewer": {
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "reset": "重置缩放",
+    "close": "关闭",
+    "toggleCaption": "显示或隐藏详情"
   }
 }

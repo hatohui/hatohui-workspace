@@ -134,7 +134,7 @@ export class AssetsController {
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'updateAsset',
-    summary: "Update an asset's tags",
+    summary: "Update an asset's tags, title or description",
   })
   @ApiOkResponse({ type: AssetDto })
   update(

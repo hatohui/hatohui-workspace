@@ -7,5 +7,7 @@
  */
 
 export interface UpdateAssetDto {
-  tags: string[];
+  tags?: string[];
+  title?: string;
+  description?: string;
 }

@@ -33,6 +33,8 @@ export function useUploadQueueRunner(
         width: dimensions?.width,
         height: dimensions?.height,
         tags: [...new Set([...sharedTags, ...item.tags])],
+        title: item.title.trim() || undefined,
+        description: item.description.trim() || undefined,
       },
     });
     patch(item.id, { status: 'done', progress: 1 });

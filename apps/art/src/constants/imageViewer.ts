@@ -1,0 +1,6 @@
+export const IMAGE_VIEWER_MIN_SCALE = 1;
+export const IMAGE_VIEWER_MAX_SCALE = 8;
+export const IMAGE_VIEWER_WHEEL_STEP = 1.2;
+export const IMAGE_VIEWER_BUTTON_STEP = 1.5;
+export const IMAGE_VIEWER_DOUBLE_CLICK_SCALE = 2.5;
+export const IMAGE_VIEWER_CLICK_TOLERANCE_PX = 4;

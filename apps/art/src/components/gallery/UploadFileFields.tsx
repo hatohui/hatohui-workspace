@@ -69,6 +69,9 @@ export function UploadFileFields({
                 onTagsChange={(itemTags) =>
                   queue.setItemTags(item.id, itemTags)
                 }
+                onDetailsChange={(details) =>
+                  queue.setItemDetails(item.id, details)
+                }
               />
             ))}
           </div>

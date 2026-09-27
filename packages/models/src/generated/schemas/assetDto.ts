@@ -18,6 +18,10 @@ export interface AssetDto {
   thumbnailUrl: string | null;
   thumbnailStatus: AssetDtoThumbnailStatus;
   filename: string;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
   contentType: string;
   /** File size in bytes */
   size: number;

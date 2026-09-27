@@ -1,19 +1,22 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { AssetDto } from '@hatohui/models';
-import { ARTWORK_FALLBACK_DIMENSION_PX } from '@/constants/gallery';
 import { ArtworkDetailList } from './ArtworkDetailList';
+import { ArtworkImage } from './ArtworkImage';
+import { ArtworkHeading } from './ArtworkHeading';
+import { ArtworkDetailsEditor } from './ArtworkDetailsEditor';
 
 export function ArtworkDetail({
   asset,
   backHref,
+  editable = false,
 }: {
   asset: AssetDto;
   backHref: string;
+  editable?: boolean;
 }) {
   const { t } = useTranslation('art');
 
@@ -37,17 +40,12 @@ export function ArtworkDetail({
           <ExternalLink />
         </a>
       </div>
-      <div className="flex justify-center rounded-lg bg-card">
-        <Image
-          src={asset.publicUrl}
-          alt={asset.filename}
-          width={asset.width ?? ARTWORK_FALLBACK_DIMENSION_PX}
-          height={asset.height ?? ARTWORK_FALLBACK_DIMENSION_PX}
-          sizes="100vw"
-          priority
-          className="h-auto max-h-[calc(100vh-12rem)] w-auto max-w-full object-contain"
-        />
-      </div>
+      <ArtworkImage asset={asset} />
+      {editable ? (
+        <ArtworkDetailsEditor asset={asset} />
+      ) : (
+        <ArtworkHeading asset={asset} />
+      )}
       <ArtworkDetailList asset={asset} />
     </div>
   );

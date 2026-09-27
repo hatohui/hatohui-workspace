@@ -3,10 +3,11 @@
 import { X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { TagSuggestion } from '@hatohui/ui';
-import type { UploadItem } from '@/hooks/useUploadQueue';
+import type { AssetDetails, UploadItem } from '@/hooks/useUploadQueue';
 import { useObjectUrl } from '@/hooks/useObjectUrl';
 import { UploadTileStatus } from './UploadTileStatus';
 import { UploadItemTagsPopover } from './UploadItemTagsPopover';
+import { UploadItemDetailsPopover } from './UploadItemDetailsPopover';
 
 export function UploadQueueTile({
   item,
@@ -15,6 +16,7 @@ export function UploadQueueTile({
   isLocked,
   onRemove,
   onTagsChange,
+  onDetailsChange,
 }: {
   item: UploadItem;
   sharedTags: string[];
@@ -22,6 +24,7 @@ export function UploadQueueTile({
   isLocked: boolean;
   onRemove: () => void;
   onTagsChange: (tags: string[]) => void;
+  onDetailsChange: (details: AssetDetails) => void;
 }) {
   const { t } = useTranslation('art');
   const previewUrl = useObjectUrl(item.file);
@@ -42,6 +45,12 @@ export function UploadQueueTile({
         sharedTags={sharedTags}
         onTagsChange={onTagsChange}
         suggestions={suggestions}
+        disabled={isLocked}
+      />
+      <UploadItemDetailsPopover
+        fileName={item.file.name}
+        details={{ title: item.title, description: item.description }}
+        onChange={onDetailsChange}
         disabled={isLocked}
       />
       {!isLocked && (

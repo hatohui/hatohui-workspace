@@ -17,4 +17,6 @@ export interface CreateAssetDto {
   width?: number;
   height?: number;
   tags?: string[];
+  title?: string;
+  description?: string;
 }

@@ -278,6 +278,8 @@ model Asset {
   key         String?        @unique
   publicUrl   String
   filename    String
+  title       String?
+  description String?
   contentType String
   size        Int
   width       Int?
