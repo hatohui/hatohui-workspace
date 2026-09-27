@@ -155,7 +155,7 @@ Conventions the template expects from `src/pages/`:
 ## Shared OpenAPI client (`packages/models`)
 
 - `apps/api` is the source of truth. `scripts/export-openapi.ts` boots the Nest app and writes `packages/models/openapi.json`; Orval (`packages/models/orval.config.ts`) turns that into a TanStack Query client under `packages/models/src/generated/`.
-- Both `openapi.json` and `src/generated/` are **committed**, not gitignored — frontend CD workflows (`friends-cd.yml`, `www-cd.yml`) build straight from `bun install` without a database, so the generated client must already be up to date in the tree. Whenever `apps/api`'s routes/DTOs change, run `task app:openapi:generate` (needs local Postgres up) and commit the diff alongside the backend change.
+- Both `openapi.json` and `src/generated/` are **committed**, not gitignored — frontend CD workflows (`friends-cd.yml`, `www-cd.yml`) build straight from `bun install` without a database, so the generated client must already be up to date in the tree. Whenever `apps/api`'s routes/DTOs change, run `task app:openapi:generate` (needs local Postgres up) and commit the diff alongside the backend change. The `openapi-client` check (`openapi-ci.yml`) runs on every PR and fails on a stale client; it is the only gate, since `api-cd` deploys without re-checking.
 - Orval's `schemas` output must **not** be named `models` (it collides with the package's own name, producing a confusing `models/src/generated/models` path) — it's `src/generated/schemas`.
 - Consumers configure the base URL once via `setApiBaseUrl(url)` before rendering; `customFetch` throws if it's never called, instead of silently defaulting to `localhost`.
 
