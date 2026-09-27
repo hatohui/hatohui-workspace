@@ -1,0 +1,59 @@
+name: friends-ci
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "apps/friends/**"
+      - "packages/**"
+      - "package.json"
+      - "bun.lock"
+      - "eslint.config.mjs"
+      - ".prettierrc"
+      - ".prettierignore"
+      - ".github/workflows/friends-ci.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Prettier
+        run: bunx prettier --check apps/friends
+
+      - name: ESLint
+        run: bunx eslint apps/friends
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        working-directory: apps/friends
+        run: bun run build
+        env:
+          VITE_API_URL: ${{ vars.API_URL }}
+          VITE_GOOGLE_OAUTH_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_CLIENT_ID }}

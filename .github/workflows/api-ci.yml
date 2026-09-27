@@ -1,11 +1,21 @@
-name: ci
+name: api-ci
 
 on:
   pull_request:
     branches: [master]
+    paths:
+      - "apps/api/**"
+      - "packages/models/**"
+      - "scripts/export-openapi.ts"
+      - "package.json"
+      - "bun.lock"
+      - "eslint.config.mjs"
+      - ".prettierrc"
+      - ".prettierignore"
+      - ".github/workflows/api-ci.yml"
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 permissions:
@@ -25,33 +35,19 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Generate Prisma client
-        run: (cd apps/api && bunx prisma generate)
+        working-directory: apps/api
+        run: bunx prisma generate
         env:
           DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
 
       - name: Prettier
-        run: bunx prettier --check apps packages
+        run: bunx prettier --check apps/api
 
       - name: ESLint
-        run: bunx eslint apps packages
+        run: bunx eslint apps/api
 
-  typecheck:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - app: api
-            command: bunx tsc --noEmit -p .
-          - app: art
-            command: bunx tsc --noEmit -p .
-          - app: friends
-            command: bunx tsc -b
-          - app: www
-            command: bunx tsc -b
-          - app: workspace
-            command: bunx tsc -b
-    name: typecheck (${{ matrix.app }})
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -63,14 +59,14 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Generate Prisma client
-        if: matrix.app == 'api'
-        run: (cd apps/api && bunx prisma generate)
+        working-directory: apps/api
+        run: bunx prisma generate
         env:
           DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
 
-      - name: Typecheck
-        working-directory: apps/${{ matrix.app }}
-        run: ${{ matrix.command }}
+      - name: Build
+        working-directory: apps/api
+        run: bun run build
 
   openapi-client:
     runs-on: ubuntu-latest
@@ -125,25 +121,3 @@ jobs:
             echo "::error::packages/models is out of date. Run 'task app:openapi:generate' and commit the diff."
             exit 1
           fi
-
-  terraform:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infra
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.15.8
-
-      - name: Format
-        run: terraform fmt -check -recursive
-
-      - name: Validate
-        run: |
-          terraform init -backend=false -input=false
-          terraform validate
