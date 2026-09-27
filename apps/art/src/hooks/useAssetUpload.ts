@@ -38,20 +38,8 @@ export function useAssetUpload() {
     }
   };
 
-  const createFromUrl = async (externalUrl: string, filename?: string) => {
-    setIsSaving(true);
-    try {
-      await createAsset.mutateAsync({
-        data: { externalUrl, filename },
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   return {
     uploadAsset,
-    createFromUrl,
     isUploading: isUploading || isSaving,
   };
 }

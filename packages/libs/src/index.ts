@@ -10,6 +10,7 @@ export * from './images/useUploadLimits';
 export * from './images/validateImageFile';
 export * from './images/putToSignedUrl';
 export * from './images/signImageFiles';
+export * from './images/compressImageToFit';
 export * from './images/resizeImageToSquare';
 export * from './errors/getErrorCategory';
 export * from './hooks/useDebouncedValue';

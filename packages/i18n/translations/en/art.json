@@ -73,11 +73,6 @@
       "tagsHint": "Pick a commission type's tag to show these pieces as examples on the commission form.",
       "save": "Save",
       "cancel": "Cancel",
-      "modeFile": "Upload a file",
-      "modeLink": "Paste a link",
-      "linkLabel": "Image URL",
-      "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "Filename (optional)",
       "tagsPlaceholder": "Search or add a tag",
       "tagCreate": "Add new tag \"{{tag}}\"",
       "tagRemove": "Remove {{tag}}",
@@ -95,7 +90,6 @@
       "capacity": "{{count}} / {{max}} images · up to {{size}} MB each",
       "progress": "Uploading… {{done}} of {{total}} done",
       "itemTags": "Tags for {{name}}",
-      "itemTagsHint": "Only for this image. Tags for all images are added too.",
       "remove": "Remove {{name}}",
       "retryCount_one": "Retry {{count}} image",
       "retryCount_other": "Retry {{count}} images",
@@ -106,8 +100,18 @@
         "title_other": "{{count}} files weren't added",
         "tooLarge": "{{name}} is {{size}} MB (max {{max}} MB)",
         "unsupportedType": "{{name}} isn't a supported image type",
-        "overLimit": "{{name}}: at most {{max}} images per upload"
-      }
+        "overLimit": "{{name}}: at most {{max}} images per upload",
+        "compressFailed": "{{name}} is still over {{max}} MB after compressing"
+      },
+      "compressAndUpload": "Compress and upload",
+      "compressing": "Compressing…",
+      "compressHint": "Converts to WebP and scales down only as much as needed to fit.",
+      "dropzoneMore": "Add more images",
+      "tagGroupCommission": "Commission types",
+      "tagGroupOwn": "Your tags",
+      "itemTagsInherited": "Also applied from Tags for all images",
+      "itemTagsOwn": "Only this image",
+      "itemTagsSummary": "{{name}}: {{tags}}"
     },
     "card": {
       "delete": "Delete",

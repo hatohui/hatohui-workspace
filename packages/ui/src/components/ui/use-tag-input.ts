@@ -1,6 +1,11 @@
 import { useState, type KeyboardEvent } from 'react';
 
-export type TagSuggestion = { value: string; hint?: string };
+export type TagSuggestion = {
+  value: string;
+  hint?: string;
+  group?: string;
+  accent?: boolean;
+};
 
 export type TagOption = TagSuggestion & { isNew: boolean };
 
@@ -21,6 +26,7 @@ export function useTagInput({
   const [highlighted, setHighlighted] = useState(0);
 
   const needle = draft.trim();
+  const groupOrder = [...new Set(suggestions.map((s) => s.group))];
   const hasTag = (tag: string) => value.some((v) => sameTag(v, tag));
   const matches = suggestions
     .filter(
@@ -30,6 +36,7 @@ export function useTagInput({
     )
     .sort(
       (a, b) =>
+        groupOrder.indexOf(a.group) - groupOrder.indexOf(b.group) ||
         Number(sameTag(b.value, needle)) - Number(sameTag(a.value, needle)),
     );
   const isNew =
@@ -57,6 +64,9 @@ export function useTagInput({
     setDraft('');
     setHighlighted(0);
   };
+
+  const isAccent = (tag: string) =>
+    suggestions.some((s) => s.accent && sameTag(s.value, tag));
 
   const remove = (tag: string) => onChange(value.filter((t) => t !== tag));
 
@@ -100,6 +110,7 @@ export function useTagInput({
     setHighlighted,
     add,
     remove,
+    isAccent,
     changeDraft,
     onKeyDown,
   };

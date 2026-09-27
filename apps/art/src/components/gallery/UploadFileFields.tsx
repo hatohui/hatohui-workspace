@@ -15,12 +15,14 @@ export function UploadFileFields({
   onTagsChange,
   failedCount,
   isUploading,
+  onCompressAndUpload,
 }: {
   queue: ReturnType<typeof useUploadQueue>;
   tags: string[];
   onTagsChange: (tags: string[]) => void;
   failedCount: number;
   isUploading: boolean;
+  onCompressAndUpload: () => void;
 }) {
   const { t } = useTranslation('art');
   const suggestions = useUploadTagSuggestions(true);
@@ -29,6 +31,7 @@ export function UploadFileFields({
     queue.skipped,
     queue.limits,
   );
+  const hasItems = queue.items.length > 0;
 
   return (
     <>
@@ -36,20 +39,32 @@ export function UploadFileFields({
         <ImageDropzone
           onFilesSelected={queue.add}
           disabled={isUploading}
-          hint={t('gallery.upload.dropzone')}
+          compact={hasItems}
+          hint={
+            hasItems
+              ? t('gallery.upload.dropzoneMore')
+              : t('gallery.upload.dropzone')
+          }
         />
         {messages.capacity && (
           <p className="text-xs text-muted-foreground tabular-nums">
             {messages.progress ?? messages.capacity}
           </p>
         )}
-        <UploadSkippedNotice messages={messages.skipped} />
-        {queue.items.length > 0 && (
+        <UploadSkippedNotice
+          messages={messages.skipped}
+          canCompress={queue.canCompress}
+          isCompressing={queue.isCompressing}
+          disabled={isUploading}
+          onCompress={onCompressAndUpload}
+        />
+        {hasItems && (
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
             {queue.items.map((item) => (
               <UploadQueueTile
                 key={item.id}
                 item={item}
+                sharedTags={tags}
                 suggestions={suggestions}
                 isLocked={isUploading}
                 onRemove={() => queue.remove(item.id)}
@@ -67,21 +82,23 @@ export function UploadFileFields({
         </p>
       )}
 
-      <div className="space-y-1.5">
-        <Label htmlFor="tags">{t('gallery.upload.sharedTagsLabel')}</Label>
-        <TagInput
-          id="tags"
-          value={tags}
-          onChange={onTagsChange}
-          suggestions={suggestions}
-          placeholder={t('gallery.upload.tagsPlaceholder')}
-          createLabel={(tag) => t('gallery.upload.tagCreate', { tag })}
-          removeLabel={(tag) => t('gallery.upload.tagRemove', { tag })}
-        />
-        <p className="text-xs text-muted-foreground">
-          {t('gallery.upload.tagsHint')}
-        </p>
-      </div>
+      {hasItems && (
+        <div className="space-y-1.5">
+          <Label htmlFor="tags">{t('gallery.upload.sharedTagsLabel')}</Label>
+          <TagInput
+            id="tags"
+            value={tags}
+            onChange={onTagsChange}
+            suggestions={suggestions}
+            placeholder={t('gallery.upload.tagsPlaceholder')}
+            createLabel={(tag) => t('gallery.upload.tagCreate', { tag })}
+            removeLabel={(tag) => t('gallery.upload.tagRemove', { tag })}
+          />
+          <p className="text-xs text-muted-foreground">
+            {t('gallery.upload.tagsHint')}
+          </p>
+        </div>
+      )}
     </>
   );
 }

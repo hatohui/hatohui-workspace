@@ -68,11 +68,6 @@
       "tagsHint": "选择委托类型的标签，即可将这些作品作为示例显示在委托表单上。",
       "save": "保存",
       "cancel": "取消",
-      "modeFile": "上传文件",
-      "modeLink": "粘贴链接",
-      "linkLabel": "图片链接",
-      "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "文件名（可选）",
       "tagsPlaceholder": "搜索或添加标签",
       "tagCreate": "添加新标签“{{tag}}”",
       "tagRemove": "移除 {{tag}}",
@@ -88,7 +83,6 @@
       "capacity": "{{count}} / {{max}} 张 · 每张最大 {{size}} MB",
       "progress": "上传中… 已完成 {{done}}/{{total}}",
       "itemTags": "{{name}} 的标签",
-      "itemTagsHint": "仅用于此图片。所有图片的标签也会添加。",
       "remove": "移除 {{name}}",
       "retryCount_one": "重试 {{count}} 张",
       "retryCount_other": "重试 {{count}} 张",
@@ -99,8 +93,18 @@
         "title_other": "{{count}} 个文件未添加",
         "tooLarge": "{{name}} 为 {{size}} MB（上限 {{max}} MB）",
         "unsupportedType": "{{name}} 不是支持的图片格式",
-        "overLimit": "{{name}}：每次最多上传 {{max}} 张"
-      }
+        "overLimit": "{{name}}：每次最多上传 {{max}} 张",
+        "compressFailed": "{{name}} 压缩后仍超过 {{max}} MB"
+      },
+      "compressAndUpload": "压缩并上传",
+      "compressing": "压缩中…",
+      "compressHint": "转换为 WebP，并仅按需缩小到限制以内。",
+      "dropzoneMore": "添加更多图片",
+      "tagGroupCommission": "委托类型",
+      "tagGroupOwn": "你的标签",
+      "itemTagsInherited": "来自“所有图片的标签”",
+      "itemTagsOwn": "仅此图片",
+      "itemTagsSummary": "{{name}}：{{tags}}"
     },
     "card": {
       "delete": "删除",

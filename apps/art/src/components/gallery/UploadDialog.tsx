@@ -10,7 +10,6 @@ import {
 } from '@hatohui/ui';
 import { useUploadDialogForm } from '@/hooks/useUploadDialogForm';
 import { UploadFileFields } from '@/components/gallery/UploadFileFields';
-import { UploadLinkFields } from '@/components/gallery/UploadLinkFields';
 
 export function UploadDialog({
   open,
@@ -29,41 +28,14 @@ export function UploadDialog({
           <DialogTitle>{t('gallery.upload.cta')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              size="sm"
-              variant={form.mode === 'file' ? 'default' : 'outline'}
-              onClick={() => form.setMode('file')}
-            >
-              {t('gallery.upload.modeFile')}
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={form.mode === 'link' ? 'default' : 'outline'}
-              onClick={() => form.setMode('link')}
-            >
-              {t('gallery.upload.modeLink')}
-            </Button>
-          </div>
-
-          {form.mode === 'file' ? (
-            <UploadFileFields
-              queue={form.queue}
-              tags={form.tags}
-              onTagsChange={form.setTags}
-              failedCount={form.failedCount}
-              isUploading={form.isUploading}
-            />
-          ) : (
-            <UploadLinkFields
-              linkUrl={form.linkUrl}
-              onLinkUrlChange={form.setLinkUrl}
-              linkFilename={form.linkFilename}
-              onLinkFilenameChange={form.setLinkFilename}
-            />
-          )}
+          <UploadFileFields
+            queue={form.queue}
+            tags={form.tags}
+            onTagsChange={form.setTags}
+            failedCount={form.failedCount}
+            isUploading={form.isUploading}
+            onCompressAndUpload={() => void form.compressAndUpload()}
+          />
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -75,9 +47,9 @@ export function UploadDialog({
             >
               {form.isUploading
                 ? t('gallery.upload.uploading')
-                : form.mode === 'file' && form.failedCount > 0
+                : form.failedCount > 0
                   ? t('gallery.upload.retryCount', { count: form.failedCount })
-                  : form.mode === 'file' && form.queue.items.length > 1
+                  : form.queue.items.length > 1
                     ? t('gallery.upload.saveCount', {
                         count: form.queue.items.length,
                       })

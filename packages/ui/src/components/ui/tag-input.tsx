@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { Fragment, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Popover, PopoverAnchor, PopoverContent } from './popover';
@@ -44,7 +44,12 @@ function TagInput({
           {value.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 rounded-full bg-secondary py-0.5 pr-1 pl-2 text-xs"
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full py-0.5 pr-1 pl-2 text-xs',
+                tags.isAccent(tag)
+                  ? 'bg-primary/15 text-primary ring-1 ring-primary/30 ring-inset'
+                  : 'bg-secondary',
+              )}
             >
               {tag}
               <button
@@ -89,29 +94,40 @@ function TagInput({
         }}
       >
         {tags.options.map((option, index) => (
-          <button
-            key={`${option.isNew ? 'new' : 'tag'}-${option.value}`}
-            type="button"
-            role="option"
-            aria-selected={index === tags.highlighted}
-            onMouseDown={(event) => event.preventDefault()}
-            onMouseEnter={() => tags.setHighlighted(index)}
-            onClick={() => tags.add(option.value)}
-            className={cn(
-              'flex w-full cursor-pointer items-center justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm',
-              index === tags.highlighted && 'bg-accent text-accent-foreground',
-            )}
-          >
-            <span className="flex items-center gap-1.5">
-              {option.isNew && <Plus className="size-3.5" />}
-              {option.isNew ? createLabel(option.value) : option.value}
-            </span>
-            {option.hint && (
-              <span className="text-xs text-muted-foreground">
-                {option.hint}
+          <Fragment key={`${option.isNew ? 'new' : 'tag'}-${option.value}`}>
+            {option.group &&
+              option.group !== tags.options[index - 1]?.group && (
+                <div
+                  role="presentation"
+                  className="px-2 pt-2 pb-1 text-xs font-medium text-muted-foreground first:pt-1"
+                >
+                  {option.group}
+                </div>
+              )}
+            <button
+              type="button"
+              role="option"
+              aria-selected={index === tags.highlighted}
+              onMouseDown={(event) => event.preventDefault()}
+              onMouseEnter={() => tags.setHighlighted(index)}
+              onClick={() => tags.add(option.value)}
+              className={cn(
+                'flex w-full cursor-pointer items-center justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm',
+                index === tags.highlighted &&
+                  'bg-accent text-accent-foreground',
+              )}
+            >
+              <span className="flex items-center gap-1.5">
+                {option.isNew && <Plus className="size-3.5" />}
+                {option.isNew ? createLabel(option.value) : option.value}
               </span>
-            )}
-          </button>
+              {option.hint && (
+                <span className="text-xs text-muted-foreground">
+                  {option.hint}
+                </span>
+              )}
+            </button>
+          </Fragment>
         ))}
       </PopoverContent>
     </Popover>

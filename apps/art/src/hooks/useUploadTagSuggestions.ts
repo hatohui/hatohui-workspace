@@ -9,14 +9,25 @@ export function useUploadTagSuggestions(enabled: boolean) {
   const { t } = useTranslation('art');
   const query = useAssetTagSuggestions({ query: { enabled } });
 
-  return useMemo<TagSuggestion[]>(
-    () =>
-      (query.data?.data ?? []).map((tag) => ({
+  return useMemo<TagSuggestion[]>(() => {
+    const tags = query.data?.data ?? [];
+    const commission = tags
+      .filter((tag) => tag.commissionTypeLabel)
+      .map((tag) => ({
         value: tag.name,
-        hint: tag.commissionTypeLabel
-          ? t('gallery.upload.tagHintType', { label: tag.commissionTypeLabel })
-          : t('gallery.upload.tagHintUsed', { count: tag.usageCount }),
-      })),
-    [query.data, t],
-  );
+        hint: t('gallery.upload.tagHintType', {
+          label: tag.commissionTypeLabel,
+        }),
+        group: t('gallery.upload.tagGroupCommission'),
+        accent: true,
+      }));
+    const own = tags
+      .filter((tag) => !tag.commissionTypeLabel)
+      .map((tag) => ({
+        value: tag.name,
+        hint: t('gallery.upload.tagHintUsed', { count: tag.usageCount }),
+        group: t('gallery.upload.tagGroupOwn'),
+      }));
+    return [...commission, ...own];
+  }, [query.data, t]);
 }

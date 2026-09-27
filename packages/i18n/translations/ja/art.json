@@ -72,11 +72,6 @@
       "tagsHint": "依頼タイプのタグを選ぶと、依頼フォームに作例として表示されます。",
       "save": "保存",
       "cancel": "キャンセル",
-      "modeFile": "ファイルをアップロード",
-      "modeLink": "リンクを貼り付け",
-      "linkLabel": "画像のURL",
-      "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "ファイル名（任意）",
       "tagsPlaceholder": "タグを検索または追加",
       "tagCreate": "新しいタグ「{{tag}}」を追加",
       "tagRemove": "{{tag}} を削除",
@@ -92,7 +87,6 @@
       "capacity": "{{count}} / {{max}} 枚・1枚あたり最大 {{size}} MB",
       "progress": "アップロード中… {{total}} 枚中 {{done}} 枚完了",
       "itemTags": "{{name}} のタグ",
-      "itemTagsHint": "この画像のみに適用されます。全画像のタグも追加されます。",
       "remove": "{{name}} を削除",
       "retryCount_one": "{{count}} 枚を再試行",
       "retryCount_other": "{{count}} 枚を再試行",
@@ -103,8 +97,18 @@
         "title_other": "{{count}} 件のファイルを追加できませんでした",
         "tooLarge": "{{name}} は {{size}} MB です（上限 {{max}} MB）",
         "unsupportedType": "{{name}} は対応していない画像形式です",
-        "overLimit": "{{name}}：1回のアップロードは最大 {{max}} 枚です"
-      }
+        "overLimit": "{{name}}：1回のアップロードは最大 {{max}} 枚です",
+        "compressFailed": "{{name}} は圧縮後も {{max}} MB を超えています"
+      },
+      "compressAndUpload": "圧縮してアップロード",
+      "compressing": "圧縮中…",
+      "compressHint": "WebP に変換し、上限に収まるまで必要な分だけ縮小します。",
+      "dropzoneMore": "画像を追加",
+      "tagGroupCommission": "依頼タイプ",
+      "tagGroupOwn": "あなたのタグ",
+      "itemTagsInherited": "「すべての画像のタグ」から適用",
+      "itemTagsOwn": "この画像のみ",
+      "itemTagsSummary": "{{name}}：{{tags}}"
     },
     "card": {
       "delete": "削除",
