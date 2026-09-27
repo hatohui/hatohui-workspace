@@ -1,8 +1,22 @@
 'use client';
 
+import { Minimize2 } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
+import { Button, Spinner } from '@hatohui/ui';
 
-export function UploadSkippedNotice({ messages }: { messages: string[] }) {
+export function UploadSkippedNotice({
+  messages,
+  canCompress,
+  isCompressing,
+  disabled,
+  onCompress,
+}: {
+  messages: string[];
+  canCompress: boolean;
+  isCompressing: boolean;
+  disabled: boolean;
+  onCompress: () => void;
+}) {
   const { t } = useTranslation('art');
 
   if (messages.length === 0) return null;
@@ -20,6 +34,23 @@ export function UploadSkippedNotice({ messages }: { messages: string[] }) {
           <li key={message}>{message}</li>
         ))}
       </ul>
+      {canCompress && (
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            disabled={disabled}
+            onClick={onCompress}
+          >
+            {isCompressing ? <Spinner /> : <Minimize2 />}
+            {isCompressing
+              ? t('gallery.upload.compressing')
+              : t('gallery.upload.compressAndUpload')}
+          </Button>
+          <span className="text-xs">{t('gallery.upload.compressHint')}</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -71,11 +71,6 @@
       "tagsHint": "Chọn thẻ của một loại commission để hiển thị các tác phẩm này làm ví dụ trên form đặt commission.",
       "save": "Lưu",
       "cancel": "Hủy",
-      "modeFile": "Tải tệp lên",
-      "modeLink": "Dán liên kết",
-      "linkLabel": "URL ảnh",
-      "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "Tên tệp (không bắt buộc)",
       "tagsPlaceholder": "Tìm hoặc thêm thẻ",
       "tagCreate": "Thêm thẻ mới \"{{tag}}\"",
       "tagRemove": "Xóa {{tag}}",
@@ -91,7 +86,6 @@
       "capacity": "{{count}} / {{max}} ảnh · tối đa {{size}} MB mỗi ảnh",
       "progress": "Đang tải lên… xong {{done}}/{{total}}",
       "itemTags": "Thẻ cho {{name}}",
-      "itemTagsHint": "Chỉ áp dụng cho ảnh này. Thẻ chung cũng được thêm vào.",
       "remove": "Xóa {{name}}",
       "retryCount_one": "Thử lại {{count}} ảnh",
       "retryCount_other": "Thử lại {{count}} ảnh",
@@ -102,8 +96,18 @@
         "title_other": "{{count}} tệp không được thêm",
         "tooLarge": "{{name}} nặng {{size}} MB (tối đa {{max}} MB)",
         "unsupportedType": "{{name}} không phải định dạng ảnh được hỗ trợ",
-        "overLimit": "{{name}}: mỗi lần tải lên tối đa {{max}} ảnh"
-      }
+        "overLimit": "{{name}}: mỗi lần tải lên tối đa {{max}} ảnh",
+        "compressFailed": "{{name}} vẫn vượt {{max}} MB sau khi nén"
+      },
+      "compressAndUpload": "Nén và tải lên",
+      "compressing": "Đang nén…",
+      "compressHint": "Chuyển sang WebP và chỉ thu nhỏ vừa đủ để nằm trong giới hạn.",
+      "dropzoneMore": "Thêm ảnh",
+      "tagGroupCommission": "Loại commission",
+      "tagGroupOwn": "Thẻ của bạn",
+      "itemTagsInherited": "Áp dụng từ Thẻ cho tất cả ảnh",
+      "itemTagsOwn": "Chỉ ảnh này",
+      "itemTagsSummary": "{{name}}: {{tags}}"
     },
     "card": {
       "delete": "Xóa",

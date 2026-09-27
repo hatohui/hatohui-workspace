@@ -10,12 +10,14 @@ import { UploadItemTagsPopover } from './UploadItemTagsPopover';
 
 export function UploadQueueTile({
   item,
+  sharedTags,
   suggestions,
   isLocked,
   onRemove,
   onTagsChange,
 }: {
   item: UploadItem;
+  sharedTags: string[];
   suggestions: TagSuggestion[];
   isLocked: boolean;
   onRemove: () => void;
@@ -37,6 +39,7 @@ export function UploadQueueTile({
       <UploadItemTagsPopover
         fileName={item.file.name}
         tags={item.tags}
+        sharedTags={sharedTags}
         onTagsChange={onTagsChange}
         suggestions={suggestions}
         disabled={isLocked}

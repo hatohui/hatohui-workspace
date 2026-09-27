@@ -30,11 +30,11 @@ export function useUploadFileMessages(
           total: items.length,
         })
       : null,
-    skipped: skipped.map((file) =>
-      t(`gallery.upload.skipped.${file.reason}`, {
+    skipped: skipped.map(({ file, reason }) =>
+      t(`gallery.upload.skipped.${reason}`, {
         name: file.name,
         size: megabytes(file.size),
-        max: file.reason === 'overLimit' ? limits?.maxFiles : maxMegabytes,
+        max: reason === 'overLimit' ? limits?.maxFiles : maxMegabytes,
       }),
     ),
   };

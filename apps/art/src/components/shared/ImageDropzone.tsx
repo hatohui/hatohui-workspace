@@ -10,10 +10,12 @@ export function ImageDropzone({
   onFilesSelected,
   disabled,
   hint,
+  compact = false,
 }: {
   onFilesSelected: (files: File[]) => void;
   disabled?: boolean;
   hint: string;
+  compact?: boolean;
 }) {
   const inputId = useId();
   const [isDragOver, setIsDragOver] = useState(false);
@@ -22,7 +24,8 @@ export function ImageDropzone({
     <label
       htmlFor={inputId}
       className={cn(
-        'flex min-h-24 cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground transition-colors',
+        'flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-border px-4 text-center text-sm text-muted-foreground transition-[padding,min-height,background-color,border-color]',
+        compact ? 'min-h-0 py-2' : 'min-h-24 py-6',
         isDragOver && 'border-primary bg-secondary',
         disabled && 'pointer-events-none opacity-50',
       )}
@@ -37,7 +40,10 @@ export function ImageDropzone({
         onFilesSelected(Array.from(event.dataTransfer.files));
       }}
     >
-      <UploadCloud className="size-5 shrink-0" aria-hidden />
+      <UploadCloud
+        className={cn('shrink-0', compact ? 'size-4' : 'size-5')}
+        aria-hidden
+      />
       <span>{hint}</span>
       <input
         id={inputId}

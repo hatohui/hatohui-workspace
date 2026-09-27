@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import {
+  compressImageToFit,
   useUploadLimits,
   validateImageFile,
   type ImageFileProblem,
@@ -18,38 +19,63 @@ export interface UploadItem {
 }
 
 export interface SkippedFile {
-  name: string;
-  size: number;
-  reason: ImageFileProblem | 'overLimit';
+  file: File;
+  reason: ImageFileProblem | 'overLimit' | 'compressFailed';
 }
+
+const toItem = (file: File): UploadItem => ({
+  id: crypto.randomUUID(),
+  file,
+  tags: [],
+  status: 'pending',
+  progress: 0,
+});
 
 export function useUploadQueue() {
   const limits = useUploadLimits();
   const [items, setItems] = useState<UploadItem[]>([]);
   const [skipped, setSkipped] = useState<SkippedFile[]>([]);
+  const [isCompressing, setIsCompressing] = useState(false);
 
-  const add = (files: File[]) => {
+  const admit = (files: File[]) => {
     const rejected: SkippedFile[] = [];
     const accepted: UploadItem[] = [];
     let room = (limits?.maxFiles ?? Infinity) - items.length;
     for (const file of files) {
       const problem = validateImageFile(file, limits?.maxBytes);
-      const skip = { name: file.name, size: file.size };
-      if (problem) rejected.push({ ...skip, reason: problem });
-      else if (room <= 0) rejected.push({ ...skip, reason: 'overLimit' });
+      if (problem) rejected.push({ file, reason: problem });
+      else if (room <= 0) rejected.push({ file, reason: 'overLimit' });
       else {
         room -= 1;
-        accepted.push({
-          id: crypto.randomUUID(),
-          file,
-          tags: [],
-          status: 'pending',
-          progress: 0,
-        });
+        accepted.push(toItem(file));
       }
     }
-    setSkipped(rejected);
     setItems((previous) => [...previous, ...accepted]);
+    return { accepted, rejected };
+  };
+
+  const compressOversized = async (): Promise<UploadItem[]> => {
+    const maxBytes = limits?.maxBytes;
+    const oversized = skipped.filter((entry) => entry.reason === 'tooLarge');
+    if (!maxBytes || oversized.length === 0) return [];
+    setIsCompressing(true);
+    const compressed: File[] = [];
+    const failed: SkippedFile[] = [];
+    for (const { file } of oversized) {
+      try {
+        compressed.push(await compressImageToFit(file, maxBytes));
+      } catch {
+        failed.push({ file, reason: 'compressFailed' });
+      }
+    }
+    setIsCompressing(false);
+    const { accepted, rejected } = admit(compressed);
+    setSkipped((previous) => [
+      ...previous.filter((entry) => entry.reason !== 'tooLarge'),
+      ...failed,
+      ...rejected,
+    ]);
+    return accepted;
   };
 
   const patch = (id: string, changes: Partial<UploadItem>) =>
@@ -61,7 +87,10 @@ export function useUploadQueue() {
     items,
     skipped,
     limits,
-    add,
+    isCompressing,
+    canCompress: skipped.some((entry) => entry.reason === 'tooLarge'),
+    add: (files: File[]) => setSkipped(admit(files).rejected),
+    compressOversized,
     patch,
     remove: (id: string) =>
       setItems((previous) => previous.filter((item) => item.id !== id)),
