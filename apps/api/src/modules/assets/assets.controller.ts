@@ -44,6 +44,13 @@ export class AssetsController {
     );
   }
 
+  @Get(':id')
+  @ApiOperation({ operationId: 'asset', summary: 'Get a gallery asset' })
+  @ApiOkResponse({ type: AssetDto })
+  get(@Param('id') id: string): Promise<AssetDto> {
+    return this.assetsService.get(id);
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   @ApiOperation({

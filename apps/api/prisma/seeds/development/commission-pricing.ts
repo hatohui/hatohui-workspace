@@ -15,12 +15,19 @@ const ENABLED_TYPES: {
 }[] = [
   {
     typeKey: 'ICON',
-    options: [{ key: 'ICON', label: 'Icon', priceMode: 'FIXED', minPrice: 3000 }],
+    options: [
+      { key: 'ICON', label: 'Icon', priceMode: 'FIXED', minPrice: 3000 },
+    ],
   },
   {
     typeKey: 'BUST',
     options: [
-      { key: 'SKETCHED', label: 'Sketched', priceMode: 'FIXED', minPrice: 3600 },
+      {
+        key: 'SKETCHED',
+        label: 'Sketched',
+        priceMode: 'FIXED',
+        minPrice: 3600,
+      },
       {
         key: 'FULLY_RENDERED',
         label: 'Fully Rendered',
@@ -193,7 +200,11 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
       userId: artist.id,
       scope: 'ART',
       type: 'art.commission.rushfee',
-      value: JSON.stringify({ enabled: true, thresholdDays: 10, feeAmount: 2500 }),
+      value: JSON.stringify({
+        enabled: true,
+        thresholdDays: 10,
+        feeAmount: 2500,
+      }),
     },
   });
 }

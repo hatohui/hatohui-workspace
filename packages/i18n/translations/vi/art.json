@@ -82,8 +82,9 @@
       "deleteConfirm": "Xóa tệp này?",
       "editTags": "Sửa thẻ"
     },
-    "lightbox": {
-      "close": "Đóng",
+    "detail": {
+      "back": "Quay lại thư viện",
+      "openOriginal": "Mở ảnh gốc",
       "filename": "Tên tệp",
       "dimensions": "Kích thước",
       "size": "Dung lượng",

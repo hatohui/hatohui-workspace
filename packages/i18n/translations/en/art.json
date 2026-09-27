@@ -84,8 +84,9 @@
       "deleteConfirm": "Delete this asset?",
       "editTags": "Edit tags"
     },
-    "lightbox": {
-      "close": "Close",
+    "detail": {
+      "back": "Back to gallery",
+      "openOriginal": "Open original",
       "filename": "Filename",
       "dimensions": "Dimensions",
       "size": "Size",

@@ -2,7 +2,10 @@ import { assets } from '@hatohui/models';
 import '@/lib/api';
 import { requireArtist } from '@/lib/session';
 import { GalleryGrid } from '@/components/gallery/GalleryGrid';
-import { GALLERY_PAGE_SIZE } from '@/constants/gallery';
+import {
+  GALLERY_PAGE_SIZE,
+  WORKSPACE_GALLERY_ROUTE,
+} from '@/constants/gallery';
 import { WORKSPACE_PROJECTS_ROUTE } from '@/constants/projects';
 
 export default async function GalleryPage() {
@@ -16,6 +19,7 @@ export default async function GalleryPage() {
   return (
     <GalleryGrid
       artistId={user.id}
+      galleryBasePath={WORKSPACE_GALLERY_ROUTE}
       projectBasePath={WORKSPACE_PROJECTS_ROUTE}
       initialData={{ items: response.data.items, total: response.data.total }}
     />

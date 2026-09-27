@@ -34,6 +34,7 @@ const nextConfig: NextConfig = {
     );
   },
   images: {
+    dangerouslyAllowLocalIP: parsedAssetUrl?.hostname === 'localhost',
     remotePatterns: parsedAssetUrl
       ? [
           {

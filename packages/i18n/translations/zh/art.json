@@ -79,8 +79,9 @@
       "deleteConfirm": "删除此文件？",
       "editTags": "编辑标签"
     },
-    "lightbox": {
-      "close": "关闭",
+    "detail": {
+      "back": "返回画廊",
+      "openOriginal": "打开原图",
       "filename": "文件名",
       "dimensions": "尺寸",
       "size": "大小",

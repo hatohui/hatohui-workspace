@@ -11,26 +11,27 @@ import {
 } from '@/hooks/useGalleryAssets';
 import { GalleryFilters } from './GalleryFilters';
 import { GalleryCard } from './GalleryCard';
-import { Lightbox } from './Lightbox';
 import { UploadDialog } from './UploadDialog';
 import { GallerySectionTabs, type GallerySection } from './GallerySectionTabs';
 import { ProjectsSection } from '@/components/projects/ProjectsSection';
 import { AddToProjectDialog } from '@/components/projects/AddToProjectDialog';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
+import { GALLERY_ROW_HEIGHT_CLASS } from '@/constants/gallery';
 
 export function GalleryGrid({
   artistId,
   initialData,
+  galleryBasePath,
   projectBasePath,
 }: {
   artistId?: string;
   initialData: GalleryInitialData;
+  galleryBasePath: string;
   projectBasePath: string;
 }) {
   const { t } = useTranslation('art');
   const { user } = useAuth();
   const gallery = useGalleryAssets(artistId, initialData);
-  const [selected, setSelected] = useState<AssetDto | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [projectTarget, setProjectTarget] = useState<AssetDto | null>(null);
   const [section, setSection] = useState<GallerySection>('assets');
@@ -78,17 +79,16 @@ export function GalleryGrid({
 
           <div
             ref={gridRef}
-            className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4"
+            className={`mt-6 flex flex-wrap gap-2 after:grow-[999999] after:content-[''] sm:gap-3 ${GALLERY_ROW_HEIGHT_CLASS}`}
           >
             {gallery.items.map((asset) => (
-              <div key={asset.id} data-reveal>
-                <GalleryCard
-                  asset={asset}
-                  isAdmin={isOwner}
-                  onClick={() => setSelected(asset)}
-                  onAddToProject={() => setProjectTarget(asset)}
-                />
-              </div>
+              <GalleryCard
+                key={asset.id}
+                asset={asset}
+                isAdmin={isOwner}
+                href={`${galleryBasePath}/${asset.id}`}
+                onAddToProject={() => setProjectTarget(asset)}
+              />
             ))}
           </div>
 
@@ -113,7 +113,6 @@ export function GalleryGrid({
         </>
       )}
 
-      <Lightbox asset={selected} onClose={() => setSelected(null)} />
       <UploadDialog open={isUploadOpen} onOpenChange={setIsUploadOpen} />
       <AddToProjectDialog
         asset={projectTarget}

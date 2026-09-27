@@ -44,7 +44,7 @@ export class NotificationEmailService {
     private readonly db: Database,
     private readonly email: EmailService,
     private readonly userSettings: UserSettingsService,
-  ) { }
+  ) {}
 
   async deliver(notificationId: string): Promise<NotificationEmailResult> {
     const notification = await this.db.notification.findUnique({

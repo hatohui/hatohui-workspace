@@ -25,6 +25,7 @@ export default async function ArtistGalleryPage({
     <main className="mx-auto max-w-6xl px-6 py-10">
       <GalleryGrid
         artistId={artistUser.id}
+        galleryBasePath={`/${artist}/gallery`}
         projectBasePath={`/${artist}/projects`}
         initialData={{
           items: response.data.items,

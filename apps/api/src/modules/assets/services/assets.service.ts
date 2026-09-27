@@ -96,6 +96,17 @@ export class AssetsService {
     };
   }
 
+  async get(id: string): Promise<AssetDto> {
+    const asset = await this.db.asset.findUnique({
+      where: { id },
+      include: assetInclude,
+    });
+    if (!asset) {
+      throw new NotFoundException(`Asset ${id} not found`);
+    }
+    return toAssetDto(asset);
+  }
+
   async ensureForUrl(url: string, uploader: User): Promise<string> {
     const existing = await this.db.asset.findFirst({
       where: { publicUrl: url },
