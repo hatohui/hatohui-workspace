@@ -1,27 +1,18 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Label, RichTextField } from '@hatohui/ui';
 import { useCommissionForm } from '@/hooks/useCommissionForm';
 import { useCommissionContact } from '@/hooks/useCommissionContact';
-import { CommissionTypeFields } from './CommissionTypeFields';
-import { CommissionQuoteEstimate } from './CommissionQuoteEstimate';
-import { CommissionIdentityFields } from './CommissionIdentityFields';
-import { IdentityMatchPrompt } from './IdentityMatchPrompt';
-import { ContactPointPicker } from './ContactPointPicker';
-import { MultiImageUploadField } from '@/components/shared/MultiImageUploadField';
-import { DateField } from '@/components/shared/DateField';
-import { CommissionVisibilityCheckbox } from './CommissionVisibilityCheckbox';
-import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
-import { CommissionExampleGallery } from './CommissionExampleGallery';
+import { useCommissionValidation } from '@/hooks/useCommissionValidation';
+import { CommissionDetailsPanel } from './CommissionDetailsPanel';
+import { CommissionRequestPanel } from './CommissionRequestPanel';
 
 export function CommissionForm({ artistId }: { artistId: string }) {
   const { t } = useTranslation('art');
   const form = useCommissionForm(artistId);
   const contact = useCommissionContact(form);
-  const [isClearOpen, setIsClearOpen] = useState(false);
+  const validation = useCommissionValidation(form, contact);
   const formRef = useStaggerReveal<HTMLFormElement>(':scope > *', []);
 
   if (form.isSubmitted) {
@@ -31,100 +22,37 @@ export function CommissionForm({ artistId }: { artistId: string }) {
   }
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[minmax(0,34rem)_minmax(0,1fr)]">
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-serif text-3xl">{t('commission.form.title')}</h1>
+      </div>
+
+      {form.isDraftRestored && (
+        <p className="rounded-md bg-secondary px-3 py-2 text-sm text-muted-foreground">
+          {t('commission.form.draftRestored')}
+        </p>
+      )}
+
       <form
         ref={formRef}
-        className="space-y-5"
+        className="space-y-4"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          void form.submit();
+          if (validation.validate()) void form.submit();
         }}
       >
-        <div>
-          <h1 className="font-serif text-3xl">{t('commission.form.title')}</h1>
-          <p className="text-muted-foreground">
-            {t('commission.form.subtitle')}
-          </p>
-        </div>
-
-        {form.isDraftRestored && (
-          <p className="rounded-md bg-secondary px-3 py-2 text-sm text-muted-foreground">
-            {t('commission.form.draftRestored')}
-          </p>
-        )}
-
-        <CommissionIdentityFields form={form} />
-        <IdentityMatchPrompt form={form} />
-
-        <CommissionTypeFields form={form} artistId={artistId} />
-        <CommissionQuoteEstimate pricing={form.pricing} />
-
-        <div className="space-y-1.5">
-          <Label htmlFor="idea">{t('commission.form.ideaLabel')}</Label>
-          <RichTextField
-            id="idea"
-            value={form.state.idea}
-            onChange={(value) => form.update('idea', value)}
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label>{t('commission.form.deadlineLabel')}</Label>
-          <DateField
-            value={form.state.deadline}
-            onChange={(value) => form.update('deadline', value)}
-          />
-        </div>
-
-        <ContactPointPicker contact={contact} />
-
-        <MultiImageUploadField
-          label={t('commission.form.attachmentsLabel')}
-          files={form.files}
-          onChange={form.setFiles}
+        <CommissionDetailsPanel
+          form={form}
+          artistId={artistId}
+          validation={validation}
         />
-
-        <CommissionVisibilityCheckbox
-          isPublic={form.state.isPublic}
-          onChange={(value) => form.update('isPublic', value)}
-        />
-
-        {form.hasSubmitError && (
-          <p className="text-sm text-destructive" role="alert">
-            {t('commission.form.submitFailed')}
-          </p>
-        )}
-
-        <div className="flex gap-2">
-          <Button
-            type="submit"
-            disabled={form.isSubmitting || form.isIdeaEmpty}
-            className="flex-1"
-          >
-            {form.isSubmitting
-              ? t('commission.form.submitting')
-              : t('commission.form.submit')}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setIsClearOpen(true)}
-          >
-            {t('commission.form.clear')}
-          </Button>
-        </div>
-
-        <ConfirmDialog
-          open={isClearOpen}
-          onOpenChange={setIsClearOpen}
-          title={t('commission.form.clearTitle')}
-          description={t('commission.form.clearDescription')}
-          confirmLabel={t('commission.form.clear')}
-          cancelLabel={t('gallery.upload.cancel')}
-          onConfirm={form.reset}
+        <CommissionRequestPanel
+          form={form}
+          contact={contact}
+          validation={validation}
         />
       </form>
-      <CommissionExampleGallery form={form} artistId={artistId} />
     </div>
   );
 }

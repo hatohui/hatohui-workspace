@@ -57,3 +57,12 @@ export const COMMISSION_VIEW_STATUSES: Record<
     CommissionStatus.CANCELLED,
   ],
 };
+
+export const REFERENCE_URL_LIMIT = 10;
+export const REFERENCE_URL_OPTIONS = {
+  protocols: ['http', 'https'],
+  require_protocol: true,
+};
+
+export const COMMISSION_MIN_DEADLINE_DAYS = 3;
+export const DEADLINE_TIMEZONE_SLACK_DAYS = 1;

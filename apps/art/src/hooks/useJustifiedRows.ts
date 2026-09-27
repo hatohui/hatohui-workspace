@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { GALLERY_LAST_ROW_STRETCH_MIN_FILL } from '@/constants/gallery';
 import {
   galleryTileAspect,
   packJustifiedRows,
@@ -32,15 +33,30 @@ export function useJustifiedRows(items: TileSize[]) {
     return () => observer.disconnect();
   }, []);
 
-  const rows = useMemo(() => {
+  const layout = useMemo(() => {
     if (!measure || !measure.width || !measure.targetHeight) return null;
-    return packJustifiedRows(
-      items.map(galleryTileAspect),
+    const aspects = items.map(galleryTileAspect);
+    const rows = packJustifiedRows(
+      aspects,
       measure.width,
       measure.gap,
       measure.targetHeight,
     );
+    const lastRow = rows.at(-1) ?? [];
+    const lastRowWidth =
+      lastRow.reduce((sum, index) => sum + aspects[index], 0) *
+        measure.targetHeight +
+      measure.gap * Math.max(0, lastRow.length - 1);
+    return {
+      rows,
+      isLastRowFull:
+        lastRowWidth / measure.width >= GALLERY_LAST_ROW_STRETCH_MIN_FILL,
+    };
   }, [items, measure]);
 
-  return { ref, rows };
+  return {
+    ref,
+    rows: layout?.rows ?? null,
+    isLastRowFull: layout?.isLastRowFull ?? false,
+  };
 }

@@ -15,4 +15,6 @@ export interface CommissionIdentityDto {
   /** @nullable */
   avatarUrl: string | null;
   contacts: ContactPointDto[];
+  /** An email is already on file, so ordering as this identity needs no email */
+  hasEmail: boolean;
 }

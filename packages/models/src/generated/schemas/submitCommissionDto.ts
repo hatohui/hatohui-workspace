@@ -23,11 +23,13 @@ export interface SubmitCommissionDto {
   contactHandle?: string;
   /** Object keys returned by POST /images/sign */
   referenceAssets?: string[];
+  /** External reference links (e.g. a Pinterest board or Drive folder), stored as-is */
+  referenceUrls?: string[];
   /** Whether this commission (status, type) should show in the public /queue */
   isPublic?: boolean;
-  /** Required when not signed in; taken from the account otherwise */
+  /** Required when not signed in, unless matchedProfileId already has one on file; taken from the account otherwise */
   clientName?: string;
-  /** Required when not signed in; taken from the account otherwise */
+  /** Required when not signed in, unless matchedProfileId already has one on file; taken from the account otherwise */
   clientEmail?: string;
   /** Handle for a new identity when not signed in; suffixed if already taken */
   clientHandle?: string;

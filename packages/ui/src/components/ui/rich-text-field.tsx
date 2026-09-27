@@ -32,6 +32,11 @@ export interface RichTextFieldProps {
   className?: string;
 }
 
+const EMPTY_DOC: JSONContent = {
+  type: 'doc',
+  content: [{ type: 'paragraph' }],
+};
+
 function RichTextField({
   id,
   value,
@@ -44,7 +49,7 @@ function RichTextField({
       StarterKit,
       Placeholder.configure({ placeholder: placeholder ?? '' }),
     ],
-    content: value,
+    content: value.content?.length ? value : EMPTY_DOC,
     editorProps: {
       attributes: {
         ...(id ? { id } : {}),

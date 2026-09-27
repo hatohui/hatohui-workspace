@@ -82,12 +82,6 @@ const ADDONS: {
     minPrice: 3000,
     maxPrice: 6000,
   },
-  {
-    key: 'RUSH',
-    label: 'Rush',
-    priceMode: 'PERCENTAGE',
-    percent: 25,
-  },
 ];
 
 export async function seedCommissionPricing(prisma: PrismaClient) {

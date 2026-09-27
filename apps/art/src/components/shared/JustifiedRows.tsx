@@ -11,12 +11,16 @@ export function JustifiedRows<T extends TileSize>({
   items,
   renderItem,
   className,
+  stretchLastRow = false,
 }: {
   items: T[];
   renderItem: (item: T) => ReactNode;
   className: string;
+  stretchLastRow?: boolean;
 }) {
-  const { ref, rows } = useJustifiedRows(items);
+  const { ref, rows, isLastRowFull } = useJustifiedRows(items);
+  const lastRowClass =
+    stretchLastRow && isLastRowFull ? undefined : LAST_ROW_CLASS;
 
   return (
     <div ref={ref} className={cn('flex flex-col', className)}>
@@ -28,7 +32,7 @@ export function JustifiedRows<T extends TileSize>({
               key={row.join('-')}
               className={cn(
                 'flex gap-[inherit]',
-                isLast ? LAST_ROW_CLASS : '[&>*]:max-w-none!',
+                isLast ? lastRowClass : '[&>*]:max-w-none!',
               )}
             >
               {row.map((itemIndex) => renderItem(items[itemIndex]))}

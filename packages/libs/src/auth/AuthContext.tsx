@@ -36,7 +36,7 @@ export function AuthProvider({
         meQuery.error instanceof ApiError && meQuery.error.status === 401
           ? null
           : (meQuery.data?.data ?? null),
-      isLoading: meQuery.isPending,
+      isLoading: meQuery.isPending && !meQuery.isFetched,
       isLoggingIn: loginMutation.isPending,
       loginWithGoogle: async (code: string) => {
         await loginMutation.mutateAsync({ data: { code } });
@@ -54,6 +54,7 @@ export function AuthProvider({
       meQuery.data,
       meQuery.error,
       meQuery.isPending,
+      meQuery.isFetched,
       meQuery.refetch,
       loginMutation,
       logoutMutation,
