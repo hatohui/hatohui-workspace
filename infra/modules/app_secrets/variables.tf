@@ -4,12 +4,12 @@ variable "doppler_project" {
 }
 
 variable "doppler_config" {
-  description = "The Doppler config the application secrets are written to (the config apps read at runtime)"
+  description = "The Doppler config the secrets are written to"
   type        = string
 }
 
 variable "secrets" {
-  description = "The secrets Terraform owns, as name => value. Terraform is the source of truth: edits made in the Doppler UI are reverted on the next apply"
+  description = "Secrets to write, as name => value"
   type        = map(string)
   sensitive   = true
 }
@@ -18,4 +18,10 @@ variable "visibility" {
   description = "The visibility applied to every managed secret"
   type        = string
   default     = "masked"
+}
+
+variable "environment" {
+  description = "The Doppler environment to create the config under; null if it already exists"
+  type        = string
+  default     = null
 }
