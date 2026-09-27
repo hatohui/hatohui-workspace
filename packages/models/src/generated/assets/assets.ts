@@ -29,6 +29,7 @@ import type {
   AssetsParams,
   CreateAssetDto,
   PaginatedAssetsDto,
+  TagSuggestionDto,
   UpdateAssetDto
 } from '../schemas';
 
@@ -255,7 +256,119 @@ export const useCreateAsset = <TError = unknown,
       > => {
       return useMutation(getCreateAssetMutationOptions(options), queryClient);
     }
-    export type assetResponse200 = {
+    export type assetTagSuggestionsResponse200 = {
+  data: TagSuggestionDto[]
+  status: 200
+}
+
+export type assetTagSuggestionsResponseSuccess = (assetTagSuggestionsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type assetTagSuggestionsResponse = (assetTagSuggestionsResponseSuccess)
+
+export const getAssetTagSuggestionsUrl = () => {
+
+
+
+
+  return `/assets/tag-suggestions`
+}
+
+/**
+ * @summary Tags the caller has used plus their commission types' tags
+ */
+export const assetTagSuggestions = async ( options?: RequestInit): Promise<assetTagSuggestionsResponse> => {
+
+  return customFetch<assetTagSuggestionsResponse>(getAssetTagSuggestionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAssetTagSuggestionsQueryKey = () => {
+    return [
+    `/assets/tag-suggestions`
+    ] as const;
+    }
+
+
+export const getAssetTagSuggestionsQueryOptions = <TData = Awaited<ReturnType<typeof assetTagSuggestions>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetTagSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAssetTagSuggestionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof assetTagSuggestions>>> = ({ signal }) => assetTagSuggestions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof assetTagSuggestions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AssetTagSuggestionsQueryResult = NonNullable<Awaited<ReturnType<typeof assetTagSuggestions>>>
+export type AssetTagSuggestionsQueryError = unknown
+
+
+export function useAssetTagSuggestions<TData = Awaited<ReturnType<typeof assetTagSuggestions>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetTagSuggestions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof assetTagSuggestions>>,
+          TError,
+          Awaited<ReturnType<typeof assetTagSuggestions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAssetTagSuggestions<TData = Awaited<ReturnType<typeof assetTagSuggestions>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetTagSuggestions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof assetTagSuggestions>>,
+          TError,
+          Awaited<ReturnType<typeof assetTagSuggestions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAssetTagSuggestions<TData = Awaited<ReturnType<typeof assetTagSuggestions>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetTagSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Tags the caller has used plus their commission types' tags
+ */
+
+export function useAssetTagSuggestions<TData = Awaited<ReturnType<typeof assetTagSuggestions>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetTagSuggestions>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getAssetTagSuggestionsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type assetResponse200 = {
   data: AssetDto
   status: 200
 }

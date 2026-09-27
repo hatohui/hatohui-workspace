@@ -192,6 +192,7 @@ export * from './submitCommissionDto';
 export * from './submitCommissionDtoIdea';
 export * from './submitCommissionDtoPreferredContactMethod';
 export * from './subscribeCommissionFollowerDto';
+export * from './tagSuggestionDto';
 export * from './unreadCountDto';
 export * from './upcomingFriendDto';
 export * from './upcomingFriendSectionsDirection';

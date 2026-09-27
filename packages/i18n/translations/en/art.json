@@ -69,15 +69,30 @@
       "cta": "Upload",
       "dropzone": "Drag and drop images here, or click to browse",
       "uploading": "Uploading...",
-      "tagsLabel": "Tags (comma separated)",
-      "tagsHint": "Tag with a commission type or option key (e.g. \"full_body\", \"sketched\") to show it as an example on the commission form.",
+      "tagsLabel": "Tags",
+      "tagsHint": "Pick a commission type's tag to show these pieces as examples on the commission form.",
       "save": "Save",
       "cancel": "Cancel",
       "modeFile": "Upload a file",
       "modeLink": "Paste a link",
       "linkLabel": "Image URL",
       "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "Filename (optional)"
+      "linkFilenameLabel": "Filename (optional)",
+      "tagsPlaceholder": "Search or add a tag",
+      "tagCreate": "Add new tag \"{{tag}}\"",
+      "tagRemove": "Remove {{tag}}",
+      "tagHintType": "{{label}} examples",
+      "tagHintUsed_one": "Used on {{count}} piece",
+      "tagHintUsed_other": "Used on {{count}} pieces",
+      "saveCount_one": "Upload {{count}} image",
+      "saveCount_other": "Upload {{count}} images",
+      "failed_one": "{{count}} upload failed. Save again to retry it.",
+      "failed_other": "{{count}} uploads failed. Save again to retry them.",
+      "status": {
+        "uploading": "Uploading",
+        "done": "Uploaded",
+        "failed": "Upload failed"
+      }
     },
     "card": {
       "delete": "Delete",
@@ -113,6 +128,11 @@
     "addLink": "Add link"
   },
   "commission": {
+    "gallery": {
+      "typeTitle": "{{type}} examples",
+      "recentTitle": "Recent work",
+      "empty": "No examples for this type yet."
+    },
     "form": {
       "title": "Request a commission",
       "subtitle": "Tell me about what you'd like made. I'll follow up by email.",

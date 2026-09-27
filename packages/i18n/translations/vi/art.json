@@ -67,15 +67,27 @@
       "cta": "Tải lên",
       "dropzone": "Kéo thả ảnh vào đây, hoặc bấm để chọn tệp",
       "uploading": "Đang tải lên...",
-      "tagsLabel": "Thẻ (cách nhau bằng dấu phẩy)",
-      "tagsHint": "Gắn thẻ theo loại hoặc kiểu vẽ (vd: \"full_body\", \"sketched\") để hiển thị làm ví dụ trên form đặt vẽ.",
+      "tagsLabel": "Thẻ",
+      "tagsHint": "Chọn thẻ của một loại commission để hiển thị các tác phẩm này làm ví dụ trên form đặt commission.",
       "save": "Lưu",
       "cancel": "Hủy",
       "modeFile": "Tải tệp lên",
       "modeLink": "Dán liên kết",
       "linkLabel": "URL ảnh",
       "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "Tên tệp (không bắt buộc)"
+      "linkFilenameLabel": "Tên tệp (không bắt buộc)",
+      "tagsPlaceholder": "Tìm hoặc thêm thẻ",
+      "tagCreate": "Thêm thẻ mới \"{{tag}}\"",
+      "tagRemove": "Xóa {{tag}}",
+      "tagHintType": "Ví dụ cho {{label}}",
+      "tagHintUsed_other": "Dùng cho {{count}} tác phẩm",
+      "saveCount_other": "Tải lên {{count}} ảnh",
+      "failed_other": "{{count}} ảnh tải lên thất bại. Lưu lại để thử lại.",
+      "status": {
+        "uploading": "Đang tải lên",
+        "done": "Đã tải lên",
+        "failed": "Tải lên thất bại"
+      }
     },
     "card": {
       "delete": "Xóa",
@@ -111,6 +123,11 @@
     "addLink": "Thêm liên kết"
   },
   "commission": {
+    "gallery": {
+      "typeTitle": "Ví dụ {{type}}",
+      "recentTitle": "Tác phẩm gần đây",
+      "empty": "Chưa có ví dụ cho loại này."
+    },
     "form": {
       "title": "Đặt vẽ tranh",
       "subtitle": "Kể cho Hato nghe bạn muốn vẽ gì nhé, Hato sẽ liên hệ lại qua email.",

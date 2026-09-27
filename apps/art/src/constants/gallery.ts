@@ -12,3 +12,4 @@ export const GALLERY_ROW_HEIGHT_CLASS =
   '[--gallery-row:120px] sm:[--gallery-row:200px] lg:[--gallery-row:260px]';
 export const ARTWORK_FALLBACK_DIMENSION_PX = 1200;
 export const WORKSPACE_GALLERY_ROUTE = '/app/gallery';
+export const UPLOAD_CONCURRENCY = 3;

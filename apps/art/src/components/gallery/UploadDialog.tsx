@@ -52,8 +52,10 @@ export function UploadDialog({
             <UploadFileFields
               files={form.files}
               onFilesChange={form.setFiles}
-              tagsInput={form.tagsInput}
-              onTagsInputChange={form.setTagsInput}
+              tags={form.tags}
+              onTagsChange={form.setTags}
+              statuses={form.statuses}
+              failedCount={form.failedCount}
               isUploading={form.isUploading}
             />
           ) : (
@@ -75,7 +77,9 @@ export function UploadDialog({
             >
               {form.isUploading
                 ? t('gallery.upload.uploading')
-                : t('gallery.upload.save')}
+                : form.mode === 'file' && form.files.length > 1
+                  ? t('gallery.upload.saveCount', { count: form.files.length })
+                  : t('gallery.upload.save')}
             </Button>
           </div>
         </div>

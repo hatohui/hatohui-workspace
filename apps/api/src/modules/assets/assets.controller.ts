@@ -24,6 +24,7 @@ import {
   CreateAssetDto,
   UpdateAssetDto,
 } from '@/modules/assets/dto/asset.dto';
+import { TagSuggestionDto } from '@/modules/assets/dto/tag-suggestion.dto';
 
 @ApiTags('assets')
 @Controller('assets')
@@ -42,6 +43,17 @@ export class AssetsController {
       query.pageSize ?? 24,
       query.uploadedById,
     );
+  }
+
+  @Get('tag-suggestions')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'assetTagSuggestions',
+    summary: "Tags the caller has used plus their commission types' tags",
+  })
+  @ApiOkResponse({ type: [TagSuggestionDto] })
+  tagSuggestions(@CurrentUser() user: User): Promise<TagSuggestionDto[]> {
+    return this.assetsService.tagSuggestions(user.id);
   }
 
   @Get(':id')

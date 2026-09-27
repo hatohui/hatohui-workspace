@@ -128,3 +128,7 @@ export const COMMISSION_TABLE_COLUMNS: Record<
 export const COMMISSION_LIST_ORDERS = ['desc', 'asc'] as const;
 
 export const EMPTY_VALUE = '-';
+
+export const COMMISSION_GALLERY_PAGE_SIZE = 12;
+export const COMMISSION_GALLERY_ROW_HEIGHT_CLASS =
+  '[--gallery-row:140px] xl:[--gallery-row:180px]';

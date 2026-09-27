@@ -68,15 +68,27 @@
       "cta": "アップロード",
       "dropzone": "ここに画像をドラッグ&ドロップ、またはクリックして選択",
       "uploading": "アップロード中...",
-      "tagsLabel": "タグ（カンマ区切り）",
-      "tagsHint": "コミッションタイプやオプションのキー（例: \"full_body\"、\"sketched\"）でタグ付けすると、依頼フォームの参考例として表示されます。",
+      "tagsLabel": "タグ",
+      "tagsHint": "依頼タイプのタグを選ぶと、依頼フォームに作例として表示されます。",
       "save": "保存",
       "cancel": "キャンセル",
       "modeFile": "ファイルをアップロード",
       "modeLink": "リンクを貼り付け",
       "linkLabel": "画像のURL",
       "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "ファイル名（任意）"
+      "linkFilenameLabel": "ファイル名（任意）",
+      "tagsPlaceholder": "タグを検索または追加",
+      "tagCreate": "新しいタグ「{{tag}}」を追加",
+      "tagRemove": "{{tag}} を削除",
+      "tagHintType": "{{label}} の作例",
+      "tagHintUsed_other": "{{count}} 点で使用中",
+      "saveCount_other": "{{count}} 枚をアップロード",
+      "failed_other": "{{count}} 件のアップロードに失敗しました。もう一度保存して再試行してください。",
+      "status": {
+        "uploading": "アップロード中",
+        "done": "アップロード完了",
+        "failed": "アップロード失敗"
+      }
     },
     "card": {
       "delete": "削除",
@@ -112,6 +124,11 @@
     "addLink": "リンクを追加"
   },
   "commission": {
+    "gallery": {
+      "typeTitle": "{{type}}の参考例",
+      "recentTitle": "最近の作品",
+      "empty": "このタイプの参考例はまだありません。"
+    },
     "form": {
       "title": "コミッション依頼",
       "subtitle": "ご希望の内容を教えてください。メールでご連絡します。",
