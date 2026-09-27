@@ -7,7 +7,7 @@
  */
 
 export interface ContactPointDto {
-  /** A SocialPlatform key, or 'email' */
+  /** A SocialPlatform name (how Profile.socialMedias keys it), or 'email' */
   platform: string;
   value: string;
 }
