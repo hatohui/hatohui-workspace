@@ -18,7 +18,11 @@ export function CommissionIntake({
   const { opening, isOpen, isLoading } = useArtistCommissionOpening(artistId);
 
   if (isLoading) {
-    return <p className="text-muted-foreground">{t('common:loading')}</p>;
+    return (
+      <p className="mx-auto max-w-xl text-muted-foreground">
+        {t('common:loading')}
+      </p>
+    );
   }
 
   if (isOpen) {
@@ -26,10 +30,12 @@ export function CommissionIntake({
   }
 
   return (
-    <CommissionClosedNotice
-      opening={opening}
-      artistName={artistName}
-      artistHandle={artistHandle}
-    />
+    <div className="mx-auto max-w-xl">
+      <CommissionClosedNotice
+        opening={opening}
+        artistName={artistName}
+        artistHandle={artistHandle}
+      />
+    </div>
   );
 }

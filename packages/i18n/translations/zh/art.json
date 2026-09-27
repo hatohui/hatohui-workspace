@@ -119,6 +119,11 @@
     "addLink": "添加链接"
   },
   "commission": {
+    "gallery": {
+      "typeTitle": "{{type}}示例",
+      "recentTitle": "近期作品",
+      "empty": "此类型暂无示例。"
+    },
     "form": {
       "title": "委托绘画",
       "subtitle": "告诉我你想要什么，我会通过邮件与你联系。",

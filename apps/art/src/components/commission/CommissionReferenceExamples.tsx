@@ -17,7 +17,7 @@ export function CommissionReferenceExamples({
   if (!tag || items.length === 0) return null;
 
   return (
-    <div>
+    <div className="lg:hidden">
       <p className="mb-1 text-xs text-muted-foreground">
         {t('commission.form.examplesLabel')}
       </p>

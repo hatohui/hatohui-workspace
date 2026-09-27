@@ -10,7 +10,7 @@ export default async function CommissionPage({
   const artistUser = await resolveArtist(artist);
 
   return (
-    <main className="mx-auto max-w-xl px-6 py-10">
+    <main className="mx-auto max-w-6xl px-6 py-10">
       <CommissionIntake
         artistId={artistUser.id}
         artistName={artistUser.name}

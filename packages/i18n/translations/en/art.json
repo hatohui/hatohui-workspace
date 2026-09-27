@@ -128,6 +128,11 @@
     "addLink": "Add link"
   },
   "commission": {
+    "gallery": {
+      "typeTitle": "{{type}} examples",
+      "recentTitle": "Recent work",
+      "empty": "No examples for this type yet."
+    },
     "form": {
       "title": "Request a commission",
       "subtitle": "Tell me about what you'd like made. I'll follow up by email.",

@@ -123,6 +123,11 @@
     "addLink": "Thêm liên kết"
   },
   "commission": {
+    "gallery": {
+      "typeTitle": "Ví dụ {{type}}",
+      "recentTitle": "Tác phẩm gần đây",
+      "empty": "Chưa có ví dụ cho loại này."
+    },
     "form": {
       "title": "Đặt vẽ tranh",
       "subtitle": "Kể cho Hato nghe bạn muốn vẽ gì nhé, Hato sẽ liên hệ lại qua email.",

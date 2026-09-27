@@ -124,6 +124,11 @@
     "addLink": "リンクを追加"
   },
   "commission": {
+    "gallery": {
+      "typeTitle": "{{type}}の参考例",
+      "recentTitle": "最近の作品",
+      "empty": "このタイプの参考例はまだありません。"
+    },
     "form": {
       "title": "コミッション依頼",
       "subtitle": "ご希望の内容を教えてください。メールでご連絡します。",
