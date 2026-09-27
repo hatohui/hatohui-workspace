@@ -19,6 +19,7 @@ import {
   CreateAssetDto,
   UpdateAssetDto,
 } from '@/modules/assets/dto/asset.dto';
+import { TagSuggestionDto } from '@/modules/assets/dto/tag-suggestion.dto';
 
 const SORT_ORDER_BY: Record<
   AssetSortOption,
@@ -105,6 +106,53 @@ export class AssetsService {
       throw new NotFoundException(`Asset ${id} not found`);
     }
     return toAssetDto(asset);
+  }
+
+  async tagSuggestions(userId: string): Promise<TagSuggestionDto[]> {
+    const ownAssets = { asset: { uploadedById: userId } };
+    const [usedTags, commissionTypes] = await Promise.all([
+      this.db.tag.findMany({
+        where: { assets: { some: ownAssets } },
+        select: {
+          name: true,
+          _count: { select: { assets: { where: ownAssets } } },
+        },
+      }),
+      this.db.commissionType.findMany({
+        where: {
+          active: true,
+          tag: { isNot: null },
+          artistTypes: { some: { artistId: userId, active: true } },
+        },
+        select: { label: true, tag: { select: { name: true } } },
+      }),
+    ]);
+
+    const byName = new Map<string, TagSuggestionDto>();
+    for (const tag of usedTags) {
+      byName.set(tag.name, {
+        name: tag.name,
+        usageCount: tag._count.assets,
+        commissionTypeLabel: null,
+      });
+    }
+    for (const type of commissionTypes) {
+      if (!type.tag) continue;
+      const existing = byName.get(type.tag.name);
+      byName.set(type.tag.name, {
+        name: type.tag.name,
+        usageCount: existing?.usageCount ?? 0,
+        commissionTypeLabel: type.label,
+      });
+    }
+
+    return [...byName.values()].sort(
+      (a, b) =>
+        Number(b.commissionTypeLabel !== null) -
+          Number(a.commissionTypeLabel !== null) ||
+        b.usageCount - a.usageCount ||
+        a.name.localeCompare(b.name),
+    );
   }
 
   async ensureForUrl(url: string, uploader: User): Promise<string> {

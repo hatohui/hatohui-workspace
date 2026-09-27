@@ -1,36 +1,55 @@
 'use client';
 
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  getAssetTagSuggestionsQueryKey,
+  getAssetsQueryKey,
+} from '@hatohui/models';
 import { useAssetUpload } from '@/hooks/useAssetUpload';
+import { useBulkAssetUpload } from '@/hooks/useBulkAssetUpload';
 
 export type UploadMode = 'file' | 'link';
 
 export function useUploadDialogForm(onDone: () => void) {
-  const { uploadAsset, createFromUrl, isUploading } = useAssetUpload();
+  const queryClient = useQueryClient();
+  const { createFromUrl, isUploading: isCreatingLink } = useAssetUpload();
+  const bulk = useBulkAssetUpload();
   const [mode, setMode] = useState<UploadMode>('file');
   const [files, setFiles] = useState<File[]>([]);
-  const [tagsInput, setTagsInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [failedCount, setFailedCount] = useState(0);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkFilename, setLinkFilename] = useState('');
 
   const reset = () => {
     setFiles([]);
-    setTagsInput('');
+    setTags([]);
+    setFailedCount(0);
     setLinkUrl('');
     setLinkFilename('');
+    bulk.reset();
+  };
+
+  const refreshGallery = () => {
+    void queryClient.invalidateQueries({ queryKey: getAssetsQueryKey() });
+    void queryClient.invalidateQueries({
+      queryKey: getAssetTagSuggestionsQueryKey(),
+    });
   };
 
   const save = async () => {
     if (mode === 'file') {
-      const tags = tagsInput
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-      for (const file of files) {
-        await uploadAsset(file, tags);
+      const failed = await bulk.run(files, tags);
+      refreshGallery();
+      if (failed.length > 0) {
+        setFiles(failed);
+        setFailedCount(failed.length);
+        return;
       }
     } else {
       await createFromUrl(linkUrl, linkFilename || undefined);
+      refreshGallery();
     }
     reset();
     onDone();
@@ -44,13 +63,15 @@ export function useUploadDialogForm(onDone: () => void) {
     setMode,
     files,
     setFiles,
-    tagsInput,
-    setTagsInput,
+    tags,
+    setTags,
+    statuses: bulk.statuses,
+    failedCount,
     linkUrl,
     setLinkUrl,
     linkFilename,
     setLinkFilename,
-    isUploading,
+    isUploading: bulk.isRunning || isCreatingLink,
     canSave,
     save,
   };

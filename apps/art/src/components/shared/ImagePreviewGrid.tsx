@@ -3,13 +3,19 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
+import type { UploadStatus } from '@/hooks/useBulkAssetUpload';
+import { UploadStatusBadge } from './UploadStatusBadge';
 
 export function ImagePreviewGrid({
   files,
   onRemove,
+  statuses,
+  isLocked = false,
 }: {
   files: File[];
   onRemove: (index: number) => void;
+  statuses?: Map<File, UploadStatus>;
+  isLocked?: boolean;
 }) {
   const { t } = useTranslation('art');
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -25,28 +31,34 @@ export function ImagePreviewGrid({
 
   return (
     <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-      {files.map((file, index) => (
-        <div
-          key={`${file.name}-${file.lastModified}-${index}`}
-          className="group relative aspect-square overflow-hidden rounded-lg bg-card"
-        >
-          {previewUrls[index] && (
-            <img
-              src={previewUrls[index]}
-              alt={file.name}
-              className="h-full w-full object-cover"
-            />
-          )}
-          <button
-            type="button"
-            aria-label={t('gallery.card.delete')}
-            onClick={() => onRemove(index)}
-            className="absolute right-1 top-1 flex size-8 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:bg-destructive hover:text-white"
+      {files.map((file, index) => {
+        const status = statuses?.get(file);
+        return (
+          <div
+            key={`${file.name}-${file.lastModified}-${index}`}
+            className="group relative aspect-square overflow-hidden rounded-lg bg-card"
           >
-            <X className="size-4" aria-hidden />
-          </button>
-        </div>
-      ))}
+            {previewUrls[index] && (
+              <img
+                src={previewUrls[index]}
+                alt={file.name}
+                className="h-full w-full object-cover"
+              />
+            )}
+            {status && <UploadStatusBadge status={status} />}
+            {!isLocked && (
+              <button
+                type="button"
+                aria-label={t('gallery.card.delete')}
+                onClick={() => onRemove(index)}
+                className="absolute right-1 top-1 flex size-8 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:bg-destructive hover:text-white"
+              >
+                <X className="size-4" aria-hidden />
+              </button>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

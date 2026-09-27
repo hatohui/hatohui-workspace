@@ -1968,6 +1968,31 @@
         ]
       }
     },
+    "/assets/tag-suggestions": {
+      "get": {
+        "operationId": "assetTagSuggestions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagSuggestionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Tags the caller has used plus their commission types' tags",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
     "/assets/{id}": {
       "get": {
         "operationId": "asset",
@@ -6273,6 +6298,31 @@
           "page",
           "pageSize",
           "hasMore"
+        ]
+      },
+      "TagSuggestionDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "full body"
+          },
+          "usageCount": {
+            "type": "number",
+            "example": 3,
+            "description": "How many of the caller's assets carry this tag"
+          },
+          "commissionTypeLabel": {
+            "type": "string",
+            "example": "Full Body",
+            "nullable": true,
+            "description": "Label of the commission type this tag feeds examples to, if any"
+          }
+        },
+        "required": [
+          "name",
+          "usageCount",
+          "commissionTypeLabel"
         ]
       },
       "CreateAssetDto": {

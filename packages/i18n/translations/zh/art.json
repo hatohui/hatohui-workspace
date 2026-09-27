@@ -64,15 +64,27 @@
       "cta": "上传",
       "dropzone": "将图片拖放到此处，或点击选择文件",
       "uploading": "正在上传...",
-      "tagsLabel": "标签（用逗号分隔）",
-      "tagsHint": "使用委托类型或绘制方式的键（如 \"full_body\"、\"sketched\"）打标签，即可在委托表单中作为示例展示。",
+      "tagsLabel": "标签",
+      "tagsHint": "选择委托类型的标签，即可将这些作品作为示例显示在委托表单上。",
       "save": "保存",
       "cancel": "取消",
       "modeFile": "上传文件",
       "modeLink": "粘贴链接",
       "linkLabel": "图片链接",
       "linkPlaceholder": "https://...",
-      "linkFilenameLabel": "文件名（可选）"
+      "linkFilenameLabel": "文件名（可选）",
+      "tagsPlaceholder": "搜索或添加标签",
+      "tagCreate": "添加新标签“{{tag}}”",
+      "tagRemove": "移除 {{tag}}",
+      "tagHintType": "{{label}} 示例",
+      "tagHintUsed_other": "已用于 {{count}} 件作品",
+      "saveCount_other": "上传 {{count}} 张图片",
+      "failed_other": "{{count}} 张上传失败。再次保存即可重试。",
+      "status": {
+        "uploading": "上传中",
+        "done": "已上传",
+        "failed": "上传失败"
+      }
     },
     "card": {
       "delete": "删除",

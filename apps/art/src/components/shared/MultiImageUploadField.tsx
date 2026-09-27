@@ -4,16 +4,19 @@ import { useTranslation } from '@hatohui/i18n';
 import { Label } from '@hatohui/ui';
 import { ImageDropzone } from './ImageDropzone';
 import { ImagePreviewGrid } from './ImagePreviewGrid';
+import type { UploadStatus } from '@/hooks/useBulkAssetUpload';
 
 export function MultiImageUploadField({
   label,
   files,
   onChange,
+  statuses,
   isUploading,
 }: {
   label: string;
   files: File[];
   onChange: (files: File[]) => void;
+  statuses?: Map<File, UploadStatus>;
   isUploading?: boolean;
 }) {
   const { t } = useTranslation('art');
@@ -31,7 +34,12 @@ export function MultiImageUploadField({
           disabled={isUploading}
           hint={t('gallery.upload.dropzone')}
         />
-        <ImagePreviewGrid files={files} onRemove={removeFile} />
+        <ImagePreviewGrid
+          files={files}
+          onRemove={removeFile}
+          statuses={statuses}
+          isLocked={isUploading}
+        />
       </div>
     </div>
   );

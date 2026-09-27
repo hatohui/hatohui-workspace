@@ -1,23 +1,30 @@
 'use client';
 
 import { useTranslation } from '@hatohui/i18n';
-import { Input, Label } from '@hatohui/ui';
+import { Label, TagInput } from '@hatohui/ui';
 import { MultiImageUploadField } from '@/components/shared/MultiImageUploadField';
+import type { UploadStatus } from '@/hooks/useBulkAssetUpload';
+import { useUploadTagSuggestions } from '@/hooks/useUploadTagSuggestions';
 
 export function UploadFileFields({
   files,
   onFilesChange,
-  tagsInput,
-  onTagsInputChange,
+  tags,
+  onTagsChange,
+  statuses,
+  failedCount,
   isUploading,
 }: {
   files: File[];
   onFilesChange: (files: File[]) => void;
-  tagsInput: string;
-  onTagsInputChange: (value: string) => void;
+  tags: string[];
+  onTagsChange: (tags: string[]) => void;
+  statuses: Map<File, UploadStatus>;
+  failedCount: number;
   isUploading: boolean;
 }) {
   const { t } = useTranslation('art');
+  const suggestions = useUploadTagSuggestions(true);
 
   return (
     <>
@@ -25,17 +32,27 @@ export function UploadFileFields({
         label={t('gallery.upload.cta')}
         files={files}
         onChange={onFilesChange}
+        statuses={statuses}
         isUploading={isUploading}
       />
+      {failedCount > 0 && (
+        <p className="text-sm text-destructive">
+          {t('gallery.upload.failed', { count: failedCount })}
+        </p>
+      )}
 
-      <div>
+      <div className="space-y-1.5">
         <Label htmlFor="tags">{t('gallery.upload.tagsLabel')}</Label>
-        <Input
+        <TagInput
           id="tags"
-          value={tagsInput}
-          onChange={(event) => onTagsInputChange(event.target.value)}
+          value={tags}
+          onChange={onTagsChange}
+          suggestions={suggestions}
+          placeholder={t('gallery.upload.tagsPlaceholder')}
+          createLabel={(tag) => t('gallery.upload.tagCreate', { tag })}
+          removeLabel={(tag) => t('gallery.upload.tagRemove', { tag })}
         />
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {t('gallery.upload.tagsHint')}
         </p>
       </div>
