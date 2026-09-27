@@ -33,7 +33,7 @@ export interface SubmitCommissionDto {
   clientHandle?: string;
   /** Profile the anonymous client confirmed as theirs from matchCommissionIdentity */
   matchedProfileId?: string;
-  /** Chosen contact point: a SocialPlatform key, or 'email'. Takes precedence over preferredContactMethod */
+  /** Chosen contact point: a SocialPlatform name, or 'email'. Takes precedence over preferredContactMethod */
   contactPlatform?: string;
   /** Handle or address on contactPlatform; ignored for 'email' */
   contactValue?: string;

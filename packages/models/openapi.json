@@ -6844,8 +6844,8 @@
           },
           "contactPlatform": {
             "type": "string",
-            "example": "discord",
-            "description": "Chosen contact point: a SocialPlatform key, or 'email'. Takes precedence over preferredContactMethod"
+            "example": "Discord",
+            "description": "Chosen contact point: a SocialPlatform name, or 'email'. Takes precedence over preferredContactMethod"
           },
           "contactValue": {
             "type": "string",
@@ -7044,7 +7044,7 @@
           "contactPlatform": {
             "type": "string",
             "nullable": true,
-            "description": "Contact this commission was placed with: a SocialPlatform key, or 'email'"
+            "description": "Contact this commission was placed with: a SocialPlatform name, or 'email'"
           },
           "contactValue": {
             "type": "string",
@@ -7789,7 +7789,7 @@
           "contactPlatform": {
             "type": "string",
             "nullable": true,
-            "description": "Contact this commission was placed with: a SocialPlatform key, or 'email'"
+            "description": "Contact this commission was placed with: a SocialPlatform name, or 'email'"
           },
           "contactValue": {
             "type": "string",
@@ -8617,8 +8617,8 @@
         "properties": {
           "platform": {
             "type": "string",
-            "example": "discord",
-            "description": "A SocialPlatform key, or 'email'"
+            "example": "Discord",
+            "description": "A SocialPlatform name (how Profile.socialMedias keys it), or 'email'"
           },
           "value": {
             "type": "string",

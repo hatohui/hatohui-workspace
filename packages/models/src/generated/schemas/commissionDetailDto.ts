@@ -87,7 +87,7 @@ export interface CommissionDetailDto {
   /** @nullable */
   contactHandle: string | null;
   /**
-     * Contact this commission was placed with: a SocialPlatform key, or 'email'
+     * Contact this commission was placed with: a SocialPlatform name, or 'email'
      * @nullable
      */
   contactPlatform: string | null;
