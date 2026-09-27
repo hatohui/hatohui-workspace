@@ -13,13 +13,16 @@
 ///   uploads/<uploaderUserId>/<uuid>.<ext>   staging, pre-relocation
 ///   uploads/<client-name>/<uuid>.<ext>      staging for logged-out clients
 ///   avatars/<profileId>/<uuid>.<ext>        live avatar + its version history
+///   art/<artist>/gallery/<uuid>.<ext>       an artist's gallery uploads
+///   art/<artist>/thumbnails/<uuid>-<name>.webp  gallery thumbnails
 ///   art/commissions/<userId>/<uuid>.<ext>   delivered commission artwork
 ///   art/references/<userId>/<uuid>.<ext>    client-supplied reference images
 ///
 /// Avatars key off the *profile* id, not the user id, because a profile can
 /// exist unclaimed with no account behind it, and AvatarVersion.ownerId is
 /// already a profile id — so a profile's whole avatar history lands in one
-/// folder.
+/// folder. `<artist>` is the storefront handle, or the user id while the
+/// artist has none — see docs/specs/art/storage-layout.
 import { randomUUID } from 'node:crypto';
 
 export const STAGING_PREFIX = 'uploads';
@@ -28,7 +31,10 @@ export const MAX_PATH_SEGMENT_LENGTH = 40;
 export const AVATARS_PREFIX = 'avatars';
 export const COMMISSIONS_PREFIX = 'art/commissions';
 export const REFERENCES_PREFIX = 'art/references';
-export const ASSET_THUMBNAILS_PREFIX = 'art/assets/thumbnails';
+export const ART_PREFIX = 'art';
+export const GALLERY_SEGMENT = 'gallery';
+export const THUMBNAILS_SEGMENT = 'thumbnails';
+export const UNASSIGNED_ARTIST_SEGMENT = 'unassigned';
 
 /// Where a freshly signed upload goes before its owning record exists.
 export function stagedUploadKey(owner: string, extension: string): string {
@@ -70,9 +76,16 @@ export function referenceAssetKeyFor(
   return `${REFERENCES_PREFIX}/${userId}/${fileNameOf(sourceKey)}`;
 }
 
-export function assetThumbnailKeyFor(sourceKeyOrFilename: string): string {
+export function galleryAssetKeyFor(artist: string, sourceKey: string): string {
+  return `${ART_PREFIX}/${artist}/${GALLERY_SEGMENT}/${fileNameOf(sourceKey)}`;
+}
+
+export function assetThumbnailKeyFor(
+  artist: string,
+  sourceKeyOrFilename: string,
+): string {
   const base = fileNameOf(sourceKeyOrFilename).replace(/\.[^.]+$/, '');
-  return `${ASSET_THUMBNAILS_PREFIX}/${randomUUID()}-${base}.webp`;
+  return `${ART_PREFIX}/${artist}/${THUMBNAILS_SEGMENT}/${randomUUID()}-${base}.webp`;
 }
 
 function fileNameOf(key: string): string {

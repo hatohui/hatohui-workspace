@@ -22,6 +22,12 @@ import {
 import { TagSuggestionDto } from '@/modules/assets/dto/tag-suggestion.dto';
 import { BulkDeleteAssetsResultDto } from '@/modules/assets/dto/bulk-delete-assets.dto';
 import { BulkTagAssetsResultDto } from '@/modules/assets/dto/bulk-tag-assets.dto';
+import { artistFolderOf } from '@/modules/assets/utils/artist-folder';
+import {
+  STAGING_PREFIX,
+  galleryAssetKeyFor,
+  isStagedKey,
+} from '@/common/utils/asset-paths';
 
 const SORT_ORDER_BY: Record<
   AssetSortOption,
@@ -199,7 +205,8 @@ export class AssetsService {
     if (existing) return existing.id;
 
     const key = this.storage.getKeyFromUrl(url);
-    const created = await this.create(
+    await this.assertArtistOrAdmin(uploader);
+    const created = await this.record(
       key ? { key } : { externalUrl: url },
       uploader,
     );
@@ -215,6 +222,27 @@ export class AssetsService {
       );
     }
 
+    const key = dto.key && (await this.relocateToGallery(dto.key, uploader));
+    return this.record({ ...dto, key }, uploader);
+  }
+
+  private async relocateToGallery(
+    key: string,
+    uploader: User,
+  ): Promise<string> {
+    if (!isStagedKey(key)) return key;
+    if (!key.startsWith(`${STAGING_PREFIX}/${uploader.id}/`)) {
+      throw new ForbiddenException("Cannot claim another uploader's file");
+    }
+    const galleryKey = galleryAssetKeyFor(
+      await artistFolderOf(this.db, uploader.id),
+      key,
+    );
+    await this.storage.moveObject(key, galleryKey);
+    return galleryKey;
+  }
+
+  private async record(dto: CreateAssetDto, uploader: User): Promise<AssetDto> {
     const source = dto.key ? 'UPLOAD' : 'EXTERNAL_URL';
     const publicUrl = dto.key
       ? this.storage.getPublicUrl(dto.key)

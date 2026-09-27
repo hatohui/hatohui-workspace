@@ -26,16 +26,19 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
 COPY apps/api apps/api
 
 WORKDIR /repo/apps/api
-RUN bunx prisma generate
+RUN bunx prisma generate \
+  && cp -r "$(readlink -f node_modules/@prisma/client)/../../.prisma" /prisma-client
 RUN bun run build
 
 FROM base AS deps
 RUN --mount=type=cache,target=/root/.bun/install/cache \
-  bun install --frozen-lockfile --filter=./apps/api
+  bun install --frozen-lockfile --production --filter=./apps/api
 
 WORKDIR /repo/apps/api
-RUN --mount=type=cache,target=/root/.bun/install/cache \
-  bunx prisma generate
+COPY --from=builder /prisma-client /tmp/prisma-client
+RUN target="$(readlink -f node_modules/@prisma/client)/../../.prisma" \
+  && mkdir -p "$target" && cp -r /tmp/prisma-client/. "$target" \
+  && rm -rf /tmp/prisma-client
 
 FROM node:22-slim AS runtime
 
