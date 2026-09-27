@@ -9,6 +9,7 @@ on:
       - "apps/api/prisma/seed.ts"
       - "apps/api/prisma/seeds/core/**"
       - ".github/workflows/db-migrate-cd.yml"
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -19,6 +20,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Detect core seed changes
+        id: seed
+        env:
+          BEFORE: ${{ github.event.before }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" != "push" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          elif git diff --quiet "$BEFORE" "$GITHUB_SHA" -- apps/api/prisma/seed.ts apps/api/prisma/seeds/core; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -33,12 +50,14 @@ jobs:
           DATABASE_URL: ${{ secrets.MIGRATION_DB_URL }}
 
       - name: Generate Prisma client
+        if: steps.seed.outputs.changed == 'true'
         working-directory: apps/api
         run: bunx prisma generate
         env:
           DATABASE_URL: ${{ secrets.MIGRATION_DB_URL }}
 
       - name: Seed core data
+        if: steps.seed.outputs.changed == 'true'
         working-directory: apps/api
         run: bunx prisma db seed
         env:
