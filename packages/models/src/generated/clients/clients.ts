@@ -6,16 +6,20 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
@@ -23,7 +27,10 @@ import type {
 import type {
   ClientDetailDto,
   ClientPrefillDto,
-  LookupClientByEmailParams
+  CommissionIdentityDto,
+  LookupClientByEmailParams,
+  MatchCommissionIdentityDto,
+  MyCommissionIdentityDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -47,6 +54,200 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export type matchCommissionIdentityResponse200 = {
+  data: CommissionIdentityDto[]
+  status: 200
+}
+
+export type matchCommissionIdentityResponseSuccess = (matchCommissionIdentityResponse200) & {
+  headers: Headers;
+};
+;
+
+export type matchCommissionIdentityResponse = (matchCommissionIdentityResponseSuccess)
+
+export const getMatchCommissionIdentityUrl = () => {
+
+
+
+
+  return `/clients/identity-match`
+}
+
+/**
+ * @summary Profiles that look like the person ordering, by exact email, handle or name
+ */
+export const matchCommissionIdentity = async (matchCommissionIdentityDto: MatchCommissionIdentityDto, options?: RequestInit): Promise<matchCommissionIdentityResponse> => {
+
+  return customFetch<matchCommissionIdentityResponse>(getMatchCommissionIdentityUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(matchCommissionIdentityDto)
+  }
+);}
+
+
+
+
+
+export const getMatchCommissionIdentityMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof matchCommissionIdentity>>, TError,{data: MatchCommissionIdentityDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof matchCommissionIdentity>>, TError,{data: MatchCommissionIdentityDto}, TContext> => {
+
+const mutationKey = ['matchCommissionIdentity'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof matchCommissionIdentity>>, {data: MatchCommissionIdentityDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  matchCommissionIdentity(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MatchCommissionIdentityMutationResult = NonNullable<Awaited<ReturnType<typeof matchCommissionIdentity>>>
+    export type MatchCommissionIdentityMutationBody = MatchCommissionIdentityDto
+    export type MatchCommissionIdentityMutationError = unknown
+
+    /**
+ * @summary Profiles that look like the person ordering, by exact email, handle or name
+ */
+export const useMatchCommissionIdentity = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof matchCommissionIdentity>>, TError,{data: MatchCommissionIdentityDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof matchCommissionIdentity>>,
+        TError,
+        {data: MatchCommissionIdentityDto},
+        TContext
+      > => {
+      return useMutation(getMatchCommissionIdentityMutationOptions(options), queryClient);
+    }
+    export type myCommissionIdentityResponse200 = {
+  data: MyCommissionIdentityDto
+  status: 200
+}
+
+export type myCommissionIdentityResponseSuccess = (myCommissionIdentityResponse200) & {
+  headers: Headers;
+};
+;
+
+export type myCommissionIdentityResponse = (myCommissionIdentityResponseSuccess)
+
+export const getMyCommissionIdentityUrl = () => {
+
+
+
+
+  return `/clients/me/identity`
+}
+
+/**
+ * @summary Profile and contact points of the signed-in account, for ordering
+ */
+export const myCommissionIdentity = async ( options?: RequestInit): Promise<myCommissionIdentityResponse> => {
+
+  return customFetch<myCommissionIdentityResponse>(getMyCommissionIdentityUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getMyCommissionIdentityQueryKey = () => {
+    return [
+    `/clients/me/identity`
+    ] as const;
+    }
+
+
+export const getMyCommissionIdentityQueryOptions = <TData = Awaited<ReturnType<typeof myCommissionIdentity>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionIdentity>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getMyCommissionIdentityQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof myCommissionIdentity>>> = ({ signal }) => myCommissionIdentity({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof myCommissionIdentity>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type MyCommissionIdentityQueryResult = NonNullable<Awaited<ReturnType<typeof myCommissionIdentity>>>
+export type MyCommissionIdentityQueryError = unknown
+
+
+export function useMyCommissionIdentity<TData = Awaited<ReturnType<typeof myCommissionIdentity>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionIdentity>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myCommissionIdentity>>,
+          TError,
+          Awaited<ReturnType<typeof myCommissionIdentity>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useMyCommissionIdentity<TData = Awaited<ReturnType<typeof myCommissionIdentity>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionIdentity>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof myCommissionIdentity>>,
+          TError,
+          Awaited<ReturnType<typeof myCommissionIdentity>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useMyCommissionIdentity<TData = Awaited<ReturnType<typeof myCommissionIdentity>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionIdentity>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Profile and contact points of the signed-in account, for ordering
+ */
+
+export function useMyCommissionIdentity<TData = Awaited<ReturnType<typeof myCommissionIdentity>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof myCommissionIdentity>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getMyCommissionIdentityQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
 
 export type lookupClientByEmailResponse200 = {
   data: ClientPrefillDto

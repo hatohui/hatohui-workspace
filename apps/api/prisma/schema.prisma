@@ -138,6 +138,7 @@ model Profile {
   addedBy   User?   @relation("AddedBy", fields: [addedById], references: [id])
 
   birthday Birthday?
+  clients  Client[]
 }
 
 /// Absent row means no birthday known, which is why month/day are required.
@@ -574,12 +575,17 @@ model Client {
   userId String? @unique
   user   User?   @relation("ClientAccount", fields: [userId], references: [id], onDelete: SetNull)
 
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   commissions      Commission[]
   groupMemberships CommissionGroupMember[]
   comments         Comment[]
+
+  @@index([profileId])
 }
 
 model PaymentMethod {
@@ -619,6 +625,9 @@ model CommissionDetail {
 
   referenceAssets String[]  @default([])
   deliveredAt     DateTime?
+
+  contactPlatform String?
+  contactValue    String?
 
   ideaConfirmedAt    DateTime?
   sketchConfirmedAt  DateTime?

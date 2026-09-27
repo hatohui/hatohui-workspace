@@ -12,6 +12,7 @@ import { UserDto } from '@/modules/auth/dto/auth.dto';
 import { BirthdayConfigService } from '@/modules/cron/services/birthday-config.service';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
+import { IdentityClaimService } from '@/modules/auth/services/identity-claim.service';
 import type { Env } from '@/config/env';
 import type { User } from '@prisma/client';
 import {
@@ -30,6 +31,7 @@ export class AuthService {
     private readonly cache: Cache,
     private readonly userSettings: UserSettingsService,
     private readonly birthdayConfig: BirthdayConfigService,
+    private readonly identityClaim: IdentityClaimService,
   ) {
     this.client = new OAuth2Client(
       this.config.get('GOOGLE_OAUTH_CLIENT_ID', { infer: true }),
@@ -162,7 +164,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Google ID token');
     }
 
-    return this.db.user.upsert({
+    const user = await this.db.user.upsert({
       where: { googleId: payload.sub },
       create: {
         googleId: payload.sub,
@@ -176,5 +178,7 @@ export class AuthService {
         avatarUrl: payload.picture ?? null,
       },
     });
+    await this.identityClaim.claimFor(user);
+    return user;
   }
 }

@@ -86,6 +86,13 @@ export interface CommissionDetailDto {
   preferredContactMethod: CommissionDetailDtoPreferredContactMethod;
   /** @nullable */
   contactHandle: string | null;
+  /**
+     * Contact this commission was placed with: a SocialPlatform key, or 'email'
+     * @nullable
+     */
+  contactPlatform: string | null;
+  /** @nullable */
+  contactValue: string | null;
   referenceAssets: string[];
   /** @nullable */
   deliveredAt: string | null;

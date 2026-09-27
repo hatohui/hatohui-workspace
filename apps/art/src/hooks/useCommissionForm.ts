@@ -4,11 +4,15 @@ import { useEffect, useState } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import {
   useSubmitCommission,
-  type SubmitCommissionDtoPreferredContactMethod,
+  type CommissionIdentityDto,
 } from '@hatohui/models';
 import { useAuth, useImageUpload, isTiptapDocEmpty } from '@hatohui/libs';
-import { EMPTY_COMMISSION_IDEA } from '@/constants/commission';
+import {
+  EMAIL_CONTACT_PLATFORM,
+  EMPTY_COMMISSION_IDEA,
+} from '@/constants/commission';
 import { useCommissionPricingEstimate } from './useCommissionPricingEstimate';
+import { useIdentityMatch } from './useIdentityMatch';
 
 export interface CommissionFormState {
   idea: JSONContent;
@@ -18,8 +22,12 @@ export interface CommissionFormState {
   addonKeys: string[];
   clientName: string;
   clientEmail: string;
-  preferredContactMethod: SubmitCommissionDtoPreferredContactMethod;
-  contactHandle: string;
+  clientHandle: string;
+  matchedIdentity: CommissionIdentityDto | null;
+  declinedProfileIds: string[];
+  contactPlatform: string;
+  contactValue: string;
+  isNewContact: boolean;
   isPublic: boolean;
 }
 
@@ -31,8 +39,12 @@ const INITIAL_STATE: CommissionFormState = {
   addonKeys: [],
   clientName: '',
   clientEmail: '',
-  preferredContactMethod: 'EMAIL',
-  contactHandle: '',
+  clientHandle: '',
+  matchedIdentity: null,
+  declinedProfileIds: [],
+  contactPlatform: EMAIL_CONTACT_PLATFORM,
+  contactValue: '',
+  isNewContact: false,
   isPublic: false,
 };
 
@@ -94,6 +106,15 @@ export function useCommissionForm(artistId: string) {
   );
 
   const isIdeaEmpty = isTiptapDocEmpty(state.idea);
+  const needsIdentity = !isAuthLoading && !user;
+
+  const suggestedIdentity = useIdentityMatch({
+    name: state.clientName,
+    handle: state.clientHandle,
+    email: state.clientEmail,
+    enabled: needsIdentity && !state.matchedIdentity,
+    declinedProfileIds: state.declinedProfileIds,
+  });
 
   const update = <K extends keyof CommissionFormState>(
     key: K,
@@ -130,14 +151,43 @@ export function useCommissionForm(artistId: string) {
         addonKeys: state.addonKeys,
         ...(user
           ? {}
-          : { clientName: state.clientName, clientEmail: state.clientEmail }),
-        preferredContactMethod: state.preferredContactMethod,
-        contactHandle: state.contactHandle || undefined,
+          : {
+              clientName: state.clientName,
+              clientEmail: state.clientEmail,
+              clientHandle: state.clientHandle || undefined,
+              matchedProfileId: state.matchedIdentity?.profileId,
+            }),
+        contactPlatform: state.contactPlatform,
+        contactValue:
+          state.contactPlatform === EMAIL_CONTACT_PLATFORM
+            ? undefined
+            : state.contactValue,
         referenceAssets: uploaded.map((asset) => asset.key),
         isPublic: state.isPublic,
       },
     });
   };
+
+  const confirmIdentity = (identity: CommissionIdentityDto) =>
+    setState((prev) => ({ ...prev, matchedIdentity: identity }));
+
+  const declineIdentity = (identity: CommissionIdentityDto) =>
+    setState((prev) => ({
+      ...prev,
+      declinedProfileIds: [...prev.declinedProfileIds, identity.profileId],
+    }));
+
+  const clearIdentity = () =>
+    setState((prev) => ({
+      ...prev,
+      matchedIdentity: null,
+      declinedProfileIds: prev.matchedIdentity
+        ? [...prev.declinedProfileIds, prev.matchedIdentity.profileId]
+        : prev.declinedProfileIds,
+      contactPlatform: EMAIL_CONTACT_PLATFORM,
+      contactValue: '',
+      isNewContact: false,
+    }));
 
   const reset = () => {
     setState(INITIAL_STATE);
@@ -156,7 +206,12 @@ export function useCommissionForm(artistId: string) {
     isSubmitting: submitCommission.isPending || isUploading,
     isSubmitted,
     signedInName: user?.name ?? null,
-    needsIdentity: !isAuthLoading && !user,
+    isSignedIn: Boolean(user),
+    needsIdentity,
+    suggestedIdentity,
+    confirmIdentity,
+    declineIdentity,
+    clearIdentity,
     hasSubmitError,
     isDraftRestored,
     isIdeaEmpty,

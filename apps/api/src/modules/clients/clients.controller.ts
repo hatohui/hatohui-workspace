@@ -1,8 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
+  HttpCode,
   NotFoundException,
   Param,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -18,11 +21,46 @@ import {
 import { ClientsService } from '@/modules/clients/services/clients.service';
 import { ClientPrefillDto } from '@/modules/clients/dto/client.dto';
 import { ClientDetailDto } from '@/modules/clients/dto/client-detail.dto';
+import {
+  CommissionIdentityDto,
+  MatchCommissionIdentityDto,
+  MyCommissionIdentityDto,
+} from '@/modules/clients/dto/commission-identity.dto';
+import { ClientIdentityService } from '@/modules/clients/services/client-identity.service';
 
 @ApiTags('clients')
 @Controller('clients')
 export class ClientsController {
-  constructor(private readonly clientsService: ClientsService) {}
+  constructor(
+    private readonly clientsService: ClientsService,
+    private readonly clientIdentity: ClientIdentityService,
+  ) {}
+
+  @Post('identity-match')
+  @HttpCode(200)
+  @ApiOperation({
+    operationId: 'matchCommissionIdentity',
+    summary:
+      'Profiles that look like the person ordering, by exact email, handle or name',
+  })
+  @ApiOkResponse({ type: CommissionIdentityDto, isArray: true })
+  matchIdentity(
+    @Body() dto: MatchCommissionIdentityDto,
+  ): Promise<CommissionIdentityDto[]> {
+    return this.clientIdentity.match(dto);
+  }
+
+  @Get('me/identity')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'myCommissionIdentity',
+    summary:
+      'Profile and contact points of the signed-in account, for ordering',
+  })
+  @ApiOkResponse({ type: MyCommissionIdentityDto })
+  myIdentity(@CurrentUser() user: User): Promise<MyCommissionIdentityDto> {
+    return this.clientIdentity.mine(user);
+  }
 
   @Get('lookup')
   @ApiOperation({

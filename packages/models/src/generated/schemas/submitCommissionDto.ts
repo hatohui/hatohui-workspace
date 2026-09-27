@@ -29,4 +29,12 @@ export interface SubmitCommissionDto {
   clientName?: string;
   /** Required when not signed in; taken from the account otherwise */
   clientEmail?: string;
+  /** Handle for a new identity when not signed in; suffixed if already taken */
+  clientHandle?: string;
+  /** Profile the anonymous client confirmed as theirs from matchCommissionIdentity */
+  matchedProfileId?: string;
+  /** Chosen contact point: a SocialPlatform key, or 'email'. Takes precedence over preferredContactMethod */
+  contactPlatform?: string;
+  /** Handle or address on contactPlatform; ignored for 'email' */
+  contactValue?: string;
 }
