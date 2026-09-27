@@ -24,7 +24,10 @@ import {
   CreateAssetDto,
   UpdateAssetDto,
 } from '@/modules/assets/dto/asset.dto';
-import { TagSuggestionDto } from '@/modules/assets/dto/tag-suggestion.dto';
+import {
+  GalleryTagsQueryDto,
+  TagSuggestionDto,
+} from '@/modules/assets/dto/tag-suggestion.dto';
 import {
   BulkDeleteAssetsDto,
   BulkDeleteAssetsResultDto,
@@ -51,6 +54,18 @@ export class AssetsController {
       query.pageSize ?? 24,
       query.uploadedById,
     );
+  }
+
+  @Get('tags')
+  @ApiOperation({
+    operationId: 'galleryTags',
+    summary: 'Tags used in a gallery, for search suggestions',
+  })
+  @ApiOkResponse({ type: [TagSuggestionDto] })
+  galleryTags(
+    @Query() query: GalleryTagsQueryDto,
+  ): Promise<TagSuggestionDto[]> {
+    return this.assetsService.galleryTags(query.uploadedById);
   }
 
   @Get('tag-suggestions')

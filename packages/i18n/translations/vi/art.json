@@ -140,7 +140,10 @@
       "applyTags": "Thêm thẻ",
       "tagged_other": "Đã thêm {{tags}} cho {{count}} tác phẩm",
       "tagFailed": "Không thể thêm thẻ. Không có gì thay đổi."
-    }
+    },
+    "loadingMore": "Đang tải thêm…",
+    "searchTagCount_other": "{{count}} tác phẩm",
+    "clearTagFilter": "Bỏ lọc theo {{tag}}"
   },
   "queue": {
     "title": "Hàng đợi",

@@ -2022,6 +2022,41 @@
         ]
       }
     },
+    "/assets/tags": {
+      "get": {
+        "operationId": "galleryTags",
+        "parameters": [
+          {
+            "name": "uploadedById",
+            "required": false,
+            "in": "query",
+            "description": "Only count tags on this uploader's assets",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagSuggestionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Tags used in a gallery, for search suggestions",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
     "/assets/tag-suggestions": {
       "get": {
         "operationId": "assetTagSuggestions",

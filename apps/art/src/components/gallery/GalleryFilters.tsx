@@ -3,7 +3,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { AssetsSort } from '@hatohui/models';
 import {
-  Input,
   Select,
   SelectContent,
   SelectItem,
@@ -12,6 +11,7 @@ import {
 } from '@hatohui/ui';
 import { GALLERY_SORT_OPTIONS } from '@/constants/gallery';
 import type { useGalleryAssets } from '@/hooks/useGalleryAssets';
+import { GallerySearch } from './GallerySearch';
 
 export function GalleryFilters({
   gallery,
@@ -22,12 +22,7 @@ export function GalleryFilters({
 
   return (
     <div className="flex flex-wrap gap-3">
-      <Input
-        value={gallery.query}
-        onChange={(event) => gallery.setQuery(event.target.value)}
-        placeholder={t('gallery.searchPlaceholder')}
-        className="max-w-xs"
-      />
+      <GallerySearch gallery={gallery} />
       <Select
         value={gallery.sort}
         onValueChange={(value) => gallery.setSort(value as AssetsSort)}

@@ -110,6 +110,40 @@ export class AssetsService {
     return toAssetDto(asset);
   }
 
+  async galleryTags(uploadedById?: string): Promise<TagSuggestionDto[]> {
+    const scope = uploadedById ? { asset: { uploadedById } } : {};
+    const [usedTags, commissionTypes] = await Promise.all([
+      this.db.tag.findMany({
+        where: { assets: { some: scope } },
+        select: {
+          name: true,
+          _count: { select: { assets: { where: scope } } },
+        },
+      }),
+      this.db.commissionType.findMany({
+        where: { active: true, tag: { isNot: null } },
+        select: { label: true, tag: { select: { name: true } } },
+      }),
+    ]);
+    const typeLabelByTag = new Map(
+      commissionTypes.map((type) => [type.tag?.name, type.label]),
+    );
+
+    return usedTags
+      .map((tag) => ({
+        name: tag.name,
+        usageCount: tag._count.assets,
+        commissionTypeLabel: typeLabelByTag.get(tag.name) ?? null,
+      }))
+      .sort(
+        (a, b) =>
+          Number(b.commissionTypeLabel !== null) -
+            Number(a.commissionTypeLabel !== null) ||
+          b.usageCount - a.usageCount ||
+          a.name.localeCompare(b.name),
+      );
+  }
+
   async tagSuggestions(userId: string): Promise<TagSuggestionDto[]> {
     const ownAssets = { asset: { uploadedById: userId } };
     const [usedTags, commissionTypes] = await Promise.all([
