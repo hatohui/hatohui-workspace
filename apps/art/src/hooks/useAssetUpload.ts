@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { readImageDimensions } from '@/lib/imageDimensions';
 import { useImageUpload } from '@hatohui/libs';
 import {
   useCreateAsset,
   useDeleteAsset,
   useUpdateAsset,
 } from '@hatohui/models';
+import { invalidateDeletedAssetCache } from '@/hooks/invalidateDeletedAssetCache';
 
 export function useAssetUpload() {
   const { uploadImage, isUploading } = useImageUpload();
@@ -54,8 +57,11 @@ export function useAssetUpload() {
 }
 
 export function useAssetManagement() {
+  const queryClient = useQueryClient();
   const updateAsset = useUpdateAsset();
-  const deleteAsset = useDeleteAsset();
+  const deleteAsset = useDeleteAsset({
+    mutation: { onSettled: () => invalidateDeletedAssetCache(queryClient) },
+  });
 
   return {
     updateTags: (id: string, tags: string[]) =>
@@ -64,24 +70,4 @@ export function useAssetManagement() {
     isUpdating: updateAsset.isPending,
     isDeleting: deleteAsset.isPending,
   };
-}
-
-function readImageDimensions(
-  file: File,
-): Promise<{ width: number; height: number } | null> {
-  if (!file.type.startsWith('image/')) return Promise.resolve(null);
-
-  return new Promise((resolve) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve({ width: img.naturalWidth, height: img.naturalHeight });
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      resolve(null);
-    };
-    img.src = url;
-  });
 }

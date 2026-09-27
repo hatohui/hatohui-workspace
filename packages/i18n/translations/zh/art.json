@@ -79,11 +79,27 @@
       "tagHintType": "{{label}} 示例",
       "tagHintUsed_other": "已用于 {{count}} 件作品",
       "saveCount_other": "上传 {{count}} 张图片",
-      "failed_other": "{{count}} 张上传失败。再次保存即可重试。",
       "status": {
         "uploading": "上传中",
         "done": "已上传",
         "failed": "上传失败"
+      },
+      "sharedTagsLabel": "所有图片的标签",
+      "capacity": "{{count}} / {{max}} 张 · 每张最大 {{size}} MB",
+      "progress": "上传中… 已完成 {{done}}/{{total}}",
+      "itemTags": "{{name}} 的标签",
+      "itemTagsHint": "仅用于此图片。所有图片的标签也会添加。",
+      "remove": "移除 {{name}}",
+      "retryCount_one": "重试 {{count}} 张",
+      "retryCount_other": "重试 {{count}} 张",
+      "failed_one": "{{count}} 张上传失败。请重试或移除。",
+      "failed_other": "{{count}} 张上传失败。请重试或移除。",
+      "skipped": {
+        "title_one": "{{count}} 个文件未添加",
+        "title_other": "{{count}} 个文件未添加",
+        "tooLarge": "{{name}} 为 {{size}} MB（上限 {{max}} MB）",
+        "unsupportedType": "{{name}} 不是支持的图片格式",
+        "overLimit": "{{name}}：每次最多上传 {{max}} 张"
       }
     },
     "card": {
@@ -98,6 +114,20 @@
       "dimensions": "尺寸",
       "size": "大小",
       "uploaded": "上传时间"
+    },
+    "selection": {
+      "start": "选择",
+      "toggle": "选择 {{name}}",
+      "count_other": "已选择 {{count}} 项",
+      "selectAll": "全选",
+      "clear": "清除选择",
+      "delete": "删除",
+      "done": "完成",
+      "cancel": "取消",
+      "confirmTitle_other": "删除 {{count}} 件作品？",
+      "confirmDescription": "这些作品将从图库及其所在的项目中移除，且无法撤销。",
+      "deleted_other": "已删除 {{count}} 件作品",
+      "deleteFailed": "无法删除所选作品，未删除任何内容。"
     }
   },
   "queue": {

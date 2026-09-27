@@ -10,10 +10,7 @@ import type { SignImageDtoContentType } from './signImageDtoContentType';
 export interface SignImageDto {
   fileName: string;
   contentType: SignImageDtoContentType;
-  /**
-     * File size in bytes; the upload must match it exactly
-     * @maximum 10485760
-     */
+  /** File size in bytes; the upload must match it exactly. Capped by GET /images/upload-limits */
   size: number;
   /** Required when not signed in; names the upload folder */
   uploaderName?: string;

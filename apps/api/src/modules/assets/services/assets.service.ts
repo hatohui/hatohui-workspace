@@ -20,6 +20,7 @@ import {
   UpdateAssetDto,
 } from '@/modules/assets/dto/asset.dto';
 import { TagSuggestionDto } from '@/modules/assets/dto/tag-suggestion.dto';
+import { BulkDeleteAssetsResultDto } from '@/modules/assets/dto/bulk-delete-assets.dto';
 
 const SORT_ORDER_BY: Record<
   AssetSortOption,
@@ -263,13 +264,33 @@ export class AssetsService {
     const existing = await this.findOrThrow(id);
     await this.assertOwnerOrAdmin(existing, actor);
     await this.db.asset.delete({ where: { id } });
-    if (existing.key) {
-      await this.storage.deleteObject(existing.key).catch(() => {});
+    await this.cleanUpDeleted(existing);
+  }
+
+  async removeMany(
+    ids: string[],
+    actor: User,
+  ): Promise<BulkDeleteAssetsResultDto> {
+    const existing = await this.db.asset.findMany({
+      where: { id: { in: ids } },
+    });
+    if (existing.some((asset) => asset.uploadedById !== actor.id)) {
+      await this.assertAdmin(actor);
     }
-    if (existing.thumbnailKey) {
-      await this.storage.deleteObject(existing.thumbnailKey).catch(() => {});
+    const deletedIds = existing.map((asset) => asset.id);
+    await this.db.asset.deleteMany({ where: { id: { in: deletedIds } } });
+    await Promise.all(existing.map((asset) => this.cleanUpDeleted(asset)));
+    return { deletedIds };
+  }
+
+  private async cleanUpDeleted(asset: Asset): Promise<void> {
+    if (asset.key) {
+      await this.storage.deleteObject(asset.key).catch(() => {});
     }
-    await this.processQueue.clearForRef(ProcessType.ASSET_THUMBNAIL, id);
+    if (asset.thumbnailKey) {
+      await this.storage.deleteObject(asset.thumbnailKey).catch(() => {});
+    }
+    await this.processQueue.clearForRef(ProcessType.ASSET_THUMBNAIL, asset.id);
   }
 
   private async assertAdmin(user: User): Promise<void> {

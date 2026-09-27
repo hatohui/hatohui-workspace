@@ -27,6 +27,8 @@ import type {
 import type {
   AssetDto,
   AssetsParams,
+  BulkDeleteAssetsDto,
+  BulkDeleteAssetsResultDto,
   CreateAssetDto,
   PaginatedAssetsDto,
   TagSuggestionDto,
@@ -644,4 +646,86 @@ export const useDeleteAsset = <TError = unknown,
         TContext
       > => {
       return useMutation(getDeleteAssetMutationOptions(options), queryClient);
+    }
+    export type bulkDeleteAssetsResponse200 = {
+  data: BulkDeleteAssetsResultDto
+  status: 200
+}
+
+export type bulkDeleteAssetsResponseSuccess = (bulkDeleteAssetsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkDeleteAssetsResponse = (bulkDeleteAssetsResponseSuccess)
+
+export const getBulkDeleteAssetsUrl = () => {
+
+
+
+
+  return `/assets/bulk-delete`
+}
+
+/**
+ * @summary Delete several assets at once; all-or-nothing on permissions
+ */
+export const bulkDeleteAssets = async (bulkDeleteAssetsDto: BulkDeleteAssetsDto, options?: RequestInit): Promise<bulkDeleteAssetsResponse> => {
+
+  return customFetch<bulkDeleteAssetsResponse>(getBulkDeleteAssetsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(bulkDeleteAssetsDto)
+  }
+);}
+
+
+
+
+
+export const getBulkDeleteAssetsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkDeleteAssets>>, TError,{data: BulkDeleteAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkDeleteAssets>>, TError,{data: BulkDeleteAssetsDto}, TContext> => {
+
+const mutationKey = ['bulkDeleteAssets'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkDeleteAssets>>, {data: BulkDeleteAssetsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkDeleteAssets(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkDeleteAssetsMutationResult = NonNullable<Awaited<ReturnType<typeof bulkDeleteAssets>>>
+    export type BulkDeleteAssetsMutationBody = BulkDeleteAssetsDto
+    export type BulkDeleteAssetsMutationError = unknown
+
+    /**
+ * @summary Delete several assets at once; all-or-nothing on permissions
+ */
+export const useBulkDeleteAssets = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkDeleteAssets>>, TError,{data: BulkDeleteAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkDeleteAssets>>,
+        TError,
+        {data: BulkDeleteAssetsDto},
+        TContext
+      > => {
+      return useMutation(getBulkDeleteAssetsMutationOptions(options), queryClient);
     }

@@ -7,28 +7,28 @@ import {
   getAssetsQueryKey,
 } from '@hatohui/models';
 import { useAssetUpload } from '@/hooks/useAssetUpload';
-import { useBulkAssetUpload } from '@/hooks/useBulkAssetUpload';
+import { useUploadQueue } from '@/hooks/useUploadQueue';
+import { useUploadQueueRunner } from '@/hooks/useUploadQueueRunner';
 
 export type UploadMode = 'file' | 'link';
 
 export function useUploadDialogForm(onDone: () => void) {
   const queryClient = useQueryClient();
   const { createFromUrl, isUploading: isCreatingLink } = useAssetUpload();
-  const bulk = useBulkAssetUpload();
+  const queue = useUploadQueue();
+  const runner = useUploadQueueRunner(queue.patch);
   const [mode, setMode] = useState<UploadMode>('file');
-  const [files, setFiles] = useState<File[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [failedCount, setFailedCount] = useState(0);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkFilename, setLinkFilename] = useState('');
 
   const reset = () => {
-    setFiles([]);
+    queue.reset();
     setTags([]);
     setFailedCount(0);
     setLinkUrl('');
     setLinkFilename('');
-    bulk.reset();
   };
 
   const refreshGallery = () => {
@@ -40,11 +40,11 @@ export function useUploadDialogForm(onDone: () => void) {
 
   const save = async () => {
     if (mode === 'file') {
-      const failed = await bulk.run(files, tags);
+      const failed = await runner.run(queue.items, tags);
       refreshGallery();
-      if (failed.length > 0) {
-        setFiles(failed);
-        setFailedCount(failed.length);
+      if (failed > 0) {
+        queue.clearDone();
+        setFailedCount(failed);
         return;
       }
     } else {
@@ -56,22 +56,20 @@ export function useUploadDialogForm(onDone: () => void) {
   };
 
   const canSave =
-    mode === 'file' ? files.length > 0 : linkUrl.trim().length > 0;
+    mode === 'file' ? queue.items.length > 0 : linkUrl.trim().length > 0;
 
   return {
     mode,
     setMode,
-    files,
-    setFiles,
+    queue,
     tags,
     setTags,
-    statuses: bulk.statuses,
     failedCount,
     linkUrl,
     setLinkUrl,
     linkFilename,
     setLinkFilename,
-    isUploading: bulk.isRunning || isCreatingLink,
+    isUploading: runner.isRunning || isCreatingLink,
     canSave,
     save,
   };

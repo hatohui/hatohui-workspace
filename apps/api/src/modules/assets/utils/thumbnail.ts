@@ -1,12 +1,18 @@
 import sharp from 'sharp';
 
-export const ASSET_THUMBNAIL_MAX_WIDTH = 800;
-export const ASSET_THUMBNAIL_WEBP_QUALITY = 75;
+export const ASSET_THUMBNAIL_MAX_DIMENSION = 1600;
+export const ASSET_THUMBNAIL_WEBP_QUALITY = 90;
 
 export async function generateThumbnail(original: Buffer): Promise<Buffer> {
   return sharp(original)
-    .resize({ width: ASSET_THUMBNAIL_MAX_WIDTH, withoutEnlargement: true })
-    .webp({ quality: ASSET_THUMBNAIL_WEBP_QUALITY })
+    .rotate()
+    .resize({
+      width: ASSET_THUMBNAIL_MAX_DIMENSION,
+      height: ASSET_THUMBNAIL_MAX_DIMENSION,
+      fit: 'inside',
+      withoutEnlargement: true,
+    })
+    .webp({ quality: ASSET_THUMBNAIL_WEBP_QUALITY, smartSubsample: true })
     .toBuffer();
 }
 
