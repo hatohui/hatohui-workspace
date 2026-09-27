@@ -50,7 +50,7 @@
   "gallery": {
     "title": "画廊",
     "subtitle": "已完成作品、参考图和交付成果的合集。",
-    "searchPlaceholder": "按文件名或标签搜索",
+    "searchPlaceholder": "按标签搜索",
     "sort": {
       "newest": "最新",
       "oldest": "最旧",
@@ -82,7 +82,6 @@
       "sharedTagsLabel": "所有图片的标签",
       "capacity": "{{count}} / {{max}} 张 · 每张最大 {{size}} MB",
       "progress": "上传中… 已完成 {{done}}/{{total}}",
-      "itemTags": "{{name}} 的标签",
       "remove": "移除 {{name}}",
       "retryCount_one": "重试 {{count}} 张",
       "retryCount_other": "重试 {{count}} 张",
@@ -104,7 +103,8 @@
       "itemTagsInherited": "来自“所有图片的标签”",
       "itemTagsOwn": "仅此图片",
       "itemTagsSummary": "{{name}}：{{tags}}",
-      "compressToFit": "压缩以适应"
+      "compressToFit": "压缩以适应",
+      "itemTags": "{{name}} 的标签"
     },
     "card": {
       "delete": "删除",
@@ -114,7 +114,6 @@
     "detail": {
       "back": "返回画廊",
       "openOriginal": "打开原图",
-      "filename": "文件名",
       "dimensions": "尺寸",
       "size": "大小",
       "uploaded": "上传时间"

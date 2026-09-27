@@ -55,7 +55,7 @@
   },
   "gallery": {
     "title": "Gallery",
-    "searchPlaceholder": "Search by filename or tag",
+    "searchPlaceholder": "Search by tag",
     "sort": {
       "newest": "Newest",
       "oldest": "Oldest",
@@ -89,7 +89,6 @@
       "sharedTagsLabel": "Tags for all images",
       "capacity": "{{count}} / {{max}} images · up to {{size}} MB each",
       "progress": "Uploading… {{done}} of {{total}} done",
-      "itemTags": "Tags for {{name}}",
       "remove": "Remove {{name}}",
       "retryCount_one": "Retry {{count}} image",
       "retryCount_other": "Retry {{count}} images",
@@ -111,7 +110,8 @@
       "itemTagsInherited": "Also applied from Tags for all images",
       "itemTagsOwn": "Only this image",
       "itemTagsSummary": "{{name}}: {{tags}}",
-      "compressToFit": "Compress to fit"
+      "compressToFit": "Compress to fit",
+      "itemTags": "Tags for {{name}}"
     },
     "card": {
       "delete": "Delete",
@@ -121,7 +121,6 @@
     "detail": {
       "back": "Back to gallery",
       "openOriginal": "Open original",
-      "filename": "Filename",
       "dimensions": "Dimensions",
       "size": "Size",
       "uploaded": "Uploaded"

@@ -53,7 +53,7 @@
   },
   "gallery": {
     "title": "Thư viện",
-    "searchPlaceholder": "Tìm theo tên tệp hoặc thẻ",
+    "searchPlaceholder": "Tìm theo thẻ",
     "sort": {
       "newest": "Mới nhất",
       "oldest": "Cũ nhất",
@@ -85,7 +85,6 @@
       "sharedTagsLabel": "Thẻ cho tất cả ảnh",
       "capacity": "{{count}} / {{max}} ảnh · tối đa {{size}} MB mỗi ảnh",
       "progress": "Đang tải lên… xong {{done}}/{{total}}",
-      "itemTags": "Thẻ cho {{name}}",
       "remove": "Xóa {{name}}",
       "retryCount_one": "Thử lại {{count}} ảnh",
       "retryCount_other": "Thử lại {{count}} ảnh",
@@ -107,7 +106,8 @@
       "itemTagsInherited": "Áp dụng từ Thẻ cho tất cả ảnh",
       "itemTagsOwn": "Chỉ ảnh này",
       "itemTagsSummary": "{{name}}: {{tags}}",
-      "compressToFit": "Nén cho vừa"
+      "compressToFit": "Nén cho vừa",
+      "itemTags": "Thẻ cho {{name}}"
     },
     "card": {
       "delete": "Xóa",
@@ -117,7 +117,6 @@
     "detail": {
       "back": "Quay lại thư viện",
       "openOriginal": "Mở ảnh gốc",
-      "filename": "Tên tệp",
       "dimensions": "Kích thước",
       "size": "Dung lượng",
       "uploaded": "Ngày tải lên"

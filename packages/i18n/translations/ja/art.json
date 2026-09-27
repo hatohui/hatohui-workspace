@@ -54,7 +54,7 @@
   "gallery": {
     "title": "ギャラリー",
     "subtitle": "完成作品、参考資料、納品物のコレクションです。",
-    "searchPlaceholder": "ファイル名やタグで検索",
+    "searchPlaceholder": "タグで検索",
     "sort": {
       "newest": "新しい順",
       "oldest": "古い順",
@@ -86,7 +86,6 @@
       "sharedTagsLabel": "すべての画像のタグ",
       "capacity": "{{count}} / {{max}} 枚・1枚あたり最大 {{size}} MB",
       "progress": "アップロード中… {{total}} 枚中 {{done}} 枚完了",
-      "itemTags": "{{name}} のタグ",
       "remove": "{{name}} を削除",
       "retryCount_one": "{{count}} 枚を再試行",
       "retryCount_other": "{{count}} 枚を再試行",
@@ -108,7 +107,8 @@
       "itemTagsInherited": "「すべての画像のタグ」から適用",
       "itemTagsOwn": "この画像のみ",
       "itemTagsSummary": "{{name}}：{{tags}}",
-      "compressToFit": "圧縮して追加"
+      "compressToFit": "圧縮して追加",
+      "itemTags": "{{name}} のタグ"
     },
     "card": {
       "delete": "削除",
@@ -118,7 +118,6 @@
     "detail": {
       "back": "ギャラリーに戻る",
       "openOriginal": "元画像を開く",
-      "filename": "ファイル名",
       "dimensions": "サイズ",
       "size": "容量",
       "uploaded": "アップロード日"
