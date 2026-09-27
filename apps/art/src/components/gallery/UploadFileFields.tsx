@@ -15,14 +15,12 @@ export function UploadFileFields({
   onTagsChange,
   failedCount,
   isUploading,
-  onCompressAndUpload,
 }: {
   queue: ReturnType<typeof useUploadQueue>;
   tags: string[];
   onTagsChange: (tags: string[]) => void;
   failedCount: number;
   isUploading: boolean;
-  onCompressAndUpload: () => void;
 }) {
   const { t } = useTranslation('art');
   const suggestions = useUploadTagSuggestions(true);
@@ -56,7 +54,7 @@ export function UploadFileFields({
           canCompress={queue.canCompress}
           isCompressing={queue.isCompressing}
           disabled={isUploading}
-          onCompress={onCompressAndUpload}
+          onCompress={() => void queue.compressOversized()}
         />
         {hasItems && (
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">

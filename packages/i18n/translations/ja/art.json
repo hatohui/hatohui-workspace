@@ -100,15 +100,15 @@
         "overLimit": "{{name}}：1回のアップロードは最大 {{max}} 枚です",
         "compressFailed": "{{name}} は圧縮後も {{max}} MB を超えています"
       },
-      "compressAndUpload": "圧縮してアップロード",
       "compressing": "圧縮中…",
-      "compressHint": "WebP に変換し、上限に収まるまで必要な分だけ縮小します。",
+      "compressHint": "WebP に変換し、必要な分だけ縮小して追加します。アップロード前にタグを付けられます。",
       "dropzoneMore": "画像を追加",
       "tagGroupCommission": "依頼タイプ",
       "tagGroupOwn": "あなたのタグ",
       "itemTagsInherited": "「すべての画像のタグ」から適用",
       "itemTagsOwn": "この画像のみ",
-      "itemTagsSummary": "{{name}}：{{tags}}"
+      "itemTagsSummary": "{{name}}：{{tags}}",
+      "compressToFit": "圧縮して追加"
     },
     "card": {
       "delete": "削除",

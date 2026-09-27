@@ -99,15 +99,15 @@
         "overLimit": "{{name}}: mỗi lần tải lên tối đa {{max}} ảnh",
         "compressFailed": "{{name}} vẫn vượt {{max}} MB sau khi nén"
       },
-      "compressAndUpload": "Nén và tải lên",
       "compressing": "Đang nén…",
-      "compressHint": "Chuyển sang WebP và chỉ thu nhỏ vừa đủ để nằm trong giới hạn.",
+      "compressHint": "Chuyển sang WebP, chỉ thu nhỏ vừa đủ rồi thêm vào để bạn gắn thẻ trước khi tải lên.",
       "dropzoneMore": "Thêm ảnh",
       "tagGroupCommission": "Loại commission",
       "tagGroupOwn": "Thẻ của bạn",
       "itemTagsInherited": "Áp dụng từ Thẻ cho tất cả ảnh",
       "itemTagsOwn": "Chỉ ảnh này",
-      "itemTagsSummary": "{{name}}: {{tags}}"
+      "itemTagsSummary": "{{name}}: {{tags}}",
+      "compressToFit": "Nén cho vừa"
     },
     "card": {
       "delete": "Xóa",

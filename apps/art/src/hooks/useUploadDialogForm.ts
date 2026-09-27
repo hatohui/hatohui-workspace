@@ -41,11 +41,6 @@ export function useUploadDialogForm(onDone: () => void) {
     onDone();
   };
 
-  const compressAndUpload = async () => {
-    const added = await queue.compressOversized();
-    if (added.length > 0) await uploadFiles([...queue.items, ...added]);
-  };
-
   const save = () => uploadFiles(queue.items);
 
   const canSave = queue.items.length > 0;
@@ -58,6 +53,5 @@ export function useUploadDialogForm(onDone: () => void) {
     isUploading: runner.isRunning || queue.isCompressing,
     canSave,
     save,
-    compressAndUpload,
   };
 }

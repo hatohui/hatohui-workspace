@@ -103,15 +103,15 @@
         "overLimit": "{{name}}: at most {{max}} images per upload",
         "compressFailed": "{{name}} is still over {{max}} MB after compressing"
       },
-      "compressAndUpload": "Compress and upload",
       "compressing": "Compressing…",
-      "compressHint": "Converts to WebP and scales down only as much as needed to fit.",
+      "compressHint": "Converts to WebP and scales down only as much as needed, then adds them so you can tag them before uploading.",
       "dropzoneMore": "Add more images",
       "tagGroupCommission": "Commission types",
       "tagGroupOwn": "Your tags",
       "itemTagsInherited": "Also applied from Tags for all images",
       "itemTagsOwn": "Only this image",
-      "itemTagsSummary": "{{name}}: {{tags}}"
+      "itemTagsSummary": "{{name}}: {{tags}}",
+      "compressToFit": "Compress to fit"
     },
     "card": {
       "delete": "Delete",

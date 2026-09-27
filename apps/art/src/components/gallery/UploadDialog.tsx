@@ -34,7 +34,6 @@ export function UploadDialog({
             onTagsChange={form.setTags}
             failedCount={form.failedCount}
             isUploading={form.isUploading}
-            onCompressAndUpload={() => void form.compressAndUpload()}
           />
 
           <div className="flex justify-end gap-2">

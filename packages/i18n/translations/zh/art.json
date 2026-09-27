@@ -96,15 +96,15 @@
         "overLimit": "{{name}}：每次最多上传 {{max}} 张",
         "compressFailed": "{{name}} 压缩后仍超过 {{max}} MB"
       },
-      "compressAndUpload": "压缩并上传",
       "compressing": "压缩中…",
-      "compressHint": "转换为 WebP，并仅按需缩小到限制以内。",
+      "compressHint": "转换为 WebP 并仅按需缩小后加入列表，上传前可先添加标签。",
       "dropzoneMore": "添加更多图片",
       "tagGroupCommission": "委托类型",
       "tagGroupOwn": "你的标签",
       "itemTagsInherited": "来自“所有图片的标签”",
       "itemTagsOwn": "仅此图片",
-      "itemTagsSummary": "{{name}}：{{tags}}"
+      "itemTagsSummary": "{{name}}：{{tags}}",
+      "compressToFit": "压缩以适应"
     },
     "card": {
       "delete": "删除",
