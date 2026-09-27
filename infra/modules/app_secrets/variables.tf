@@ -19,9 +19,3 @@ variable "visibility" {
   type        = string
   default     = "masked"
 }
-
-variable "environment" {
-  description = "The Doppler environment to create the config under; null if it already exists"
-  type        = string
-  default     = null
-}

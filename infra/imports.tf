@@ -51,3 +51,11 @@ import {
   to = module.dns_zone_records.cloudflare_dns_record.this["spf"]
   id = "${local.dns_zone_id}/7c25d4f2d8093a165175a0658d47d3f2"
 }
+
+removed {
+  from = module.app_secrets_art.doppler_config.this
+
+  lifecycle {
+    destroy = false
+  }
+}
