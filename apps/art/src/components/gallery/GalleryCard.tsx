@@ -14,6 +14,7 @@ export function GalleryCard({
   isAdmin,
   href,
   onAddToProject,
+  onEdit,
   onZoom,
   selection,
 }: {
@@ -21,6 +22,7 @@ export function GalleryCard({
   isAdmin: boolean;
   href: string;
   onAddToProject: () => void;
+  onEdit: () => void;
   onZoom: () => void;
   selection?: { selected: boolean; onToggle: () => void };
 }) {
@@ -61,6 +63,7 @@ export function GalleryCard({
       {isAdmin && !selection && (
         <GalleryCardActions
           assetId={asset.id}
+          onEdit={onEdit}
           onAddToProject={onAddToProject}
         />
       )}

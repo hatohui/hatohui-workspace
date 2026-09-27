@@ -113,7 +113,8 @@
     "card": {
       "delete": "削除",
       "deleteConfirm": "この画像を削除しますか？",
-      "editTags": "タグを編集"
+      "editTags": "タグを編集",
+      "edit": "詳細を編集"
     },
     "detail": {
       "back": "ギャラリーに戻る",
@@ -154,7 +155,9 @@
       "save": "保存",
       "saving": "保存中...",
       "discard": "破棄",
-      "saveFailed": "保存できませんでした。もう一度お試しください。"
+      "saveFailed": "保存できませんでした。もう一度お試しください。",
+      "editTitle": "作品を編集",
+      "tagsLabel": "タグ"
     },
     "viewLarge": "大きく表示"
   },

@@ -112,7 +112,8 @@
     "card": {
       "delete": "Xóa",
       "deleteConfirm": "Xóa tệp này?",
-      "editTags": "Sửa thẻ"
+      "editTags": "Sửa thẻ",
+      "edit": "Sửa chi tiết"
     },
     "detail": {
       "back": "Quay lại thư viện",
@@ -153,7 +154,9 @@
       "save": "Lưu",
       "saving": "Đang lưu...",
       "discard": "Hủy thay đổi",
-      "saveFailed": "Không lưu được. Hãy thử lại."
+      "saveFailed": "Không lưu được. Hãy thử lại.",
+      "editTitle": "Sửa tác phẩm",
+      "tagsLabel": "Thẻ"
     },
     "viewLarge": "Xem kích thước đầy đủ"
   },

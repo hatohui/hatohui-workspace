@@ -16,6 +16,7 @@ import { UploadDialog } from './UploadDialog';
 import { GalleryOwnerActions } from './GalleryOwnerActions';
 import { GallerySelectionBar } from './GallerySelectionBar';
 import { GalleryDeleteConfirm } from './GalleryDeleteConfirm';
+import { AssetEditDialog } from './AssetEditDialog';
 import { useGallerySelection } from '@/hooks/useGallerySelection';
 import { GallerySectionTabs, type GallerySection } from './GallerySectionTabs';
 import { ProjectsSection } from '@/components/projects/ProjectsSection';
@@ -43,6 +44,7 @@ export function GalleryGrid({
   const viewer = useImageViewer();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [projectTarget, setProjectTarget] = useState<AssetDto | null>(null);
+  const [editTarget, setEditTarget] = useState<AssetDto | null>(null);
   const [section, setSection] = useState<GallerySection>('assets');
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [
     gallery.items,
@@ -100,6 +102,7 @@ export function GalleryGrid({
                   isAdmin={isOwner}
                   href={`${galleryBasePath}/${asset.id}`}
                   onAddToProject={() => setProjectTarget(asset)}
+                  onEdit={() => setEditTarget(asset)}
                   onZoom={() =>
                     viewer.open(asset.publicUrl, {
                       title: asset.title,
@@ -132,6 +135,7 @@ export function GalleryGrid({
       )}
 
       <GalleryDeleteConfirm selection={selection} />
+      <AssetEditDialog asset={editTarget} onClose={() => setEditTarget(null)} />
       <ImageViewer
         src={viewer.src}
         alt={viewer.caption.title ?? t('gallery.title')}
