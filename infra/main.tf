@@ -51,7 +51,6 @@ module "app_secrets_art" {
   source = "./modules/app_secrets"
 
   doppler_project = var.doppler_project
-  environment     = "prod"
   doppler_config  = var.art_doppler_config
   visibility      = "unmasked"
 
