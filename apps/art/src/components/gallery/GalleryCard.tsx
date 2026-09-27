@@ -1,41 +1,45 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { FolderPlus, X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { AssetDto } from '@hatohui/models';
 import { Button } from '@hatohui/ui';
 import { useAssetManagement } from '@/hooks/useAssetUpload';
+import { useGalleryTile } from '@/hooks/useGalleryTile';
 
 export function GalleryCard({
   asset,
   isAdmin,
-  onClick,
+  href,
   onAddToProject,
 }: {
   asset: AssetDto;
   isAdmin: boolean;
-  onClick: () => void;
+  href: string;
   onAddToProject: () => void;
 }) {
   const { t } = useTranslation('art');
   const { remove, isDeleting } = useAssetManagement();
+  const { tileStyle, frameStyle, sizes } = useGalleryTile(asset);
 
   return (
-    <div className="group relative aspect-square overflow-hidden rounded-lg bg-card">
-      <button
-        type="button"
-        onClick={onClick}
-        className="block h-full w-full cursor-pointer"
-      >
+    <div
+      data-reveal
+      style={tileStyle}
+      className="group relative overflow-hidden rounded-lg bg-card"
+    >
+      <div style={frameStyle} />
+      <Link href={href} className="absolute inset-0">
         <Image
           src={asset.thumbnailUrl ?? asset.publicUrl}
           alt={asset.filename}
           fill
-          sizes="(max-width: 768px) 50vw, 25vw"
+          sizes={sizes}
           className="object-cover transition-transform group-hover:scale-105"
         />
-      </button>
+      </Link>
       {isAdmin && (
         <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
           <Button

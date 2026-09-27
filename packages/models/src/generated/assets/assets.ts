@@ -255,7 +255,119 @@ export const useCreateAsset = <TError = unknown,
       > => {
       return useMutation(getCreateAssetMutationOptions(options), queryClient);
     }
-    export type updateAssetResponse200 = {
+    export type assetResponse200 = {
+  data: AssetDto
+  status: 200
+}
+
+export type assetResponseSuccess = (assetResponse200) & {
+  headers: Headers;
+};
+;
+
+export type assetResponse = (assetResponseSuccess)
+
+export const getAssetUrl = (id: string,) => {
+
+
+
+
+  return `/assets/${id}`
+}
+
+/**
+ * @summary Get a gallery asset
+ */
+export const asset = async (id: string, options?: RequestInit): Promise<assetResponse> => {
+
+  return customFetch<assetResponse>(getAssetUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAssetQueryKey = (id: string,) => {
+    return [
+    `/assets/${id}`
+    ] as const;
+    }
+
+
+export const getAssetQueryOptions = <TData = Awaited<ReturnType<typeof asset>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof asset>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAssetQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof asset>>> = ({ signal }) => asset(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof asset>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AssetQueryResult = NonNullable<Awaited<ReturnType<typeof asset>>>
+export type AssetQueryError = unknown
+
+
+export function useAsset<TData = Awaited<ReturnType<typeof asset>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof asset>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof asset>>,
+          TError,
+          Awaited<ReturnType<typeof asset>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAsset<TData = Awaited<ReturnType<typeof asset>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof asset>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof asset>>,
+          TError,
+          Awaited<ReturnType<typeof asset>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAsset<TData = Awaited<ReturnType<typeof asset>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof asset>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get a gallery asset
+ */
+
+export function useAsset<TData = Awaited<ReturnType<typeof asset>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof asset>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getAssetQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type updateAssetResponse200 = {
   data: AssetDto
   status: 200
 }

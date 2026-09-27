@@ -83,8 +83,9 @@
       "deleteConfirm": "この画像を削除しますか？",
       "editTags": "タグを編集"
     },
-    "lightbox": {
-      "close": "閉じる",
+    "detail": {
+      "back": "ギャラリーに戻る",
+      "openOriginal": "元画像を開く",
       "filename": "ファイル名",
       "dimensions": "サイズ",
       "size": "容量",

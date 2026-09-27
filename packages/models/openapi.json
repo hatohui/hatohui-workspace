@@ -1969,6 +1969,35 @@
       }
     },
     "/assets/{id}": {
+      "get": {
+        "operationId": "asset",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a gallery asset",
+        "tags": [
+          "assets"
+        ]
+      },
       "patch": {
         "operationId": "updateAsset",
         "parameters": [
