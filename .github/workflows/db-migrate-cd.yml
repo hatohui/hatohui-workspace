@@ -6,6 +6,8 @@ on:
     paths:
       - "apps/api/prisma/schema.prisma"
       - "apps/api/prisma/migrations/**"
+      - "apps/api/prisma/seed.ts"
+      - "apps/api/prisma/seeds/core/**"
       - ".github/workflows/db-migrate-cd.yml"
 
 permissions:
@@ -29,3 +31,16 @@ jobs:
         run: bunx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.MIGRATION_DB_URL }}
+
+      - name: Generate Prisma client
+        working-directory: apps/api
+        run: bunx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.MIGRATION_DB_URL }}
+
+      - name: Seed core data
+        working-directory: apps/api
+        run: bunx prisma db seed
+        env:
+          DATABASE_URL: ${{ secrets.MIGRATION_DB_URL }}
+          NODE_ENV: production
