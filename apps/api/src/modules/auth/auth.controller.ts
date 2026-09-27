@@ -48,7 +48,15 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @ApiOperation({ operationId: 'me', summary: 'Get the current session user' })
   @ApiOkResponse({ type: UserDto })
-  me(@CurrentUser() user: User): Promise<UserDto> {
+  me(
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<UserDto> {
+    response.cookie(
+      SESSION_COOKIE_NAME,
+      this.session.sign(user.id),
+      this.session.cookieOptions(),
+    );
     return this.authService.toUserDto(user);
   }
 

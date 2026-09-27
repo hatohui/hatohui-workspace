@@ -1,6 +1,11 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { useLoginWithGoogle, useLogout, useMe } from '@hatohui/models';
+import {
+  ApiError,
+  useLoginWithGoogle,
+  useLogout,
+  useMe,
+} from '@hatohui/models';
 import type { UserDto } from '@hatohui/models';
 
 interface AuthContextValue {
@@ -27,7 +32,10 @@ export function AuthProvider({
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      user: meQuery.data?.data ?? null,
+      user:
+        meQuery.error instanceof ApiError && meQuery.error.status === 401
+          ? null
+          : (meQuery.data?.data ?? null),
       isLoading: meQuery.isPending,
       isLoggingIn: loginMutation.isPending,
       loginWithGoogle: async (code: string) => {
@@ -44,6 +52,7 @@ export function AuthProvider({
     }),
     [
       meQuery.data,
+      meQuery.error,
       meQuery.isPending,
       meQuery.refetch,
       loginMutation,
