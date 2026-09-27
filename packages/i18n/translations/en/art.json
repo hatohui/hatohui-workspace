@@ -140,7 +140,15 @@
       "confirmDescription": "They will be removed from your gallery and any projects they appear in. This can't be undone.",
       "deleted_one": "Deleted {{count}} piece",
       "deleted_other": "Deleted {{count}} pieces",
-      "deleteFailed": "Couldn't delete the selected pieces. Nothing was removed."
+      "deleteFailed": "Couldn't delete the selected pieces. Nothing was removed.",
+      "addTags": "Add tags",
+      "addTagsTitle_one": "Add tags to {{count}} piece",
+      "addTagsTitle_other": "Add tags to {{count}} pieces",
+      "addTagsHint": "Pieces that already have a tag keep just one copy.",
+      "applyTags": "Add tags",
+      "tagged_one": "Added {{tags}} to {{count}} piece",
+      "tagged_other": "Added {{tags}} to {{count}} pieces",
+      "tagFailed": "Couldn't add the tags. Nothing was changed."
     }
   },
   "queue": {

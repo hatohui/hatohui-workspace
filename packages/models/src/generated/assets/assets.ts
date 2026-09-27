@@ -29,6 +29,8 @@ import type {
   AssetsParams,
   BulkDeleteAssetsDto,
   BulkDeleteAssetsResultDto,
+  BulkTagAssetsDto,
+  BulkTagAssetsResultDto,
   CreateAssetDto,
   PaginatedAssetsDto,
   TagSuggestionDto,
@@ -728,4 +730,86 @@ export const useBulkDeleteAssets = <TError = unknown,
         TContext
       > => {
       return useMutation(getBulkDeleteAssetsMutationOptions(options), queryClient);
+    }
+    export type bulkTagAssetsResponse200 = {
+  data: BulkTagAssetsResultDto
+  status: 200
+}
+
+export type bulkTagAssetsResponseSuccess = (bulkTagAssetsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkTagAssetsResponse = (bulkTagAssetsResponseSuccess)
+
+export const getBulkTagAssetsUrl = () => {
+
+
+
+
+  return `/assets/bulk-tag`
+}
+
+/**
+ * @summary Add tags to several assets; tags already on an asset are skipped
+ */
+export const bulkTagAssets = async (bulkTagAssetsDto: BulkTagAssetsDto, options?: RequestInit): Promise<bulkTagAssetsResponse> => {
+
+  return customFetch<bulkTagAssetsResponse>(getBulkTagAssetsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(bulkTagAssetsDto)
+  }
+);}
+
+
+
+
+
+export const getBulkTagAssetsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkTagAssets>>, TError,{data: BulkTagAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkTagAssets>>, TError,{data: BulkTagAssetsDto}, TContext> => {
+
+const mutationKey = ['bulkTagAssets'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkTagAssets>>, {data: BulkTagAssetsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkTagAssets(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkTagAssetsMutationResult = NonNullable<Awaited<ReturnType<typeof bulkTagAssets>>>
+    export type BulkTagAssetsMutationBody = BulkTagAssetsDto
+    export type BulkTagAssetsMutationError = unknown
+
+    /**
+ * @summary Add tags to several assets; tags already on an asset are skipped
+ */
+export const useBulkTagAssets = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkTagAssets>>, TError,{data: BulkTagAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkTagAssets>>,
+        TError,
+        {data: BulkTagAssetsDto},
+        TContext
+      > => {
+      return useMutation(getBulkTagAssetsMutationOptions(options), queryClient);
     }

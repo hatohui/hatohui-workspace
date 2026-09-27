@@ -45,6 +45,8 @@ export * from './birthdaysByMonthDto';
 export * from './birthdaysByMonthParams';
 export * from './bulkDeleteAssetsDto';
 export * from './bulkDeleteAssetsResultDto';
+export * from './bulkTagAssetsDto';
+export * from './bulkTagAssetsResultDto';
 export * from './clearNotificationsDto';
 export * from './clientAccountDto';
 export * from './clientCommissionSummaryDto';

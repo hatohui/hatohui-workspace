@@ -49,6 +49,7 @@ export function useGallerySelection(items: AssetDto[]) {
     },
     isSelected: (id: string) => pickedIds.has(id),
     toggle,
+    selectedIds,
     count: selectedIds.length,
     allSelected: items.length > 0 && selectedIds.length === items.length,
     selectAll: () => setPickedIds(new Set(items.map((asset) => asset.id))),

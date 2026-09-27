@@ -2171,6 +2171,38 @@
         ]
       }
     },
+    "/assets/bulk-tag": {
+      "post": {
+        "operationId": "bulkTagAssets",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkTagAssetsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkTagAssetsResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add tags to several assets; tags already on an asset are skipped",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
     "/commissions": {
       "post": {
         "operationId": "submitCommission",
@@ -6574,6 +6606,55 @@
         },
         "required": [
           "deletedIds"
+        ]
+      },
+      "BulkTagAssetsDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "example": [
+              "clx1234567890",
+              "clx0987654321"
+            ],
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "example": [
+              "Full Body",
+              "wip"
+            ],
+            "description": "Tags to add; matched case-insensitively and never added twice to the same asset",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids",
+          "tags"
+        ]
+      },
+      "BulkTagAssetsResultDto": {
+        "type": "object",
+        "properties": {
+          "updatedIds": {
+            "example": [
+              "clx1234567890"
+            ],
+            "description": "Ids that were tagged; ids that no longer exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "updatedIds"
         ]
       },
       "UpdateAssetDto": {

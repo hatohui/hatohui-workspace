@@ -134,7 +134,13 @@
       "confirmTitle_other": "{{count}} 件の作品を削除しますか？",
       "confirmDescription": "ギャラリーと、掲載されているプロジェクトから削除されます。この操作は取り消せません。",
       "deleted_other": "{{count}} 件の作品を削除しました",
-      "deleteFailed": "選択した作品を削除できませんでした。何も削除されていません。"
+      "deleteFailed": "選択した作品を削除できませんでした。何も削除されていません。",
+      "addTags": "タグを追加",
+      "addTagsTitle_other": "{{count}} 件にタグを追加",
+      "addTagsHint": "すでに付いているタグは重複しません。",
+      "applyTags": "タグを追加",
+      "tagged_other": "{{count}} 件に {{tags}} を追加しました",
+      "tagFailed": "タグを追加できませんでした。変更はありません。"
     }
   },
   "queue": {

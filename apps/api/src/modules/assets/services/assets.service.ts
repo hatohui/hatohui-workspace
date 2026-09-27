@@ -21,6 +21,7 @@ import {
 } from '@/modules/assets/dto/asset.dto';
 import { TagSuggestionDto } from '@/modules/assets/dto/tag-suggestion.dto';
 import { BulkDeleteAssetsResultDto } from '@/modules/assets/dto/bulk-delete-assets.dto';
+import { BulkTagAssetsResultDto } from '@/modules/assets/dto/bulk-tag-assets.dto';
 
 const SORT_ORDER_BY: Record<
   AssetSortOption,
@@ -248,16 +249,57 @@ export class AssetsService {
   }
 
   private async resolveTagIds(names: string[]): Promise<string[]> {
-    const tags = await Promise.all(
-      names.map((name) =>
-        this.db.tag.upsert({
-          where: { name },
-          create: { name },
-          update: {},
-        }),
-      ),
+    const unique = [
+      ...new Map(
+        names
+          .map((name) => name.trim())
+          .filter(Boolean)
+          .map((name) => [name.toLowerCase(), name]),
+      ).values(),
+    ];
+    if (unique.length === 0) return [];
+
+    const existing = await this.db.tag.findMany({
+      where: {
+        OR: unique.map((name) => ({
+          name: { equals: name, mode: 'insensitive' as const },
+        })),
+      },
+    });
+    const idByName = new Map(
+      existing.map((tag) => [tag.name.toLowerCase(), tag.id]),
     );
-    return tags.map((tag) => tag.id);
+    const created = await Promise.all(
+      unique
+        .filter((name) => !idByName.has(name.toLowerCase()))
+        .map((name) =>
+          this.db.tag.upsert({ where: { name }, create: { name }, update: {} }),
+        ),
+    );
+    created.forEach((tag) => idByName.set(tag.name.toLowerCase(), tag.id));
+    return unique.map((name) => idByName.get(name.toLowerCase()) as string);
+  }
+
+  async addTagsToMany(
+    ids: string[],
+    tags: string[],
+    actor: User,
+  ): Promise<BulkTagAssetsResultDto> {
+    const existing = await this.db.asset.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, uploadedById: true },
+    });
+    if (existing.some((asset) => asset.uploadedById !== actor.id)) {
+      await this.assertAdmin(actor);
+    }
+    const tagIds = await this.resolveTagIds(tags);
+    await this.db.assetTag.createMany({
+      data: existing.flatMap((asset) =>
+        tagIds.map((tagId) => ({ assetId: asset.id, tagId })),
+      ),
+      skipDuplicates: true,
+    });
+    return { updatedIds: existing.map((asset) => asset.id) };
   }
 
   async remove(id: string, actor: User): Promise<void> {

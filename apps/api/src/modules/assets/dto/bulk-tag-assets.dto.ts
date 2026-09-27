@@ -4,11 +4,12 @@ import {
   ArrayMinSize,
   ArrayUnique,
   IsArray,
+  IsNotEmpty,
   IsString,
 } from 'class-validator';
 import { ASSET_BULK_MAX } from '@/modules/assets/assets.constants';
 
-export class BulkDeleteAssetsDto {
+export class BulkTagAssetsDto {
   @ApiProperty({
     example: ['clx1234567890', 'clx0987654321'],
     type: [String],
@@ -20,13 +21,25 @@ export class BulkDeleteAssetsDto {
   @ArrayUnique()
   @IsString({ each: true })
   ids: string[];
+
+  @ApiProperty({
+    example: ['Full Body', 'wip'],
+    type: [String],
+    description:
+      'Tags to add; matched case-insensitively and never added twice to the same asset',
+  })
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  tags: string[];
 }
 
-export class BulkDeleteAssetsResultDto {
+export class BulkTagAssetsResultDto {
   @ApiProperty({
     example: ['clx1234567890'],
     type: [String],
-    description: 'Ids that were deleted; ids that no longer exist are skipped',
+    description: 'Ids that were tagged; ids that no longer exist are skipped',
   })
-  deletedIds: string[];
+  updatedIds: string[];
 }

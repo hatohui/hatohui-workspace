@@ -4,6 +4,7 @@ import { Trash2 } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Spinner } from '@hatohui/ui';
 import type { GallerySelection } from '@/hooks/useGallerySelection';
+import { GalleryBulkTagPopover } from './GalleryBulkTagPopover';
 
 export function GallerySelectionBar({
   selection,
@@ -27,6 +28,7 @@ export function GallerySelectionBar({
           ? t('gallery.selection.clear')
           : t('gallery.selection.selectAll')}
       </Button>
+      <GalleryBulkTagPopover selectedIds={selection.selectedIds} />
       <Button
         type="button"
         variant="destructive"

@@ -130,7 +130,13 @@
       "confirmTitle_other": "删除 {{count}} 件作品？",
       "confirmDescription": "这些作品将从图库及其所在的项目中移除，且无法撤销。",
       "deleted_other": "已删除 {{count}} 件作品",
-      "deleteFailed": "无法删除所选作品，未删除任何内容。"
+      "deleteFailed": "无法删除所选作品，未删除任何内容。",
+      "addTags": "添加标签",
+      "addTagsTitle_other": "为 {{count}} 件作品添加标签",
+      "addTagsHint": "已有的标签不会重复添加。",
+      "applyTags": "添加标签",
+      "tagged_other": "已为 {{count}} 件作品添加 {{tags}}",
+      "tagFailed": "无法添加标签，未做任何更改。"
     }
   },
   "queue": {

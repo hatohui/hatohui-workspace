@@ -133,7 +133,13 @@
       "confirmTitle_other": "Xóa {{count}} tác phẩm?",
       "confirmDescription": "Các tác phẩm sẽ bị xóa khỏi thư viện và mọi dự án chứa chúng. Không thể hoàn tác.",
       "deleted_other": "Đã xóa {{count}} tác phẩm",
-      "deleteFailed": "Không thể xóa các tác phẩm đã chọn. Chưa có gì bị xóa."
+      "deleteFailed": "Không thể xóa các tác phẩm đã chọn. Chưa có gì bị xóa.",
+      "addTags": "Thêm thẻ",
+      "addTagsTitle_other": "Thêm thẻ cho {{count}} tác phẩm",
+      "addTagsHint": "Tác phẩm đã có thẻ sẽ không bị trùng.",
+      "applyTags": "Thêm thẻ",
+      "tagged_other": "Đã thêm {{tags}} cho {{count}} tác phẩm",
+      "tagFailed": "Không thể thêm thẻ. Không có gì thay đổi."
     }
   },
   "queue": {
