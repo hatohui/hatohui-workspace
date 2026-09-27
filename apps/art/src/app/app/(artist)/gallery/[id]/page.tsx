@@ -12,5 +12,11 @@ export default async function ArtworkPage({
   const user = await requireArtist();
   const artwork = await loadArtwork(id, user.id);
 
-  return <ArtworkDetail asset={artwork} backHref={WORKSPACE_GALLERY_ROUTE} />;
+  return (
+    <ArtworkDetail
+      asset={artwork}
+      backHref={WORKSPACE_GALLERY_ROUTE}
+      editable
+    />
+  );
 }

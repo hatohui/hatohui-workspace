@@ -21,6 +21,8 @@ import { GallerySectionTabs, type GallerySection } from './GallerySectionTabs';
 import { ProjectsSection } from '@/components/projects/ProjectsSection';
 import { AddToProjectDialog } from '@/components/projects/AddToProjectDialog';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
+import { useImageViewer } from '@/hooks/useImageViewer';
+import { ImageViewer } from '@/components/shared/ImageViewer';
 import { GALLERY_ROW_HEIGHT_CLASS } from '@/constants/gallery';
 
 export function GalleryGrid({
@@ -38,6 +40,7 @@ export function GalleryGrid({
   const { user } = useAuth();
   const gallery = useGalleryAssets(artistId, initialData);
   const selection = useGallerySelection(gallery.items);
+  const viewer = useImageViewer();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [projectTarget, setProjectTarget] = useState<AssetDto | null>(null);
   const [section, setSection] = useState<GallerySection>('assets');
@@ -97,6 +100,12 @@ export function GalleryGrid({
                   isAdmin={isOwner}
                   href={`${galleryBasePath}/${asset.id}`}
                   onAddToProject={() => setProjectTarget(asset)}
+                  onZoom={() =>
+                    viewer.open(asset.publicUrl, {
+                      title: asset.title,
+                      description: asset.description,
+                    })
+                  }
                   selection={
                     selection.isSelecting
                       ? {
@@ -123,6 +132,12 @@ export function GalleryGrid({
       )}
 
       <GalleryDeleteConfirm selection={selection} />
+      <ImageViewer
+        src={viewer.src}
+        alt={viewer.caption.title ?? t('gallery.title')}
+        caption={viewer.caption}
+        onClose={viewer.close}
+      />
       <UploadDialog open={isUploadOpen} onOpenChange={setIsUploadOpen} />
       <AddToProjectDialog
         asset={projectTarget}

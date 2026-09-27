@@ -6,9 +6,14 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  MaxLength,
   Min,
 } from 'class-validator';
 import { AssetSource, AssetThumbnailStatus } from '@prisma/client';
+import {
+  ASSET_DESCRIPTION_MAX_LENGTH,
+  ASSET_TITLE_MAX_LENGTH,
+} from '@/modules/assets/assets.constants';
 
 export class AssetDto {
   @ApiProperty({ example: 'clx1234567890' })
@@ -40,6 +45,16 @@ export class AssetDto {
 
   @ApiProperty({ example: 'character-sketch.png' })
   filename: string;
+
+  @ApiProperty({ example: 'Mira at the café', nullable: true, type: String })
+  title: string | null;
+
+  @ApiProperty({
+    example: 'Commission for Mira, warm evening palette.',
+    nullable: true,
+    type: String,
+  })
+  description: string | null;
 
   @ApiProperty({ example: 'image/png' })
   contentType: string;
@@ -136,14 +151,46 @@ export class CreateAssetDto {
   @IsArray()
   @IsString({ each: true })
   tags?: string[];
+
+  @ApiProperty({ example: 'Mira at the café', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(ASSET_TITLE_MAX_LENGTH)
+  title?: string;
+
+  @ApiProperty({
+    example: 'Commission for Mira, warm evening palette.',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(ASSET_DESCRIPTION_MAX_LENGTH)
+  description?: string;
 }
 
 export class UpdateAssetDto {
   @ApiProperty({
     example: ['references', 'character'],
     type: [String],
+    required: false,
   })
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  tags: string[];
+  tags?: string[];
+
+  @ApiProperty({ example: 'Mira at the café', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(ASSET_TITLE_MAX_LENGTH)
+  title?: string;
+
+  @ApiProperty({
+    example: 'Commission for Mira, warm evening palette.',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(ASSET_DESCRIPTION_MAX_LENGTH)
+  description?: string;
 }

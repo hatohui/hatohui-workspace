@@ -9,8 +9,8 @@ export function ConfirmedIdentityCard({
   identity,
   onUndo,
 }: {
-  identity: CommissionIdentityDto;
-  onUndo: () => void;
+  identity: Pick<CommissionIdentityDto, 'displayName' | 'handle' | 'avatarUrl'>;
+  onUndo?: () => void;
 }) {
   const { t } = useTranslation('art');
 
@@ -36,15 +36,17 @@ export function ConfirmedIdentityCard({
           </p>
         )}
       </div>
-      <Button
-        type="button"
-        variant="link"
-        size="sm"
-        className="h-auto shrink-0 p-0"
-        onClick={onUndo}
-      >
-        {t('commission.form.identityUndo')}
-      </Button>
+      {onUndo && (
+        <Button
+          type="button"
+          variant="link"
+          size="sm"
+          className="h-auto shrink-0 p-0"
+          onClick={onUndo}
+        >
+          {t('commission.form.identityUndo')}
+        </Button>
+      )}
     </div>
   );
 }

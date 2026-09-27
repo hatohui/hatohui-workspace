@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import {
+  useMyCommissionIdentity,
   useSubmitCommission,
   type CommissionIdentityDto,
 } from '@hatohui/models';
@@ -129,6 +130,10 @@ export function useCommissionForm(artistId: string) {
   }, [state, isSubmitted]);
 
   const { user, isLoading: isAuthLoading } = useAuth();
+  const { data: mine } = useMyCommissionIdentity({
+    query: { enabled: Boolean(user) },
+  });
+  const myIdentity = mine?.data.identity ?? null;
   const submitCommission = useSubmitCommission();
   const { uploadImage, isUploading } = useImageUpload();
   const pricing = useCommissionPricingEstimate(
@@ -247,7 +252,13 @@ export function useCommissionForm(artistId: string) {
     reset,
     isSubmitting: submitCommission.isPending || isUploading,
     isSubmitted,
-    signedInName: user?.name ?? null,
+    signedInIdentity: user
+      ? {
+          displayName: myIdentity?.displayName ?? user.name,
+          handle: myIdentity?.handle ?? null,
+          avatarUrl: myIdentity?.avatarUrl ?? user.avatarUrl,
+        }
+      : null,
     isSignedIn: Boolean(user),
     needsIdentity,
     suggestedIdentity,

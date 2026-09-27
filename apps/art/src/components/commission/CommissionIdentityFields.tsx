@@ -1,6 +1,5 @@
 'use client';
 
-import { UserCircle } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { Input, Label } from '@hatohui/ui';
 import type { useCommissionForm } from '@/hooks/useCommissionForm';
@@ -20,13 +19,8 @@ export function CommissionIdentityFields({
   const nameError = validation.errorFor('clientName');
   const matched = form.state.matchedIdentity;
 
-  if (form.signedInName) {
-    return (
-      <p className="flex items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm">
-        <UserCircle className="size-4 shrink-0 text-muted-foreground" />
-        {t('commission.form.submittingAs', { name: form.signedInName })}
-      </p>
-    );
+  if (form.signedInIdentity) {
+    return <ConfirmedIdentityCard identity={form.signedInIdentity} />;
   }
 
   if (!form.needsIdentity) return null;

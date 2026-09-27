@@ -6,25 +6,29 @@ import type { AssetDto } from '@hatohui/models';
 import { useGalleryTile } from '@/hooks/useGalleryTile';
 import { GalleryCardActions } from './GalleryCardActions';
 import { GalleryCardSelectToggle } from './GalleryCardSelectToggle';
+import { GalleryCardZoomButton } from './GalleryCardZoomButton';
+import { AssetHoverDetails } from '@/components/shared/AssetHoverDetails';
 
 export function GalleryCard({
   asset,
   isAdmin,
   href,
   onAddToProject,
+  onZoom,
   selection,
 }: {
   asset: AssetDto;
   isAdmin: boolean;
   href: string;
   onAddToProject: () => void;
+  onZoom: () => void;
   selection?: { selected: boolean; onToggle: () => void };
 }) {
   const { tileStyle, frameStyle, sizes } = useGalleryTile(asset);
   const image = (
     <Image
       src={asset.thumbnailUrl ?? asset.publicUrl}
-      alt={asset.filename}
+      alt={asset.title ?? asset.filename}
       fill
       sizes={sizes}
       className="object-cover transition-transform group-hover:scale-105"
@@ -52,6 +56,8 @@ export function GalleryCard({
           {image}
         </Link>
       )}
+      {!selection && <AssetHoverDetails asset={asset} />}
+      {!selection && <GalleryCardZoomButton onZoom={onZoom} />}
       {isAdmin && !selection && (
         <GalleryCardActions
           assetId={asset.id}

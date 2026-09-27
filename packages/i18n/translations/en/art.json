@@ -153,7 +153,19 @@
     "loadingMore": "Loading more…",
     "searchTagCount_one": "{{count}} piece",
     "searchTagCount_other": "{{count}} pieces",
-    "clearTagFilter": "Stop filtering by {{tag}}"
+    "clearTagFilter": "Stop filtering by {{tag}}",
+    "details": {
+      "titleLabel": "Title",
+      "titlePlaceholder": "Untitled",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Anything worth knowing about this piece.",
+      "editTrigger": "Title and description for {{name}}",
+      "save": "Save",
+      "saving": "Saving...",
+      "discard": "Discard",
+      "saveFailed": "Couldn't save. Try again."
+    },
+    "viewLarge": "View full size"
   },
   "queue": {
     "title": "Queue",
@@ -198,14 +210,13 @@
       "deadlineHint": "Leave empty if there's no deadline.",
       "clientNameLabel": "Your name",
       "clientEmailLabel": "Your email",
-      "submittingAs": "Submitting as {{name}}.",
       "attachmentsLabel": "Reference images",
       "hideFromQueueLabel": "Hide this commission from the public queue",
       "hideFromQueueTooltip": "The public queue only shows this commission's type and progress. Your name, contact details, idea and references are never shown.",
       "acceptTerms": "I've read and accept the <link>terms of service</link>",
       "submit": "Submit request",
       "submitting": "Submitting...",
-      "invalidEmail": "Enter a full email address, e.g. name@example.com",
+      "invalidEmail": "Invalid email address.",
       "hints": {
         "name": "What I'll call you.",
         "email": "For your order link and updates.",
@@ -809,5 +820,12 @@
         }
       }
     }
+  },
+  "imageViewer": {
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "reset": "Reset zoom",
+    "close": "Close",
+    "toggleCaption": "Show or hide details"
   }
 }

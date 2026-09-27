@@ -625,7 +625,7 @@ export const getUpdateAssetUrl = (id: string,) => {
 }
 
 /**
- * @summary Update an asset's tags
+ * @summary Update an asset's tags, title or description
  */
 export const updateAsset = async (id: string,
     updateAssetDto: UpdateAssetDto, options?: RequestInit): Promise<updateAssetResponse> => {
@@ -675,7 +675,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateAssetMutationError = unknown
 
     /**
- * @summary Update an asset's tags
+ * @summary Update an asset's tags, title or description
  */
 export const useUpdateAsset = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAsset>>, TError,{id: string;data: UpdateAssetDto}, TContext>, request?: SecondParameter<typeof customFetch>}

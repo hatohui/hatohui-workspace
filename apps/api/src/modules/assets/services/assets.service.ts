@@ -255,6 +255,8 @@ export class AssetsService {
         key: dto.key ?? null,
         publicUrl,
         filename: dto.filename ?? fallbackFilename(publicUrl),
+        title: blankToNull(dto.title),
+        description: blankToNull(dto.description),
         contentType: dto.contentType ?? 'application/octet-stream',
         size: dto.size ?? 0,
         width: dto.width ?? null,
@@ -294,16 +296,22 @@ export class AssetsService {
   ): Promise<AssetDto> {
     const existing = await this.findOrThrow(id);
     await this.assertOwnerOrAdmin(existing, actor);
-    const tagIds = await this.resolveTagIds(dto.tags);
+    const tagIds = dto.tags && (await this.resolveTagIds(dto.tags));
     // Explicit join rows don't support the implicit relation's `set` — clear
     // this asset's tags and recreate them, same net effect.
     const asset = await this.db.asset.update({
       where: { id },
       data: {
-        tags: {
-          deleteMany: {},
-          create: tagIds.map((tagId) => ({ tagId })),
-        },
+        ...(tagIds && {
+          tags: {
+            deleteMany: {},
+            create: tagIds.map((tagId) => ({ tagId })),
+          },
+        }),
+        ...(dto.title !== undefined && { title: blankToNull(dto.title) }),
+        ...(dto.description !== undefined && {
+          description: blankToNull(dto.description),
+        }),
       },
       include: assetInclude,
     });
@@ -427,6 +435,10 @@ export class AssetsService {
   }
 }
 
+function blankToNull(value: string | undefined): string | null {
+  return value?.trim() || null;
+}
+
 function fallbackFilename(publicUrl: string): string {
   return publicUrl.split('/').pop() || publicUrl;
 }
@@ -445,6 +457,8 @@ function toAssetDto(
     thumbnailUrl: asset.thumbnailUrl,
     thumbnailStatus: asset.thumbnailStatus,
     filename: asset.filename,
+    title: asset.title,
+    description: asset.description,
     contentType: asset.contentType,
     size: asset.size,
     width: asset.width,

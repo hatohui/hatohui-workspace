@@ -143,7 +143,19 @@
     },
     "loadingMore": "Đang tải thêm…",
     "searchTagCount_other": "{{count}} tác phẩm",
-    "clearTagFilter": "Bỏ lọc theo {{tag}}"
+    "clearTagFilter": "Bỏ lọc theo {{tag}}",
+    "details": {
+      "titleLabel": "Tiêu đề",
+      "titlePlaceholder": "Chưa đặt tên",
+      "descriptionLabel": "Mô tả",
+      "descriptionPlaceholder": "Điều gì đáng biết về tác phẩm này.",
+      "editTrigger": "Tiêu đề và mô tả cho {{name}}",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "discard": "Hủy thay đổi",
+      "saveFailed": "Không lưu được. Hãy thử lại."
+    },
+    "viewLarge": "Xem kích thước đầy đủ"
   },
   "queue": {
     "title": "Hàng đợi",
@@ -188,14 +200,13 @@
       "deadlineHint": "Để trống nếu bạn không có thời hạn.",
       "clientNameLabel": "Tên của bạn",
       "clientEmailLabel": "Email của bạn",
-      "submittingAs": "Gửi với tư cách {{name}}.",
       "attachmentsLabel": "Ảnh tham khảo",
       "hideFromQueueLabel": "Ẩn đơn này khỏi hàng đợi công khai",
       "hideFromQueueTooltip": "Hàng đợi công khai chỉ hiển thị loại tranh và tiến độ của đơn này. Tên, thông tin liên hệ, ý tưởng và tài liệu tham khảo của bạn không bao giờ được hiển thị.",
       "acceptTerms": "Tôi đã đọc và đồng ý với <link>điều khoản dịch vụ</link>",
       "submit": "Gửi yêu cầu",
       "submitting": "Đang gửi...",
-      "invalidEmail": "Nhập địa chỉ email đầy đủ, ví dụ name@example.com",
+      "invalidEmail": "Địa chỉ email không hợp lệ.",
       "hints": {
         "name": "Tên mình sẽ dùng để gọi bạn.",
         "email": "Dùng để gửi đường dẫn đơn và cập nhật.",
@@ -796,5 +807,12 @@
         }
       }
     }
+  },
+  "imageViewer": {
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ",
+    "reset": "Đặt lại thu phóng",
+    "close": "Đóng",
+    "toggleCaption": "Hiện hoặc ẩn chi tiết"
   }
 }

@@ -144,7 +144,19 @@
     },
     "loadingMore": "読み込み中…",
     "searchTagCount_other": "{{count}} 件",
-    "clearTagFilter": "{{tag}} での絞り込みを解除"
+    "clearTagFilter": "{{tag}} での絞り込みを解除",
+    "details": {
+      "titleLabel": "タイトル",
+      "titlePlaceholder": "無題",
+      "descriptionLabel": "説明",
+      "descriptionPlaceholder": "この作品について伝えたいこと。",
+      "editTrigger": "{{name}} のタイトルと説明",
+      "save": "保存",
+      "saving": "保存中...",
+      "discard": "破棄",
+      "saveFailed": "保存できませんでした。もう一度お試しください。"
+    },
+    "viewLarge": "大きく表示"
   },
   "queue": {
     "title": "キュー",
@@ -189,14 +201,13 @@
       "deadlineHint": "納期の指定がない場合は空欄のままにしてください。",
       "clientNameLabel": "お名前",
       "clientEmailLabel": "メールアドレス",
-      "submittingAs": "{{name}} として送信します。",
       "attachmentsLabel": "参考画像",
       "hideFromQueueLabel": "この依頼を公開キューに表示しない",
       "hideFromQueueTooltip": "公開キューに表示されるのは、この依頼のタイプと進捗だけです。お名前・連絡先・アイデア・参考資料は公開されません。",
       "acceptTerms": "<link>利用規約</link>を読み、同意します",
       "submit": "依頼を送信",
       "submitting": "送信中...",
-      "invalidEmail": "name@example.com のような完全なメールアドレスを入力してください",
+      "invalidEmail": "メールアドレスが正しくありません。",
       "hints": {
         "name": "お呼びするときのお名前です。",
         "email": "依頼ページのリンクと進捗のお知らせに使います。",
@@ -795,5 +806,12 @@
         }
       }
     }
+  },
+  "imageViewer": {
+    "zoomIn": "拡大",
+    "zoomOut": "縮小",
+    "reset": "ズームをリセット",
+    "close": "閉じる",
+    "toggleCaption": "詳細の表示/非表示"
   }
 }

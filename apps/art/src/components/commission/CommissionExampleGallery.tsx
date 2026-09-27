@@ -58,6 +58,7 @@ export function CommissionExampleGallery({
       <ImageViewer
         src={gallery.viewer.src}
         alt={gallery.title}
+        caption={gallery.viewer.caption}
         onClose={gallery.viewer.close}
       />
     </div>

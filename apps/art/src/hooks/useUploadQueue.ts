@@ -10,7 +10,12 @@ import {
 
 export type UploadItemStatus = 'pending' | 'uploading' | 'done' | 'failed';
 
-export interface UploadItem {
+export interface AssetDetails {
+  title: string;
+  description: string;
+}
+
+export interface UploadItem extends AssetDetails {
   id: string;
   file: File;
   tags: string[];
@@ -27,6 +32,8 @@ const toItem = (file: File): UploadItem => ({
   id: crypto.randomUUID(),
   file,
   tags: [],
+  title: '',
+  description: '',
   status: 'pending',
   progress: 0,
 });
@@ -95,6 +102,7 @@ export function useUploadQueue() {
     remove: (id: string) =>
       setItems((previous) => previous.filter((item) => item.id !== id)),
     setItemTags: (id: string, tags: string[]) => patch(id, { tags }),
+    setItemDetails: (id: string, details: AssetDetails) => patch(id, details),
     clearDone: () =>
       setItems((previous) => previous.filter((item) => item.status !== 'done')),
     reset: () => {
