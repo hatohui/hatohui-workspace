@@ -169,6 +169,17 @@ export class CommissionDto {
   @ApiProperty({ nullable: true })
   contactHandle: string | null;
 
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description:
+      "Contact this commission was placed with: a SocialPlatform name, or 'email'",
+  })
+  contactPlatform: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  contactValue: string | null;
+
   @ApiProperty({ type: [String] })
   referenceAssets: string[];
 
@@ -338,6 +349,44 @@ export class SubmitCommissionDto extends CommissionRequestBaseDto {
   @IsOptional()
   @IsEmail()
   clientEmail?: string;
+
+  @ApiProperty({
+    required: false,
+    example: 'jane',
+    description:
+      'Handle for a new identity when not signed in; suffixed if already taken',
+  })
+  @IsOptional()
+  @IsString()
+  clientHandle?: string;
+
+  @ApiProperty({
+    required: false,
+    description:
+      'Profile the anonymous client confirmed as theirs from matchCommissionIdentity',
+  })
+  @IsOptional()
+  @IsString()
+  matchedProfileId?: string;
+
+  @ApiProperty({
+    required: false,
+    example: 'Discord',
+    description:
+      "Chosen contact point: a SocialPlatform name, or 'email'. Takes precedence over preferredContactMethod",
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  contactPlatform?: string;
+
+  @ApiProperty({
+    required: false,
+    description: "Handle or address on contactPlatform; ignored for 'email'",
+  })
+  @IsOptional()
+  @IsString()
+  contactValue?: string;
 }
 
 export class CreatePrivateCommissionDto extends CommissionRequestBaseDto {

@@ -54,7 +54,7 @@
   "gallery": {
     "title": "ギャラリー",
     "subtitle": "完成作品、参考資料、納品物のコレクションです。",
-    "searchPlaceholder": "ファイル名やタグで検索",
+    "searchPlaceholder": "タグで検索",
     "sort": {
       "newest": "新しい順",
       "oldest": "古い順",
@@ -86,7 +86,6 @@
       "sharedTagsLabel": "すべての画像のタグ",
       "capacity": "{{count}} / {{max}} 枚・1枚あたり最大 {{size}} MB",
       "progress": "アップロード中… {{total}} 枚中 {{done}} 枚完了",
-      "itemTags": "{{name}} のタグ",
       "remove": "{{name}} を削除",
       "retryCount_one": "{{count}} 枚を再試行",
       "retryCount_other": "{{count}} 枚を再試行",
@@ -100,15 +99,16 @@
         "overLimit": "{{name}}：1回のアップロードは最大 {{max}} 枚です",
         "compressFailed": "{{name}} は圧縮後も {{max}} MB を超えています"
       },
-      "compressAndUpload": "圧縮してアップロード",
       "compressing": "圧縮中…",
-      "compressHint": "WebP に変換し、上限に収まるまで必要な分だけ縮小します。",
+      "compressHint": "WebP に変換し、必要な分だけ縮小して追加します。アップロード前にタグを付けられます。",
       "dropzoneMore": "画像を追加",
       "tagGroupCommission": "依頼タイプ",
       "tagGroupOwn": "あなたのタグ",
       "itemTagsInherited": "「すべての画像のタグ」から適用",
       "itemTagsOwn": "この画像のみ",
-      "itemTagsSummary": "{{name}}：{{tags}}"
+      "itemTagsSummary": "{{name}}：{{tags}}",
+      "compressToFit": "圧縮して追加",
+      "itemTags": "{{name}} のタグ"
     },
     "card": {
       "delete": "削除",
@@ -118,7 +118,6 @@
     "detail": {
       "back": "ギャラリーに戻る",
       "openOriginal": "元画像を開く",
-      "filename": "ファイル名",
       "dimensions": "サイズ",
       "size": "容量",
       "uploaded": "アップロード日"
@@ -135,8 +134,17 @@
       "confirmTitle_other": "{{count}} 件の作品を削除しますか？",
       "confirmDescription": "ギャラリーと、掲載されているプロジェクトから削除されます。この操作は取り消せません。",
       "deleted_other": "{{count}} 件の作品を削除しました",
-      "deleteFailed": "選択した作品を削除できませんでした。何も削除されていません。"
-    }
+      "deleteFailed": "選択した作品を削除できませんでした。何も削除されていません。",
+      "addTags": "タグを追加",
+      "addTagsTitle_other": "{{count}} 件にタグを追加",
+      "addTagsHint": "すでに付いているタグは重複しません。",
+      "applyTags": "タグを追加",
+      "tagged_other": "{{count}} 件に {{tags}} を追加しました",
+      "tagFailed": "タグを追加できませんでした。変更はありません。"
+    },
+    "loadingMore": "読み込み中…",
+    "searchTagCount_other": "{{count}} 件",
+    "clearTagFilter": "{{tag}} での絞り込みを解除"
   },
   "queue": {
     "title": "キュー",
@@ -165,7 +173,7 @@
     },
     "form": {
       "title": "コミッション依頼",
-      "subtitle": "ご希望の内容を教えてください。メールでご連絡します。",
+      "subtitle": "作ってほしいものを教えてください。下で選んだ方法でご連絡します。",
       "ideaLabel": "アイデア",
       "commissionTypeLabel": "コミッションタイプ",
       "priceListLabel": "料金表",
@@ -179,9 +187,7 @@
       "deadlineLabel": "希望納期（任意）",
       "clientNameLabel": "お名前",
       "clientEmailLabel": "メールアドレス",
-      "submittingAs": "{{name}} として送信します。返信はアカウントのメールアドレスに届きます。",
-      "preferredContactLabel": "希望連絡方法",
-      "contactHandleLabel": "連絡先アカウント",
+      "submittingAs": "{{name}} として送信します。",
       "attachmentsLabel": "参考画像（任意）",
       "isPublicLabel": "この依頼を公開キューに表示する",
       "isPublicTooltip": "チェックすると、タイプと現在のステータスが公開の /queue ページに表示されます。お名前・メール・連絡先・アイデア・参考画像は常に非公開です。",
@@ -195,7 +201,19 @@
       "clearTitle": "このフォームをクリアしますか？",
       "clearDescription": "入力済みの内容と保存された下書きがすべて削除されます。この操作は元に戻せません。",
       "estimateFrom": "{{price}} 〜",
-      "estimateRange": "{{low}} 〜 {{high}}"
+      "estimateRange": "{{low}} 〜 {{high}}",
+      "clientHandleLabel": "ハンドル（任意）",
+      "clientHandlePlaceholder": "例: luke",
+      "identityMatchTitle": "これはあなたですか？",
+      "identityMatchConfirm": "はい、私です",
+      "identityMatchDecline": "いいえ、違います",
+      "identityConfirmed": "{{name}} として依頼します。",
+      "identityUndo": "違いますか？",
+      "contactLabel": "連絡方法",
+      "contactEmail": "メール",
+      "contactAddNew": "新しい連絡先を追加",
+      "contactPlatformLabel": "プラットフォーム",
+      "contactValueLabel": "ハンドルまたはリンク"
     },
     "preferredContactMethod": {
       "EMAIL": "メール",

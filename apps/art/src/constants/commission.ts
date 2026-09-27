@@ -81,13 +81,13 @@ export const SUPPORTED_CURRENCIES = Object.keys(CURRENCY_NAMES);
 
 export const COMMISSION_SETTINGS_TABS = ['general', 'pricing'] as const;
 
-export const PREFERRED_CONTACT_METHODS = [
-  'EMAIL',
-  'DISCORD',
-  'TELEGRAM',
-  'TWITTER',
-  'OTHER',
-] as const;
+export const EMAIL_CONTACT_PLATFORM = 'email';
+
+export const NEW_CONTACT_OPTION = '__new__';
+
+export const IDENTITY_MATCH_DEBOUNCE_MS = 600;
+
+export const IDENTITY_MATCH_QUERY_KEY = 'commission-identity-match';
 
 export const EMPTY_COMMISSION_IDEA: { type: string; content: never[] } = {
   type: 'doc',

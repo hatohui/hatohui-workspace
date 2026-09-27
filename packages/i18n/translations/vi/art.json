@@ -53,7 +53,7 @@
   },
   "gallery": {
     "title": "Thư viện",
-    "searchPlaceholder": "Tìm theo tên tệp hoặc thẻ",
+    "searchPlaceholder": "Tìm theo thẻ",
     "sort": {
       "newest": "Mới nhất",
       "oldest": "Cũ nhất",
@@ -85,7 +85,6 @@
       "sharedTagsLabel": "Thẻ cho tất cả ảnh",
       "capacity": "{{count}} / {{max}} ảnh · tối đa {{size}} MB mỗi ảnh",
       "progress": "Đang tải lên… xong {{done}}/{{total}}",
-      "itemTags": "Thẻ cho {{name}}",
       "remove": "Xóa {{name}}",
       "retryCount_one": "Thử lại {{count}} ảnh",
       "retryCount_other": "Thử lại {{count}} ảnh",
@@ -99,15 +98,16 @@
         "overLimit": "{{name}}: mỗi lần tải lên tối đa {{max}} ảnh",
         "compressFailed": "{{name}} vẫn vượt {{max}} MB sau khi nén"
       },
-      "compressAndUpload": "Nén và tải lên",
       "compressing": "Đang nén…",
-      "compressHint": "Chuyển sang WebP và chỉ thu nhỏ vừa đủ để nằm trong giới hạn.",
+      "compressHint": "Chuyển sang WebP, chỉ thu nhỏ vừa đủ rồi thêm vào để bạn gắn thẻ trước khi tải lên.",
       "dropzoneMore": "Thêm ảnh",
       "tagGroupCommission": "Loại commission",
       "tagGroupOwn": "Thẻ của bạn",
       "itemTagsInherited": "Áp dụng từ Thẻ cho tất cả ảnh",
       "itemTagsOwn": "Chỉ ảnh này",
-      "itemTagsSummary": "{{name}}: {{tags}}"
+      "itemTagsSummary": "{{name}}: {{tags}}",
+      "compressToFit": "Nén cho vừa",
+      "itemTags": "Thẻ cho {{name}}"
     },
     "card": {
       "delete": "Xóa",
@@ -117,7 +117,6 @@
     "detail": {
       "back": "Quay lại thư viện",
       "openOriginal": "Mở ảnh gốc",
-      "filename": "Tên tệp",
       "dimensions": "Kích thước",
       "size": "Dung lượng",
       "uploaded": "Ngày tải lên"
@@ -134,8 +133,17 @@
       "confirmTitle_other": "Xóa {{count}} tác phẩm?",
       "confirmDescription": "Các tác phẩm sẽ bị xóa khỏi thư viện và mọi dự án chứa chúng. Không thể hoàn tác.",
       "deleted_other": "Đã xóa {{count}} tác phẩm",
-      "deleteFailed": "Không thể xóa các tác phẩm đã chọn. Chưa có gì bị xóa."
-    }
+      "deleteFailed": "Không thể xóa các tác phẩm đã chọn. Chưa có gì bị xóa.",
+      "addTags": "Thêm thẻ",
+      "addTagsTitle_other": "Thêm thẻ cho {{count}} tác phẩm",
+      "addTagsHint": "Tác phẩm đã có thẻ sẽ không bị trùng.",
+      "applyTags": "Thêm thẻ",
+      "tagged_other": "Đã thêm {{tags}} cho {{count}} tác phẩm",
+      "tagFailed": "Không thể thêm thẻ. Không có gì thay đổi."
+    },
+    "loadingMore": "Đang tải thêm…",
+    "searchTagCount_other": "{{count}} tác phẩm",
+    "clearTagFilter": "Bỏ lọc theo {{tag}}"
   },
   "queue": {
     "title": "Hàng đợi",
@@ -164,7 +172,7 @@
     },
     "form": {
       "title": "Đặt vẽ tranh",
-      "subtitle": "Kể cho Hato nghe bạn muốn vẽ gì nhé, Hato sẽ liên hệ lại qua email.",
+      "subtitle": "Hãy cho mình biết bạn muốn vẽ gì. Mình sẽ liên hệ theo cách bạn chọn bên dưới.",
       "ideaLabel": "Ý tưởng của bạn",
       "commissionTypeLabel": "Loại tranh",
       "priceListLabel": "Bảng giá",
@@ -178,9 +186,7 @@
       "deadlineLabel": "Thời hạn (không bắt buộc)",
       "clientNameLabel": "Tên của bạn",
       "clientEmailLabel": "Email của bạn",
-      "submittingAs": "Gửi với tên {{name}}. Phản hồi sẽ được gửi tới email tài khoản của bạn.",
-      "preferredContactLabel": "Phương thức liên hệ ưu tiên",
-      "contactHandleLabel": "Tên tài khoản liên hệ",
+      "submittingAs": "Gửi với tư cách {{name}}.",
       "attachmentsLabel": "Ảnh tham khảo (không bắt buộc)",
       "isPublicLabel": "Hiển thị đơn này trong hàng đợi công khai",
       "isPublicTooltip": "Nếu chọn, loại tranh và trạng thái hiện tại sẽ hiển thị công khai trên trang /queue. Tên, email, thông tin liên hệ, ý tưởng và ảnh tham khảo của bạn luôn được giữ riêng tư.",
@@ -194,7 +200,19 @@
       "clearTitle": "Xóa toàn bộ form này?",
       "clearDescription": "Thao tác này sẽ xóa hết những gì bạn đã nhập, kể cả bản nháp đã lưu. Không thể hoàn tác.",
       "estimateFrom": "từ {{price}}",
-      "estimateRange": "{{low}} – {{high}}"
+      "estimateRange": "{{low}} – {{high}}",
+      "clientHandleLabel": "Handle (không bắt buộc)",
+      "clientHandlePlaceholder": "ví dụ: luke",
+      "identityMatchTitle": "Đây có phải là bạn không?",
+      "identityMatchConfirm": "Đúng, là mình",
+      "identityMatchDecline": "Không phải mình",
+      "identityConfirmed": "Đặt hàng với tư cách {{name}}.",
+      "identityUndo": "Không phải bạn?",
+      "contactLabel": "Mình nên liên hệ bạn qua đâu?",
+      "contactEmail": "Email",
+      "contactAddNew": "Thêm liên hệ mới",
+      "contactPlatformLabel": "Nền tảng",
+      "contactValueLabel": "Handle hoặc đường dẫn của bạn"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",

@@ -17,7 +17,6 @@ export function useArtworkDetails(asset: AssetDto) {
   return useMemo(
     () =>
       [
-        { label: t('gallery.detail.filename'), value: asset.filename },
         asset.width && asset.height
           ? {
               label: t('gallery.detail.dimensions'),

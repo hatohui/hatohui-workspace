@@ -6,17 +6,17 @@ import {
   IsArray,
   IsString,
 } from 'class-validator';
-import { ASSET_BULK_DELETE_MAX } from '@/modules/assets/assets.constants';
+import { ASSET_BULK_MAX } from '@/modules/assets/assets.constants';
 
 export class BulkDeleteAssetsDto {
   @ApiProperty({
     example: ['clx1234567890', 'clx0987654321'],
     type: [String],
-    maxItems: ASSET_BULK_DELETE_MAX,
+    maxItems: ASSET_BULK_MAX,
   })
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(ASSET_BULK_DELETE_MAX)
+  @ArrayMaxSize(ASSET_BULK_MAX)
   @ArrayUnique()
   @IsString({ each: true })
   ids: string[];

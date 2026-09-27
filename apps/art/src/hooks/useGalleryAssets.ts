@@ -1,9 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { useAssets, type AssetDto, type AssetsSort } from '@hatohui/models';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+  assets,
+  getAssetsQueryKey,
+  type AssetDto,
+  type AssetsSort,
+} from '@hatohui/models';
 import { useDebouncedValue } from '@hatohui/libs';
-import { GALLERY_PAGE_SIZE } from '@/constants/gallery';
+import {
+  GALLERY_PAGE_SIZE,
+  GALLERY_SEARCH_DEBOUNCE_MS,
+} from '@/constants/gallery';
 
 export interface GalleryInitialData {
   items: AssetDto[];
@@ -17,29 +26,30 @@ export function useGalleryAssets(
   const [query, setQuery] = useState('');
   const [tag, setTag] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<AssetsSort>('newest');
-  const [page, setPage] = useState(1);
 
-  const debouncedQuery = useDebouncedValue(query, 300);
+  const debouncedQuery = useDebouncedValue(query, GALLERY_SEARCH_DEBOUNCE_MS);
   const isDefaultFilters =
-    debouncedQuery === '' &&
-    tag === undefined &&
-    sort === 'newest' &&
-    page === 1;
+    debouncedQuery === '' && tag === undefined && sort === 'newest';
+  const params = {
+    query: debouncedQuery || undefined,
+    tag,
+    uploadedById: artistId,
+    sort,
+    pageSize: GALLERY_PAGE_SIZE,
+  };
 
-  const assetsQuery = useAssets(
-    {
-      query: debouncedQuery || undefined,
-      tag,
-      uploadedById: artistId,
-      sort,
-      page,
-      pageSize: GALLERY_PAGE_SIZE,
-    },
-    {
-      query: {
-        initialData:
-          isDefaultFilters && initialData
-            ? {
+  const assetsQuery = useInfiniteQuery({
+    queryKey: [...getAssetsQueryKey(params), 'infinite'],
+    queryFn: ({ pageParam }) => assets({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (last) =>
+      last.data.hasMore ? last.data.page + 1 : undefined,
+    initialData:
+      isDefaultFilters && initialData
+        ? {
+            pageParams: [1],
+            pages: [
+              {
                 data: {
                   items: initialData.items,
                   total: initialData.total,
@@ -49,33 +59,25 @@ export function useGalleryAssets(
                 },
                 status: 200 as const,
                 headers: new Headers(),
-              }
-            : undefined,
-      },
-    },
-  );
+              },
+            ],
+          }
+        : undefined,
+  });
 
   return {
-    items: assetsQuery.data?.data.items ?? [],
-    total: assetsQuery.data?.data.total ?? 0,
-    hasMore: assetsQuery.data?.data.hasMore ?? false,
+    items: assetsQuery.data?.pages.flatMap((page) => page.data.items) ?? [],
+    total: assetsQuery.data?.pages[0]?.data.total ?? 0,
+    hasMore: assetsQuery.hasNextPage,
     isLoading: assetsQuery.isPending,
+    isFetchingMore: assetsQuery.isFetchingNextPage,
+    loadMore: () => void assetsQuery.fetchNextPage(),
+    artistId,
     query,
-    setQuery: (value: string) => {
-      setQuery(value);
-      setPage(1);
-    },
+    setQuery,
     tag,
-    setTag: (value: string | undefined) => {
-      setTag(value);
-      setPage(1);
-    },
+    setTag,
     sort,
-    setSort: (value: AssetsSort) => {
-      setSort(value);
-      setPage(1);
-    },
-    page,
-    setPage,
+    setSort,
   };
 }

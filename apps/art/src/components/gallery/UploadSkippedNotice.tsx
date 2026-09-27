@@ -46,7 +46,7 @@ export function UploadSkippedNotice({
             {isCompressing ? <Spinner /> : <Minimize2 />}
             {isCompressing
               ? t('gallery.upload.compressing')
-              : t('gallery.upload.compressAndUpload')}
+              : t('gallery.upload.compressToFit')}
           </Button>
           <span className="text-xs">{t('gallery.upload.compressHint')}</span>
         </div>

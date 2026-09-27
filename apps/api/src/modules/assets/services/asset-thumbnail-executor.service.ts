@@ -8,6 +8,7 @@ import {
   fetchExternalImageBytes,
   generateThumbnail,
 } from '@/modules/assets/utils/thumbnail';
+import { artistFolderOf } from '@/modules/assets/utils/artist-folder';
 
 @Injectable()
 export class AssetThumbnailExecutor implements ProcessExecutor {
@@ -29,7 +30,11 @@ export class AssetThumbnailExecutor implements ProcessExecutor {
         : await fetchExternalImageBytes(asset.publicUrl);
 
     const thumbnail = await generateThumbnail(original);
-    const thumbnailKey = assetThumbnailKeyFor(asset.key ?? asset.filename);
+    const artist = await artistFolderOf(this.db, asset.uploadedById);
+    const thumbnailKey = assetThumbnailKeyFor(
+      artist,
+      asset.key ?? asset.filename,
+    );
     await this.storage.putObject(thumbnailKey, thumbnail, 'image/webp');
 
     await this.db.asset.update({

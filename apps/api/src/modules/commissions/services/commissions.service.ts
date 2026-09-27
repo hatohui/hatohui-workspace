@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -61,6 +62,12 @@ import {
 } from '@/modules/commissions/commissions.constants';
 import { CommissionOpeningsService } from '@/modules/commission-openings/services/commission-openings.service';
 import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
+import { ClientIdentityService } from '@/modules/clients/services/client-identity.service';
+import {
+  isEmailContact,
+  platformForContactMethod,
+  type ContactPoint,
+} from '@/modules/clients/utils/contact-points';
 
 const DEFAULT_CURRENCY = 'USD';
 
@@ -83,6 +90,7 @@ export class CommissionsService {
     private readonly userSettings: UserSettingsService,
     private readonly commissionOpenings: CommissionOpeningsService,
     private readonly pricing: CommissionPricingService,
+    private readonly clientIdentity: ClientIdentityService,
   ) {}
 
   async submit(
@@ -94,9 +102,15 @@ export class CommissionsService {
       this.commissionOpenings.openIdFor(dto.artistId),
       this.pricing.estimate(dto.artistId, dto),
     ]);
-    const client = submitter
-      ? await this.resolveAccountClient(submitter, dto)
-      : await this.resolveClient(requireClientIdentity(dto));
+    if (!commissionOpeningId) {
+      throw new ForbiddenException(
+        'This artist is not accepting commissions right now',
+      );
+    }
+    const { client, contact } = await this.clientIdentity.resolve(
+      { ...dto, contact: submittedContact(dto) },
+      submitter,
+    );
 
     const commission = await this.db.commission.create({
       data: {
@@ -119,6 +133,8 @@ export class CommissionsService {
                 this.storage.getPublicUrl(key),
               ) ?? [],
             isHiddenInQueue: !dto.isPublic,
+            contactPlatform: contact.platform,
+            contactValue: contact.value,
           },
         },
       },
@@ -155,6 +171,13 @@ export class CommissionsService {
                 this.storage.getPublicUrl(key),
               ) ?? [],
             isHiddenInQueue: !dto.isPublic,
+            contactPlatform: platformForContactMethod(
+              client.preferredContactMethod,
+            ),
+            contactValue:
+              client.preferredContactMethod === 'EMAIL'
+                ? client.email
+                : client.contactHandle,
           },
         },
       },
@@ -664,28 +687,6 @@ export class CommissionsService {
     return artist?.email ?? null;
   }
 
-  private async resolveAccountClient(
-    user: User,
-    dto: SubmitCommissionDto,
-  ): Promise<Client> {
-    const contact = {
-      name: user.name,
-      preferredContactMethod: dto.preferredContactMethod ?? undefined,
-      contactHandle: dto.contactHandle ?? undefined,
-    };
-    const linked = await this.db.client.findUnique({
-      where: { userId: user.id },
-    });
-    if (linked) {
-      return this.db.client.update({ where: { id: linked.id }, data: contact });
-    }
-    return this.db.client.upsert({
-      where: { email: user.email },
-      update: { ...contact, userId: user.id },
-      create: { ...contact, email: user.email, userId: user.id },
-    });
-  }
-
   private async resolveClient(dto: {
     clientName: string;
     clientEmail: string;
@@ -867,6 +868,8 @@ function toCommissionDto(commission: CommissionWithRelations): CommissionDto {
     clientEmail: commission.client.email,
     preferredContactMethod: commission.client.preferredContactMethod,
     contactHandle: commission.client.contactHandle,
+    contactPlatform: detail.contactPlatform,
+    contactValue: detail.contactValue,
     referenceAssets: detail.referenceAssets,
     deliveredAt: detail.deliveredAt?.toISOString() ?? null,
     steps: {
@@ -922,13 +925,22 @@ function toHistoryDto(history: {
   };
 }
 
-function requireClientIdentity(
-  dto: SubmitCommissionDto,
-): SubmitCommissionDto & { clientName: string; clientEmail: string } {
-  if (!dto.clientName || !dto.clientEmail) {
-    throw new BadRequestException(
-      'clientName and clientEmail are required when not signed in',
-    );
+function submittedContact(dto: SubmitCommissionDto): ContactPoint {
+  if (dto.contactPlatform) {
+    const contact = {
+      platform: dto.contactPlatform,
+      value: dto.contactValue?.trim() ?? '',
+    };
+    if (!isEmailContact(contact) && !contact.value) {
+      throw new BadRequestException(
+        `contactValue is required for ${dto.contactPlatform}`,
+      );
+    }
+    return contact;
   }
-  return { ...dto, clientName: dto.clientName, clientEmail: dto.clientEmail };
+  const method = dto.preferredContactMethod ?? 'EMAIL';
+  return {
+    platform: platformForContactMethod(method),
+    value: method === 'EMAIL' ? '' : (dto.contactHandle?.trim() ?? ''),
+  };
 }

@@ -29,7 +29,10 @@ import type {
   AssetsParams,
   BulkDeleteAssetsDto,
   BulkDeleteAssetsResultDto,
+  BulkTagAssetsDto,
+  BulkTagAssetsResultDto,
   CreateAssetDto,
+  GalleryTagsParams,
   PaginatedAssetsDto,
   TagSuggestionDto,
   UpdateAssetDto
@@ -258,7 +261,126 @@ export const useCreateAsset = <TError = unknown,
       > => {
       return useMutation(getCreateAssetMutationOptions(options), queryClient);
     }
-    export type assetTagSuggestionsResponse200 = {
+    export type galleryTagsResponse200 = {
+  data: TagSuggestionDto[]
+  status: 200
+}
+
+export type galleryTagsResponseSuccess = (galleryTagsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type galleryTagsResponse = (galleryTagsResponseSuccess)
+
+export const getGalleryTagsUrl = (params?: GalleryTagsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/assets/tags?${stringifiedParams}` : `/assets/tags`
+}
+
+/**
+ * @summary Tags used in a gallery, for search suggestions
+ */
+export const galleryTags = async (params?: GalleryTagsParams, options?: RequestInit): Promise<galleryTagsResponse> => {
+
+  return customFetch<galleryTagsResponse>(getGalleryTagsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGalleryTagsQueryKey = (params?: GalleryTagsParams,) => {
+    return [
+    `/assets/tags`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGalleryTagsQueryOptions = <TData = Awaited<ReturnType<typeof galleryTags>>, TError = unknown>(params?: GalleryTagsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryTags>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGalleryTagsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof galleryTags>>> = ({ signal }) => galleryTags(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof galleryTags>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GalleryTagsQueryResult = NonNullable<Awaited<ReturnType<typeof galleryTags>>>
+export type GalleryTagsQueryError = unknown
+
+
+export function useGalleryTags<TData = Awaited<ReturnType<typeof galleryTags>>, TError = unknown>(
+ params: undefined |  GalleryTagsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryTags>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof galleryTags>>,
+          TError,
+          Awaited<ReturnType<typeof galleryTags>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryTags<TData = Awaited<ReturnType<typeof galleryTags>>, TError = unknown>(
+ params?: GalleryTagsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryTags>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof galleryTags>>,
+          TError,
+          Awaited<ReturnType<typeof galleryTags>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryTags<TData = Awaited<ReturnType<typeof galleryTags>>, TError = unknown>(
+ params?: GalleryTagsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryTags>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Tags used in a gallery, for search suggestions
+ */
+
+export function useGalleryTags<TData = Awaited<ReturnType<typeof galleryTags>>, TError = unknown>(
+ params?: GalleryTagsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryTags>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGalleryTagsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type assetTagSuggestionsResponse200 = {
   data: TagSuggestionDto[]
   status: 200
 }
@@ -728,4 +850,86 @@ export const useBulkDeleteAssets = <TError = unknown,
         TContext
       > => {
       return useMutation(getBulkDeleteAssetsMutationOptions(options), queryClient);
+    }
+    export type bulkTagAssetsResponse200 = {
+  data: BulkTagAssetsResultDto
+  status: 200
+}
+
+export type bulkTagAssetsResponseSuccess = (bulkTagAssetsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkTagAssetsResponse = (bulkTagAssetsResponseSuccess)
+
+export const getBulkTagAssetsUrl = () => {
+
+
+
+
+  return `/assets/bulk-tag`
+}
+
+/**
+ * @summary Add tags to several assets; tags already on an asset are skipped
+ */
+export const bulkTagAssets = async (bulkTagAssetsDto: BulkTagAssetsDto, options?: RequestInit): Promise<bulkTagAssetsResponse> => {
+
+  return customFetch<bulkTagAssetsResponse>(getBulkTagAssetsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(bulkTagAssetsDto)
+  }
+);}
+
+
+
+
+
+export const getBulkTagAssetsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkTagAssets>>, TError,{data: BulkTagAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkTagAssets>>, TError,{data: BulkTagAssetsDto}, TContext> => {
+
+const mutationKey = ['bulkTagAssets'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkTagAssets>>, {data: BulkTagAssetsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkTagAssets(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkTagAssetsMutationResult = NonNullable<Awaited<ReturnType<typeof bulkTagAssets>>>
+    export type BulkTagAssetsMutationBody = BulkTagAssetsDto
+    export type BulkTagAssetsMutationError = unknown
+
+    /**
+ * @summary Add tags to several assets; tags already on an asset are skipped
+ */
+export const useBulkTagAssets = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkTagAssets>>, TError,{data: BulkTagAssetsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkTagAssets>>,
+        TError,
+        {data: BulkTagAssetsDto},
+        TContext
+      > => {
+      return useMutation(getBulkTagAssetsMutationOptions(options), queryClient);
     }

@@ -15,3 +15,5 @@ export const WORKSPACE_GALLERY_ROUTE = '/app/gallery';
 export const UPLOAD_CONCURRENCY = 4;
 export const BYTES_PER_MEGABYTE = 1024 * 1024;
 export const ASSET_DELETION_QUERY_PREFIXES = ['/assets', '/projects'] as const;
+export const GALLERY_SEARCH_DEBOUNCE_MS = 300;
+export const GALLERY_TAG_SUGGESTION_LIMIT = 8;

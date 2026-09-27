@@ -2,22 +2,14 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import {
-  Button,
-  Input,
-  Label,
-  RichTextField,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@hatohui/ui';
-import { PREFERRED_CONTACT_METHODS } from '@/constants/commission';
+import { Button, Label, RichTextField } from '@hatohui/ui';
 import { useCommissionForm } from '@/hooks/useCommissionForm';
+import { useCommissionContact } from '@/hooks/useCommissionContact';
 import { CommissionTypeFields } from './CommissionTypeFields';
 import { CommissionQuoteEstimate } from './CommissionQuoteEstimate';
 import { CommissionIdentityFields } from './CommissionIdentityFields';
+import { IdentityMatchPrompt } from './IdentityMatchPrompt';
+import { ContactPointPicker } from './ContactPointPicker';
 import { MultiImageUploadField } from '@/components/shared/MultiImageUploadField';
 import { DateField } from '@/components/shared/DateField';
 import { CommissionVisibilityCheckbox } from './CommissionVisibilityCheckbox';
@@ -28,6 +20,7 @@ import { CommissionExampleGallery } from './CommissionExampleGallery';
 export function CommissionForm({ artistId }: { artistId: string }) {
   const { t } = useTranslation('art');
   const form = useCommissionForm(artistId);
+  const contact = useCommissionContact(form);
   const [isClearOpen, setIsClearOpen] = useState(false);
   const formRef = useStaggerReveal<HTMLFormElement>(':scope > *', []);
 
@@ -60,6 +53,12 @@ export function CommissionForm({ artistId }: { artistId: string }) {
           </p>
         )}
 
+        <CommissionIdentityFields form={form} />
+        <IdentityMatchPrompt form={form} />
+
+        <CommissionTypeFields form={form} artistId={artistId} />
+        <CommissionQuoteEstimate pricing={form.pricing} />
+
         <div className="space-y-1.5">
           <Label htmlFor="idea">{t('commission.form.ideaLabel')}</Label>
           <RichTextField
@@ -69,9 +68,6 @@ export function CommissionForm({ artistId }: { artistId: string }) {
           />
         </div>
 
-        <CommissionTypeFields form={form} artistId={artistId} />
-        <CommissionQuoteEstimate pricing={form.pricing} />
-
         <div className="space-y-1.5">
           <Label>{t('commission.form.deadlineLabel')}</Label>
           <DateField
@@ -80,46 +76,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
           />
         </div>
 
-        <CommissionIdentityFields form={form} />
-
-        <div className="space-y-1.5">
-          <Label>{t('commission.form.preferredContactLabel')}</Label>
-          <Select
-            value={form.state.preferredContactMethod}
-            onValueChange={(value) =>
-              form.update(
-                'preferredContactMethod',
-                value as typeof form.state.preferredContactMethod,
-              )
-            }
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PREFERRED_CONTACT_METHODS.map((method) => (
-                <SelectItem key={method} value={method}>
-                  {t(`commission.preferredContactMethod.${method}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {form.state.preferredContactMethod !== 'EMAIL' && (
-          <div className="space-y-1.5">
-            <Label htmlFor="contactHandle">
-              {t('commission.form.contactHandleLabel')}
-            </Label>
-            <Input
-              id="contactHandle"
-              value={form.state.contactHandle}
-              onChange={(event) =>
-                form.update('contactHandle', event.target.value)
-              }
-            />
-          </div>
-        )}
+        <ContactPointPicker contact={contact} />
 
         <MultiImageUploadField
           label={t('commission.form.attachmentsLabel')}

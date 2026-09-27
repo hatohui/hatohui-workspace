@@ -2022,6 +2022,41 @@
         ]
       }
     },
+    "/assets/tags": {
+      "get": {
+        "operationId": "galleryTags",
+        "parameters": [
+          {
+            "name": "uploadedById",
+            "required": false,
+            "in": "query",
+            "description": "Only count tags on this uploader's assets",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagSuggestionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Tags used in a gallery, for search suggestions",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
     "/assets/tag-suggestions": {
       "get": {
         "operationId": "assetTagSuggestions",
@@ -2166,6 +2201,38 @@
           }
         },
         "summary": "Delete several assets at once; all-or-nothing on permissions",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/assets/bulk-tag": {
+      "post": {
+        "operationId": "bulkTagAssets",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkTagAssetsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkTagAssetsResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add tags to several assets; tags already on an asset are skipped",
         "tags": [
           "assets"
         ]
@@ -3551,6 +3618,125 @@
         ]
       }
     },
+    "/clients/identity-match": {
+      "post": {
+        "operationId": "matchCommissionIdentity",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatchCommissionIdentityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionIdentityDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Profiles that look like the person ordering, by exact email, handle or name",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
+    "/clients/me/identity": {
+      "get": {
+        "operationId": "myCommissionIdentity",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyCommissionIdentityDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Profile and contact points of the signed-in account, for ordering",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
+    "/clients/lookup": {
+      "get": {
+        "operationId": "lookupClientByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPrefillDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Prefill data for a returning client. 404 if this email hasn't commissioned before.",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
+    "/clients/{id}": {
+      "get": {
+        "operationId": "client",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A client of yours, with their linked account and their commissions with you",
+        "tags": [
+          "clients"
+        ]
+      }
+    },
     "/commission-types": {
       "get": {
         "operationId": "commissionTypes",
@@ -4320,68 +4506,6 @@
         "summary": "Mark a progress entry final — the delivered artwork, optionally attached to a Project",
         "tags": [
           "commission-progress"
-        ]
-      }
-    },
-    "/clients/lookup": {
-      "get": {
-        "operationId": "lookupClientByEmail",
-        "parameters": [
-          {
-            "name": "email",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientPrefillDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Prefill data for a returning client. 404 if this email hasn't commissioned before.",
-        "tags": [
-          "clients"
-        ]
-      }
-    },
-    "/clients/{id}": {
-      "get": {
-        "operationId": "client",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientDetailDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "A client of yours, with their linked account and their commissions with you",
-        "tags": [
-          "clients"
         ]
       }
     },
@@ -6576,6 +6700,55 @@
           "deletedIds"
         ]
       },
+      "BulkTagAssetsDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "example": [
+              "clx1234567890",
+              "clx0987654321"
+            ],
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "example": [
+              "Full Body",
+              "wip"
+            ],
+            "description": "Tags to add; matched case-insensitively and never added twice to the same asset",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids",
+          "tags"
+        ]
+      },
+      "BulkTagAssetsResultDto": {
+        "type": "object",
+        "properties": {
+          "updatedIds": {
+            "example": [
+              "clx1234567890"
+            ],
+            "description": "Ids that were tagged; ids that no longer exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "updatedIds"
+        ]
+      },
       "UpdateAssetDto": {
         "type": "object",
         "properties": {
@@ -6659,6 +6832,24 @@
             "type": "string",
             "example": "jane@example.com",
             "description": "Required when not signed in; taken from the account otherwise"
+          },
+          "clientHandle": {
+            "type": "string",
+            "example": "jane",
+            "description": "Handle for a new identity when not signed in; suffixed if already taken"
+          },
+          "matchedProfileId": {
+            "type": "string",
+            "description": "Profile the anonymous client confirmed as theirs from matchCommissionIdentity"
+          },
+          "contactPlatform": {
+            "type": "string",
+            "example": "discord",
+            "description": "Chosen contact point: a SocialPlatform key, or 'email'. Takes precedence over preferredContactMethod"
+          },
+          "contactValue": {
+            "type": "string",
+            "description": "Handle or address on contactPlatform; ignored for 'email'"
           }
         },
         "required": [
@@ -6850,6 +7041,15 @@
             "type": "string",
             "nullable": true
           },
+          "contactPlatform": {
+            "type": "string",
+            "nullable": true,
+            "description": "Contact this commission was placed with: a SocialPlatform key, or 'email'"
+          },
+          "contactValue": {
+            "type": "string",
+            "nullable": true
+          },
           "referenceAssets": {
             "type": "array",
             "items": {
@@ -6900,6 +7100,8 @@
           "clientEmail",
           "preferredContactMethod",
           "contactHandle",
+          "contactPlatform",
+          "contactValue",
           "referenceAssets",
           "deliveredAt",
           "steps",
@@ -7584,6 +7786,15 @@
             "type": "string",
             "nullable": true
           },
+          "contactPlatform": {
+            "type": "string",
+            "nullable": true,
+            "description": "Contact this commission was placed with: a SocialPlatform key, or 'email'"
+          },
+          "contactValue": {
+            "type": "string",
+            "nullable": true
+          },
           "referenceAssets": {
             "type": "array",
             "items": {
@@ -7646,6 +7857,8 @@
           "clientEmail",
           "preferredContactMethod",
           "contactHandle",
+          "contactPlatform",
+          "contactValue",
           "referenceAssets",
           "deliveredAt",
           "steps",
@@ -8382,6 +8595,255 @@
           "priceMode"
         ]
       },
+      "MatchCommissionIdentityDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Luke"
+          },
+          "handle": {
+            "type": "string",
+            "example": "luke"
+          },
+          "email": {
+            "type": "string",
+            "example": "luke@example.com"
+          }
+        }
+      },
+      "ContactPointDto": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "example": "discord",
+            "description": "A SocialPlatform key, or 'email'"
+          },
+          "value": {
+            "type": "string",
+            "example": "luke#1234"
+          }
+        },
+        "required": [
+          "platform",
+          "value"
+        ]
+      },
+      "CommissionIdentityDto": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string",
+            "example": "Luke"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true,
+            "example": "luke"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPointDto"
+            }
+          }
+        },
+        "required": [
+          "profileId",
+          "displayName",
+          "handle",
+          "avatarUrl",
+          "contacts"
+        ]
+      },
+      "MyCommissionIdentityDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "luke@example.com"
+          },
+          "identity": {
+            "nullable": true,
+            "description": "Null when the account has no public profile",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommissionIdentityDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "identity"
+        ]
+      },
+      "ClientPrefillDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ]
+          },
+          "contactHandle": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "name",
+          "preferredContactMethod",
+          "contactHandle"
+        ]
+      },
+      "ClientAccountDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "userId",
+          "name",
+          "handle",
+          "avatarUrl"
+        ]
+      },
+      "ClientCommissionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "quote": {
+            "type": "number",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "commissionTypeKey",
+          "commissionTypeLabel",
+          "quote",
+          "currency",
+          "createdAt"
+        ]
+      },
+      "ClientDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "preferredContactMethod": {
+            "type": "string",
+            "enum": [
+              "EMAIL",
+              "DISCORD",
+              "TELEGRAM",
+              "TWITTER",
+              "OTHER"
+            ]
+          },
+          "contactHandle": {
+            "type": "string",
+            "nullable": true
+          },
+          "account": {
+            "nullable": true,
+            "description": "The hatohui account this client is linked to, if any",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ClientAccountDto"
+              }
+            ]
+          },
+          "commissions": {
+            "description": "Every commission this client has had with you, newest first",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientCommissionSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "preferredContactMethod",
+          "contactHandle",
+          "account",
+          "commissions"
+        ]
+      },
       "CommissionTypeDto": {
         "type": "object",
         "properties": {
@@ -8963,163 +9425,6 @@
             "description": "Attach the delivered artwork to a Project"
           }
         }
-      },
-      "ClientPrefillDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "preferredContactMethod": {
-            "type": "string",
-            "enum": [
-              "EMAIL",
-              "DISCORD",
-              "TELEGRAM",
-              "TWITTER",
-              "OTHER"
-            ]
-          },
-          "contactHandle": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "name",
-          "preferredContactMethod",
-          "contactHandle"
-        ]
-      },
-      "ClientAccountDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "handle": {
-            "type": "string",
-            "nullable": true
-          },
-          "avatarUrl": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "userId",
-          "name",
-          "handle",
-          "avatarUrl"
-        ]
-      },
-      "ClientCommissionSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "PENDING",
-              "ACCEPTED",
-              "DECLINED",
-              "NOT_YET_STARTED",
-              "QUEUED",
-              "SKETCH",
-              "CONFIRMED",
-              "ONGOING",
-              "COMPLETED",
-              "CANCELLED"
-            ]
-          },
-          "commissionTypeKey": {
-            "type": "string",
-            "nullable": true
-          },
-          "commissionTypeLabel": {
-            "type": "string",
-            "nullable": true
-          },
-          "quote": {
-            "type": "number",
-            "nullable": true
-          },
-          "currency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "createdAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "status",
-          "commissionTypeKey",
-          "commissionTypeLabel",
-          "quote",
-          "currency",
-          "createdAt"
-        ]
-      },
-      "ClientDetailDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "preferredContactMethod": {
-            "type": "string",
-            "enum": [
-              "EMAIL",
-              "DISCORD",
-              "TELEGRAM",
-              "TWITTER",
-              "OTHER"
-            ]
-          },
-          "contactHandle": {
-            "type": "string",
-            "nullable": true
-          },
-          "account": {
-            "nullable": true,
-            "description": "The hatohui account this client is linked to, if any",
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ClientAccountDto"
-              }
-            ]
-          },
-          "commissions": {
-            "description": "Every commission this client has had with you, newest first",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ClientCommissionSummaryDto"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "email",
-          "preferredContactMethod",
-          "contactHandle",
-          "account",
-          "commissions"
-        ]
       },
       "SubscribeCommissionFollowerDto": {
         "type": "object",

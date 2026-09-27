@@ -39,6 +39,18 @@ export function CommissionIdentityFields({
       </div>
 
       <div className="space-y-1.5">
+        <Label htmlFor="clientHandle">
+          {t('commission.form.clientHandleLabel')}
+        </Label>
+        <Input
+          id="clientHandle"
+          value={form.state.clientHandle}
+          placeholder={t('commission.form.clientHandlePlaceholder')}
+          onChange={(event) => form.update('clientHandle', event.target.value)}
+        />
+      </div>
+
+      <div className="space-y-1.5">
         <Label htmlFor="clientEmail">
           {t('commission.form.clientEmailLabel')}
         </Label>

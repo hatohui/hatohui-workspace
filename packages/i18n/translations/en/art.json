@@ -55,7 +55,7 @@
   },
   "gallery": {
     "title": "Gallery",
-    "searchPlaceholder": "Search by filename or tag",
+    "searchPlaceholder": "Search by tag",
     "sort": {
       "newest": "Newest",
       "oldest": "Oldest",
@@ -89,7 +89,6 @@
       "sharedTagsLabel": "Tags for all images",
       "capacity": "{{count}} / {{max}} images · up to {{size}} MB each",
       "progress": "Uploading… {{done}} of {{total}} done",
-      "itemTags": "Tags for {{name}}",
       "remove": "Remove {{name}}",
       "retryCount_one": "Retry {{count}} image",
       "retryCount_other": "Retry {{count}} images",
@@ -103,15 +102,16 @@
         "overLimit": "{{name}}: at most {{max}} images per upload",
         "compressFailed": "{{name}} is still over {{max}} MB after compressing"
       },
-      "compressAndUpload": "Compress and upload",
       "compressing": "Compressing…",
-      "compressHint": "Converts to WebP and scales down only as much as needed to fit.",
+      "compressHint": "Converts to WebP and scales down only as much as needed, then adds them so you can tag them before uploading.",
       "dropzoneMore": "Add more images",
       "tagGroupCommission": "Commission types",
       "tagGroupOwn": "Your tags",
       "itemTagsInherited": "Also applied from Tags for all images",
       "itemTagsOwn": "Only this image",
-      "itemTagsSummary": "{{name}}: {{tags}}"
+      "itemTagsSummary": "{{name}}: {{tags}}",
+      "compressToFit": "Compress to fit",
+      "itemTags": "Tags for {{name}}"
     },
     "card": {
       "delete": "Delete",
@@ -121,7 +121,6 @@
     "detail": {
       "back": "Back to gallery",
       "openOriginal": "Open original",
-      "filename": "Filename",
       "dimensions": "Dimensions",
       "size": "Size",
       "uploaded": "Uploaded"
@@ -141,8 +140,20 @@
       "confirmDescription": "They will be removed from your gallery and any projects they appear in. This can't be undone.",
       "deleted_one": "Deleted {{count}} piece",
       "deleted_other": "Deleted {{count}} pieces",
-      "deleteFailed": "Couldn't delete the selected pieces. Nothing was removed."
-    }
+      "deleteFailed": "Couldn't delete the selected pieces. Nothing was removed.",
+      "addTags": "Add tags",
+      "addTagsTitle_one": "Add tags to {{count}} piece",
+      "addTagsTitle_other": "Add tags to {{count}} pieces",
+      "addTagsHint": "Pieces that already have a tag keep just one copy.",
+      "applyTags": "Add tags",
+      "tagged_one": "Added {{tags}} to {{count}} piece",
+      "tagged_other": "Added {{tags}} to {{count}} pieces",
+      "tagFailed": "Couldn't add the tags. Nothing was changed."
+    },
+    "loadingMore": "Loading more…",
+    "searchTagCount_one": "{{count}} piece",
+    "searchTagCount_other": "{{count}} pieces",
+    "clearTagFilter": "Stop filtering by {{tag}}"
   },
   "queue": {
     "title": "Queue",
@@ -171,7 +182,7 @@
     },
     "form": {
       "title": "Request a commission",
-      "subtitle": "Tell me about what you'd like made. I'll follow up by email.",
+      "subtitle": "Tell me about what you'd like made. I'll follow up the way you choose below.",
       "ideaLabel": "Your idea",
       "commissionTypeLabel": "Commission type",
       "priceListLabel": "Price list",
@@ -185,9 +196,7 @@
       "deadlineLabel": "Deadline (optional)",
       "clientNameLabel": "Your name",
       "clientEmailLabel": "Your email",
-      "submittingAs": "Submitting as {{name}}. Replies go to your account email.",
-      "preferredContactLabel": "Preferred contact method",
-      "contactHandleLabel": "Contact handle",
+      "submittingAs": "Submitting as {{name}}.",
       "attachmentsLabel": "Reference images (optional)",
       "isPublicLabel": "Show this commission in the public queue",
       "isPublicTooltip": "If checked, your commission type and current status will be visible on the public /queue page. Your name, email, contact info, idea, and reference images always stay private.",
@@ -201,7 +210,19 @@
       "clearTitle": "Clear this form?",
       "clearDescription": "This deletes everything you've entered, including your saved draft. This can't be undone.",
       "estimateFrom": "from {{price}}",
-      "estimateRange": "{{low}} – {{high}}"
+      "estimateRange": "{{low}} – {{high}}",
+      "clientHandleLabel": "Handle (optional)",
+      "clientHandlePlaceholder": "e.g. luke",
+      "identityMatchTitle": "Is this you?",
+      "identityMatchConfirm": "Yes, that's me",
+      "identityMatchDecline": "No, it's not me",
+      "identityConfirmed": "Ordering as {{name}}.",
+      "identityUndo": "Not you?",
+      "contactLabel": "How should I reach you?",
+      "contactEmail": "Email",
+      "contactAddNew": "Add a new contact",
+      "contactPlatformLabel": "Platform",
+      "contactValueLabel": "Your handle or link"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",

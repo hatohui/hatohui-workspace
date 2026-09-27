@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class TagSuggestionDto {
   @ApiProperty({ example: 'full body' })
@@ -17,4 +18,14 @@ export class TagSuggestionDto {
       'Label of the commission type this tag feeds examples to, if any',
   })
   commissionTypeLabel: string | null;
+}
+
+export class GalleryTagsQueryDto {
+  @ApiProperty({
+    required: false,
+    description: "Only count tags on this uploader's assets",
+  })
+  @IsOptional()
+  @IsString()
+  uploadedById?: string;
 }

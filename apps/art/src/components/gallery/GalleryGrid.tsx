@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
 import { type AssetDto } from '@hatohui/models';
-import { Button } from '@hatohui/ui';
 import {
   useGalleryAssets,
   type GalleryInitialData,
 } from '@/hooks/useGalleryAssets';
 import { GalleryFilters } from './GalleryFilters';
+import { GalleryLoadMore } from './GalleryLoadMore';
 import { GalleryCard } from './GalleryCard';
 import { JustifiedRows } from '@/components/shared/JustifiedRows';
 import { UploadDialog } from './UploadDialog';
@@ -110,27 +110,14 @@ export function GalleryGrid({
             />
           </div>
 
+          <GalleryLoadMore
+            hasMore={gallery.hasMore}
+            isFetchingMore={gallery.isFetchingMore}
+            onLoadMore={gallery.loadMore}
+          />
+
           {selection.isSelecting && (
             <GallerySelectionBar selection={selection} />
-          )}
-
-          {(gallery.page > 1 || gallery.hasMore) && (
-            <div className="mt-8 flex justify-center gap-2">
-              <Button
-                variant="outline"
-                disabled={gallery.page <= 1}
-                onClick={() => gallery.setPage(gallery.page - 1)}
-              >
-                {t('common:back')}
-              </Button>
-              <Button
-                variant="outline"
-                disabled={!gallery.hasMore}
-                onClick={() => gallery.setPage(gallery.page + 1)}
-              >
-                {t('gallery.loadMore')}
-              </Button>
-            </div>
           )}
         </>
       )}
