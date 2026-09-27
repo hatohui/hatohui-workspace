@@ -1,0 +1,86 @@
+name: openapi-ci
+
+on:
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  openapi-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Detect relevant changes
+        id: changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-only "$BASE_SHA"...HEAD)
+          echo "$changed"
+          if echo "$changed" | grep -qE '^(apps/api/|packages/models/|scripts/export-openapi\.ts$|package\.json$|bun\.lock$|\.github/workflows/openapi-ci\.yml$)'; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No API or client changes; OpenAPI client check skipped."
+          fi
+
+      - name: Start Postgres
+        if: steps.changes.outputs.relevant == 'true'
+        run: |
+          docker run -d --name postgres -p 5432:5432 \
+            -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -e POSTGRES_DB=hatohui \
+            postgres:18
+          for _ in $(seq 1 30); do
+            docker exec postgres pg_isready -U root -d hatohui && exit 0
+            sleep 2
+          done
+          echo "::error::Postgres did not become ready"
+          exit 1
+
+      - name: Setup Bun
+        if: steps.changes.outputs.relevant == 'true'
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        if: steps.changes.outputs.relevant == 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Regenerate OpenAPI client
+        if: steps.changes.outputs.relevant == 'true'
+        run: |
+          (cd apps/api && bunx prisma generate)
+          bun run scripts/export-openapi.ts
+          bun run --cwd packages/models generate
+        env:
+          PORT: '3000'
+          CORS_ORIGIN: http://localhost:5173
+          DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
+          REDIS_URL: redis://localhost:6379
+          GOOGLE_OAUTH_CLIENT_ID: ci-placeholder
+          GOOGLE_OAUTH_CLIENT_SECRET: ci-placeholder
+          SESSION_JWT_SECRET: ci-placeholder
+          R2_BUCKET_NAME: ci-placeholder
+          R2_ENDPOINT: http://localhost:9000
+          R2_PUBLIC_URL: http://localhost:9000/ci-placeholder
+          R2_ACCESS_KEY_ID: ci-placeholder
+          R2_SECRET_ACCESS_KEY: ci-placeholder
+          EMAIL_API_KEY: ci-placeholder
+          ADMIN_API_KEY: ci-placeholder-admin-key
+
+      - name: Fail if the committed client is stale
+        if: steps.changes.outputs.relevant == 'true'
+        run: |
+          if ! git diff --exit-code -- packages/models/openapi.json packages/models/src/generated; then
+            echo "::error::packages/models is out of date. Run 'task app:openapi:generate' and commit the diff."
+            exit 1
+          fi
