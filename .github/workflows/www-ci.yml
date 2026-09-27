@@ -39,7 +39,7 @@ jobs:
       - name: ESLint
         run: bunx eslint apps/www
 
-  typecheck:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,6 +51,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Typecheck
+      - name: Build
         working-directory: apps/www
-        run: bunx tsc -b
+        run: bun run build
+        env:
+          VITE_API_URL: ${{ vars.API_URL }}
+          VITE_GOOGLE_OAUTH_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_CLIENT_ID }}

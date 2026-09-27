@@ -46,7 +46,7 @@ jobs:
       - name: ESLint
         run: bunx eslint apps/api
 
-  typecheck:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -64,9 +64,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
 
-      - name: Typecheck
+      - name: Build
         working-directory: apps/api
-        run: bunx tsc --noEmit -p .
+        run: bun run build
 
   openapi-client:
     runs-on: ubuntu-latest
