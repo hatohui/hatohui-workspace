@@ -48,7 +48,8 @@ export const customFetch = async <T>(
     throw new ApiError(response.status, response.statusText);
   }
 
-  const data = response.status === 204 ? undefined : await response.json();
+  const data: unknown =
+    response.status === 204 ? undefined : await response.json();
 
   return { data, status: response.status, headers: response.headers } as T;
 };

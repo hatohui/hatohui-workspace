@@ -16,6 +16,7 @@ export function ImagePreviewGrid({
 
   useEffect(() => {
     const urls = files.map((file) => URL.createObjectURL(file));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- object URLs are created and revoked together in this effect
     setPreviewUrls(urls);
     return () => urls.forEach((url) => URL.revokeObjectURL(url));
   }, [files]);
