@@ -1,15 +1,17 @@
 'use client';
 
-import { FolderPlus, X } from 'lucide-react';
+import { FolderPlus, Pencil, X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
 import { useAssetManagement } from '@/hooks/useAssetUpload';
 
 export function GalleryCardActions({
   assetId,
+  onEdit,
   onAddToProject,
 }: {
   assetId: string;
+  onEdit: () => void;
   onAddToProject: () => void;
 }) {
   const { t } = useTranslation('art');
@@ -17,6 +19,16 @@ export function GalleryCardActions({
 
   return (
     <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+      <Button
+        type="button"
+        variant="secondary"
+        size="icon-sm"
+        aria-label={t('gallery.card.edit')}
+        title={t('gallery.card.edit')}
+        onClick={onEdit}
+      >
+        <Pencil />
+      </Button>
       <Button
         type="button"
         variant="secondary"

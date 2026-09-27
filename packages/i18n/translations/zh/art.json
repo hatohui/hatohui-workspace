@@ -109,7 +109,8 @@
     "card": {
       "delete": "删除",
       "deleteConfirm": "删除此文件？",
-      "editTags": "编辑标签"
+      "editTags": "编辑标签",
+      "edit": "编辑详情"
     },
     "detail": {
       "back": "返回画廊",
@@ -150,7 +151,9 @@
       "save": "保存",
       "saving": "保存中...",
       "discard": "放弃更改",
-      "saveFailed": "保存失败，请重试。"
+      "saveFailed": "保存失败，请重试。",
+      "editTitle": "编辑作品",
+      "tagsLabel": "标签"
     },
     "viewLarge": "查看大图"
   },

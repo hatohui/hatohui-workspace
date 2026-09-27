@@ -116,7 +116,8 @@
     "card": {
       "delete": "Delete",
       "deleteConfirm": "Delete this asset?",
-      "editTags": "Edit tags"
+      "editTags": "Edit tags",
+      "edit": "Edit details"
     },
     "detail": {
       "back": "Back to gallery",
@@ -163,7 +164,9 @@
       "save": "Save",
       "saving": "Saving...",
       "discard": "Discard",
-      "saveFailed": "Couldn't save. Try again."
+      "saveFailed": "Couldn't save. Try again.",
+      "editTitle": "Edit artwork",
+      "tagsLabel": "Tags"
     },
     "viewLarge": "View full size"
   },
