@@ -47,6 +47,21 @@ module "app_secrets_api" {
   }
 }
 
+module "app_secrets_art" {
+  source = "./modules/app_secrets"
+
+  doppler_project = var.doppler_project
+  environment     = "prod"
+  doppler_config  = var.art_doppler_config
+  visibility      = "unmasked"
+
+  secrets = {
+    NEXT_PUBLIC_API_URL                = module.api_gateway.custom_domain_url
+    NEXT_PUBLIC_ASSET_URL              = module.assets_r2.public_url
+    NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID = module.google_oauth.client_id
+  }
+}
+
 module "cache" {
   source = "./modules/cache"
 
@@ -244,6 +259,7 @@ module "github_ci" {
     CLOUDFLARE_ACCOUNT_ID  = var.cloudflare_account_id
     API_URL                = module.api_gateway.custom_domain_url
     GOOGLE_OAUTH_CLIENT_ID = module.google_oauth.client_id
+    ASSET_URL              = module.assets_r2.public_url
   }
 
   secrets = {

@@ -44,6 +44,12 @@ variable "api_doppler_config" {
   default     = "prod_api"
 }
 
+variable "art_doppler_config" {
+  description = "The Doppler config Terraform creates and writes apps/art's public build-time values into. A branch config under the prod environment, like api_doppler_config."
+  type        = string
+  default     = "prod_art"
+}
+
 // === ** Google OAuth Variables **/ ===
 variable "google_oauth_client_id" {
   description = "The OAuth 2.0 Web client ID from the Google Cloud console; Google has no API to create one, so it is created by hand and adopted here"

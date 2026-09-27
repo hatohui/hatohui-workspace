@@ -19,3 +19,9 @@ variable "visibility" {
   type        = string
   default     = "masked"
 }
+
+variable "environment" {
+  description = "The Doppler environment to create doppler_config under. Leave null when the config already exists outside Terraform"
+  type        = string
+  default     = null
+}
