@@ -234,8 +234,10 @@ leaves the schema permanently drifted.
 **committed to git in this repo** (check `.gitignore` hasn't drifted back
 to ignoring them — they were deliberately un-ignored so frontend CI doesn't
 need a database just to build). Commit the diff alongside your backend
-change; `api-cd.yml` has a `verify-openapi-client` job that fails the build
-if the committed client is stale relative to `apps/api`.
+change. The `openapi-client` job in `openapi-ci.yml` runs on every PR and
+fails if the committed client is stale relative to `apps/api` — it is a
+PR-time gate only, so a stale client must be caught before merge; `api-cd`
+does not check it again.
 
 ## 8. Write the code in the application(s)
 
@@ -272,8 +274,7 @@ Only commit when the user explicitly asks. Use the repo's existing commit
 message style (short, imperative, why-focused). After pushing, tell the
 user which workflows will fire based on what changed:
 
-- `apps/api/**` changes → `api-cd.yml` (includes the `verify-openapi-client`
-  gate before the Lambda deploy).
+- `apps/api/**` changes → `api-cd.yml` (Lambda deploy).
 - `apps/friends/**` or `packages/**` → `friends-cd.yml`.
 - `apps/art/**` or `packages/**` → `art-cd.yml`.
 - `apps/www/**` or `packages/**` → `www-cd.yml`.
