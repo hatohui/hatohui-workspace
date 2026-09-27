@@ -1,11 +1,19 @@
-name: ci
+name: packages-ci
 
 on:
   pull_request:
     branches: [master]
+    paths:
+      - "packages/**"
+      - "package.json"
+      - "bun.lock"
+      - "eslint.config.mjs"
+      - ".prettierrc"
+      - ".prettierignore"
+      - ".github/workflows/packages-ci.yml"
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 permissions:
@@ -24,13 +32,8 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Generate Prisma client
-        run: (cd apps/api && bunx prisma generate)
-        env:
-          DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
-
       - name: Prettier
-        run: bunx prettier --check apps packages
+        run: bunx prettier --check packages
 
       - name: ESLint
-        run: bunx eslint apps packages
+        run: bunx eslint packages

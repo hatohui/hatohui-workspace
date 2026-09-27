@@ -9,6 +9,9 @@ on:
       - "scripts/export-openapi.ts"
       - "package.json"
       - "bun.lock"
+      - "eslint.config.mjs"
+      - ".prettierrc"
+      - ".prettierignore"
       - ".github/workflows/api-ci.yml"
 
 concurrency:
@@ -19,6 +22,30 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma client
+        working-directory: apps/api
+        run: bunx prisma generate
+        env:
+          DATABASE_URL: postgresql://root:root@localhost:5432/hatohui
+
+      - name: Prettier
+        run: bunx prettier --check apps/api
+
+      - name: ESLint
+        run: bunx eslint apps/api
+
   typecheck:
     runs-on: ubuntu-latest
     steps:
