@@ -5,14 +5,10 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  Max,
   MaxLength,
   Min,
 } from 'class-validator';
-import {
-  MAX_IMAGE_UPLOAD_BYTES,
-  MAX_UPLOADER_NAME_LENGTH,
-} from '@/modules/images/images.constants';
+import { MAX_UPLOADER_NAME_LENGTH } from '@/modules/images/images.constants';
 
 export const ALLOWED_IMAGE_CONTENT_TYPES = [
   'image/jpeg',
@@ -37,12 +33,11 @@ export class SignImageDto {
 
   @ApiProperty({
     example: 204800,
-    description: 'File size in bytes; the upload must match it exactly',
-    maximum: MAX_IMAGE_UPLOAD_BYTES,
+    description:
+      'File size in bytes; the upload must match it exactly. Capped by GET /images/upload-limits',
   })
   @IsInt()
   @Min(1)
-  @Max(MAX_IMAGE_UPLOAD_BYTES)
   size: number;
 
   @ApiProperty({
@@ -73,4 +68,12 @@ export class SignedImageDto {
 
   @ApiProperty({ description: 'Seconds until uploadUrl expires' })
   expiresIn: number;
+}
+
+export class ImageUploadLimitsDto {
+  @ApiProperty({ example: 26214400, description: 'Largest accepted file' })
+  maxBytes: number;
+
+  @ApiProperty({ example: 10, description: 'Most files signed per request' })
+  maxFiles: number;
 }

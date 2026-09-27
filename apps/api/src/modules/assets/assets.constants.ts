@@ -5,3 +5,5 @@ export const ASSET_SORT_OPTIONS = [
   'alphabetical',
 ] as const;
 export type AssetSortOption = (typeof ASSET_SORT_OPTIONS)[number];
+
+export const ASSET_BULK_DELETE_MAX = 100;

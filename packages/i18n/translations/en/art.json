@@ -86,12 +86,27 @@
       "tagHintUsed_other": "Used on {{count}} pieces",
       "saveCount_one": "Upload {{count}} image",
       "saveCount_other": "Upload {{count}} images",
-      "failed_one": "{{count}} upload failed. Save again to retry it.",
-      "failed_other": "{{count}} uploads failed. Save again to retry them.",
       "status": {
         "uploading": "Uploading",
         "done": "Uploaded",
         "failed": "Upload failed"
+      },
+      "sharedTagsLabel": "Tags for all images",
+      "capacity": "{{count}} / {{max}} images · up to {{size}} MB each",
+      "progress": "Uploading… {{done}} of {{total}} done",
+      "itemTags": "Tags for {{name}}",
+      "itemTagsHint": "Only for this image. Tags for all images are added too.",
+      "remove": "Remove {{name}}",
+      "retryCount_one": "Retry {{count}} image",
+      "retryCount_other": "Retry {{count}} images",
+      "failed_one": "{{count}} upload failed. Retry it, or remove it.",
+      "failed_other": "{{count}} uploads failed. Retry them, or remove them.",
+      "skipped": {
+        "title_one": "{{count}} file wasn't added",
+        "title_other": "{{count}} files weren't added",
+        "tooLarge": "{{name}} is {{size}} MB (max {{max}} MB)",
+        "unsupportedType": "{{name}} isn't a supported image type",
+        "overLimit": "{{name}}: at most {{max}} images per upload"
       }
     },
     "card": {
@@ -106,6 +121,23 @@
       "dimensions": "Dimensions",
       "size": "Size",
       "uploaded": "Uploaded"
+    },
+    "selection": {
+      "start": "Select",
+      "toggle": "Select {{name}}",
+      "count_one": "{{count}} selected",
+      "count_other": "{{count}} selected",
+      "selectAll": "Select all",
+      "clear": "Clear",
+      "delete": "Delete",
+      "done": "Done",
+      "cancel": "Cancel",
+      "confirmTitle_one": "Delete {{count}} piece?",
+      "confirmTitle_other": "Delete {{count}} pieces?",
+      "confirmDescription": "They will be removed from your gallery and any projects they appear in. This can't be undone.",
+      "deleted_one": "Deleted {{count}} piece",
+      "deleted_other": "Deleted {{count}} pieces",
+      "deleteFailed": "Couldn't delete the selected pieces. Nothing was removed."
     }
   },
   "queue": {

@@ -891,6 +891,28 @@
         ]
       }
     },
+    "/images/upload-limits": {
+      "get": {
+        "operationId": "imageUploadLimits",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageUploadLimitsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Largest accepted image and most images signed per request",
+        "tags": [
+          "images"
+        ]
+      }
+    },
     "/images/sign": {
       "post": {
         "operationId": "signImage",
@@ -918,6 +940,38 @@
           }
         },
         "summary": "Get a presigned URL to upload an image directly to storage",
+        "tags": [
+          "images"
+        ]
+      }
+    },
+    "/images/sign/batch": {
+      "post": {
+        "operationId": "signImageBatch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignImageBatchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedImageBatchDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get presigned upload URLs for several images in one request",
         "tags": [
           "images"
         ]
@@ -2080,6 +2134,38 @@
           }
         },
         "summary": "Delete an asset",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/assets/bulk-delete": {
+      "post": {
+        "operationId": "bulkDeleteAssets",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkDeleteAssetsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkDeleteAssetsResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete several assets at once; all-or-nothing on permissions",
         "tags": [
           "assets"
         ]
@@ -5455,6 +5541,25 @@
           "redis"
         ]
       },
+      "ImageUploadLimitsDto": {
+        "type": "object",
+        "properties": {
+          "maxBytes": {
+            "type": "number",
+            "example": 26214400,
+            "description": "Largest accepted file"
+          },
+          "maxFiles": {
+            "type": "number",
+            "example": 10,
+            "description": "Most files signed per request"
+          }
+        },
+        "required": [
+          "maxBytes",
+          "maxFiles"
+        ]
+      },
       "SignImageDto": {
         "type": "object",
         "properties": {
@@ -5476,8 +5581,7 @@
           "size": {
             "type": "number",
             "example": 204800,
-            "description": "File size in bytes; the upload must match it exactly",
-            "maximum": 10485760
+            "description": "File size in bytes; the upload must match it exactly. Capped by GET /images/upload-limits"
           },
           "uploaderName": {
             "type": "string",
@@ -5516,6 +5620,71 @@
           "key",
           "publicUrl",
           "expiresIn"
+        ]
+      },
+      "SignImageBatchItemDto": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string",
+            "example": "profile-photo.jpg"
+          },
+          "contentType": {
+            "type": "string",
+            "example": "image/jpeg",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp",
+              "image/gif",
+              "image/avif"
+            ]
+          },
+          "size": {
+            "type": "number",
+            "example": 204800,
+            "description": "File size in bytes; the upload must match it exactly. Capped by GET /images/upload-limits"
+          }
+        },
+        "required": [
+          "fileName",
+          "contentType",
+          "size"
+        ]
+      },
+      "SignImageBatchDto": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "description": "Capped by GET /images/upload-limits",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SignImageBatchItemDto"
+            }
+          },
+          "uploaderName": {
+            "type": "string",
+            "example": "Jane Doe",
+            "description": "Required when not signed in; names the upload folder"
+          }
+        },
+        "required": [
+          "files"
+        ]
+      },
+      "SignedImageBatchDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "One signed upload per requested file, in request order",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SignedImageDto"
+            }
+          }
+        },
+        "required": [
+          "items"
         ]
       },
       "SocialPlatformDto": {
@@ -6369,6 +6538,43 @@
             }
           }
         }
+      },
+      "BulkDeleteAssetsDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "example": [
+              "clx1234567890",
+              "clx0987654321"
+            ],
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      },
+      "BulkDeleteAssetsResultDto": {
+        "type": "object",
+        "properties": {
+          "deletedIds": {
+            "example": [
+              "clx1234567890"
+            ],
+            "description": "Ids that were deleted; ids that no longer exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "deletedIds"
+        ]
       },
       "UpdateAssetDto": {
         "type": "object",

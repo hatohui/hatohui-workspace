@@ -83,11 +83,27 @@
       "tagHintType": "{{label}} の作例",
       "tagHintUsed_other": "{{count}} 点で使用中",
       "saveCount_other": "{{count}} 枚をアップロード",
-      "failed_other": "{{count}} 件のアップロードに失敗しました。もう一度保存して再試行してください。",
       "status": {
         "uploading": "アップロード中",
         "done": "アップロード完了",
         "failed": "アップロード失敗"
+      },
+      "sharedTagsLabel": "すべての画像のタグ",
+      "capacity": "{{count}} / {{max}} 枚・1枚あたり最大 {{size}} MB",
+      "progress": "アップロード中… {{total}} 枚中 {{done}} 枚完了",
+      "itemTags": "{{name}} のタグ",
+      "itemTagsHint": "この画像のみに適用されます。全画像のタグも追加されます。",
+      "remove": "{{name}} を削除",
+      "retryCount_one": "{{count}} 枚を再試行",
+      "retryCount_other": "{{count}} 枚を再試行",
+      "failed_one": "{{count}} 件のアップロードに失敗しました。再試行するか削除してください。",
+      "failed_other": "{{count}} 件のアップロードに失敗しました。再試行するか削除してください。",
+      "skipped": {
+        "title_one": "{{count}} 件のファイルを追加できませんでした",
+        "title_other": "{{count}} 件のファイルを追加できませんでした",
+        "tooLarge": "{{name}} は {{size}} MB です（上限 {{max}} MB）",
+        "unsupportedType": "{{name}} は対応していない画像形式です",
+        "overLimit": "{{name}}：1回のアップロードは最大 {{max}} 枚です"
       }
     },
     "card": {
@@ -102,6 +118,20 @@
       "dimensions": "サイズ",
       "size": "容量",
       "uploaded": "アップロード日"
+    },
+    "selection": {
+      "start": "選択",
+      "toggle": "{{name}} を選択",
+      "count_other": "{{count}} 件選択中",
+      "selectAll": "すべて選択",
+      "clear": "選択解除",
+      "delete": "削除",
+      "done": "完了",
+      "cancel": "キャンセル",
+      "confirmTitle_other": "{{count}} 件の作品を削除しますか？",
+      "confirmDescription": "ギャラリーと、掲載されているプロジェクトから削除されます。この操作は取り消せません。",
+      "deleted_other": "{{count}} 件の作品を削除しました",
+      "deleteFailed": "選択した作品を削除できませんでした。何も削除されていません。"
     }
   },
   "queue": {

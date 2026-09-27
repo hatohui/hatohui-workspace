@@ -82,11 +82,27 @@
       "tagHintType": "Ví dụ cho {{label}}",
       "tagHintUsed_other": "Dùng cho {{count}} tác phẩm",
       "saveCount_other": "Tải lên {{count}} ảnh",
-      "failed_other": "{{count}} ảnh tải lên thất bại. Lưu lại để thử lại.",
       "status": {
         "uploading": "Đang tải lên",
         "done": "Đã tải lên",
         "failed": "Tải lên thất bại"
+      },
+      "sharedTagsLabel": "Thẻ cho tất cả ảnh",
+      "capacity": "{{count}} / {{max}} ảnh · tối đa {{size}} MB mỗi ảnh",
+      "progress": "Đang tải lên… xong {{done}}/{{total}}",
+      "itemTags": "Thẻ cho {{name}}",
+      "itemTagsHint": "Chỉ áp dụng cho ảnh này. Thẻ chung cũng được thêm vào.",
+      "remove": "Xóa {{name}}",
+      "retryCount_one": "Thử lại {{count}} ảnh",
+      "retryCount_other": "Thử lại {{count}} ảnh",
+      "failed_one": "{{count}} ảnh tải lên thất bại. Hãy thử lại hoặc xóa.",
+      "failed_other": "{{count}} ảnh tải lên thất bại. Hãy thử lại hoặc xóa.",
+      "skipped": {
+        "title_one": "{{count}} tệp không được thêm",
+        "title_other": "{{count}} tệp không được thêm",
+        "tooLarge": "{{name}} nặng {{size}} MB (tối đa {{max}} MB)",
+        "unsupportedType": "{{name}} không phải định dạng ảnh được hỗ trợ",
+        "overLimit": "{{name}}: mỗi lần tải lên tối đa {{max}} ảnh"
       }
     },
     "card": {
@@ -101,6 +117,20 @@
       "dimensions": "Kích thước",
       "size": "Dung lượng",
       "uploaded": "Ngày tải lên"
+    },
+    "selection": {
+      "start": "Chọn",
+      "toggle": "Chọn {{name}}",
+      "count_other": "Đã chọn {{count}}",
+      "selectAll": "Chọn tất cả",
+      "clear": "Bỏ chọn",
+      "delete": "Xóa",
+      "done": "Xong",
+      "cancel": "Hủy",
+      "confirmTitle_other": "Xóa {{count}} tác phẩm?",
+      "confirmDescription": "Các tác phẩm sẽ bị xóa khỏi thư viện và mọi dự án chứa chúng. Không thể hoàn tác.",
+      "deleted_other": "Đã xóa {{count}} tác phẩm",
+      "deleteFailed": "Không thể xóa các tác phẩm đã chọn. Chưa có gì bị xóa."
     }
   },
   "queue": {

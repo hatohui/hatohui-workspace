@@ -47,7 +47,10 @@ export class AdminSystemParametersService {
 
     try {
       const row = await this.db.systemParameters.create({ data: dto });
-      await this.cache.invalidate(CACHE_KEYS.systemParametersList());
+      await this.cache.invalidate(
+        CACHE_KEYS.systemParametersList(),
+        CACHE_KEYS.imageUploadLimits(),
+      );
       return this.toDto(row);
     } catch (error) {
       if (
@@ -82,7 +85,10 @@ export class AdminSystemParametersService {
       where: { id },
       data: { value: dto.value },
     });
-    await this.cache.invalidate(CACHE_KEYS.systemParametersList());
+    await this.cache.invalidate(
+      CACHE_KEYS.systemParametersList(),
+      CACHE_KEYS.imageUploadLimits(),
+    );
 
     return this.toDto(row);
   }

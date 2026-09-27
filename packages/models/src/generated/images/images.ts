@@ -6,17 +6,29 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
+  ImageUploadLimitsDto,
+  SignImageBatchDto,
   SignImageDto,
+  SignedImageBatchDto,
   SignedImageDto
 } from '../schemas';
 
@@ -24,6 +36,133 @@ import { customFetch } from '../../mutator/custom-fetch';
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
+
+const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
+  const result = { queryKey } as T & { queryKey: K };
+  for (const key of Object.keys(query)) {
+    // The explicit queryKey always wins, matching the previous
+    // `{ ...query, queryKey }` spread where it was set last.
+    if (key === 'queryKey') continue;
+    Object.defineProperty(result, key, {
+      enumerable: true,
+      configurable: true,
+      get: () => (query as Record<string, unknown>)[key],
+    });
+  }
+  return result;
+};
+
+export type imageUploadLimitsResponse200 = {
+  data: ImageUploadLimitsDto
+  status: 200
+}
+
+export type imageUploadLimitsResponseSuccess = (imageUploadLimitsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type imageUploadLimitsResponse = (imageUploadLimitsResponseSuccess)
+
+export const getImageUploadLimitsUrl = () => {
+
+
+
+
+  return `/images/upload-limits`
+}
+
+/**
+ * @summary Largest accepted image and most images signed per request
+ */
+export const imageUploadLimits = async ( options?: RequestInit): Promise<imageUploadLimitsResponse> => {
+
+  return customFetch<imageUploadLimitsResponse>(getImageUploadLimitsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getImageUploadLimitsQueryKey = () => {
+    return [
+    `/images/upload-limits`
+    ] as const;
+    }
+
+
+export const getImageUploadLimitsQueryOptions = <TData = Awaited<ReturnType<typeof imageUploadLimits>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof imageUploadLimits>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getImageUploadLimitsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof imageUploadLimits>>> = ({ signal }) => imageUploadLimits({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof imageUploadLimits>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ImageUploadLimitsQueryResult = NonNullable<Awaited<ReturnType<typeof imageUploadLimits>>>
+export type ImageUploadLimitsQueryError = unknown
+
+
+export function useImageUploadLimits<TData = Awaited<ReturnType<typeof imageUploadLimits>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof imageUploadLimits>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof imageUploadLimits>>,
+          TError,
+          Awaited<ReturnType<typeof imageUploadLimits>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useImageUploadLimits<TData = Awaited<ReturnType<typeof imageUploadLimits>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof imageUploadLimits>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof imageUploadLimits>>,
+          TError,
+          Awaited<ReturnType<typeof imageUploadLimits>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useImageUploadLimits<TData = Awaited<ReturnType<typeof imageUploadLimits>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof imageUploadLimits>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Largest accepted image and most images signed per request
+ */
+
+export function useImageUploadLimits<TData = Awaited<ReturnType<typeof imageUploadLimits>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof imageUploadLimits>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getImageUploadLimitsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
 
 
 
@@ -108,4 +247,86 @@ export const useSignImage = <TError = unknown,
         TContext
       > => {
       return useMutation(getSignImageMutationOptions(options), queryClient);
+    }
+    export type signImageBatchResponse200 = {
+  data: SignedImageBatchDto
+  status: 200
+}
+
+export type signImageBatchResponseSuccess = (signImageBatchResponse200) & {
+  headers: Headers;
+};
+;
+
+export type signImageBatchResponse = (signImageBatchResponseSuccess)
+
+export const getSignImageBatchUrl = () => {
+
+
+
+
+  return `/images/sign/batch`
+}
+
+/**
+ * @summary Get presigned upload URLs for several images in one request
+ */
+export const signImageBatch = async (signImageBatchDto: SignImageBatchDto, options?: RequestInit): Promise<signImageBatchResponse> => {
+
+  return customFetch<signImageBatchResponse>(getSignImageBatchUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(signImageBatchDto)
+  }
+);}
+
+
+
+
+
+export const getSignImageBatchMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signImageBatch>>, TError,{data: SignImageBatchDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof signImageBatch>>, TError,{data: SignImageBatchDto}, TContext> => {
+
+const mutationKey = ['signImageBatch'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof signImageBatch>>, {data: SignImageBatchDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  signImageBatch(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SignImageBatchMutationResult = NonNullable<Awaited<ReturnType<typeof signImageBatch>>>
+    export type SignImageBatchMutationBody = SignImageBatchDto
+    export type SignImageBatchMutationError = unknown
+
+    /**
+ * @summary Get presigned upload URLs for several images in one request
+ */
+export const useSignImageBatch = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signImageBatch>>, TError,{data: SignImageBatchDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof signImageBatch>>,
+        TError,
+        {data: SignImageBatchDto},
+        TContext
+      > => {
+      return useMutation(getSignImageBatchMutationOptions(options), queryClient);
     }

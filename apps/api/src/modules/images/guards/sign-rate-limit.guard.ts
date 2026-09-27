@@ -33,6 +33,7 @@ export class SignRateLimitGuard implements CanActivate {
 
     const count = await this.increment(
       `${SIGN_RATE_LIMIT_KEY_PREFIX}:${subject}`,
+      this.costOf(request),
     );
     if (count !== null && count > limit) {
       throw new HttpException(
@@ -43,12 +44,18 @@ export class SignRateLimitGuard implements CanActivate {
     return true;
   }
 
-  private async increment(key: string): Promise<number | null> {
+  private costOf(request: Request): number {
+    const files = (request.body as { files?: unknown } | undefined)?.files;
+    if (!Array.isArray(files) || files.length === 0) return 1;
+    return files.length;
+  }
+
+  private async increment(key: string, cost: number): Promise<number | null> {
     try {
       const results = await this.redis
         .multi()
         .set(key, 0, 'EX', SIGN_RATE_LIMIT_WINDOW_SECONDS, 'NX')
-        .incr(key)
+        .incrby(key, cost)
         .exec();
       const [error, count] = results?.[1] ?? [];
       if (error) throw error;

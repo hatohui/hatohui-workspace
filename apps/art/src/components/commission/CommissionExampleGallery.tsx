@@ -5,6 +5,7 @@ import type { useCommissionForm } from '@/hooks/useCommissionForm';
 import { useCommissionExampleGallery } from '@/hooks/useCommissionExampleGallery';
 import { COMMISSION_GALLERY_ROW_HEIGHT_CLASS } from '@/constants/commission';
 import { ImageViewer } from '@/components/shared/ImageViewer';
+import { JustifiedRows } from '@/components/shared/JustifiedRows';
 import { CommissionExampleTile } from './CommissionExampleTile';
 
 export function CommissionExampleGallery({
@@ -29,17 +30,17 @@ export function CommissionExampleGallery({
           {t('commission.gallery.empty')}
         </p>
       ) : (
-        <div
-          className={`flex flex-wrap gap-2 after:grow-[999999] after:content-[''] ${COMMISSION_GALLERY_ROW_HEIGHT_CLASS}`}
-        >
-          {gallery.items.map((asset) => (
+        <JustifiedRows
+          items={gallery.items}
+          className={`gap-2 ${COMMISSION_GALLERY_ROW_HEIGHT_CLASS}`}
+          renderItem={(asset) => (
             <CommissionExampleTile
               key={asset.id}
               asset={asset}
               onView={gallery.viewer.open}
             />
-          ))}
-        </div>
+          )}
+        />
       )}
       <ImageViewer
         src={gallery.viewer.src}

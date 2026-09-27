@@ -25,6 +25,10 @@ import {
   UpdateAssetDto,
 } from '@/modules/assets/dto/asset.dto';
 import { TagSuggestionDto } from '@/modules/assets/dto/tag-suggestion.dto';
+import {
+  BulkDeleteAssetsDto,
+  BulkDeleteAssetsResultDto,
+} from '@/modules/assets/dto/bulk-delete-assets.dto';
 
 @ApiTags('assets')
 @Controller('assets')
@@ -75,6 +79,21 @@ export class AssetsController {
     @CurrentUser() uploader: User,
   ): Promise<AssetDto> {
     return this.assetsService.create(dto, uploader);
+  }
+
+  @Post('bulk-delete')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @ApiOperation({
+    operationId: 'bulkDeleteAssets',
+    summary: 'Delete several assets at once; all-or-nothing on permissions',
+  })
+  @ApiOkResponse({ type: BulkDeleteAssetsResultDto })
+  removeMany(
+    @Body() dto: BulkDeleteAssetsDto,
+    @CurrentUser() actor: User,
+  ): Promise<BulkDeleteAssetsResultDto> {
+    return this.assetsService.removeMany(dto.ids, actor);
   }
 
   @Patch(':id')

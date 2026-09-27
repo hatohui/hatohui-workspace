@@ -11,7 +11,12 @@ import {
 } from '@/hooks/useGalleryAssets';
 import { GalleryFilters } from './GalleryFilters';
 import { GalleryCard } from './GalleryCard';
+import { JustifiedRows } from '@/components/shared/JustifiedRows';
 import { UploadDialog } from './UploadDialog';
+import { GalleryOwnerActions } from './GalleryOwnerActions';
+import { GallerySelectionBar } from './GallerySelectionBar';
+import { GalleryDeleteConfirm } from './GalleryDeleteConfirm';
+import { useGallerySelection } from '@/hooks/useGallerySelection';
 import { GallerySectionTabs, type GallerySection } from './GallerySectionTabs';
 import { ProjectsSection } from '@/components/projects/ProjectsSection';
 import { AddToProjectDialog } from '@/components/projects/AddToProjectDialog';
@@ -32,6 +37,7 @@ export function GalleryGrid({
   const { t } = useTranslation('art');
   const { user } = useAuth();
   const gallery = useGalleryAssets(artistId, initialData);
+  const selection = useGallerySelection(gallery.items);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [projectTarget, setProjectTarget] = useState<AssetDto | null>(null);
   const [section, setSection] = useState<GallerySection>('assets');
@@ -55,9 +61,12 @@ export function GalleryGrid({
           />
         </div>
         {section === 'assets' && isOwner && (
-          <Button onClick={() => setIsUploadOpen(true)}>
-            {t('gallery.upload.cta')}
-          </Button>
+          <GalleryOwnerActions
+            canSelect={gallery.items.length > 0}
+            isSelecting={selection.isSelecting}
+            onSelect={selection.start}
+            onUpload={() => setIsUploadOpen(true)}
+          />
         )}
       </div>
 
@@ -77,20 +86,33 @@ export function GalleryGrid({
             </p>
           )}
 
-          <div
-            ref={gridRef}
-            className={`mt-6 flex flex-wrap gap-2 after:grow-[999999] after:content-[''] sm:gap-3 ${GALLERY_ROW_HEIGHT_CLASS}`}
-          >
-            {gallery.items.map((asset) => (
-              <GalleryCard
-                key={asset.id}
-                asset={asset}
-                isAdmin={isOwner}
-                href={`${galleryBasePath}/${asset.id}`}
-                onAddToProject={() => setProjectTarget(asset)}
-              />
-            ))}
+          <div ref={gridRef} className="mt-6">
+            <JustifiedRows
+              items={gallery.items}
+              className={`gap-2 sm:gap-3 ${GALLERY_ROW_HEIGHT_CLASS}`}
+              renderItem={(asset) => (
+                <GalleryCard
+                  key={asset.id}
+                  asset={asset}
+                  isAdmin={isOwner}
+                  href={`${galleryBasePath}/${asset.id}`}
+                  onAddToProject={() => setProjectTarget(asset)}
+                  selection={
+                    selection.isSelecting
+                      ? {
+                          selected: selection.isSelected(asset.id),
+                          onToggle: () => selection.toggle(asset.id),
+                        }
+                      : undefined
+                  }
+                />
+              )}
+            />
           </div>
+
+          {selection.isSelecting && (
+            <GallerySelectionBar selection={selection} />
+          )}
 
           {(gallery.page > 1 || gallery.hasMore) && (
             <div className="mt-8 flex justify-center gap-2">
@@ -113,6 +135,7 @@ export function GalleryGrid({
         </>
       )}
 
+      <GalleryDeleteConfirm selection={selection} />
       <UploadDialog open={isUploadOpen} onOpenChange={setIsUploadOpen} />
       <AddToProjectDialog
         asset={projectTarget}

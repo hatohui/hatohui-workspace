@@ -1,27 +1,27 @@
 import { useCallback, useState } from 'react';
 import { SignImageDtoContentType, useSignImage } from '@hatohui/models';
-import { MAX_IMAGE_UPLOAD_BYTES } from './image-upload.constants';
+import { validateImageFile } from './validateImageFile';
+import { putToSignedUrl } from './putToSignedUrl';
+import { useUploadLimits } from './useUploadLimits';
 
 export interface UploadedImage {
   key: string;
   publicUrl: string;
 }
 
-const ALLOWED_CONTENT_TYPES = new Set<string>(
-  Object.values(SignImageDtoContentType),
-);
-
 export function useImageUpload() {
   const signImage = useSignImage();
+  const limits = useUploadLimits();
   const [isUploading, setIsUploading] = useState(false);
 
   const uploadImage = useCallback(
     async (file: File, uploaderName?: string): Promise<UploadedImage> => {
-      if (!ALLOWED_CONTENT_TYPES.has(file.type)) {
+      const problem = validateImageFile(file, limits?.maxBytes);
+      if (problem === 'unsupportedType') {
         throw new Error(`Unsupported image type: ${file.type}`);
       }
-      if (file.size > MAX_IMAGE_UPLOAD_BYTES) {
-        throw new Error(`Image is larger than ${MAX_IMAGE_UPLOAD_BYTES} bytes`);
+      if (problem === 'tooLarge') {
+        throw new Error(`Image is larger than ${limits?.maxBytes} bytes`);
       }
       const contentType = file.type as SignImageDtoContentType;
 
@@ -36,22 +36,14 @@ export function useImageUpload() {
           },
         });
 
-        const upload = await fetch(signed.uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': file.type },
-          body: file,
-        });
-
-        if (!upload.ok) {
-          throw new Error(`Failed to upload image (${upload.status})`);
-        }
+        await putToSignedUrl(signed.uploadUrl, file);
 
         return { key: signed.key, publicUrl: signed.publicUrl };
       } finally {
         setIsUploading(false);
       }
     },
-    [signImage],
+    [signImage, limits],
   );
 
   return { uploadImage, isUploading };
