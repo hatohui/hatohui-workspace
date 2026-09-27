@@ -3,9 +3,7 @@ import type { NextConfig } from 'next';
 const assetPublicUrl = process.env.NEXT_PUBLIC_ASSET_URL;
 
 if (!assetPublicUrl && process.env.NODE_ENV === 'production') {
-  throw new Error(
-    'NEXT_PUBLIC_ASSET_URL must be set at build time: it populates images.remotePatterns, and without it every next/image request for an asset returns 400.',
-  );
+  throw new Error('NEXT_PUBLIC_ASSET_URL must be set at build time');
 }
 
 const parsedAssetUrl = assetPublicUrl ? new URL(assetPublicUrl) : undefined;

@@ -4,6 +4,6 @@ variable "domain_name" {
 }
 
 variable "validation_record_fqdns" {
-  description = "The DNS validation record FQDNs (created out-of-band, e.g. by the dns module) that prove domain ownership"
+  description = "The DNS validation record FQDNs that prove domain ownership"
   type        = list(string)
 }

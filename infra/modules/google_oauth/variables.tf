@@ -33,7 +33,7 @@ variable "additional_redirect_uris" {
 }
 
 variable "client_id" {
-  description = "The OAuth 2.0 Web client ID created in the Google Cloud console (Google exposes no API to create it)"
+  description = "The OAuth 2.0 Web client ID from the Google Cloud console"
   type        = string
 }
 

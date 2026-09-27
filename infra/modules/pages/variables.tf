@@ -9,7 +9,7 @@ variable "project_name" {
 }
 
 variable "production_branch" {
-  description = "The git branch treated as production (deployments are direct-upload, so this is metadata only)"
+  description = "The git branch treated as production"
   type        = string
   default     = "master"
 }
