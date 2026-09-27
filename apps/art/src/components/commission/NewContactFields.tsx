@@ -12,15 +12,20 @@ import {
 } from '@hatohui/ui';
 import { EMAIL_CONTACT_PLATFORM } from '@/constants/commission';
 import type { useCommissionContact } from '@/hooks/useCommissionContact';
+import type { CommissionValidation } from '@/hooks/useCommissionValidation';
+import { CommissionFieldError } from './CommissionFieldError';
 
 export function NewContactFields({
   contact,
   withEmail,
+  validation,
 }: {
   contact: ReturnType<typeof useCommissionContact>;
   withEmail: boolean;
+  validation: CommissionValidation;
 }) {
   const { t } = useTranslation('art');
+  const error = validation.errorFor('contactValue');
 
   return (
     <>
@@ -47,17 +52,33 @@ export function NewContactFields({
             ))}
           </SelectContent>
         </Select>
+        {withEmail && (
+          <p className="text-xs text-muted-foreground">
+            {t('commission.form.hints.contact')}
+          </p>
+        )}
       </div>
       {contact.needsValue && (
         <div className="space-y-1.5">
-          <Label htmlFor="contactValue">
-            {t('commission.form.contactValueLabel')}
+          <Label htmlFor="contactValue" required>
+            {t('commission.form.contactValueLabel', {
+              platform: contact.platform,
+            })}
           </Label>
           <Input
             id="contactValue"
             required
             value={contact.value}
+            placeholder={t('commission.form.placeholders.contactValue')}
+            aria-invalid={error ? true : undefined}
+            aria-describedby="contactValue-error"
+            onBlur={() => validation.touch('contactValue')}
             onChange={(event) => contact.setValue(event.target.value)}
+          />
+          <CommissionFieldError
+            id="contactValue-error"
+            message={error}
+            hint={t('commission.form.hints.contactValue')}
           />
         </div>
       )}

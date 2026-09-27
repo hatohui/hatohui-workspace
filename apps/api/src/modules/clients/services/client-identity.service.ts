@@ -29,6 +29,22 @@ export interface ResolvedCommissionIdentity {
   contact: ContactPoint;
 }
 
+const PROFILE_EMAIL_INCLUDE = {
+  clients: {
+    select: { email: true },
+    orderBy: { updatedAt: 'desc' },
+    take: 1,
+  },
+  user: { select: { email: true } },
+} satisfies Prisma.ProfileInclude;
+
+function emailOf(profile: {
+  clients: { email: string }[];
+  user: { email: string } | null;
+}): string | undefined {
+  return profile.clients[0]?.email ?? profile.user?.email;
+}
+
 @Injectable()
 export class ClientIdentityService {
   constructor(private readonly db: Database) {}
@@ -56,8 +72,11 @@ export class ClientIdentityService {
       where: { OR: conditions },
       take: IDENTITY_MATCH_LIMIT,
       orderBy: { createdAt: 'asc' },
+      include: PROFILE_EMAIL_INCLUDE,
     });
-    return profiles.map(toCommissionIdentityDto);
+    return profiles.map((profile) =>
+      toCommissionIdentityDto(profile, Boolean(emailOf(profile))),
+    );
   }
 
   async mine(user: User): Promise<MyCommissionIdentityDto> {
@@ -66,7 +85,7 @@ export class ClientIdentityService {
     });
     return {
       email: user.email,
-      identity: profile ? toCommissionIdentityDto(profile) : null,
+      identity: profile ? toCommissionIdentityDto(profile, true) : null,
     };
   }
 
@@ -120,7 +139,9 @@ export class ClientIdentityService {
     input: CommissionIdentityInput,
   ): Promise<ResolvedCommissionIdentity> {
     const name = input.clientName?.trim();
-    const email = input.clientEmail?.trim();
+    const email =
+      input.clientEmail?.trim() ||
+      (await this.emailOnFile(input.matchedProfileId));
     if (!name || !email) {
       throw new BadRequestException(
         'clientName and clientEmail are required when not signed in',
@@ -143,6 +164,17 @@ export class ClientIdentityService {
       create: { ...data, email, profileId: profile.id },
     });
     return { client, contact };
+  }
+
+  private async emailOnFile(
+    profileId: string | undefined,
+  ): Promise<string | undefined> {
+    if (!profileId) return undefined;
+    const profile = await this.db.profile.findUnique({
+      where: { id: profileId },
+      include: PROFILE_EMAIL_INCLUDE,
+    });
+    return profile ? emailOf(profile) : undefined;
   }
 
   private async profileForAnonymous(
@@ -195,9 +227,11 @@ export class ClientIdentityService {
 
 export function toCommissionIdentityDto(
   profile: Profile,
+  hasEmail: boolean,
 ): CommissionIdentityDto {
   return {
     profileId: profile.id,
+    hasEmail,
     displayName: profile.displayName,
     handle: profile.handle,
     avatarUrl: profile.avatarUrl,

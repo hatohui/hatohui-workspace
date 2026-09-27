@@ -17,12 +17,12 @@ export function CommissionVisibilityCheckbox({
     <div className="flex items-center gap-2">
       <label className="flex items-center gap-2 text-sm">
         <Checkbox
-          checked={isPublic}
-          onCheckedChange={(value) => onChange(value === true)}
+          checked={!isPublic}
+          onCheckedChange={(value) => onChange(value !== true)}
         />
-        {t('commission.form.isPublicLabel')}
+        {t('commission.form.hideFromQueueLabel')}
       </label>
-      <InfoTooltip content={t('commission.form.isPublicTooltip')} />
+      <InfoTooltip content={t('commission.form.hideFromQueueTooltip')} />
     </div>
   );
 }

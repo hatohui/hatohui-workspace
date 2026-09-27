@@ -35,6 +35,7 @@ export function useCommissionContact(form: CommissionForm) {
     : state.contactPlatform;
 
   const select = (value: string) => {
+    if (!value) return;
     if (value === NEW_CONTACT_OPTION) {
       update('isNewContact', true);
       update('contactPlatform', platformNames[0] ?? EMAIL_CONTACT_PLATFORM);
@@ -64,7 +65,9 @@ export function useCommissionContact(form: CommissionForm) {
     needsValue,
     platform: state.contactPlatform,
     value: state.contactValue,
-    setPlatform: (platform: string) => update('contactPlatform', platform),
+    setPlatform: (platform: string) => {
+      if (platform) update('contactPlatform', platform);
+    },
     setValue: (value: string) => update('contactValue', value),
   };
 }

@@ -59,6 +59,8 @@ import {
   QUOTE_EMAIL_TEMPLATE_CONFIG_TYPE,
   QUEUE_STATUSES,
   QUEUE_STATUS_RANK,
+  COMMISSION_MIN_DEADLINE_DAYS,
+  DEADLINE_TIMEZONE_SLACK_DAYS,
 } from '@/modules/commissions/commissions.constants';
 import { CommissionOpeningsService } from '@/modules/commission-openings/services/commission-openings.service';
 import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
@@ -97,6 +99,7 @@ export class CommissionsService {
     dto: SubmitCommissionDto,
     submitter: User | null,
   ): Promise<CommissionDto> {
+    assertDeadlineFarEnough(dto.deadline);
     const [currency, commissionOpeningId, estimate] = await Promise.all([
       this.currencyFor(dto.artistId),
       this.commissionOpenings.openIdFor(dto.artistId),
@@ -128,10 +131,12 @@ export class CommissionsService {
             currency,
             estimateLow: estimate?.low ?? null,
             estimateHigh: estimate?.high ?? null,
-            referenceAssets:
-              dto.referenceAssets?.map((key) =>
+            referenceAssets: [
+              ...(dto.referenceAssets ?? []).map((key) =>
                 this.storage.getPublicUrl(key),
-              ) ?? [],
+              ),
+              ...(dto.referenceUrls ?? []),
+            ],
             isHiddenInQueue: !dto.isPublic,
             contactPlatform: contact.platform,
             contactValue: contact.value,
@@ -923,6 +928,22 @@ function toHistoryDto(history: {
     note: history.note,
     createdAt: history.createdAt.toISOString(),
   };
+}
+
+function assertDeadlineFarEnough(deadline: string | undefined): void {
+  if (!deadline) return;
+  const earliest = new Date();
+  earliest.setUTCHours(0, 0, 0, 0);
+  earliest.setUTCDate(
+    earliest.getUTCDate() +
+      COMMISSION_MIN_DEADLINE_DAYS -
+      DEADLINE_TIMEZONE_SLACK_DAYS,
+  );
+  if (new Date(deadline) < earliest) {
+    throw new BadRequestException(
+      `deadline must be at least ${COMMISSION_MIN_DEADLINE_DAYS} days away`,
+    );
+  }
 }
 
 function submittedContact(dto: SubmitCommissionDto): ContactPoint {

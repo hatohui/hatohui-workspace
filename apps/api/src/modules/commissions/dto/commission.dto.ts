@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayMaxSize,
   IsArray,
   IsBoolean,
   IsDateString,
@@ -9,6 +10,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUrl,
   Min,
 } from 'class-validator';
 import {
@@ -20,6 +22,8 @@ import type { Prisma } from '@prisma/client';
 import {
   COMMISSION_STEP_KEYS,
   type CommissionStepKey,
+  REFERENCE_URL_LIMIT,
+  REFERENCE_URL_OPTIONS,
 } from '@/modules/commissions/commissions.constants';
 import { IsTiptapDocument } from '@/common/validators/tiptap-document.validator';
 
@@ -318,6 +322,18 @@ class CommissionRequestBaseDto {
   referenceAssets?: string[];
 
   @ApiProperty({
+    type: [String],
+    required: false,
+    description:
+      'External reference links (e.g. a Pinterest board or Drive folder), stored as-is',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(REFERENCE_URL_LIMIT)
+  @IsUrl(REFERENCE_URL_OPTIONS, { each: true })
+  referenceUrls?: string[];
+
+  @ApiProperty({
     default: false,
     required: false,
     description:
@@ -333,7 +349,7 @@ export class SubmitCommissionDto extends CommissionRequestBaseDto {
     example: 'Jane Doe',
     required: false,
     description:
-      'Required when not signed in; taken from the account otherwise',
+      'Required when not signed in, unless matchedProfileId already has one on file; taken from the account otherwise',
   })
   @IsOptional()
   @IsString()
@@ -344,7 +360,7 @@ export class SubmitCommissionDto extends CommissionRequestBaseDto {
     example: 'jane@example.com',
     required: false,
     description:
-      'Required when not signed in; taken from the account otherwise',
+      'Required when not signed in, unless matchedProfileId already has one on file; taken from the account otherwise',
   })
   @IsOptional()
   @IsEmail()

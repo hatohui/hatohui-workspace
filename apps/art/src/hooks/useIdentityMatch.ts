@@ -8,12 +8,10 @@ import {
 } from '@hatohui/models';
 import { useDebouncedValue } from '@hatohui/libs';
 import {
-  EMAIL_INPUT_PATTERN,
+  EMAIL_REGEX,
   IDENTITY_MATCH_DEBOUNCE_MS,
   IDENTITY_MATCH_QUERY_KEY,
 } from '@/constants/commission';
-
-const EMAIL_REGEX = new RegExp(`^${EMAIL_INPUT_PATTERN}$`);
 
 function toMatchQuery(
   name: string,

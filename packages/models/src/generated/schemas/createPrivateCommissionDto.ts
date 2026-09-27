@@ -23,6 +23,8 @@ export interface CreatePrivateCommissionDto {
   contactHandle?: string;
   /** Object keys returned by POST /images/sign */
   referenceAssets?: string[];
+  /** External reference links (e.g. a Pinterest board or Drive folder), stored as-is */
+  referenceUrls?: string[];
   /** Whether this commission (status, type) should show in the public /queue */
   isPublic?: boolean;
   clientName: string;

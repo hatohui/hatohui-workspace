@@ -8,6 +8,7 @@ export const GALLERY_TILE_ASPECT_MIN = 0.5;
 export const GALLERY_TILE_ASPECT_MAX = 2.5;
 export const GALLERY_MAX_ROW_HEIGHT_PX = 260;
 export const GALLERY_TILE_GROWTH_ALLOWANCE = 1.5;
+export const GALLERY_LAST_ROW_STRETCH_MIN_FILL = 0.5;
 export const GALLERY_ROW_HEIGHT_CLASS =
   '[--gallery-row:120px] sm:[--gallery-row:200px] lg:[--gallery-row:260px]';
 export const ARTWORK_FALLBACK_DIMENSION_PX = 1200;

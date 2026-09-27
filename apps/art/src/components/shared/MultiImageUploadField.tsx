@@ -7,11 +7,13 @@ import { ImagePreviewGrid } from './ImagePreviewGrid';
 
 export function MultiImageUploadField({
   label,
+  hint,
   files,
   onChange,
   isUploading,
 }: {
   label: string;
+  hint?: string;
   files: File[];
   onChange: (files: File[]) => void;
   isUploading?: boolean;
@@ -31,6 +33,7 @@ export function MultiImageUploadField({
           disabled={isUploading}
           hint={t('gallery.upload.dropzone')}
         />
+        {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
         <ImagePreviewGrid
           files={files}
           onRemove={removeFile}

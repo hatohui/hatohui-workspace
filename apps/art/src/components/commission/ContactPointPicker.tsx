@@ -14,17 +14,20 @@ import {
   NEW_CONTACT_OPTION,
 } from '@/constants/commission';
 import type { useCommissionContact } from '@/hooks/useCommissionContact';
+import type { CommissionValidation } from '@/hooks/useCommissionValidation';
 import { NewContactFields } from './NewContactFields';
 
 export function ContactPointPicker({
   contact,
+  validation,
 }: {
   contact: ReturnType<typeof useCommissionContact>;
+  validation: CommissionValidation;
 }) {
   const { t } = useTranslation('art');
 
   return (
-    <div className="space-y-3">
+    <div className="contents">
       {contact.hasIdentity && (
         <div className="space-y-1.5">
           <Label>{t('commission.form.contactLabel')}</Label>
@@ -46,10 +49,17 @@ export function ContactPointPicker({
               </SelectItem>
             </SelectContent>
           </Select>
+          <p className="text-xs text-muted-foreground">
+            {t('commission.form.hints.contact')}
+          </p>
         </div>
       )}
       {contact.showNewFields && (
-        <NewContactFields contact={contact} withEmail={!contact.hasIdentity} />
+        <NewContactFields
+          contact={contact}
+          withEmail={!contact.hasIdentity}
+          validation={validation}
+        />
       )}
     </div>
   );

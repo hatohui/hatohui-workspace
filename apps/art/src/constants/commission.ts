@@ -6,6 +6,7 @@ import {
 import type { CommissionOpeningDto } from '@hatohui/models';
 
 export const EMAIL_INPUT_PATTERN = String.raw`[^@\s]+@[^@\s]+\.[^@\s]+`;
+export const EMAIL_REGEX = new RegExp(`^${EMAIL_INPUT_PATTERN}$`);
 
 export const COMMISSION_STATUS_OPTIONS = Object.values(CommissionDtoStatus);
 export const PAYMENT_STATUS_OPTIONS = Object.values(CommissionDtoPaymentStatus);
@@ -131,4 +132,23 @@ export const EMPTY_VALUE = '-';
 
 export const COMMISSION_GALLERY_PAGE_SIZE = 12;
 export const COMMISSION_GALLERY_ROW_HEIGHT_CLASS =
-  '[--gallery-row:140px] xl:[--gallery-row:180px]';
+  '[--gallery-row:160px] xl:[--gallery-row:200px]';
+
+export const LEADING_AT_PATTERN = /^@/;
+
+export const COMMISSION_REQUIRED_FIELDS = [
+  'clientName',
+  'clientEmail',
+  'contactValue',
+  'idea',
+  'deadline',
+  'acceptTerms',
+] as const;
+export type CommissionRequiredField =
+  (typeof COMMISSION_REQUIRED_FIELDS)[number];
+
+export const REFERENCE_LINK_LIMIT = 10;
+export const REFERENCE_LINK_PROTOCOLS = ['http:', 'https:'];
+export const URL_PROTOCOL_PATTERN = /^[a-z][a-z\d+.-]*:\/\//i;
+
+export const COMMISSION_MIN_DEADLINE_DAYS = 3;

@@ -28,6 +28,12 @@ export class CommissionIdentityDto {
 
   @ApiProperty({ type: ContactPointDto, isArray: true })
   contacts: ContactPointDto[];
+
+  @ApiProperty({
+    description:
+      'An email is already on file, so ordering as this identity needs no email',
+  })
+  hasEmail: boolean;
 }
 
 export class MatchCommissionIdentityDto {

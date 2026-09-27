@@ -6818,6 +6818,13 @@
               "type": "string"
             }
           },
+          "referenceUrls": {
+            "description": "External reference links (e.g. a Pinterest board or Drive folder), stored as-is",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "isPublic": {
             "type": "boolean",
             "default": false,
@@ -6826,12 +6833,12 @@
           "clientName": {
             "type": "string",
             "example": "Jane Doe",
-            "description": "Required when not signed in; taken from the account otherwise"
+            "description": "Required when not signed in, unless matchedProfileId already has one on file; taken from the account otherwise"
           },
           "clientEmail": {
             "type": "string",
             "example": "jane@example.com",
-            "description": "Required when not signed in; taken from the account otherwise"
+            "description": "Required when not signed in, unless matchedProfileId already has one on file; taken from the account otherwise"
           },
           "clientHandle": {
             "type": "string",
@@ -7155,6 +7162,13 @@
           },
           "referenceAssets": {
             "description": "Object keys returned by POST /images/sign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "referenceUrls": {
+            "description": "External reference links (e.g. a Pinterest board or Drive folder), stored as-is",
             "type": "array",
             "items": {
               "type": "string"
@@ -8654,6 +8668,10 @@
             "items": {
               "$ref": "#/components/schemas/ContactPointDto"
             }
+          },
+          "hasEmail": {
+            "type": "boolean",
+            "description": "An email is already on file, so ordering as this identity needs no email"
           }
         },
         "required": [
@@ -8661,7 +8679,8 @@
           "displayName",
           "handle",
           "avatarUrl",
-          "contacts"
+          "contacts",
+          "hasEmail"
         ]
       },
       "MyCommissionIdentityDto": {

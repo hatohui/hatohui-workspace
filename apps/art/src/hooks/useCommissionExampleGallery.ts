@@ -1,7 +1,8 @@
 'use client';
 
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useTranslation } from '@hatohui/i18n';
-import { useAssets } from '@hatohui/models';
+import { assets, getAssetsQueryKey } from '@hatohui/models';
 import { COMMISSION_GALLERY_PAGE_SIZE } from '@/constants/commission';
 import type { useCommissionPricingEstimate } from './useCommissionPricingEstimate';
 import { useImageViewer } from './useImageViewer';
@@ -18,15 +19,20 @@ export function useCommissionExampleGallery(
   const selectedType = pricing.types.find(
     (type) => type.id === commissionTypeId,
   );
-  const tag = selectedType?.tagName ?? undefined;
-  const query = useAssets({
-    tag,
+  const params = {
+    tag: selectedType?.tagName ?? undefined,
     uploadedById: artistId,
-    sort: 'newest',
-    page: 1,
+    sort: 'newest' as const,
     pageSize: COMMISSION_GALLERY_PAGE_SIZE,
+  };
+  const query = useInfiniteQuery({
+    queryKey: [...getAssetsQueryKey(params), 'infinite'],
+    queryFn: ({ pageParam }) => assets({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (last) =>
+      last.data.hasMore ? last.data.page + 1 : undefined,
   });
-  const items = query.data?.data.items ?? [];
+  const items = query.data?.pages.flatMap((page) => page.data.items) ?? [];
 
   return {
     title: selectedType
@@ -38,6 +44,9 @@ export function useCommissionExampleGallery(
       : t('commission.gallery.recentTitle'),
     items,
     isEmpty: !query.isPending && items.length === 0,
+    hasMore: query.hasNextPage,
+    isFetchingMore: query.isFetchingNextPage,
+    loadMore: () => void query.fetchNextPage(),
     viewer,
   };
 }
