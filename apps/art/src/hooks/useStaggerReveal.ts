@@ -10,17 +10,34 @@ export function useStaggerReveal<T extends HTMLElement>(
   deps: DependencyList,
 ) {
   const containerRef = useRef<T>(null);
+  const contextRef = useRef<gsap.Context | null>(null);
+  const revealedRef = useRef(new WeakSet<Element>());
+
+  useLayoutEffect(() => {
+    const context = gsap.context(() => {}, containerRef.current ?? undefined);
+    contextRef.current = context;
+    return () => {
+      context.revert();
+      contextRef.current = null;
+      revealedRef.current = new WeakSet();
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    const context = contextRef.current;
+    if (!container || !context) return;
 
-    const items = container.querySelectorAll(selector);
+    const revealed = revealedRef.current;
+    const items = Array.from(container.querySelectorAll(selector)).filter(
+      (item) => !revealed.has(item),
+    );
+    items.forEach((item) => revealed.add(item));
     if (items.length === 0) return;
 
     if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return;
 
-    const context = gsap.context(() => {
+    context.add(() => {
       gsap.from(items, {
         opacity: 0,
         y: 12,
@@ -28,9 +45,7 @@ export function useStaggerReveal<T extends HTMLElement>(
         ease: 'power1.out',
         stagger: { each: 0.04, from: 'start' },
       });
-    }, container);
-
-    return () => context.revert();
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- deps intentionally control re-trigger
   }, deps);
 

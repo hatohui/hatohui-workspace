@@ -1942,6 +1942,16 @@
             }
           },
           {
+            "name": "hidePrivate",
+            "required": false,
+            "in": "query",
+            "description": "Exclude private assets and assets in private projects",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "name": "sort",
             "required": false,
             "in": "query",

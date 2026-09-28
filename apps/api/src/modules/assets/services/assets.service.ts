@@ -73,6 +73,7 @@ export class AssetsService {
     pageSize: number,
     viewer: User | null,
     uploadedById?: string,
+    hidePrivate = false,
   ): Promise<PaginatedAssetsDto> {
     const visibility = await this.visibleTo(viewer);
     const where: Prisma.AssetWhereInput = {
@@ -93,6 +94,7 @@ export class AssetsService {
           : {},
         tag ? { tags: { some: { tag: { name: tag } } } } : {},
         uploadedById ? { uploadedById } : {},
+        hidePrivate ? publicOnly : {},
         visibility,
       ],
     };

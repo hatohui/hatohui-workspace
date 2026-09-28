@@ -26,14 +26,19 @@ export function useGalleryAssets(
   const [query, setQuery] = useState('');
   const [tag, setTag] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<AssetsSort>('newest');
+  const [hidePrivate, setHidePrivate] = useState(false);
 
   const debouncedQuery = useDebouncedValue(query, GALLERY_SEARCH_DEBOUNCE_MS);
   const isDefaultFilters =
-    debouncedQuery === '' && tag === undefined && sort === 'newest';
+    debouncedQuery === '' &&
+    tag === undefined &&
+    sort === 'newest' &&
+    !hidePrivate;
   const params = {
     query: debouncedQuery || undefined,
     tag,
     uploadedById: artistId,
+    hidePrivate: hidePrivate || undefined,
     sort,
     pageSize: GALLERY_PAGE_SIZE,
   };
@@ -90,5 +95,7 @@ export function useGalleryAssets(
     setTag,
     sort,
     setSort,
+    hidePrivate,
+    setHidePrivate,
   };
 }

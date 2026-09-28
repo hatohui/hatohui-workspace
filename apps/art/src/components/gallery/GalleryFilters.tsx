@@ -12,11 +12,14 @@ import {
 import { GALLERY_SORT_OPTIONS } from '@/constants/gallery';
 import type { useGalleryAssets } from '@/hooks/useGalleryAssets';
 import { GallerySearch } from './GallerySearch';
+import { GalleryHidePrivateToggle } from './GalleryHidePrivateToggle';
 
 export function GalleryFilters({
   gallery,
+  canHidePrivate,
 }: {
   gallery: ReturnType<typeof useGalleryAssets>;
+  canHidePrivate: boolean;
 }) {
   const { t } = useTranslation('art');
 
@@ -38,6 +41,12 @@ export function GalleryFilters({
           ))}
         </SelectContent>
       </Select>
+      {canHidePrivate && (
+        <GalleryHidePrivateToggle
+          hidePrivate={gallery.hidePrivate}
+          onChange={gallery.setHidePrivate}
+        />
+      )}
     </div>
   );
 }

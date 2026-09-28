@@ -63,6 +63,7 @@ export class AssetsController {
       query.pageSize ?? 24,
       viewer,
       query.uploadedById,
+      query.hidePrivate ?? false,
     );
   }
 

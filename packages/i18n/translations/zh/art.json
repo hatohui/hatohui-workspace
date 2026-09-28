@@ -146,6 +146,7 @@
       "tagged_other": "已为 {{count}} 件作品添加 {{tags}}",
       "tagFailed": "无法添加标签，未做任何更改。"
     },
+    "hidePrivate": "隐藏私密",
     "loadingMore": "正在加载更多…",
     "searchTagCount_other": "{{count}} 件作品",
     "clearTagFilter": "取消按 {{tag}} 筛选",

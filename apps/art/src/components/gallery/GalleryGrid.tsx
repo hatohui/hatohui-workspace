@@ -85,7 +85,7 @@ export function GalleryGrid({
         />
       ) : (
         <>
-          <GalleryFilters gallery={gallery} />
+          <GalleryFilters gallery={gallery} canHidePrivate={isOwner} />
 
           {gallery.items.length === 0 && !gallery.isLoading && (
             <p className="mt-10 text-center text-muted-foreground">

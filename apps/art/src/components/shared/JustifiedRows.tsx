@@ -29,7 +29,7 @@ export function JustifiedRows<T extends TileSize>({
           const isLast = index === rows.length - 1;
           return (
             <div
-              key={row.join('-')}
+              key={index}
               className={cn(
                 'flex gap-[inherit]',
                 isLast ? lastRowClass : '[&>*]:max-w-none!',
