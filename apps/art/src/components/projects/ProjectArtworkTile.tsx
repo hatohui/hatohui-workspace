@@ -25,7 +25,7 @@ export function ProjectArtworkTile({
     <div
       data-reveal
       style={tileStyle}
-      className="group relative overflow-hidden rounded-lg bg-card"
+      className="group artwork-frame relative overflow-hidden rounded-lg bg-card"
     >
       <div style={frameStyle} />
       <button
