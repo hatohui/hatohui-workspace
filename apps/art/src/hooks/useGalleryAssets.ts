@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import {
   assets,
@@ -65,8 +65,19 @@ export function useGalleryAssets(
         : undefined,
   });
 
+  const items = useMemo(
+    () => assetsQuery.data?.pages.flatMap((page) => page.data.items) ?? [],
+    [assetsQuery.data],
+  );
+
+  const itemsKey = useMemo(
+    () => items.map((asset) => asset.id).join(','),
+    [items],
+  );
+
   return {
-    items: assetsQuery.data?.pages.flatMap((page) => page.data.items) ?? [],
+    items,
+    itemsKey,
     total: assetsQuery.data?.pages[0]?.data.total ?? 0,
     hasMore: assetsQuery.hasNextPage,
     isLoading: assetsQuery.isPending,
