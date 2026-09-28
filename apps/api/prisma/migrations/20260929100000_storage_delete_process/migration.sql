@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "ProcessType" ADD VALUE 'STORAGE_DELETE';

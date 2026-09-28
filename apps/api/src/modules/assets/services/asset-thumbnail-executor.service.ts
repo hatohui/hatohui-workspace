@@ -9,6 +9,7 @@ import {
   generateThumbnail,
 } from '@/modules/assets/utils/thumbnail';
 import { artistFolderOf } from '@/modules/assets/utils/artist-folder';
+import { StorageCleanupService } from '@/modules/storage-cleanup/services/storage-cleanup.service';
 
 @Injectable()
 export class AssetThumbnailExecutor implements ProcessExecutor {
@@ -17,6 +18,7 @@ export class AssetThumbnailExecutor implements ProcessExecutor {
   constructor(
     private readonly db: Database,
     private readonly storage: Storage,
+    private readonly storageCleanup: StorageCleanupService,
   ) {}
 
   async execute(assetId: string): Promise<void> {
@@ -48,7 +50,7 @@ export class AssetThumbnailExecutor implements ProcessExecutor {
 
     const orphanedKey = count === 0 ? thumbnailKey : asset.thumbnailKey;
     if (orphanedKey) {
-      await this.storage.deleteObject(orphanedKey).catch(() => {});
+      await this.storageCleanup.delete(orphanedKey);
     }
   }
 }

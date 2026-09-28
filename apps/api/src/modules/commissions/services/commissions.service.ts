@@ -72,6 +72,7 @@ import {
 import { CommissionOpeningsService } from '@/modules/commission-openings/services/commission-openings.service';
 import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
 import { ClientIdentityService } from '@/modules/clients/services/client-identity.service';
+import { StorageCleanupService } from '@/modules/storage-cleanup/services/storage-cleanup.service';
 import {
   isEmailContact,
   platformForContactMethod,
@@ -100,6 +101,7 @@ export class CommissionsService {
     private readonly commissionOpenings: CommissionOpeningsService,
     private readonly pricing: CommissionPricingService,
     private readonly clientIdentity: ClientIdentityService,
+    private readonly storageCleanup: StorageCleanupService,
   ) {}
 
   async submit(
@@ -595,7 +597,7 @@ export class CommissionsService {
 
     for (const url of existing.detail?.referenceAssets ?? []) {
       const key = this.storage.getKeyFromUrl(url);
-      if (key) await this.storage.deleteObject(key).catch(() => {});
+      if (key) await this.storageCleanup.delete(key);
     }
   }
 
