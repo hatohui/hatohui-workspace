@@ -1,4 +1,4 @@
-import { AccountBar } from '@hatohui/libs';
+import { AccountBar, ThemeToggle } from '@hatohui/libs';
 import { Button } from '@hatohui/ui';
 import AmbientBackground from './components/AmbientBackground';
 import { useStaggerReveal } from './hooks/useStaggerReveal';
@@ -16,7 +16,10 @@ function App() {
       >
         <div data-reveal className="flex items-center justify-between">
           <h1 className="font-serif text-3xl text-foreground">Hatohui</h1>
-          <AccountBar />
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <AccountBar />
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           {APP_LINKS.map((app) => (

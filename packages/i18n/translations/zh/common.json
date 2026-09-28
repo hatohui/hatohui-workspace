@@ -4,7 +4,8 @@
   "retry": "重试",
   "back": "返回",
   "language": {
-    "label": "切换语言"
+    "label": "切换语言",
+    "title": "语言"
   },
   "auth": {
     "login": "登录",
@@ -82,5 +83,15 @@
       "title": "设置完成！",
       "cta": "耶！"
     }
-  }
+  },
+  "theme": {
+    "label": "主题",
+    "toggle": "主题：{{mode}}（点击切换）",
+    "modes": {
+      "light": "浅色",
+      "dark": "深色",
+      "system": "跟随系统"
+    }
+  },
+  "preferences": "偏好设置"
 }

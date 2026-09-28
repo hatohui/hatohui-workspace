@@ -396,8 +396,8 @@ export class AssetsService {
   async remove(id: string, actor: User): Promise<void> {
     const existing = await this.findOrThrow(id);
     await this.assertOwnerOrAdmin(existing, actor);
-    await this.db.asset.delete({ where: { id } });
-    await this.cleanUpDeleted(existing);
+    const deleted = await this.db.asset.delete({ where: { id } });
+    await this.cleanUpDeleted(deleted);
   }
 
   async removeMany(

@@ -28,3 +28,7 @@ export { default as VisibilityField } from './onboarding/VisibilityField';
 export { default as BirthdayFields } from './onboarding/BirthdayFields';
 export * from './onboarding/timezones';
 export * from './tiptap/tiptap';
+export * from './theme/themeConstants';
+export { useTheme } from './theme/useTheme';
+export { ThemeToggle } from './theme/ThemeToggle';
+export { ThemeSelect } from './theme/ThemeSelect';

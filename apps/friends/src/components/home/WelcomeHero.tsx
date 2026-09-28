@@ -10,7 +10,7 @@ function WelcomeHero() {
 
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center gap-8 text-center">
-      <div className="h-64 w-64 overflow-hidden rounded-xl border border-border bg-card shadow-[0_1px_3px_rgba(20,20,19,0.08)]">
+      <div className="h-64 w-64 overflow-hidden rounded-xl border border-border bg-card shadow-soft">
         <img
           src="/favicon.png"
           alt="A cozy dragon mascot"

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
+import { ThemeToggle } from '@hatohui/libs';
 import { Button, TooltipProvider, cn } from '@hatohui/ui';
 import { useSidebarState } from '../../hooks/useSidebarState';
 import NavItem from './NavItem';
@@ -63,6 +64,14 @@ function Sidebar() {
               collapsed={collapsed}
             />
           ))}
+        </div>
+        <div className={cn('flex p-2', collapsed && 'justify-center')}>
+          <ThemeToggle
+            showLabel={!collapsed}
+            className={
+              collapsed ? '' : 'w-full justify-start gap-2 rounded-md px-3'
+            }
+          />
         </div>
         <AccountMenu collapsed={collapsed} />
         <Button
