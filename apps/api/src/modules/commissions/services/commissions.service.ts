@@ -11,6 +11,7 @@ import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.consta
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
 import {
   AppScope,
+  PasscodeSource,
   Visibility,
   type Client,
   type Commission,
@@ -50,13 +51,19 @@ import {
   toCommentDto,
 } from '@/modules/commissions/dto/comment.dto';
 import { CommissionStatusHistoryDto } from '@/modules/commissions/dto/commission-history.dto';
-import { CommissionQueueDto } from '@/modules/commissions/dto/commission-queue.dto';
+import {
+  CommissionQueueDto,
+  CommissionQueuePlacementDto,
+} from '@/modules/commissions/dto/commission-queue.dto';
+import { hashPasscode } from '@/common/utils/passcode';
 import {
   COMMISSION_VIEW_STATUSES,
   CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE,
   DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE,
   NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE,
   QUOTE_EMAIL_TEMPLATE_CONFIG_TYPE,
+  QUEUE_STAGE_BY_STATUS,
+  QUEUE_STAGES,
   QUEUE_STATUSES,
   QUEUE_STATUS_RANK,
   COMMISSION_MIN_DEADLINE_DAYS,
@@ -121,6 +128,16 @@ export class CommissionsService {
         clientId: client.id,
         commissionOpeningId,
         status: 'PENDING',
+        ...(dto.passcode
+          ? {
+              passcodeHash: await hashPasscode(
+                dto.passcode,
+                PasscodeSource.CLIENT,
+              ),
+              passcodeSource: PasscodeSource.CLIENT,
+              passcodeUpdatedAt: new Date(),
+            }
+          : {}),
         detail: {
           create: {
             idea: dto.idea,
@@ -294,38 +311,56 @@ export class CommissionsService {
 
   async findByAccessCode(code: string): Promise<CommissionPublicDetailDto> {
     const commission = await this.findByAccessCodeOrThrow(code);
-    const comments = await this.db.comment.findMany({
-      where: { commissionId: commission.id, visibility: Visibility.CLIENT },
-      orderBy: { createdAt: 'desc' },
-    });
+    const [comments, workOrder] = await Promise.all([
+      this.db.comment.findMany({
+        where: { commissionId: commission.id, visibility: Visibility.CLIENT },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.workOrder(commission.artistId),
+    ]);
+    const index = workOrder.findIndex((item) => item.id === commission.id);
     return {
       ...toPublicDto(commission),
       clientName: commission.client.name,
+      queue:
+        index === -1
+          ? null
+          : toPlacement(workOrder[index], index, workOrder.length),
       comments: comments.map(toCommentDto),
     };
   }
 
-  async findByEmail(email: string): Promise<CommissionPublicDto[]> {
-    const commissions = await this.db.commission.findMany({
-      where: { client: { email } },
-      include: commissionInclude,
-      orderBy: { createdAt: 'desc' },
-    });
-    return commissions.map(toPublicDto);
+  async queue(artistId: string): Promise<CommissionQueueDto> {
+    const workOrder = await this.workOrder(artistId);
+    return {
+      items: workOrder.flatMap((commission, index) =>
+        commission.detail?.isHiddenInQueue
+          ? []
+          : [
+              {
+                ...toPlacement(commission, index, workOrder.length),
+                id: commission.id,
+                commissionTypeKey:
+                  commission.detail?.commissionType?.key ?? null,
+                commissionTypeLabel:
+                  commission.detail?.commissionType?.label ?? null,
+                isUnlockable: commission.passcodeHash !== null,
+                queuedAt: commission.createdAt.toISOString(),
+              },
+            ],
+      ),
+    };
   }
 
-  async queue(artistId: string): Promise<CommissionQueueDto> {
+  private async workOrder(
+    artistId: string,
+  ): Promise<CommissionWithRelations[]> {
     const commissions = await this.db.commission.findMany({
-      where: {
-        artistId,
-        status: { in: QUEUE_STATUSES },
-        detail: { isHiddenInQueue: false },
-      },
+      where: { artistId, status: { in: QUEUE_STATUSES } },
       include: commissionInclude,
       orderBy: { createdAt: 'asc' },
     });
-
-    const sorted = [...commissions].sort((a, b) => {
+    return [...commissions].sort((a, b) => {
       const rankDiff =
         (QUEUE_STATUS_RANK.get(a.status) ?? 0) -
         (QUEUE_STATUS_RANK.get(b.status) ?? 0);
@@ -333,15 +368,6 @@ export class CommissionsService {
         ? rankDiff
         : a.createdAt.getTime() - b.createdAt.getTime();
     });
-
-    return {
-      items: sorted.map((commission) => ({
-        id: commission.id,
-        status: commission.status,
-        commissionTypeKey: commission.detail?.commissionType?.key ?? null,
-        createdAt: commission.createdAt.toISOString(),
-      })),
-    };
   }
 
   async addClientReferenceAssets(
@@ -885,6 +911,7 @@ function toCommissionDto(commission: CommissionWithRelations): CommissionDto {
       coloringDoneAt: detail.coloringDoneAt?.toISOString() ?? null,
       finishedAt: detail.finishedAt?.toISOString() ?? null,
     },
+    passcodeSource: commission.passcodeSource,
     createdAt: commission.createdAt.toISOString(),
     updatedAt: commission.updatedAt.toISOString(),
   };
@@ -901,12 +928,29 @@ function toPublicDto(commission: CommissionWithRelations): CommissionPublicDto {
     paymentStatus: detail.paymentStatus,
     commissionTypeId: detail.commissionTypeId,
     commissionTypeKey: detail.commissionType?.key ?? null,
+    commissionTypeLabel: detail.commissionType?.label ?? null,
     currency: detail.currency,
     quote: detail.quote,
     referenceAssets: detail.referenceAssets,
+    passcodeSource: commission.passcodeSource,
     deliveredAt: detail.deliveredAt?.toISOString() ?? null,
     createdAt: commission.createdAt.toISOString(),
     updatedAt: commission.updatedAt.toISOString(),
+  };
+}
+
+function toPlacement(
+  commission: Commission,
+  index: number,
+  total: number,
+): CommissionQueuePlacementDto {
+  const stage = QUEUE_STAGE_BY_STATUS[commission.status] ?? 'WAITING';
+  return {
+    position: index + 1,
+    total,
+    stage,
+    stageIndex: QUEUE_STAGES.indexOf(stage),
+    stageCount: QUEUE_STAGES.length,
   };
 }
 

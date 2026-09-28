@@ -12,6 +12,7 @@ import { CommissionProgressTimeline } from './CommissionProgressTimeline';
 import { CommissionAdminNotes } from './CommissionAdminNotes';
 import { CommissionHistoryList } from './CommissionHistoryList';
 import { CommissionVisibilityToggle } from './CommissionVisibilityToggle';
+import { CommissionPasscodePanel } from './CommissionPasscodePanel';
 
 export function CommissionDetailAdmin({ id }: { id: string }) {
   const { t } = useTranslation('art');
@@ -48,6 +49,10 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
       <CommissionStatusControl
         status={commission.status}
         onChange={detail.setStatus}
+      />
+      <CommissionPasscodePanel
+        commissionId={commission.id}
+        source={commission.passcodeSource}
       />
       <CommissionStepChecklist
         steps={commission.steps}

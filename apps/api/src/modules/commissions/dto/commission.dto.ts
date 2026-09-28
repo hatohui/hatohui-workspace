@@ -11,10 +11,13 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 import {
   CommissionStatus,
+  PasscodeSource,
   PaymentStatus,
   PreferredContactMethod,
 } from '@prisma/client';
@@ -25,9 +28,18 @@ import {
   REFERENCE_URL_LIMIT,
   REFERENCE_URL_OPTIONS,
 } from '@/modules/commissions/commissions.constants';
+import {
+  PASSCODE_MAX_LENGTH,
+  PASSCODE_MIN_LENGTH,
+} from '@/modules/commission-access/commission-access.constants';
 import { IsTiptapDocument } from '@/common/validators/tiptap-document.validator';
 
-export { CommissionStatus, PaymentStatus, PreferredContactMethod };
+export {
+  CommissionStatus,
+  PasscodeSource,
+  PaymentStatus,
+  PreferredContactMethod,
+};
 
 export class CommissionStepsDto {
   @ApiProperty({ nullable: true })
@@ -193,6 +205,14 @@ export class CommissionDto {
   @ApiProperty({ type: CommissionStepsDto })
   steps: CommissionStepsDto;
 
+  @ApiProperty({
+    enum: PasscodeSource,
+    enumName: 'PasscodeSource',
+    nullable: true,
+    description: 'Who set the queue passcode; null when none is set',
+  })
+  passcodeSource: PasscodeSource | null;
+
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   createdAt: string;
 
@@ -237,6 +257,9 @@ export class CommissionPublicDto {
   })
   commissionTypeKey: string | null;
 
+  @ApiProperty({ nullable: true, type: String })
+  commissionTypeLabel: string | null;
+
   @ApiProperty({ example: 'USD' })
   currency: string;
 
@@ -245,6 +268,13 @@ export class CommissionPublicDto {
 
   @ApiProperty({ type: [String] })
   referenceAssets: string[];
+
+  @ApiProperty({
+    enum: PasscodeSource,
+    enumName: 'PasscodeSource',
+    nullable: true,
+  })
+  passcodeSource: PasscodeSource | null;
 
   @ApiProperty({ nullable: true })
   deliveredAt: string | null;
@@ -403,6 +433,16 @@ export class SubmitCommissionDto extends CommissionRequestBaseDto {
   @IsOptional()
   @IsString()
   contactValue?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Passcode the client picks to open this from the queue',
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(PASSCODE_MIN_LENGTH)
+  @MaxLength(PASSCODE_MAX_LENGTH)
+  passcode?: string;
 }
 
 export class CreatePrivateCommissionDto extends CommissionRequestBaseDto {

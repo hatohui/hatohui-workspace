@@ -2443,41 +2443,6 @@
         ]
       }
     },
-    "/commissions/lookup": {
-      "get": {
-        "operationId": "lookupCommissionsByEmail",
-        "parameters": [
-          {
-            "name": "email",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "example": "jane@example.com",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CommissionPublicDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List a client's own commissions by the email they submitted with",
-        "tags": [
-          "commissions"
-        ]
-      }
-    },
     "/commissions/lookup/code/{code}": {
       "get": {
         "operationId": "lookupCommissionByCode",
@@ -4825,6 +4790,213 @@
           "commission-groups"
         ]
       }
+    },
+    "/commission-access/unlock": {
+      "post": {
+        "operationId": "unlockQueuedCommission",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnlockCommissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnlockedCommissionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Trade a queue item and its passcode for the order access code",
+        "tags": [
+          "commission-access"
+        ]
+      }
+    },
+    "/commission-access/lookup": {
+      "post": {
+        "operationId": "lookupCommissionsByPasscode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasscodeLookupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommissionAccessMatchDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Find a client's commissions with an artist by email + passcode",
+        "tags": [
+          "commission-access"
+        ]
+      }
+    },
+    "/commission-access/code/{code}/passcode": {
+      "put": {
+        "operationId": "setClientCommissionPasscode",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetClientPasscodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPasscodeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Client chooses the passcode that unlocks their queue item",
+        "tags": [
+          "commission-access"
+        ]
+      }
+    },
+    "/commission-access/{commissionId}/passcode": {
+      "get": {
+        "operationId": "commissionPasscode",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPasscodeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Whether a passcode is set on your commission, and by whom",
+        "tags": [
+          "commission-access"
+        ]
+      },
+      "put": {
+        "operationId": "setCommissionPasscode",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetArtistPasscodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPasscodeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Set a custom passcode, or generate one when none is given",
+        "tags": [
+          "commission-access"
+        ]
+      },
+      "delete": {
+        "operationId": "clearCommissionPasscode",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPasscodeDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Remove the passcode so the queue item can no longer be opened",
+        "tags": [
+          "commission-access"
+        ]
+      }
     }
   },
   "info": {
@@ -4868,6 +5040,10 @@
     },
     {
       "name": "commissions",
+      "description": ""
+    },
+    {
+      "name": "commission-access",
       "description": ""
     },
     {
@@ -6887,6 +7063,10 @@
           "contactValue": {
             "type": "string",
             "description": "Handle or address on contactPlatform; ignored for 'email'"
+          },
+          "passcode": {
+            "type": "string",
+            "description": "Passcode the client picks to open this from the queue"
           }
         },
         "required": [
@@ -6930,6 +7110,15 @@
           "coloringDoneAt",
           "finishedAt"
         ]
+      },
+      "PasscodeSource": {
+        "type": "string",
+        "enum": [
+          "ARTIST",
+          "CLIENT",
+          "GENERATED"
+        ],
+        "description": "Who set the queue passcode; null when none is set"
       },
       "CommissionDto": {
         "type": "object",
@@ -7100,6 +7289,15 @@
           "steps": {
             "$ref": "#/components/schemas/CommissionStepsDto"
           },
+          "passcodeSource": {
+            "nullable": true,
+            "description": "Who set the queue passcode; null when none is set",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PasscodeSource"
+              }
+            ]
+          },
           "createdAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
@@ -7142,6 +7340,7 @@
           "referenceAssets",
           "deliveredAt",
           "steps",
+          "passcodeSource",
           "createdAt",
           "updatedAt"
         ]
@@ -7225,43 +7424,76 @@
           "clientEmail"
         ]
       },
+      "QueueStage": {
+        "type": "string",
+        "enum": [
+          "WAITING",
+          "SKETCHING",
+          "SKETCH_APPROVED",
+          "IN_PROGRESS"
+        ]
+      },
       "CommissionQueueItemDto": {
         "type": "object",
         "properties": {
+          "position": {
+            "type": "number",
+            "example": 3,
+            "description": "1-based place in the work order"
+          },
+          "total": {
+            "type": "number",
+            "example": 7
+          },
+          "stage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QueueStage"
+              }
+            ]
+          },
+          "stageIndex": {
+            "type": "number",
+            "example": 1,
+            "description": "0-based index into QUEUE_STAGES"
+          },
+          "stageCount": {
+            "type": "number",
+            "example": 4
+          },
           "id": {
             "type": "string",
             "example": "clx1234567890"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "PENDING",
-              "ACCEPTED",
-              "DECLINED",
-              "NOT_YET_STARTED",
-              "QUEUED",
-              "SKETCH",
-              "CONFIRMED",
-              "ONGOING",
-              "COMPLETED",
-              "CANCELLED"
-            ]
           },
           "commissionTypeKey": {
             "type": "string",
             "nullable": true,
             "description": "Also the i18n key: commission.type.<key>"
           },
-          "createdAt": {
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "isUnlockable": {
+            "type": "boolean",
+            "description": "Whether a passcode can open this item"
+          },
+          "queuedAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
           }
         },
         "required": [
+          "position",
+          "total",
+          "stage",
+          "stageIndex",
+          "stageCount",
           "id",
-          "status",
           "commissionTypeKey",
-          "createdAt"
+          "commissionTypeLabel",
+          "isUnlockable",
+          "queuedAt"
         ]
       },
       "CommissionQueueDto": {
@@ -7278,104 +7510,41 @@
           "items"
         ]
       },
-      "CommissionPublicDto": {
+      "CommissionQueuePlacementDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "clx1234567890"
-          },
-          "accessCode": {
-            "type": "string",
-            "description": "Private code used to view/manage this commission"
-          },
-          "idea": {
-            "type": "object",
-            "additionalProperties": true,
-            "description": "Tiptap/ProseMirror JSON document"
-          },
-          "deadline": {
-            "type": "string",
-            "example": "2026-09-01T00:00:00.000Z",
-            "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "PENDING",
-              "ACCEPTED",
-              "DECLINED",
-              "NOT_YET_STARTED",
-              "QUEUED",
-              "SKETCH",
-              "CONFIRMED",
-              "ONGOING",
-              "COMPLETED",
-              "CANCELLED"
-            ],
-            "example": "PENDING"
-          },
-          "paymentStatus": {
-            "type": "string",
-            "enum": [
-              "NOT_YET",
-              "REQUESTED",
-              "PARTIAL",
-              "FULL"
-            ],
-            "example": "NOT_YET"
-          },
-          "commissionTypeId": {
-            "type": "string",
-            "nullable": true
-          },
-          "commissionTypeKey": {
-            "type": "string",
-            "nullable": true,
-            "description": "Also the i18n key: commission.type.<key>"
-          },
-          "currency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "quote": {
+          "position": {
             "type": "number",
-            "nullable": true
+            "example": 3,
+            "description": "1-based place in the work order"
           },
-          "referenceAssets": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "total": {
+            "type": "number",
+            "example": 7
           },
-          "deliveredAt": {
-            "type": "string",
-            "nullable": true
+          "stage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QueueStage"
+              }
+            ]
           },
-          "createdAt": {
-            "type": "string",
-            "example": "2026-07-23T00:00:00.000Z"
+          "stageIndex": {
+            "type": "number",
+            "example": 1,
+            "description": "0-based index into QUEUE_STAGES"
           },
-          "updatedAt": {
-            "type": "string",
-            "example": "2026-07-23T00:00:00.000Z"
+          "stageCount": {
+            "type": "number",
+            "example": 4
           }
         },
         "required": [
-          "id",
-          "accessCode",
-          "idea",
-          "deadline",
-          "status",
-          "paymentStatus",
-          "commissionTypeId",
-          "commissionTypeKey",
-          "currency",
-          "quote",
-          "referenceAssets",
-          "deliveredAt",
-          "createdAt",
-          "updatedAt"
+          "position",
+          "total",
+          "stage",
+          "stageIndex",
+          "stageCount"
         ]
       },
       "CommentDto": {
@@ -7500,6 +7669,10 @@
             "nullable": true,
             "description": "Also the i18n key: commission.type.<key>"
           },
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true
+          },
           "currency": {
             "type": "string",
             "example": "USD"
@@ -7513,6 +7686,14 @@
             "items": {
               "type": "string"
             }
+          },
+          "passcodeSource": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PasscodeSource"
+              }
+            ]
           },
           "deliveredAt": {
             "type": "string",
@@ -7530,6 +7711,16 @@
             "type": "string",
             "example": "Jane Doe"
           },
+          "queue": {
+            "nullable": true,
+            "description": "Where this sits in the public queue; null when not queued",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommissionQueuePlacementDto"
+              }
+            ]
+          },
           "comments": {
             "type": "array",
             "items": {
@@ -7546,13 +7737,16 @@
           "paymentStatus",
           "commissionTypeId",
           "commissionTypeKey",
+          "commissionTypeLabel",
           "currency",
           "quote",
           "referenceAssets",
+          "passcodeSource",
           "deliveredAt",
           "createdAt",
           "updatedAt",
           "clientName",
+          "queue",
           "comments"
         ]
       },
@@ -7574,6 +7768,120 @@
             }
           }
         }
+      },
+      "CommissionPublicDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clx1234567890"
+          },
+          "accessCode": {
+            "type": "string",
+            "description": "Private code used to view/manage this commission"
+          },
+          "idea": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Tiptap/ProseMirror JSON document"
+          },
+          "deadline": {
+            "type": "string",
+            "example": "2026-09-01T00:00:00.000Z",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_YET",
+              "REQUESTED",
+              "PARTIAL",
+              "FULL"
+            ],
+            "example": "NOT_YET"
+          },
+          "commissionTypeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Also the i18n key: commission.type.<key>"
+          },
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "quote": {
+            "type": "number",
+            "nullable": true
+          },
+          "referenceAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "passcodeSource": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PasscodeSource"
+              }
+            ]
+          },
+          "deliveredAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "accessCode",
+          "idea",
+          "deadline",
+          "status",
+          "paymentStatus",
+          "commissionTypeId",
+          "commissionTypeKey",
+          "commissionTypeLabel",
+          "currency",
+          "quote",
+          "referenceAssets",
+          "passcodeSource",
+          "deliveredAt",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "CreateClientNoteDto": {
         "type": "object",
@@ -7852,6 +8160,15 @@
           "steps": {
             "$ref": "#/components/schemas/CommissionStepsDto"
           },
+          "passcodeSource": {
+            "nullable": true,
+            "description": "Who set the queue passcode; null when none is set",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PasscodeSource"
+              }
+            ]
+          },
           "createdAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
@@ -7906,6 +8223,7 @@
           "referenceAssets",
           "deliveredAt",
           "steps",
+          "passcodeSource",
           "createdAt",
           "updatedAt",
           "comments",
@@ -9773,6 +10091,148 @@
           "memberAccessCode",
           "body"
         ]
+      },
+      "UnlockCommissionDto": {
+        "type": "object",
+        "properties": {
+          "commissionId": {
+            "type": "string",
+            "description": "Queue item id the client clicked"
+          },
+          "passcode": {
+            "type": "string",
+            "example": "K7QM2PXA"
+          }
+        },
+        "required": [
+          "commissionId",
+          "passcode"
+        ]
+      },
+      "UnlockedCommissionDto": {
+        "type": "object",
+        "properties": {
+          "accessCode": {
+            "type": "string",
+            "description": "Private code for the order page"
+          }
+        },
+        "required": [
+          "accessCode"
+        ]
+      },
+      "PasscodeLookupDto": {
+        "type": "object",
+        "properties": {
+          "artistId": {
+            "type": "string",
+            "description": "Artist whose queue is being searched"
+          },
+          "email": {
+            "type": "string",
+            "example": "jane@example.com"
+          },
+          "passcode": {
+            "type": "string",
+            "example": "K7QM2PXA"
+          }
+        },
+        "required": [
+          "artistId",
+          "email",
+          "passcode"
+        ]
+      },
+      "CommissionAccessMatchDto": {
+        "type": "object",
+        "properties": {
+          "accessCode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "DECLINED",
+              "NOT_YET_STARTED",
+              "QUEUED",
+              "SKETCH",
+              "CONFIRMED",
+              "ONGOING",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "commissionTypeKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "commissionTypeLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-07-23T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "accessCode",
+          "status",
+          "commissionTypeKey",
+          "commissionTypeLabel",
+          "createdAt"
+        ]
+      },
+      "SetClientPasscodeDto": {
+        "type": "object",
+        "properties": {
+          "passcode": {
+            "type": "string",
+            "example": "my-secret-fox"
+          }
+        },
+        "required": [
+          "passcode"
+        ]
+      },
+      "CommissionPasscodeDto": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "ARTIST",
+              "CLIENT",
+              "GENERATED"
+            ],
+            "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "passcode": {
+            "type": "string",
+            "nullable": true,
+            "description": "Plain passcode, returned only in the response that set it"
+          }
+        },
+        "required": [
+          "source",
+          "updatedAt",
+          "passcode"
+        ]
+      },
+      "SetArtistPasscodeDto": {
+        "type": "object",
+        "properties": {
+          "passcode": {
+            "type": "string",
+            "description": "Custom passcode; omit to generate one"
+          }
+        }
       }
     }
   }

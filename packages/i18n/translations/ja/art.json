@@ -165,14 +165,46 @@
   },
   "queue": {
     "title": "キュー",
-    "subtitle": "現在制作中の依頼を、完了予定順に表示しています。",
+    "subtitle": "制作する順番に並んだ依頼です。",
     "empty": "現在キューには何もありません。",
-    "accessMineTitle": "自分の注文を確認"
+    "hint_one": "{{count}}件の依頼が並んでいます。自分の依頼をタップしてパスコードで開いてください。",
+    "hint_other": "{{count}}件の依頼が並んでいます。自分の依頼をタップしてパスコードで開いてください。",
+    "since": "{{date}}から",
+    "locked": "パスコードで保護",
+    "stageProgress": "段階 {{current}} / {{total}}",
+    "stage": {
+      "WAITING": "順番待ち",
+      "SKETCHING": "ラフ制作中",
+      "SKETCH_APPROVED": "ラフ確認済み",
+      "IN_PROGRESS": "制作中"
+    },
+    "passcode": {
+      "label": "パスコード",
+      "wrong": "パスコードが一致しません。",
+      "tooMany": "試行回数が多すぎます。数分後にもう一度お試しください。",
+      "failed": "問題が発生しました。もう一度お試しください。"
+    },
+    "unlock": {
+      "title": "#{{position}} · {{type}}",
+      "description": "この依頼のパスコードを入力すると詳細を確認できます。",
+      "noPasscode": "この依頼にはまだパスコードがありません。",
+      "noPasscodeHelp": "アーティストにパスコードを依頼するか、メールに記載された注文コードで開いてください。",
+      "gotIt": "わかりました",
+      "open": "開く",
+      "opening": "開いています…"
+    },
+    "findMine": {
+      "title": "自分の依頼が見つからない場合",
+      "subtitle": "メールアドレスとパスコード、または注文コードで検索できます。",
+      "emailTab": "メールとパスコード",
+      "codeTab": "注文コード",
+      "email": "メールアドレス",
+      "codeHint": "コードは注文メールのリンクに含まれています。"
+    }
   },
   "orders": {
     "emailPlaceholder": "your@email.com",
     "search": "注文を検索",
-    "empty": "そのメールアドレスの注文は見つかりませんでした。",
     "codeLabel": "コードをお持ちの場合はこちら",
     "codeGo": "表示",
     "deliverables": "完成イラスト",
@@ -180,7 +212,38 @@
     "existingReferences": "アップロード済みの参考画像",
     "addLinkLabel": "またはリンクを貼り付け",
     "addLinkPlaceholder": "https://...",
-    "addLink": "リンクを追加"
+    "addLink": "リンクを追加",
+    "backToQueue": "キュー",
+    "greeting": "{{name}}さん、あなたの依頼です",
+    "position": "キューの{{total}}件中{{position}}番目",
+    "facts": {
+      "price": "料金",
+      "payment": "お支払い",
+      "deadline": "締め切り"
+    },
+    "tabs": {
+      "updates": "進捗",
+      "messages": "メッセージ",
+      "references": "資料",
+      "request": "依頼内容"
+    },
+    "noUpdates": "まだ進捗はありません。ラフやプレビューはここに表示されます。",
+    "noMessages": "まだメッセージはありません。",
+    "passcode": {
+      "title": "キューのパスコード",
+      "saved": "パスコードを保存しました。キューから開くときに使えます。",
+      "source": {
+        "NONE": "パスコードを設定すると、キューから直接この依頼を開けます。",
+        "CLIENT": "あなたが設定したパスコードがあります。",
+        "ARTIST": "アーティストが設定したパスコードがあります。",
+        "GENERATED": "アーティストが生成したパスコードがあります。"
+      },
+      "set": "パスコードを設定",
+      "change": "変更",
+      "newLabel": "新しいパスコード",
+      "save": "保存",
+      "hint": "{{min}}文字以上。"
+    }
   },
   "commission": {
     "gallery": {
@@ -219,7 +282,8 @@
         "contact": "進捗や質問の連絡に使います。",
         "contactValue": "ユーザー名またはプロフィールのリンク。",
         "references": "キャラクターシート、衣装、ポーズなど、参考になるものなら何でも。",
-        "links": "Enterで1件ずつ追加します。"
+        "links": "Enterで1件ずつ追加します。",
+        "passcode": "公開キューからこの依頼を開けるようになります。"
       },
       "placeholders": {
         "name": "例: 田中ミラ",
@@ -233,7 +297,9 @@
         "required": "この項目は必須です。",
         "ideaRequired": "描いてほしいものを少し教えてください。",
         "acceptTerms": "続行するには利用規約に同意してください。",
-        "deadlineTooSoon": "本日から{{count}}日以上先の日付を選んでください。"
+        "deadlineTooSoon": "本日から{{count}}日以上先の日付を選んでください。",
+        "passcodeTooShort_one": "{{count}}文字以上にしてください。",
+        "passcodeTooShort_other": "{{count}}文字以上にしてください。"
       },
       "emailMissing": "この依頼者にはまだメールアドレスが登録されていません。連絡できるよう入力してください。",
       "submitFailed": "リクエストを送信できませんでした。入力内容を確認して、もう一度お試しください。",
@@ -260,7 +326,8 @@
         "ideaHint": "キャラクター、ポーズ、雰囲気など、大切なことを書いてください。",
         "request": "リクエスト内容",
         "requestHint": "あなたのことと、描いてほしいものを教えてください。"
-      }
+      },
+      "passcodeLabel": "キューのパスコード（任意）"
     },
     "preferredContactMethod": {
       "EMAIL": "メール",
@@ -573,6 +640,25 @@
       "opensAt": "{{date}} に開始予定",
       "lastOpenAt": "前回の受付: {{date}}",
       "seeQueue": "キューを見る"
+    },
+    "passcode": {
+      "title": "キューのパスコード",
+      "source": {
+        "NONE": "パスコードなし。依頼者はキューから開けません。",
+        "CLIENT": "依頼者が設定。",
+        "ARTIST": "あなたが設定。",
+        "GENERATED": "生成済み。依頼者に共有してください。"
+      },
+      "generate": "生成",
+      "custom": "自分で設定",
+      "customLabel": "カスタムパスコード",
+      "customPlaceholder": "{{min}}文字以上",
+      "save": "保存",
+      "remove": "削除",
+      "copy": "コピー",
+      "copied": "コピーしました",
+      "done": "完了",
+      "shownOnce": "表示されるのは今だけです。コピーして依頼者に送ってください。"
     }
   },
   "app": {

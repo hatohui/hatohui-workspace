@@ -8,6 +8,7 @@
 import type { CommissionPublicDtoIdea } from './commissionPublicDtoIdea';
 import type { CommissionPublicDtoPaymentStatus } from './commissionPublicDtoPaymentStatus';
 import type { CommissionPublicDtoStatus } from './commissionPublicDtoStatus';
+import type { PasscodeSource } from './passcodeSource';
 
 export interface CommissionPublicDto {
   id: string;
@@ -26,10 +27,13 @@ export interface CommissionPublicDto {
      * @nullable
      */
   commissionTypeKey: string | null;
+  /** @nullable */
+  commissionTypeLabel: string | null;
   currency: string;
   /** @nullable */
   quote: number | null;
   referenceAssets: string[];
+  passcodeSource: PasscodeSource | null;
   /** @nullable */
   deliveredAt: string | null;
   createdAt: string;

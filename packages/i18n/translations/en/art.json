@@ -174,14 +174,46 @@
   },
   "queue": {
     "title": "Queue",
-    "subtitle": "What's currently in progress, in the order it'll get done.",
+    "subtitle": "Commissions in the order they will be worked on.",
     "empty": "Nothing in the queue right now.",
-    "accessMineTitle": "Access mine"
+    "hint_one": "{{count}} commission in line. Tap yours to open it with your passcode.",
+    "hint_other": "{{count}} commissions in line. Tap yours to open it with your passcode.",
+    "since": "since {{date}}",
+    "locked": "Passcode protected",
+    "stageProgress": "Stage {{current}} of {{total}}",
+    "stage": {
+      "WAITING": "Waiting",
+      "SKETCHING": "Sketching",
+      "SKETCH_APPROVED": "Sketch approved",
+      "IN_PROGRESS": "In progress"
+    },
+    "passcode": {
+      "label": "Passcode",
+      "wrong": "That passcode doesn't match.",
+      "tooMany": "Too many tries. Wait a few minutes and try again.",
+      "failed": "Something went wrong. Please try again."
+    },
+    "unlock": {
+      "title": "#{{position}} · {{type}}",
+      "description": "Enter the passcode for this commission to see its details.",
+      "noPasscode": "This one doesn't have a passcode yet.",
+      "noPasscodeHelp": "Ask the artist for a passcode, or open your order with the private code from your email.",
+      "gotIt": "Got it",
+      "open": "Open",
+      "opening": "Opening…"
+    },
+    "findMine": {
+      "title": "Can't find yours?",
+      "subtitle": "Look it up with your email and passcode, or use your private order code.",
+      "emailTab": "Email & passcode",
+      "codeTab": "Order code",
+      "email": "Email",
+      "codeHint": "The code is in the link from your order email."
+    }
   },
   "orders": {
     "emailPlaceholder": "your@email.com",
     "search": "Find my orders",
-    "empty": "No orders found for that email.",
     "codeLabel": "Or, if I gave you a code",
     "codeGo": "Go",
     "deliverables": "Final artwork",
@@ -189,7 +221,38 @@
     "existingReferences": "Your uploaded references",
     "addLinkLabel": "Or paste a link",
     "addLinkPlaceholder": "https://...",
-    "addLink": "Add link"
+    "addLink": "Add link",
+    "backToQueue": "Queue",
+    "greeting": "Hi {{name}}, here is your commission",
+    "position": "#{{position}} of {{total}} in the queue",
+    "facts": {
+      "price": "Price",
+      "payment": "Payment",
+      "deadline": "Deadline"
+    },
+    "tabs": {
+      "updates": "Updates",
+      "messages": "Messages",
+      "references": "References",
+      "request": "Your request"
+    },
+    "noUpdates": "No updates yet. Progress sketches and previews will show up here.",
+    "noMessages": "No messages yet.",
+    "passcode": {
+      "title": "Queue passcode",
+      "saved": "Passcode saved. Use it to open this from the queue.",
+      "source": {
+        "NONE": "Set one so you can open this commission straight from the queue.",
+        "CLIENT": "You set a passcode for this commission.",
+        "ARTIST": "The artist set a passcode for this commission.",
+        "GENERATED": "The artist generated a passcode for this commission."
+      },
+      "set": "Set passcode",
+      "change": "Change",
+      "newLabel": "New passcode",
+      "save": "Save",
+      "hint": "At least {{min}} characters."
+    }
   },
   "commission": {
     "gallery": {
@@ -228,7 +291,8 @@
         "contact": "For updates and questions.",
         "contactValue": "Username or profile link.",
         "references": "Character sheets, outfits, poses, anything that helps.",
-        "links": "Press Enter to add each one."
+        "links": "Press Enter to add each one.",
+        "passcode": "Lets you open this from the public queue."
       },
       "placeholders": {
         "name": "e.g. Mira Tanaka",
@@ -242,7 +306,9 @@
         "required": "This field is required.",
         "ideaRequired": "Tell me a little about what you'd like made.",
         "acceptTerms": "Please accept the terms of service to continue.",
-        "deadlineTooSoon": "Pick a date at least {{count}} days from today."
+        "deadlineTooSoon": "Pick a date at least {{count}} days from today.",
+        "passcodeTooShort_one": "Use at least {{count}} character.",
+        "passcodeTooShort_other": "Use at least {{count}} characters."
       },
       "emailMissing": "There's no email on file for this identity yet. Add one so I can reach you.",
       "submitFailed": "Couldn't submit your request. Check your details and try again.",
@@ -269,7 +335,8 @@
         "ideaHint": "Describe the piece - characters, pose, mood, anything that matters.",
         "request": "Your request",
         "requestHint": "Who you are, and what you'd like made."
-      }
+      },
+      "passcodeLabel": "Queue passcode (optional)"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -584,6 +651,25 @@
       "opensAt": "Scheduled to open {{date}}",
       "lastOpenAt": "Last open {{date}}",
       "seeQueue": "See the queue"
+    },
+    "passcode": {
+      "title": "Queue passcode",
+      "source": {
+        "NONE": "No passcode. The client cannot open this from the queue.",
+        "CLIENT": "Set by the client.",
+        "ARTIST": "Set by you.",
+        "GENERATED": "Generated. Share it with the client."
+      },
+      "generate": "Generate",
+      "custom": "Set custom",
+      "customLabel": "Custom passcode",
+      "customPlaceholder": "At least {{min}} characters",
+      "save": "Save",
+      "remove": "Remove",
+      "copy": "Copy",
+      "copied": "Copied",
+      "done": "Done",
+      "shownOnce": "Only shown now. Copy it and send it to the client."
     }
   },
   "app": {

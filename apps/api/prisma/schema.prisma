@@ -329,6 +329,12 @@ enum CommissionStatus {
   CANCELLED
 }
 
+enum PasscodeSource {
+  ARTIST
+  CLIENT
+  GENERATED
+}
+
 enum PaymentStatus {
   NOT_YET
   REQUESTED
@@ -515,6 +521,10 @@ model Commission {
   paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
 
   accessCode String @unique @default(cuid())
+
+  passcodeHash      String?
+  passcodeSource    PasscodeSource?
+  passcodeUpdatedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
