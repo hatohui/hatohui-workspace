@@ -10,7 +10,7 @@ function Avatar({ src, alt, className }: Props) {
   return (
     <div
       className={cn(
-        'flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-muted-foreground',
+        'flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent text-accent-foreground',
         className,
       )}
     >

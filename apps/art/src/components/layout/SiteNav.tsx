@@ -28,8 +28,8 @@ export function SiteNav({
           className={cn(
             'flex min-h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-xs transition-colors duration-200 md:min-h-9 md:flex-row md:gap-2 md:px-3 md:text-sm',
             isActive
-              ? 'bg-secondary font-medium text-foreground'
-              : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground',
+              ? 'bg-accent font-medium text-accent-foreground'
+              : 'text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground',
           )}
         >
           <Icon className="size-4 shrink-0" aria-hidden />
