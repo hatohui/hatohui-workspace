@@ -159,21 +159,84 @@
   },
   "queue": {
     "title": "队列",
-    "subtitle": "当前正在进行的项目，按完成顺序排列。",
-    "empty": "队列中暂无项目。",
-    "accessMineTitle": "查看我的订单"
+    "subtitle": "按制作顺序排列的委托。",
+    "empty": "队列目前是空的。",
+    "hint_one": "共有 {{count}} 个委托在排队。点击你的委托并输入口令即可打开。",
+    "hint_other": "共有 {{count}} 个委托在排队。点击你的委托并输入口令即可打开。",
+    "since": "自 {{date}}",
+    "locked": "受口令保护",
+    "stageProgress": "第 {{current}} / {{total}} 阶段",
+    "stage": {
+      "WAITING": "等待中",
+      "SKETCHING": "草图中",
+      "SKETCH_APPROVED": "草图已确认",
+      "IN_PROGRESS": "制作中"
+    },
+    "passcode": {
+      "label": "口令",
+      "wrong": "口令不正确。",
+      "tooMany": "尝试次数过多，请几分钟后再试。",
+      "failed": "出了点问题，请重试。"
+    },
+    "unlock": {
+      "title": "#{{position}} · {{type}}",
+      "description": "输入该委托的口令以查看详情。",
+      "noPasscode": "该委托还没有口令。",
+      "noPasscodeHelp": "请向画师索取口令，或使用邮件中的订单码打开。",
+      "gotIt": "知道了",
+      "open": "打开",
+      "opening": "正在打开…"
+    },
+    "findMine": {
+      "title": "找不到你的委托？",
+      "subtitle": "用邮箱和口令查找，或使用你的订单码。",
+      "emailTab": "邮箱和口令",
+      "codeTab": "订单码",
+      "email": "邮箱",
+      "codeHint": "订单码在订单邮件的链接中。"
+    }
   },
   "orders": {
     "emailPlaceholder": "your@email.com",
     "search": "查找我的订单",
-    "empty": "未找到该邮箱对应的订单。",
     "codeLabel": "或者，如果我给了你一个代码",
     "codeGo": "查看",
     "deliverables": "最终作品",
     "existingReferences": "已上传的参考图",
     "addLinkLabel": "或粘贴链接",
     "addLinkPlaceholder": "https://...",
-    "addLink": "添加链接"
+    "addLink": "添加链接",
+    "backToQueue": "队列",
+    "greeting": "{{name}}，这是你的委托",
+    "position": "队列中第 {{position}} / {{total}} 位",
+    "facts": {
+      "price": "价格",
+      "payment": "付款",
+      "deadline": "截止日期"
+    },
+    "tabs": {
+      "updates": "进度",
+      "messages": "留言",
+      "references": "参考资料",
+      "request": "你的需求"
+    },
+    "noUpdates": "暂无进度。草图和预览会显示在这里。",
+    "noMessages": "暂无留言。",
+    "passcode": {
+      "title": "队列口令",
+      "saved": "口令已保存，可用它从队列打开此委托。",
+      "source": {
+        "NONE": "设置口令后即可直接从队列打开此委托。",
+        "CLIENT": "你已为此委托设置口令。",
+        "ARTIST": "画师已为此委托设置口令。",
+        "GENERATED": "画师已为此委托生成口令。"
+      },
+      "set": "设置口令",
+      "change": "更改",
+      "newLabel": "新口令",
+      "save": "保存",
+      "hint": "至少 {{min}} 个字符。"
+    }
   },
   "commission": {
     "gallery": {
@@ -212,7 +275,8 @@
         "contact": "用于进度更新和沟通。",
         "contactValue": "用户名或主页链接。",
         "references": "角色设定图、服装、姿势，任何有帮助的内容。",
-        "links": "按回车逐个添加。"
+        "links": "按回车逐个添加。",
+        "passcode": "可让你从公开队列打开此委托。"
       },
       "placeholders": {
         "name": "例如：Mira Tanaka",
@@ -226,7 +290,9 @@
         "required": "此项为必填。",
         "ideaRequired": "请简单描述一下你想要的作品。",
         "acceptTerms": "请同意服务条款后继续。",
-        "deadlineTooSoon": "请选择至少 {{count}} 天后的日期。"
+        "deadlineTooSoon": "请选择至少 {{count}} 天后的日期。",
+        "passcodeTooShort_one": "至少使用 {{count}} 个字符。",
+        "passcodeTooShort_other": "至少使用 {{count}} 个字符。"
       },
       "emailMissing": "此身份还没有登记电子邮箱，请填写以便我联系你。",
       "submitFailed": "无法提交请求。请检查填写的信息后重试。",
@@ -253,7 +319,8 @@
         "ideaHint": "描述作品：角色、姿势、氛围，任何重要的细节。",
         "request": "你的请求",
         "requestHint": "你是谁，以及你想要什么作品。"
-      }
+      },
+      "passcodeLabel": "队列口令（可选）"
     },
     "preferredContactMethod": {
       "EMAIL": "邮箱",
@@ -460,6 +527,25 @@
       "opensAt": "预计 {{date}} 开放",
       "lastOpenAt": "上次开放 {{date}}",
       "seeQueue": "查看队列"
+    },
+    "passcode": {
+      "title": "队列口令",
+      "source": {
+        "NONE": "未设置口令，委托人无法从队列打开。",
+        "CLIENT": "由委托人设置。",
+        "ARTIST": "由你设置。",
+        "GENERATED": "已生成，请分享给委托人。"
+      },
+      "generate": "生成",
+      "custom": "自定义",
+      "customLabel": "自定义口令",
+      "customPlaceholder": "至少 {{min}} 个字符",
+      "save": "保存",
+      "remove": "移除",
+      "copy": "复制",
+      "copied": "已复制",
+      "done": "完成",
+      "shownOnce": "仅此一次显示，请复制并发送给委托人。"
     }
   },
   "app": {

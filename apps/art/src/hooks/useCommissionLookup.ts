@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
 import {
-  useLookupCommissionsByEmail,
   useLookupCommissionByCode,
   useAddCommissionReferenceAssets,
   useAddClientCommissionNote,
@@ -10,25 +8,6 @@ import {
 } from '@hatohui/models';
 import { useQueryClient } from '@tanstack/react-query';
 import { useImageUpload } from '@hatohui/libs';
-
-export function useCommissionEmailLookup() {
-  const [email, setEmail] = useState('');
-  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
-
-  const lookupQuery = useLookupCommissionsByEmail(
-    { email: submittedEmail ?? '' },
-    { query: { enabled: submittedEmail !== null } },
-  );
-
-  return {
-    email,
-    setEmail,
-    search: () => setSubmittedEmail(email),
-    items: lookupQuery.data?.data ?? [],
-    isLoading: lookupQuery.isPending && submittedEmail !== null,
-    hasSearched: submittedEmail !== null,
-  };
-}
 
 export function useCommissionCodeLookup(code: string) {
   const queryClient = useQueryClient();

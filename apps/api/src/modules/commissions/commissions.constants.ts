@@ -29,9 +29,35 @@ export const QUEUE_STATUSES: CommissionStatus[] = [
   CommissionStatus.ONGOING,
 ];
 
+export const QUEUE_WORK_ORDER: CommissionStatus[] = [
+  CommissionStatus.ONGOING,
+  CommissionStatus.CONFIRMED,
+  CommissionStatus.SKETCH,
+  CommissionStatus.QUEUED,
+  CommissionStatus.NOT_YET_STARTED,
+];
+
 export const QUEUE_STATUS_RANK = new Map(
-  QUEUE_STATUSES.map((status, index) => [status, index]),
+  QUEUE_WORK_ORDER.map((status, index) => [status, index]),
 );
+
+export const QUEUE_STAGES = [
+  'WAITING',
+  'SKETCHING',
+  'SKETCH_APPROVED',
+  'IN_PROGRESS',
+] as const;
+export type QueueStage = (typeof QUEUE_STAGES)[number];
+
+export const QUEUE_STAGE_BY_STATUS: Partial<
+  Record<CommissionStatus, QueueStage>
+> = {
+  [CommissionStatus.NOT_YET_STARTED]: 'WAITING',
+  [CommissionStatus.QUEUED]: 'WAITING',
+  [CommissionStatus.SKETCH]: 'SKETCHING',
+  [CommissionStatus.CONFIRMED]: 'SKETCH_APPROVED',
+  [CommissionStatus.ONGOING]: 'IN_PROGRESS',
+};
 
 export const NEW_COMMISSION_EMAIL_TEMPLATE_CONFIG_TYPE =
   'art.commissionreceived.templateid';
