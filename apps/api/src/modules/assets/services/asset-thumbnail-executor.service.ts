@@ -37,7 +37,7 @@ export class AssetThumbnailExecutor implements ProcessExecutor {
     );
     await this.storage.putObject(thumbnailKey, thumbnail, 'image/webp');
 
-    await this.db.asset.update({
+    const { count } = await this.db.asset.updateMany({
       where: { id: assetId },
       data: {
         thumbnailKey,
@@ -45,5 +45,10 @@ export class AssetThumbnailExecutor implements ProcessExecutor {
         thumbnailStatus: 'READY',
       },
     });
+
+    const orphanedKey = count === 0 ? thumbnailKey : asset.thumbnailKey;
+    if (orphanedKey) {
+      await this.storage.deleteObject(orphanedKey).catch(() => {});
+    }
   }
 }
