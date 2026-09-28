@@ -11,6 +11,7 @@ import { AuthService } from '@/modules/auth/services/auth.service';
 import { ProcessQueueService } from '@/modules/process-queue/services/process-queue.service';
 import { ProcessType } from '@/modules/process-queue/process-queue.constants';
 import { AssetThumbnailExecutor } from '@/modules/assets/services/asset-thumbnail-executor.service';
+import { StorageCleanupService } from '@/modules/storage-cleanup/services/storage-cleanup.service';
 import type { Prisma, Asset, AssetTag, Tag, User } from '@prisma/client';
 import type { AssetSortOption } from '@/modules/assets/assets.constants';
 import { PaginatedAssetsDto } from '@/modules/assets/dto/asset-query.dto';
@@ -61,6 +62,7 @@ export class AssetsService {
     private readonly auth: AuthService,
     private readonly processQueue: ProcessQueueService,
     private readonly thumbnailExecutor: AssetThumbnailExecutor,
+    private readonly storageCleanup: StorageCleanupService,
   ) {}
 
   async list(
@@ -418,10 +420,10 @@ export class AssetsService {
 
   private async cleanUpDeleted(asset: Asset): Promise<void> {
     if (asset.key) {
-      await this.storage.deleteObject(asset.key).catch(() => {});
+      await this.storageCleanup.delete(asset.key);
     }
     if (asset.thumbnailKey) {
-      await this.storage.deleteObject(asset.thumbnailKey).catch(() => {});
+      await this.storageCleanup.delete(asset.thumbnailKey);
     }
     await this.processQueue.clearForRef(ProcessType.ASSET_THUMBNAIL, asset.id);
   }

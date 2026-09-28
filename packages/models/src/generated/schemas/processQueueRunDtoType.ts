@@ -15,4 +15,5 @@ export type ProcessQueueRunDtoType = typeof ProcessQueueRunDtoType[keyof typeof 
 export const ProcessQueueRunDtoType = {
   ASSET_THUMBNAIL: 'ASSET_THUMBNAIL',
   NOTIFICATION_EMAIL: 'NOTIFICATION_EMAIL',
+  STORAGE_DELETE: 'STORAGE_DELETE',
 } as const;

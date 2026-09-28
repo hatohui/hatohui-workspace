@@ -1886,7 +1886,8 @@
               "type": "string",
               "enum": [
                 "ASSET_THUMBNAIL",
-                "NOTIFICATION_EMAIL"
+                "NOTIFICATION_EMAIL",
+                "STORAGE_DELETE"
               ]
             }
           }
@@ -6607,7 +6608,8 @@
             "type": "string",
             "enum": [
               "ASSET_THUMBNAIL",
-              "NOTIFICATION_EMAIL"
+              "NOTIFICATION_EMAIL",
+              "STORAGE_DELETE"
             ],
             "nullable": true,
             "example": null

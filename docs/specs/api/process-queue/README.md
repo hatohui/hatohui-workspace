@@ -25,6 +25,17 @@ reference, and each domain service owns cleaning up its own queue rows —
 `Asset` is deleted, the same way it deletes the R2 thumbnail object. If a second
 `ProcessType` is added later, its owning service takes the same responsibility.
 
+## Failed storage deletes (`STORAGE_DELETE`)
+
+Deleting a record removes its row first and its R2 objects second, so a failed
+object delete would otherwise leave an orphan nothing points to. Callers delete
+through `StorageCleanupService.delete(key)` (`modules/storage-cleanup/`) instead
+of `Storage.deleteObject` directly: on failure it queues a `STORAGE_DELETE` job
+whose `refId` is the object key, and `StorageDeleteExecutor` retries it on the
+normal cadence. S3 deletes are idempotent, so a retry of an already-gone key
+just succeeds. `Storage.moveObject`'s staging delete is deliberately left out —
+a leftover staging upload is harmless.
+
 ## How dispatch works without circular module imports
 
 - `process-queue` module: owns the `ProcessQueue` table and the `ProcessExecutor`

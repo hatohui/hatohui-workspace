@@ -301,6 +301,7 @@ model Asset {
 enum ProcessType {
   ASSET_THUMBNAIL
   NOTIFICATION_EMAIL
+  STORAGE_DELETE
 }
 
 model ProcessQueue {
