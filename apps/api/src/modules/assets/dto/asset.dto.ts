@@ -78,6 +78,12 @@ export class AssetDto {
   projectIds: string[];
 
   @ApiProperty({
+    description:
+      'In a hidden project, so only its uploader and admins can see it',
+  })
+  isPrivate: boolean;
+
+  @ApiProperty({
     nullable: true,
     description: 'Id of the account that uploaded this asset',
   })

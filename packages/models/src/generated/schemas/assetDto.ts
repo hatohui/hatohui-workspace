@@ -32,6 +32,8 @@ export interface AssetDto {
   tags: string[];
   /** Projects this piece is shown in */
   projectIds: string[];
+  /** In a hidden project, so only its uploader and admins can see it */
+  isPrivate: boolean;
   /**
      * Id of the account that uploaded this asset
      * @nullable

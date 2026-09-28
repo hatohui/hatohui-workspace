@@ -31,11 +31,13 @@ export function GalleryGrid({
   initialData,
   galleryBasePath,
   projectBasePath,
+  initialSection = 'assets',
 }: {
   artistId?: string;
   initialData: GalleryInitialData;
   galleryBasePath: string;
   projectBasePath: string;
+  initialSection?: GallerySection;
 }) {
   const { t } = useTranslation('art');
   const { user } = useAuth();
@@ -45,7 +47,7 @@ export function GalleryGrid({
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [projectTarget, setProjectTarget] = useState<AssetDto | null>(null);
   const [editTarget, setEditTarget] = useState<AssetDto | null>(null);
-  const [section, setSection] = useState<GallerySection>('assets');
+  const [section, setSection] = useState<GallerySection>(initialSection);
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [
     gallery.itemsKey,
   ]);
