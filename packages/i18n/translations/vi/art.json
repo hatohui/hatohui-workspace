@@ -169,14 +169,46 @@
   },
   "queue": {
     "title": "Hàng đợi",
-    "subtitle": "Những gì đang được thực hiện, theo thứ tự sẽ hoàn thành.",
+    "subtitle": "Các commission theo thứ tự sẽ được thực hiện.",
     "empty": "Hiện chưa có gì trong hàng đợi.",
-    "accessMineTitle": "Xem đơn của tôi"
+    "hint_one": "Có {{count}} commission đang chờ. Nhấn vào của bạn để mở bằng mật mã.",
+    "hint_other": "Có {{count}} commission đang chờ. Nhấn vào của bạn để mở bằng mật mã.",
+    "since": "từ {{date}}",
+    "locked": "Được bảo vệ bằng mật mã",
+    "stageProgress": "Giai đoạn {{current}} / {{total}}",
+    "stage": {
+      "WAITING": "Đang chờ",
+      "SKETCHING": "Đang phác thảo",
+      "SKETCH_APPROVED": "Đã duyệt phác thảo",
+      "IN_PROGRESS": "Đang thực hiện"
+    },
+    "passcode": {
+      "label": "Mật mã",
+      "wrong": "Mật mã không đúng.",
+      "tooMany": "Thử quá nhiều lần. Vui lòng đợi vài phút rồi thử lại.",
+      "failed": "Đã có lỗi xảy ra. Vui lòng thử lại."
+    },
+    "unlock": {
+      "title": "#{{position}} · {{type}}",
+      "description": "Nhập mật mã của commission này để xem chi tiết.",
+      "noPasscode": "Commission này chưa có mật mã.",
+      "noPasscodeHelp": "Hãy hỏi họa sĩ mật mã, hoặc mở đơn bằng mã riêng trong email của bạn.",
+      "gotIt": "Đã hiểu",
+      "open": "Mở",
+      "opening": "Đang mở…"
+    },
+    "findMine": {
+      "title": "Không tìm thấy của bạn?",
+      "subtitle": "Tra cứu bằng email và mật mã, hoặc dùng mã đơn riêng của bạn.",
+      "emailTab": "Email & mật mã",
+      "codeTab": "Mã đơn",
+      "email": "Email",
+      "codeHint": "Mã nằm trong đường link ở email xác nhận đơn."
+    }
   },
   "orders": {
     "emailPlaceholder": "email@cua-ban.com",
     "search": "Tìm đơn hàng",
-    "empty": "Không tìm thấy đơn hàng nào với email đó.",
     "codeLabel": "Hoặc nếu bạn được cấp mã",
     "codeGo": "Xem",
     "deliverables": "Tác phẩm hoàn thiện",
@@ -184,7 +216,38 @@
     "existingReferences": "Ảnh tham khảo đã tải lên",
     "addLinkLabel": "Hoặc dán liên kết",
     "addLinkPlaceholder": "https://...",
-    "addLink": "Thêm liên kết"
+    "addLink": "Thêm liên kết",
+    "backToQueue": "Hàng đợi",
+    "greeting": "Chào {{name}}, đây là commission của bạn",
+    "position": "Thứ {{position}} / {{total}} trong hàng đợi",
+    "facts": {
+      "price": "Giá",
+      "payment": "Thanh toán",
+      "deadline": "Hạn chót"
+    },
+    "tabs": {
+      "updates": "Cập nhật",
+      "messages": "Tin nhắn",
+      "references": "Tham khảo",
+      "request": "Yêu cầu của bạn"
+    },
+    "noUpdates": "Chưa có cập nhật. Bản phác và bản xem trước sẽ hiện ở đây.",
+    "noMessages": "Chưa có tin nhắn.",
+    "passcode": {
+      "title": "Mật mã hàng đợi",
+      "saved": "Đã lưu mật mã. Dùng nó để mở từ hàng đợi.",
+      "source": {
+        "NONE": "Đặt mật mã để mở commission này ngay từ hàng đợi.",
+        "CLIENT": "Bạn đã đặt mật mã cho commission này.",
+        "ARTIST": "Họa sĩ đã đặt mật mã cho commission này.",
+        "GENERATED": "Họa sĩ đã tạo mật mã cho commission này."
+      },
+      "set": "Đặt mật mã",
+      "change": "Đổi",
+      "newLabel": "Mật mã mới",
+      "save": "Lưu",
+      "hint": "Ít nhất {{min}} ký tự."
+    }
   },
   "commission": {
     "gallery": {
@@ -223,7 +286,8 @@
         "contact": "Để cập nhật tiến độ và hỏi đáp.",
         "contactValue": "Tên người dùng hoặc đường dẫn hồ sơ.",
         "references": "Bảng nhân vật, trang phục, dáng, bất cứ thứ gì hữu ích.",
-        "links": "Nhấn Enter để thêm từng đường dẫn."
+        "links": "Nhấn Enter để thêm từng đường dẫn.",
+        "passcode": "Giúp bạn mở đơn này từ hàng đợi công khai."
       },
       "placeholders": {
         "name": "vd: Mira Tanaka",
@@ -237,7 +301,9 @@
         "required": "Trường này là bắt buộc.",
         "ideaRequired": "Hãy kể một chút về thứ bạn muốn vẽ.",
         "acceptTerms": "Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục.",
-        "deadlineTooSoon": "Hãy chọn ngày cách hôm nay ít nhất {{count}} ngày."
+        "deadlineTooSoon": "Hãy chọn ngày cách hôm nay ít nhất {{count}} ngày.",
+        "passcodeTooShort_one": "Dùng ít nhất {{count}} ký tự.",
+        "passcodeTooShort_other": "Dùng ít nhất {{count}} ký tự."
       },
       "emailMissing": "Danh tính này chưa có email. Hãy thêm email để mình có thể liên hệ với bạn.",
       "submitFailed": "Không thể gửi yêu cầu. Vui lòng kiểm tra thông tin và thử lại.",
@@ -264,7 +330,8 @@
         "ideaHint": "Mô tả tác phẩm - nhân vật, dáng, không khí, bất cứ điều gì quan trọng.",
         "request": "Yêu cầu của bạn",
         "requestHint": "Bạn là ai, và bạn muốn vẽ gì."
-      }
+      },
+      "passcodeLabel": "Mật mã hàng đợi (không bắt buộc)"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -578,7 +645,26 @@
       "body": "{{name}} hiện không nhận yêu cầu mới. Hãy quay lại sau, hoặc xem các tác phẩm đang thực hiện.",
       "opensAt": "Dự kiến mở vào {{date}}",
       "lastOpenAt": "Lần mở gần nhất {{date}}",
-      "seeQueue": "Xem hàng chờ"
+      "seeQueue": "Xem hàng đợi"
+    },
+    "passcode": {
+      "title": "Mật mã hàng đợi",
+      "source": {
+        "NONE": "Chưa có mật mã. Khách không thể mở từ hàng đợi.",
+        "CLIENT": "Do khách đặt.",
+        "ARTIST": "Do bạn đặt.",
+        "GENERATED": "Đã tạo. Hãy gửi cho khách."
+      },
+      "generate": "Tạo",
+      "custom": "Tự đặt",
+      "customLabel": "Mật mã tùy chỉnh",
+      "customPlaceholder": "Ít nhất {{min}} ký tự",
+      "save": "Lưu",
+      "remove": "Xóa",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "done": "Xong",
+      "shownOnce": "Chỉ hiển thị lúc này. Hãy sao chép và gửi cho khách."
     }
   },
   "app": {

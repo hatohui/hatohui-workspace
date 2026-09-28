@@ -9,6 +9,8 @@ import type { CommentDto } from './commentDto';
 import type { CommissionPublicDetailDtoIdea } from './commissionPublicDetailDtoIdea';
 import type { CommissionPublicDetailDtoPaymentStatus } from './commissionPublicDetailDtoPaymentStatus';
 import type { CommissionPublicDetailDtoStatus } from './commissionPublicDetailDtoStatus';
+import type { CommissionQueuePlacementDto } from './commissionQueuePlacementDto';
+import type { PasscodeSource } from './passcodeSource';
 
 export interface CommissionPublicDetailDto {
   id: string;
@@ -27,14 +29,22 @@ export interface CommissionPublicDetailDto {
      * @nullable
      */
   commissionTypeKey: string | null;
+  /** @nullable */
+  commissionTypeLabel: string | null;
   currency: string;
   /** @nullable */
   quote: number | null;
   referenceAssets: string[];
+  passcodeSource: PasscodeSource | null;
   /** @nullable */
   deliveredAt: string | null;
   createdAt: string;
   updatedAt: string;
   clientName: string;
+  /**
+     * Where this sits in the public queue; null when not queued
+     * @nullable
+     */
+  queue: CommissionQueuePlacementDto | null;
   comments: CommentDto[];
 }

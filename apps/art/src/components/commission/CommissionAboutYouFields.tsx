@@ -6,6 +6,7 @@ import type { CommissionValidation } from '@/hooks/useCommissionValidation';
 import { CommissionIdentityFields } from './CommissionIdentityFields';
 import { IdentityMatchPrompt } from './IdentityMatchPrompt';
 import { ContactPointPicker } from './ContactPointPicker';
+import { CommissionPasscodeField } from './CommissionPasscodeField';
 
 export function CommissionAboutYouFields({
   form,
@@ -23,6 +24,7 @@ export function CommissionAboutYouFields({
         <IdentityMatchPrompt form={form} />
       </div>
       <ContactPointPicker contact={contact} validation={validation} />
+      <CommissionPasscodeField form={form} validation={validation} />
     </div>
   );
 }

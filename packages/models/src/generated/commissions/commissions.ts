@@ -38,7 +38,6 @@ import type {
   CreateCommentDto,
   CreatePrivateCommissionDto,
   DeliverCommissionDto,
-  LookupCommissionsByEmailParams,
   PaginatedCommissionsDto,
   SendConfirmationEmailDto,
   SendQuoteDto,
@@ -464,125 +463,6 @@ export function useCommissionQueue<TData = Awaited<ReturnType<typeof commissionQ
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getCommissionQueueQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-export type lookupCommissionsByEmailResponse200 = {
-  data: CommissionPublicDto[]
-  status: 200
-}
-
-export type lookupCommissionsByEmailResponseSuccess = (lookupCommissionsByEmailResponse200) & {
-  headers: Headers;
-};
-;
-
-export type lookupCommissionsByEmailResponse = (lookupCommissionsByEmailResponseSuccess)
-
-export const getLookupCommissionsByEmailUrl = (params: LookupCommissionsByEmailParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/commissions/lookup?${stringifiedParams}` : `/commissions/lookup`
-}
-
-/**
- * @summary List a client's own commissions by the email they submitted with
- */
-export const lookupCommissionsByEmail = async (params: LookupCommissionsByEmailParams, options?: RequestInit): Promise<lookupCommissionsByEmailResponse> => {
-
-  return customFetch<lookupCommissionsByEmailResponse>(getLookupCommissionsByEmailUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getLookupCommissionsByEmailQueryKey = (params?: LookupCommissionsByEmailParams,) => {
-    return [
-    `/commissions/lookup`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getLookupCommissionsByEmailQueryOptions = <TData = Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError = unknown>(params: LookupCommissionsByEmailParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getLookupCommissionsByEmailQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof lookupCommissionsByEmail>>> = ({ signal }) => lookupCommissionsByEmail(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type LookupCommissionsByEmailQueryResult = NonNullable<Awaited<ReturnType<typeof lookupCommissionsByEmail>>>
-export type LookupCommissionsByEmailQueryError = unknown
-
-
-export function useLookupCommissionsByEmail<TData = Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError = unknown>(
- params: LookupCommissionsByEmailParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof lookupCommissionsByEmail>>,
-          TError,
-          Awaited<ReturnType<typeof lookupCommissionsByEmail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLookupCommissionsByEmail<TData = Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError = unknown>(
- params: LookupCommissionsByEmailParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof lookupCommissionsByEmail>>,
-          TError,
-          Awaited<ReturnType<typeof lookupCommissionsByEmail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLookupCommissionsByEmail<TData = Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError = unknown>(
- params: LookupCommissionsByEmailParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary List a client's own commissions by the email they submitted with
- */
-
-export function useLookupCommissionsByEmail<TData = Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError = unknown>(
- params: LookupCommissionsByEmailParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getLookupCommissionsByEmailQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

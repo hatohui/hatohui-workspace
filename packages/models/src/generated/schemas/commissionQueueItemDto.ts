@@ -5,15 +5,25 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CommissionQueueItemDtoStatus } from './commissionQueueItemDtoStatus';
+import type { QueueStage } from './queueStage';
 
 export interface CommissionQueueItemDto {
+  /** 1-based place in the work order */
+  position: number;
+  total: number;
+  stage: QueueStage;
+  /** 0-based index into QUEUE_STAGES */
+  stageIndex: number;
+  stageCount: number;
   id: string;
-  status: CommissionQueueItemDtoStatus;
   /**
      * Also the i18n key: commission.type.<key>
      * @nullable
      */
   commissionTypeKey: string | null;
-  createdAt: string;
+  /** @nullable */
+  commissionTypeLabel: string | null;
+  /** Whether a passcode can open this item */
+  isUnlockable: boolean;
+  queuedAt: string;
 }

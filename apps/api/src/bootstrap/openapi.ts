@@ -15,6 +15,7 @@ export function buildOpenApiDocument(app: INestApplication) {
     .addTag('onboarding')
     .addTag('assets')
     .addTag('commissions')
+    .addTag('commission-access')
     .addTag('artist-dashboard')
     .addTag('commission-pricing')
     .addTag('projects')

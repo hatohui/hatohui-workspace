@@ -19,10 +19,7 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { AuthService } from '@/modules/auth/services/auth.service';
 import type { User } from '@prisma/client';
 import { CommissionsService } from '@/modules/commissions/services/commissions.service';
-import {
-  CommissionEmailLookupQueryDto,
-  CreateClientNoteDto,
-} from '@/modules/commissions/dto/commission-lookup.dto';
+import { CreateClientNoteDto } from '@/modules/commissions/dto/commission-lookup.dto';
 import {
   CommissionQueryDto,
   PaginatedCommissionsDto,
@@ -99,18 +96,6 @@ export class CommissionsController {
   @ApiOkResponse({ type: CommissionQueueDto })
   queue(@Query('artistId') artistId: string): Promise<CommissionQueueDto> {
     return this.commissionsService.queue(artistId);
-  }
-
-  @Get('lookup')
-  @ApiOperation({
-    operationId: 'lookupCommissionsByEmail',
-    summary: "List a client's own commissions by the email they submitted with",
-  })
-  @ApiOkResponse({ type: CommissionPublicDto, isArray: true })
-  lookupByEmail(
-    @Query() query: CommissionEmailLookupQueryDto,
-  ): Promise<CommissionPublicDto[]> {
-    return this.commissionsService.findByEmail(query.email);
   }
 
   @Get('lookup/code/:code')

@@ -12,6 +12,7 @@ import type { CommissionDetailDtoPreferredContactMethod } from './commissionDeta
 import type { CommissionDetailDtoStatus } from './commissionDetailDtoStatus';
 import type { CommissionStatusHistoryDto } from './commissionStatusHistoryDto';
 import type { CommissionStepsDto } from './commissionStepsDto';
+import type { PasscodeSource } from './passcodeSource';
 
 export interface CommissionDetailDto {
   id: string;
@@ -97,6 +98,8 @@ export interface CommissionDetailDto {
   /** @nullable */
   deliveredAt: string | null;
   steps: CommissionStepsDto;
+  /** Who set the queue passcode; null when none is set */
+  passcodeSource: PasscodeSource | null;
   createdAt: string;
   updatedAt: string;
   comments: CommentDto[];
