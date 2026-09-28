@@ -36,7 +36,7 @@ export function useProjectEditor(id: string) {
     ),
     saveTitle: (title: string) => save({ title }),
     saveDescription: (description: string) => save({ description }),
-    setVisible: (visible: boolean) => mutations.setHidden(id, !visible),
+    setPrivate: (isPrivate: boolean) => mutations.setPrivate(id, isPrivate),
     removeArtwork: (assetId: string) => mutations.removeAsset(id, assetId),
     viewer,
     view: (artwork: ProjectArtworkDto) =>

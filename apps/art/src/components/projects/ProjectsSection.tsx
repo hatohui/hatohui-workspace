@@ -8,11 +8,11 @@ import { ProjectCard } from './ProjectCard';
 export function ProjectsSection({
   artistId,
   basePath,
-  showHidden = false,
+  showPrivate = false,
 }: {
   artistId?: string;
   basePath: string;
-  showHidden?: boolean;
+  showPrivate?: boolean;
 }) {
   const { t } = useTranslation('art');
   const { items, isLoading } = useProjects(artistId);
@@ -38,7 +38,7 @@ export function ProjectsSection({
           <ProjectCard
             project={project}
             href={`${basePath}/${project.id}`}
-            showHidden={showHidden}
+            showPrivate={showPrivate}
           />
         </div>
       ))}

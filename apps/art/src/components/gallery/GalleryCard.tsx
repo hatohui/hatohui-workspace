@@ -61,10 +61,13 @@ export function GalleryCard({
       )}
       {!selection && <AssetHoverDetails asset={asset} />}
       {!selection && <GalleryCardZoomButton onZoom={onZoom} />}
-      {asset.isPrivate && <GalleryCardPrivateBadge />}
+      {(asset.isPrivate || asset.inPrivateProject) && (
+        <GalleryCardPrivateBadge viaProject={!asset.isPrivate} />
+      )}
       {isAdmin && !selection && (
         <GalleryCardActions
           assetId={asset.id}
+          isPrivate={asset.isPrivate}
           onEdit={onEdit}
           onAddToProject={onAddToProject}
         />

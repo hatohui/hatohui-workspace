@@ -24,7 +24,7 @@
     "titlePlaceholder": "e.g. Summer YCH batch",
     "newProjectPlaceholder": "New project name",
     "noArtYet": "No art yet",
-    "hidden": "Hidden",
+    "private": "Private",
     "pieces_one": "{{count}} piece",
     "pieces_other": "{{count}} pieces",
     "viewFull": "View full size",
@@ -33,7 +33,7 @@
     "addArt": "Add art",
     "description": "Description",
     "descriptionPlaceholder": "What is this set about?",
-    "visibleOnProfile": "Show on your public page",
+    "privateToggle": "Private: only you can see this project and its art",
     "delete": "Delete project",
     "deleteTitle": "Delete this project?",
     "deleteBody": "The project goes away, but its art stays in your gallery.",
@@ -119,14 +119,19 @@
       "editTags": "Edit tags",
       "edit": "Edit details",
       "private": "Private",
-      "privateHint": "Only you can see this. It's in a hidden project."
+      "privateHint": "Only you can see this piece.",
+      "privateProjectHint": "Only you can see this piece. It's in a private project.",
+      "makePrivate": "Make private",
+      "makePublic": "Make public"
     },
     "detail": {
       "back": "Back to gallery",
       "openOriginal": "Open original",
       "dimensions": "Dimensions",
       "size": "Size",
-      "uploaded": "Uploaded"
+      "uploaded": "Uploaded",
+      "privateToggle": "Private: only you can see this piece",
+      "privateViaProject": "It's also in a private project, so it stays private until that project is public."
     },
     "selection": {
       "start": "Select",

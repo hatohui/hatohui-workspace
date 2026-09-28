@@ -35,10 +35,10 @@ export function ProjectEditorFields({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <label className="flex items-center gap-3 text-sm">
           <Switch
-            checked={!project.isHidden}
-            onCheckedChange={editor.setVisible}
+            checked={project.isPrivate}
+            onCheckedChange={editor.setPrivate}
           />
-          {t('projects.visibleOnProfile')}
+          {t('projects.privateToggle')}
         </label>
         <Button
           variant="ghost"

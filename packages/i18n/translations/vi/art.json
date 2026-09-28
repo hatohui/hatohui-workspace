@@ -24,7 +24,7 @@
     "titlePlaceholder": "VD: Đợt YCH mùa hè",
     "newProjectPlaceholder": "Tên dự án mới",
     "noArtYet": "Chưa có tranh",
-    "hidden": "Đang ẩn",
+    "private": "Riêng tư",
     "pieces_other": "{{count}} tranh",
     "viewFull": "Xem kích thước đầy đủ",
     "removeFromProject": "Bỏ khỏi dự án",
@@ -32,7 +32,7 @@
     "addArt": "Thêm tranh",
     "description": "Mô tả",
     "descriptionPlaceholder": "Bộ tranh này nói về gì?",
-    "visibleOnProfile": "Hiện trên trang công khai",
+    "privateToggle": "Riêng tư: chỉ bạn thấy được dự án này và các tác phẩm trong đó",
     "delete": "Xóa dự án",
     "deleteTitle": "Xóa dự án này?",
     "deleteBody": "Dự án sẽ bị xóa, nhưng tranh vẫn còn trong thư viện.",
@@ -115,14 +115,19 @@
       "editTags": "Sửa thẻ",
       "edit": "Sửa chi tiết",
       "private": "Riêng tư",
-      "privateHint": "Chỉ bạn thấy được tác phẩm này vì nó nằm trong một dự án đang ẩn."
+      "privateHint": "Chỉ bạn thấy được tác phẩm này.",
+      "privateProjectHint": "Chỉ bạn thấy được tác phẩm này vì nó nằm trong một dự án riêng tư.",
+      "makePrivate": "Đặt riêng tư",
+      "makePublic": "Công khai"
     },
     "detail": {
       "back": "Quay lại thư viện",
       "openOriginal": "Mở ảnh gốc",
       "dimensions": "Kích thước",
       "size": "Dung lượng",
-      "uploaded": "Ngày tải lên"
+      "uploaded": "Ngày tải lên",
+      "privateToggle": "Riêng tư: chỉ bạn thấy được tác phẩm này",
+      "privateViaProject": "Tác phẩm này cũng nằm trong một dự án riêng tư, nên vẫn riêng tư cho đến khi dự án đó được công khai."
     },
     "selection": {
       "start": "Chọn",

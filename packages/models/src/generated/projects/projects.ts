@@ -554,7 +554,7 @@ export const getUpdateProjectVisibilityUrl = (id: string,) => {
 }
 
 /**
- * @summary Show or hide a project from the public gallery
+ * @summary Make a project private or public
  */
 export const updateProjectVisibility = async (id: string,
     updateProjectVisibilityDto: UpdateProjectVisibilityDto, options?: RequestInit): Promise<updateProjectVisibilityResponse> => {
@@ -604,7 +604,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UpdateProjectVisibilityMutationError = unknown
 
     /**
- * @summary Show or hide a project from the public gallery
+ * @summary Make a project private or public
  */
 export const useUpdateProjectVisibility = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProjectVisibility>>, TError,{id: string;data: UpdateProjectVisibilityDto}, TContext>, request?: SecondParameter<typeof customFetch>}

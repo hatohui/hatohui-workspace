@@ -19,8 +19,8 @@ export interface ProjectDto {
      * @nullable
      */
   brief: ProjectDtoBrief;
-  /** Whether this project is hidden from the public gallery */
-  isHidden: boolean;
+  /** Private projects, and the art in them, are only visible to the artist */
+  isPrivate: boolean;
   /**
      * First final artwork image from this project's artworks
      * @nullable

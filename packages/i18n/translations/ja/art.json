@@ -24,7 +24,7 @@
     "titlePlaceholder": "例：夏のYCHまとめ",
     "newProjectPlaceholder": "新しいプロジェクト名",
     "noArtYet": "まだ作品がありません",
-    "hidden": "非公開",
+    "private": "非公開",
     "pieces_other": "{{count}} 点",
     "viewFull": "原寸で表示",
     "removeFromProject": "プロジェクトから外す",
@@ -32,7 +32,7 @@
     "addArt": "作品を追加",
     "description": "説明",
     "descriptionPlaceholder": "どんなセットですか？",
-    "visibleOnProfile": "公開ページに表示",
+    "privateToggle": "非公開：このプロジェクトと作品はあなただけに表示されます",
     "delete": "プロジェクトを削除",
     "deleteTitle": "このプロジェクトを削除しますか？",
     "deleteBody": "プロジェクトは消えますが、作品はギャラリーに残ります。",
@@ -116,14 +116,19 @@
       "editTags": "タグを編集",
       "edit": "詳細を編集",
       "private": "非公開",
-      "privateHint": "非公開のプロジェクトに含まれているため、あなたにだけ表示されます。"
+      "privateHint": "この作品はあなただけに表示されます。",
+      "privateProjectHint": "非公開のプロジェクトに含まれているため、あなただけに表示されます。",
+      "makePrivate": "非公開にする",
+      "makePublic": "公開する"
     },
     "detail": {
       "back": "ギャラリーに戻る",
       "openOriginal": "元画像を開く",
       "dimensions": "サイズ",
       "size": "容量",
-      "uploaded": "アップロード日"
+      "uploaded": "アップロード日",
+      "privateToggle": "非公開：この作品はあなただけに表示されます",
+      "privateViaProject": "非公開のプロジェクトにも含まれているため、そのプロジェクトを公開するまで非公開のままです。"
     },
     "selection": {
       "start": "選択",

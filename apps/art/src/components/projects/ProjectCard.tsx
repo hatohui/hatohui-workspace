@@ -2,18 +2,18 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { EyeOff } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { ProjectDto } from '@hatohui/models';
 
 export function ProjectCard({
   project,
   href,
-  showHidden = false,
+  showPrivate = false,
 }: {
   project: ProjectDto;
   href: string;
-  showHidden?: boolean;
+  showPrivate?: boolean;
 }) {
   const { t } = useTranslation('art');
 
@@ -35,10 +35,10 @@ export function ProjectCard({
           {t('projects.noArtYet')}
         </div>
       )}
-      {showHidden && project.isHidden && (
+      {showPrivate && project.isPrivate && (
         <span className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-background/90 px-2 py-0.5 text-xs">
-          <EyeOff className="size-3" aria-hidden />
-          {t('projects.hidden')}
+          <Lock className="size-3" aria-hidden />
+          {t('projects.private')}
         </span>
       )}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2">

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -78,10 +79,14 @@ export class AssetDto {
   projectIds: string[];
 
   @ApiProperty({
-    description:
-      'In a hidden project, so only its uploader and admins can see it',
+    description: 'Marked private by the artist, so only they can see it',
   })
   isPrivate: boolean;
+
+  @ApiProperty({
+    description: 'In a private project, which keeps it private too',
+  })
+  inPrivateProject: boolean;
 
   @ApiProperty({
     nullable: true,
@@ -199,4 +204,12 @@ export class UpdateAssetDto {
   @IsString()
   @MaxLength(ASSET_DESCRIPTION_MAX_LENGTH)
   description?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Hide this piece from everyone but you',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isPrivate?: boolean;
 }

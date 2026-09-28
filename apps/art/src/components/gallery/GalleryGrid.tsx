@@ -81,7 +81,7 @@ export function GalleryGrid({
         <ProjectsSection
           artistId={artistId}
           basePath={projectBasePath}
-          showHidden={isOwner}
+          showPrivate={isOwner}
         />
       ) : (
         <>
