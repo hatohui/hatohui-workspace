@@ -127,7 +127,7 @@
       "size": "Dung lượng",
       "uploaded": "Ngày tải lên",
       "privateToggle": "Riêng tư: chỉ bạn thấy được tác phẩm này",
-      "privateViaProject": "Tác phẩm này cũng nằm trong một dự án riêng tư, nên vẫn riêng tư cho đến khi dự án đó được công khai."
+      "privateViaProject": "Tác phẩm này nằm trong một dự án riêng tư, nên vẫn riêng tư cho đến khi dự án đó được công khai."
     },
     "selection": {
       "start": "Chọn",

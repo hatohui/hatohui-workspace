@@ -9,8 +9,8 @@ export function useArtworkPrivacy(asset: AssetDto) {
   const { setPrivate, isUpdating } = useAssetManagement();
 
   return {
-    isPrivate: asset.isPrivate,
-    isPrivateViaProject: asset.inPrivateProject && !asset.isPrivate,
+    isPrivate: asset.isPrivate || asset.inPrivateProject,
+    isPrivateViaProject: asset.inPrivateProject,
     isUpdating,
     setPrivate: async (isPrivate: boolean) => {
       await setPrivate(asset.id, isPrivate);

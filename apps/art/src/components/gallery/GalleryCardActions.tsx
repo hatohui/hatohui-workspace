@@ -9,11 +9,13 @@ import { GalleryCardPrivacyButton } from './GalleryCardPrivacyButton';
 export function GalleryCardActions({
   assetId,
   isPrivate,
+  isPrivateViaProject,
   onEdit,
   onAddToProject,
 }: {
   assetId: string;
   isPrivate: boolean;
+  isPrivateViaProject: boolean;
   onEdit: () => void;
   onAddToProject: () => void;
 }) {
@@ -32,7 +34,11 @@ export function GalleryCardActions({
       >
         <Pencil />
       </Button>
-      <GalleryCardPrivacyButton assetId={assetId} isPrivate={isPrivate} />
+      <GalleryCardPrivacyButton
+        assetId={assetId}
+        isPrivate={isPrivate}
+        isPrivateViaProject={isPrivateViaProject}
+      />
       <Button
         type="button"
         variant="secondary"
