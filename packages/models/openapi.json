@@ -4155,7 +4155,7 @@
             }
           }
         },
-        "summary": "Show or hide a project from the public gallery",
+        "summary": "Make a project private or public",
         "tags": [
           "projects"
         ]
@@ -6541,7 +6541,11 @@
           },
           "isPrivate": {
             "type": "boolean",
-            "description": "In a hidden project, so only its uploader and admins can see it"
+            "description": "Marked private by the artist, so only they can see it"
+          },
+          "inPrivateProject": {
+            "type": "boolean",
+            "description": "In a private project, which keeps it private too"
           },
           "uploadedById": {
             "type": "string",
@@ -6574,6 +6578,7 @@
           "tags",
           "projectIds",
           "isPrivate",
+          "inPrivateProject",
           "uploadedById",
           "createdAt",
           "updatedAt"
@@ -6794,6 +6799,10 @@
           "description": {
             "type": "string",
             "example": "Commission for Mira, warm evening palette."
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "Hide this piece from everyone but you"
           }
         }
       },
@@ -9099,9 +9108,9 @@
             "nullable": true,
             "description": "Tiptap/ProseMirror JSON document describing the brief"
           },
-          "isHidden": {
+          "isPrivate": {
             "type": "boolean",
-            "description": "Whether this project is hidden from the public gallery"
+            "description": "Private projects, and the art in them, are only visible to the artist"
           },
           "coverImageUrl": {
             "type": "string",
@@ -9139,7 +9148,7 @@
           "title",
           "description",
           "brief",
-          "isHidden",
+          "isPrivate",
           "coverImageUrl",
           "artworkCount",
           "artworkImages",
@@ -9193,12 +9202,12 @@
       "UpdateProjectVisibilityDto": {
         "type": "object",
         "properties": {
-          "isHidden": {
+          "isPrivate": {
             "type": "boolean"
           }
         },
         "required": [
-          "isHidden"
+          "isPrivate"
         ]
       },
       "AddProjectAssetsDto": {

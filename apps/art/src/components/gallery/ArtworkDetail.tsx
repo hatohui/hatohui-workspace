@@ -8,6 +8,7 @@ import { ArtworkDetailList } from './ArtworkDetailList';
 import { ArtworkImage } from './ArtworkImage';
 import { ArtworkHeading } from './ArtworkHeading';
 import { ArtworkDetailsEditor } from './ArtworkDetailsEditor';
+import { ArtworkPrivacyToggle } from './ArtworkPrivacyToggle';
 
 export function ArtworkDetail({
   asset,
@@ -42,7 +43,10 @@ export function ArtworkDetail({
       </div>
       <ArtworkImage asset={asset} />
       {editable ? (
-        <ArtworkDetailsEditor asset={asset} />
+        <>
+          <ArtworkDetailsEditor asset={asset} />
+          <ArtworkPrivacyToggle asset={asset} />
+        </>
       ) : (
         <ArtworkHeading asset={asset} />
       )}

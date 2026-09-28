@@ -94,7 +94,7 @@ export class ProjectsController {
   @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'updateProjectVisibility',
-    summary: 'Show or hide a project from the public gallery',
+    summary: 'Make a project private or public',
   })
   @ApiOkResponse({ type: ProjectDto })
   updateVisibility(

@@ -39,7 +39,7 @@ export function WorkspaceProjects() {
               key={project.id}
               project={project}
               href={projects.hrefFor(project.id)}
-              showHidden
+              showPrivate
             />
           ))}
         </div>

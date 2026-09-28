@@ -38,25 +38,26 @@ export class ProjectsService {
 
   async list(viewer: User | null, artistId?: string): Promise<ProjectDto[]> {
     const isOwner = !!viewer && !!artistId && viewer.id === artistId;
-    const canSeeHidden = isOwner || (await this.auth.isAdmin(viewer));
+    const canSeePrivate = isOwner || (await this.auth.isAdmin(viewer));
     const projects = await this.db.project.findMany({
       where: {
         ...(artistId ? { artistId } : {}),
-        ...(canSeeHidden ? {} : { isHidden: false }),
+        ...(canSeePrivate ? {} : { isPrivate: false }),
       },
       orderBy: { createdAt: 'desc' },
       include: artworksInclude,
     });
-    return projects.map(toProjectDto);
+    return projects.map((project) => toProjectDto(project, canSeePrivate));
   }
 
   async findOne(id: string, viewer: User | null): Promise<ProjectDto> {
     const project = await this.findOrThrow(id);
-    const isOwner = viewer?.id === project.artistId;
-    if (project.isHidden && !isOwner && !(await this.auth.isAdmin(viewer))) {
+    const canSeePrivate =
+      viewer?.id === project.artistId || (await this.auth.isAdmin(viewer));
+    if (project.isPrivate && !canSeePrivate) {
       throw new NotFoundException(`Project ${id} not found`);
     }
-    return toProjectDto(project);
+    return toProjectDto(project, canSeePrivate);
   }
 
   async create(artistId: string, dto: CreateProjectDto): Promise<ProjectDto> {
@@ -69,7 +70,7 @@ export class ProjectsService {
       },
       include: artworksInclude,
     });
-    return toProjectDto(project);
+    return toProjectDto(project, true);
   }
 
   async update(
@@ -87,7 +88,7 @@ export class ProjectsService {
       },
       include: artworksInclude,
     });
-    return toProjectDto(project);
+    return toProjectDto(project, true);
   }
 
   async updateVisibility(
@@ -98,10 +99,10 @@ export class ProjectsService {
     await this.assertOwned(artistId, id);
     const project = await this.db.project.update({
       where: { id },
-      data: { isHidden: dto.isHidden },
+      data: { isPrivate: dto.isPrivate },
       include: artworksInclude,
     });
-    return toProjectDto(project);
+    return toProjectDto(project, true);
   }
 
   async addAssets(
@@ -131,7 +132,7 @@ export class ProjectsService {
       })),
       skipDuplicates: true,
     });
-    return toProjectDto(await this.findOrThrow(id));
+    return toProjectDto(await this.findOrThrow(id), true);
   }
 
   async removeAsset(
@@ -143,7 +144,7 @@ export class ProjectsService {
     await this.db.projectAsset.deleteMany({
       where: { projectId: id, assetId },
     });
-    return toProjectDto(await this.findOrThrow(id));
+    return toProjectDto(await this.findOrThrow(id), true);
   }
 
   async remove(artistId: string, id: string): Promise<void> {
@@ -170,16 +171,21 @@ export class ProjectsService {
   }
 }
 
-function toArtworks(project: ProjectWithArtworks): ProjectArtworkDto[] {
-  const fromAssets = project.assets.map(({ asset }) => ({
-    assetId: asset.id,
-    thumbnailUrl: asset.thumbnailUrl ?? asset.publicUrl,
-    fullUrl: asset.publicUrl,
-    width: asset.width,
-    height: asset.height,
-    title: asset.title,
-    description: asset.description,
-  }));
+function toArtworks(
+  project: ProjectWithArtworks,
+  canSeePrivate: boolean,
+): ProjectArtworkDto[] {
+  const fromAssets = project.assets
+    .filter(({ asset }) => canSeePrivate || !asset.isPrivate)
+    .map(({ asset }) => ({
+      assetId: asset.id,
+      thumbnailUrl: asset.thumbnailUrl ?? asset.publicUrl,
+      fullUrl: asset.publicUrl,
+      width: asset.width,
+      height: asset.height,
+      title: asset.title,
+      description: asset.description,
+    }));
   const linked = new Set(fromAssets.map((artwork) => artwork.fullUrl));
   const legacy = project.artworks
     .flatMap((artwork) => artwork.images)
@@ -196,8 +202,11 @@ function toArtworks(project: ProjectWithArtworks): ProjectArtworkDto[] {
   return [...fromAssets, ...legacy];
 }
 
-function toProjectDto(project: ProjectWithArtworks): ProjectDto {
-  const artworks = toArtworks(project);
+function toProjectDto(
+  project: ProjectWithArtworks,
+  canSeePrivate: boolean,
+): ProjectDto {
+  const artworks = toArtworks(project, canSeePrivate);
   const artworkImages = artworks.map((artwork) => artwork.fullUrl);
   return {
     id: project.id,
@@ -205,7 +214,7 @@ function toProjectDto(project: ProjectWithArtworks): ProjectDto {
     title: project.title,
     description: project.description,
     brief: project.brief,
-    isHidden: project.isHidden,
+    isPrivate: project.isPrivate,
     coverImageUrl: artworks[0]?.thumbnailUrl ?? null,
     artworkCount: artworks.length,
     artworkImages,

@@ -69,8 +69,8 @@ export function useProjectMutations() {
           brief: (fields.brief ?? EMPTY_PROJECT_BRIEF) as UpdateProjectDtoBrief,
         },
       }),
-    setHidden: (id: string, isHidden: boolean) =>
-      visibility.mutate({ id, data: { isHidden } }),
+    setPrivate: (id: string, isPrivate: boolean) =>
+      visibility.mutate({ id, data: { isPrivate } }),
     remove: (id: string) => remove.mutateAsync({ id }),
     addAssets: (id: string, assetIds: string[]) =>
       addAssets.mutateAsync({ id, data: { assetIds } }),

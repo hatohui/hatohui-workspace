@@ -4,13 +4,16 @@ import { FolderPlus, Pencil, X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
 import { useAssetManagement } from '@/hooks/useAssetUpload';
+import { GalleryCardPrivacyButton } from './GalleryCardPrivacyButton';
 
 export function GalleryCardActions({
   assetId,
+  isPrivate,
   onEdit,
   onAddToProject,
 }: {
   assetId: string;
+  isPrivate: boolean;
   onEdit: () => void;
   onAddToProject: () => void;
 }) {
@@ -29,6 +32,7 @@ export function GalleryCardActions({
       >
         <Pencil />
       </Button>
+      <GalleryCardPrivacyButton assetId={assetId} isPrivate={isPrivate} />
       <Button
         type="button"
         variant="secondary"

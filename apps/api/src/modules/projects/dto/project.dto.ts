@@ -65,9 +65,10 @@ export class ProjectDto {
   brief: unknown;
 
   @ApiProperty({
-    description: 'Whether this project is hidden from the public gallery',
+    description:
+      'Private projects, and the art in them, are only visible to the artist',
   })
-  isHidden: boolean;
+  isPrivate: boolean;
 
   @ApiProperty({
     nullable: true,
@@ -136,5 +137,5 @@ export class UpdateProjectDto {
 export class UpdateProjectVisibilityDto {
   @ApiProperty()
   @IsBoolean()
-  isHidden: boolean;
+  isPrivate: boolean;
 }

@@ -10,4 +10,6 @@ export interface UpdateAssetDto {
   tags?: string[];
   title?: string;
   description?: string;
+  /** Hide this piece from everyone but you */
+  isPrivate?: boolean;
 }

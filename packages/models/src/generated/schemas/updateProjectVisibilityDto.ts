@@ -7,5 +7,5 @@
  */
 
 export interface UpdateProjectVisibilityDto {
-  isHidden: boolean;
+  isPrivate: boolean;
 }

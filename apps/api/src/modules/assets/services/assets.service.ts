@@ -42,12 +42,13 @@ const SORT_ORDER_BY: Record<
 const assetInclude = {
   tags: { include: { tag: true } },
   projects: {
-    select: { projectId: true, project: { select: { isHidden: true } } },
+    select: { projectId: true, project: { select: { isPrivate: true } } },
   },
 } satisfies Prisma.AssetInclude;
 
-const inHiddenProject = {
-  projects: { some: { project: { isHidden: true } } },
+const publicOnly = {
+  isPrivate: false,
+  NOT: { projects: { some: { project: { isPrivate: true } } } },
 } satisfies Prisma.AssetWhereInput;
 
 @Injectable()
@@ -331,6 +332,7 @@ export class AssetsService {
         ...(dto.description !== undefined && {
           description: blankToNull(dto.description),
         }),
+        ...(dto.isPrivate !== undefined && { isPrivate: dto.isPrivate }),
       },
       include: assetInclude,
     });
@@ -429,8 +431,8 @@ export class AssetsService {
   ): Promise<Prisma.AssetWhereInput> {
     if (await this.auth.isAdmin(viewer)) return {};
     return viewer
-      ? { OR: [{ uploadedById: viewer.id }, { NOT: inHiddenProject }] }
-      : { NOT: inHiddenProject };
+      ? { OR: [{ uploadedById: viewer.id }, publicOnly] }
+      : publicOnly;
   }
 
   private async assertAdmin(user: User): Promise<void> {
@@ -474,7 +476,7 @@ function fallbackFilename(publicUrl: string): string {
 function toAssetDto(
   asset: Asset & {
     tags: (AssetTag & { tag: Tag })[];
-    projects: { projectId: string; project: { isHidden: boolean } }[];
+    projects: { projectId: string; project: { isPrivate: boolean } }[];
   },
 ): AssetDto {
   return {
@@ -493,7 +495,8 @@ function toAssetDto(
     height: asset.height,
     tags: asset.tags.map((assetTag) => assetTag.tag.name),
     projectIds: asset.projects.map((link) => link.projectId),
-    isPrivate: asset.projects.some((link) => link.project.isHidden),
+    isPrivate: asset.isPrivate,
+    inPrivateProject: asset.projects.some((link) => link.project.isPrivate),
     uploadedById: asset.uploadedById,
     createdAt: asset.createdAt.toISOString(),
     updatedAt: asset.updatedAt.toISOString(),

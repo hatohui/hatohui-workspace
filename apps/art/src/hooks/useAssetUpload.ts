@@ -46,7 +46,9 @@ export function useAssetUpload() {
 
 export function useAssetManagement() {
   const queryClient = useQueryClient();
-  const updateAsset = useUpdateAsset();
+  const updateAsset = useUpdateAsset({
+    mutation: { onSettled: () => invalidateDeletedAssetCache(queryClient) },
+  });
   const deleteAsset = useDeleteAsset({
     mutation: { onSettled: () => invalidateDeletedAssetCache(queryClient) },
   });
@@ -54,6 +56,8 @@ export function useAssetManagement() {
   return {
     updateTags: (id: string, tags: string[]) =>
       updateAsset.mutateAsync({ id, data: { tags } }),
+    setPrivate: (id: string, isPrivate: boolean) =>
+      updateAsset.mutateAsync({ id, data: { isPrivate } }),
     remove: (id: string) => deleteAsset.mutateAsync({ id }),
     isUpdating: updateAsset.isPending,
     isDeleting: deleteAsset.isPending,
