@@ -131,7 +131,7 @@
       "size": "Size",
       "uploaded": "Uploaded",
       "privateToggle": "Private: only you can see this piece",
-      "privateViaProject": "It's also in a private project, so it stays private until that project is public."
+      "privateViaProject": "It's in a private project, so it stays private until that project is public."
     },
     "selection": {
       "start": "Select",

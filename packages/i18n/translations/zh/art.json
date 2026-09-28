@@ -124,7 +124,7 @@
       "size": "大小",
       "uploaded": "上传时间",
       "privateToggle": "私密：只有你能看到此作品",
-      "privateViaProject": "此作品也属于一个私密项目，在该项目公开之前将保持私密。"
+      "privateViaProject": "此作品属于一个私密项目，在该项目公开之前将保持私密。"
     },
     "selection": {
       "start": "选择",

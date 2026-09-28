@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Lock } from 'lucide-react';
+import { EyeOff } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { ProjectDto } from '@hatohui/models';
 
@@ -37,7 +37,7 @@ export function ProjectCard({
       )}
       {showPrivate && project.isPrivate && (
         <span className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-background/90 px-2 py-0.5 text-xs">
-          <Lock className="size-3" aria-hidden />
+          <EyeOff className="size-3" aria-hidden />
           {t('projects.private')}
         </span>
       )}

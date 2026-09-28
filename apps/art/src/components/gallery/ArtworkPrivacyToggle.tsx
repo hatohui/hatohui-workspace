@@ -14,7 +14,7 @@ export function ArtworkPrivacyToggle({ asset }: { asset: AssetDto }) {
       <label className="flex items-center gap-3 text-sm">
         <Switch
           checked={privacy.isPrivate}
-          disabled={privacy.isUpdating}
+          disabled={privacy.isUpdating || privacy.isPrivateViaProject}
           onCheckedChange={(checked) => void privacy.setPrivate(checked)}
         />
         {t('gallery.detail.privateToggle')}
