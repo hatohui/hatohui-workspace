@@ -4,7 +4,8 @@
   "retry": "Retry",
   "back": "Back",
   "language": {
-    "label": "Change language"
+    "label": "Change language",
+    "title": "Language"
   },
   "auth": {
     "login": "Log in",
@@ -82,5 +83,15 @@
       "title": "You're all set!",
       "cta": "Woohoo!"
     }
-  }
+  },
+  "theme": {
+    "label": "Theme",
+    "toggle": "Theme: {{mode}}. Click to change",
+    "modes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "preferences": "Preferences"
 }

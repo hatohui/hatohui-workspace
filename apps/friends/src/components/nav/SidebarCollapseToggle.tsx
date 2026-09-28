@@ -20,7 +20,7 @@ function SidebarCollapseToggle({ expanded, onToggle }: Props) {
           type="button"
           variant="outline"
           size="icon"
-          className="absolute -right-3 top-8 size-6 rounded-full border-border bg-card text-muted-foreground shadow-[0_1px_3px_rgba(20,20,19,0.08)]"
+          className="absolute -right-3 top-8 size-6 rounded-full border-border bg-card text-muted-foreground shadow-soft"
           aria-label={label}
           onClick={onToggle}
         >

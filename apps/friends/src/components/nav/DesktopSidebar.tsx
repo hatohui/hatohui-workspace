@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
+import { ThemeToggle } from '@hatohui/libs';
 import {
   Button,
   Tooltip,
@@ -25,7 +26,7 @@ function DesktopSidebar() {
   return (
     <TooltipProvider delayDuration={300}>
       <nav
-        className={`fixed inset-y-4 left-4 z-40 hidden flex-col justify-between rounded-3xl border border-border bg-card py-3 shadow-[0_1px_3px_rgba(20,20,19,0.08)] transition-[width] duration-200 sm:flex ${expanded ? 'w-44 px-2' : 'w-14 items-center px-1'}`}
+        className={`fixed inset-y-4 left-4 z-40 hidden flex-col justify-between rounded-3xl border border-border bg-card py-3 shadow-soft transition-[width] duration-200 sm:flex ${expanded ? 'w-44 px-2' : 'w-14 items-center px-1'}`}
       >
         <div
           className={`flex flex-col gap-1 ${expanded ? '' : 'items-center'}`}
@@ -38,6 +39,12 @@ function DesktopSidebar() {
         <div
           className={`flex flex-col gap-1 ${expanded ? '' : 'items-center'}`}
         >
+          <ThemeToggle
+            showLabel={expanded}
+            className={
+              expanded ? 'w-full justify-start gap-2 rounded-lg px-3' : ''
+            }
+          />
           <LanguageMenu expanded={expanded} />
 
           <Tooltip>

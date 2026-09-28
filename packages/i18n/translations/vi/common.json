@@ -4,7 +4,8 @@
   "retry": "Thử lại",
   "back": "Quay lại",
   "language": {
-    "label": "Đổi ngôn ngữ"
+    "label": "Đổi ngôn ngữ",
+    "title": "Ngôn ngữ"
   },
   "auth": {
     "login": "Đăng nhập",
@@ -82,5 +83,15 @@
       "title": "Xong rồi!",
       "cta": "Yeah!"
     }
-  }
+  },
+  "theme": {
+    "label": "Giao diện",
+    "toggle": "Giao diện: {{mode}}. Nhấn để đổi",
+    "modes": {
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Theo hệ thống"
+    }
+  },
+  "preferences": "Tùy chọn"
 }

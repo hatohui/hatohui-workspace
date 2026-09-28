@@ -4,7 +4,8 @@
   "retry": "再試行",
   "back": "戻る",
   "language": {
-    "label": "言語を切り替える"
+    "label": "言語を切り替える",
+    "title": "言語"
   },
   "auth": {
     "login": "ログイン",
@@ -82,5 +83,15 @@
       "title": "設定が完了しました！",
       "cta": "やったー！"
     }
-  }
+  },
+  "theme": {
+    "label": "テーマ",
+    "toggle": "テーマ: {{mode}}（クリックで切り替え）",
+    "modes": {
+      "light": "ライト",
+      "dark": "ダーク",
+      "system": "システム"
+    }
+  },
+  "preferences": "設定"
 }
