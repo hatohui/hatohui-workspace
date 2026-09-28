@@ -19,9 +19,10 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2 sm:px-6 md:flex-nowrap md:py-3">
         <Link
           href={artist ? `/${artist}` : '/'}
-          className="flex min-h-10 items-center font-serif text-lg"
+          className="flex min-h-10 items-center gap-1 font-serif text-lg"
         >
           {t('site.title')}
+          <span className="size-1.5 rounded-full bg-primary" aria-hidden />
         </Link>
         {artist && (
           <SiteNav

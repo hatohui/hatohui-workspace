@@ -25,8 +25,8 @@ export function GallerySectionTabs({
           className={cn(
             'rounded-md px-3 py-1.5 font-medium transition-colors',
             active === section
-              ? 'bg-card text-foreground'
-              : 'text-muted-foreground hover:text-foreground',
+              ? 'bg-primary text-primary-foreground shadow-soft'
+              : 'text-muted-foreground hover:text-accent-foreground',
           )}
         >
           {labels[section]}
