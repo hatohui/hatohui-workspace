@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { OptionalAuthGuard } from '@/modules/auth/guards/optional-auth.guard';
+import { OptionalCurrentUser } from '@/modules/auth/decorators/optional-current-user.decorator';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import type { User } from '@prisma/client';
 import { AssetsService } from '@/modules/assets/services/assets.service';
@@ -43,20 +45,29 @@ export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
   @Get()
-  @ApiOperation({ operationId: 'assets', summary: 'List gallery assets' })
+  @UseGuards(OptionalAuthGuard)
+  @ApiOperation({
+    operationId: 'assets',
+    summary: 'List gallery assets (private ones only for their uploader)',
+  })
   @ApiOkResponse({ type: PaginatedAssetsDto })
-  list(@Query() query: AssetQueryDto): Promise<PaginatedAssetsDto> {
+  list(
+    @Query() query: AssetQueryDto,
+    @OptionalCurrentUser() viewer: User | null,
+  ): Promise<PaginatedAssetsDto> {
     return this.assetsService.list(
       query.query,
       query.tag,
       query.sort ?? 'newest',
       query.page ?? 1,
       query.pageSize ?? 24,
+      viewer,
       query.uploadedById,
     );
   }
 
   @Get('tags')
+  @UseGuards(OptionalAuthGuard)
   @ApiOperation({
     operationId: 'galleryTags',
     summary: 'Tags used in a gallery, for search suggestions',
@@ -64,8 +75,9 @@ export class AssetsController {
   @ApiOkResponse({ type: [TagSuggestionDto] })
   galleryTags(
     @Query() query: GalleryTagsQueryDto,
+    @OptionalCurrentUser() viewer: User | null,
   ): Promise<TagSuggestionDto[]> {
-    return this.assetsService.galleryTags(query.uploadedById);
+    return this.assetsService.galleryTags(viewer, query.uploadedById);
   }
 
   @Get('tag-suggestions')
@@ -80,10 +92,14 @@ export class AssetsController {
   }
 
   @Get(':id')
+  @UseGuards(OptionalAuthGuard)
   @ApiOperation({ operationId: 'asset', summary: 'Get a gallery asset' })
   @ApiOkResponse({ type: AssetDto })
-  get(@Param('id') id: string): Promise<AssetDto> {
-    return this.assetsService.get(id);
+  get(
+    @Param('id') id: string,
+    @OptionalCurrentUser() viewer: User | null,
+  ): Promise<AssetDto> {
+    return this.assetsService.get(id, viewer);
   }
 
   @Post()

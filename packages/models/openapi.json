@@ -1986,7 +1986,7 @@
             }
           }
         },
-        "summary": "List gallery assets",
+        "summary": "List gallery assets (private ones only for their uploader)",
         "tags": [
           "assets"
         ]
@@ -6539,6 +6539,10 @@
               "type": "string"
             }
           },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "In a hidden project, so only its uploader and admins can see it"
+          },
           "uploadedById": {
             "type": "string",
             "nullable": true,
@@ -6569,6 +6573,7 @@
           "height",
           "tags",
           "projectIds",
+          "isPrivate",
           "uploadedById",
           "createdAt",
           "updatedAt"
@@ -9042,12 +9047,32 @@
           "fullUrl": {
             "type": "string",
             "description": "Full-size image for close viewing"
+          },
+          "width": {
+            "type": "number",
+            "nullable": true
+          },
+          "height": {
+            "type": "number",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
           "assetId",
           "thumbnailUrl",
-          "fullUrl"
+          "fullUrl",
+          "width",
+          "height",
+          "title",
+          "description"
         ]
       },
       "ProjectDto": {

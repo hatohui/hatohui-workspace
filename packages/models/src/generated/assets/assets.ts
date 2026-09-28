@@ -88,7 +88,7 @@ export const getAssetsUrl = (params?: AssetsParams,) => {
 }
 
 /**
- * @summary List gallery assets
+ * @summary List gallery assets (private ones only for their uploader)
  */
 export const assets = async (params?: AssetsParams, options?: RequestInit): Promise<assetsResponse> => {
 
@@ -159,7 +159,7 @@ export function useAssets<TData = Awaited<ReturnType<typeof assets>>, TError = u
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary List gallery assets
+ * @summary List gallery assets (private ones only for their uploader)
  */
 
 export function useAssets<TData = Awaited<ReturnType<typeof assets>>, TError = unknown>(

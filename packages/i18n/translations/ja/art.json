@@ -114,7 +114,9 @@
       "delete": "削除",
       "deleteConfirm": "この画像を削除しますか？",
       "editTags": "タグを編集",
-      "edit": "詳細を編集"
+      "edit": "詳細を編集",
+      "private": "非公開",
+      "privateHint": "非公開のプロジェクトに含まれているため、あなたにだけ表示されます。"
     },
     "detail": {
       "back": "ギャラリーに戻る",

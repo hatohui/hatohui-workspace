@@ -113,7 +113,9 @@
       "delete": "Xóa",
       "deleteConfirm": "Xóa tệp này?",
       "editTags": "Sửa thẻ",
-      "edit": "Sửa chi tiết"
+      "edit": "Sửa chi tiết",
+      "private": "Riêng tư",
+      "privateHint": "Chỉ bạn thấy được tác phẩm này vì nó nằm trong một dự án đang ẩn."
     },
     "detail": {
       "back": "Quay lại thư viện",

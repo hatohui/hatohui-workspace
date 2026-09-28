@@ -5,9 +5,23 @@ import { API_URL } from './api';
 
 const SESSION_COOKIE_NAME = 'hatohui_session';
 
-async function fetchWithSession<T>(path: string): Promise<T | null> {
+async function sessionToken(): Promise<string | undefined> {
   const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  return cookieStore.get(SESSION_COOKIE_NAME)?.value;
+}
+
+export async function withSession(): Promise<RequestInit> {
+  const token = await sessionToken();
+  return token
+    ? {
+        headers: { Cookie: `${SESSION_COOKIE_NAME}=${token}` },
+        cache: 'no-store',
+      }
+    : { cache: 'no-store' };
+}
+
+async function fetchWithSession<T>(path: string): Promise<T | null> {
+  const token = await sessionToken();
   if (!token) return null;
 
   const response = await fetch(`${API_URL}${path}`, {

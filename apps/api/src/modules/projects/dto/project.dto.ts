@@ -21,6 +21,18 @@ export class ProjectArtworkDto {
 
   @ApiProperty({ description: 'Full-size image for close viewing' })
   fullUrl: string;
+
+  @ApiProperty({ nullable: true, type: Number })
+  width: number | null;
+
+  @ApiProperty({ nullable: true, type: Number })
+  height: number | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  title: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  description: string | null;
 }
 
 export class AddProjectAssetsDto {

@@ -64,9 +64,10 @@ export function ProjectEditor({ id }: { id: string }) {
         onOpenChange={editor.setIsAdding}
       />
       <ImageViewer
-        src={editor.viewing}
-        alt={project.title}
-        onClose={() => editor.view(null)}
+        src={editor.viewer.src}
+        alt={editor.viewer.caption.title ?? project.title}
+        caption={editor.viewer.caption}
+        onClose={editor.viewer.close}
       />
       <ConfirmDialog
         open={editor.isConfirmingDelete}
