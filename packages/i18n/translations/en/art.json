@@ -158,6 +158,7 @@
       "tagged_other": "Added {{tags}} to {{count}} pieces",
       "tagFailed": "Couldn't add the tags. Nothing was changed."
     },
+    "hidePrivate": "Hide private",
     "loadingMore": "Loading more…",
     "searchTagCount_one": "{{count}} piece",
     "searchTagCount_other": "{{count}} pieces",

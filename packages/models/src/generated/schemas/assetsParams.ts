@@ -20,6 +20,10 @@ tag?: string;
  * Filter to one artist's uploads (storefront gallery)
  */
 uploadedById?: string;
+/**
+ * Exclude private assets and assets in private projects
+ */
+hidePrivate?: boolean;
 sort?: AssetsSort;
 page?: number;
 pageSize?: number;

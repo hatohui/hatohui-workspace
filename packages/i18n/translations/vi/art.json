@@ -149,6 +149,7 @@
       "tagged_other": "Đã thêm {{tags}} cho {{count}} tác phẩm",
       "tagFailed": "Không thể thêm thẻ. Không có gì thay đổi."
     },
+    "hidePrivate": "Ẩn riêng tư",
     "loadingMore": "Đang tải thêm…",
     "searchTagCount_other": "{{count}} tác phẩm",
     "clearTagFilter": "Bỏ lọc theo {{tag}}",

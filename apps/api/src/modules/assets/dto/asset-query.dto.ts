@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import { AssetDto } from './asset.dto';
 import {
   ASSET_SORT_OPTIONS,
@@ -28,6 +35,18 @@ export class AssetQueryDto {
   @IsOptional()
   @IsString()
   uploadedById?: string;
+
+  @ApiProperty({
+    required: false,
+    default: false,
+    description: 'Exclude private assets and assets in private projects',
+  })
+  @IsOptional()
+  @Transform(({ obj }: { obj: Record<string, unknown> }) =>
+    [true, 'true'].includes(obj.hidePrivate as boolean | string),
+  )
+  @IsBoolean()
+  hidePrivate?: boolean;
 
   @ApiProperty({
     enum: ASSET_SORT_OPTIONS,
