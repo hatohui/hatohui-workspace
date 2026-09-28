@@ -110,7 +110,9 @@
       "delete": "删除",
       "deleteConfirm": "删除此文件？",
       "editTags": "编辑标签",
-      "edit": "编辑详情"
+      "edit": "编辑详情",
+      "private": "私密",
+      "privateHint": "此作品属于隐藏的项目，只有你能看到。"
     },
     "detail": {
       "back": "返回画廊",

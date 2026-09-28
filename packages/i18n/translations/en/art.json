@@ -117,7 +117,9 @@
       "delete": "Delete",
       "deleteConfirm": "Delete this asset?",
       "editTags": "Edit tags",
-      "edit": "Edit details"
+      "edit": "Edit details",
+      "private": "Private",
+      "privateHint": "Only you can see this. It's in a hidden project."
     },
     "detail": {
       "back": "Back to gallery",

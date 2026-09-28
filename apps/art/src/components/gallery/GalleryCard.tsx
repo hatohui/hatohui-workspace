@@ -7,6 +7,7 @@ import { useGalleryTile } from '@/hooks/useGalleryTile';
 import { GalleryCardActions } from './GalleryCardActions';
 import { GalleryCardSelectToggle } from './GalleryCardSelectToggle';
 import { GalleryCardZoomButton } from './GalleryCardZoomButton';
+import { GalleryCardPrivateBadge } from './GalleryCardPrivateBadge';
 import { AssetHoverDetails } from '@/components/shared/AssetHoverDetails';
 
 export function GalleryCard({
@@ -60,6 +61,7 @@ export function GalleryCard({
       )}
       {!selection && <AssetHoverDetails asset={asset} />}
       {!selection && <GalleryCardZoomButton onZoom={onZoom} />}
+      {asset.isPrivate && <GalleryCardPrivateBadge />}
       {isAdmin && !selection && (
         <GalleryCardActions
           assetId={asset.id}

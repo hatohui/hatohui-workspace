@@ -175,12 +175,24 @@ function toArtworks(project: ProjectWithArtworks): ProjectArtworkDto[] {
     assetId: asset.id,
     thumbnailUrl: asset.thumbnailUrl ?? asset.publicUrl,
     fullUrl: asset.publicUrl,
+    width: asset.width,
+    height: asset.height,
+    title: asset.title,
+    description: asset.description,
   }));
   const linked = new Set(fromAssets.map((artwork) => artwork.fullUrl));
   const legacy = project.artworks
     .flatMap((artwork) => artwork.images)
     .filter((url) => !linked.has(url))
-    .map((url) => ({ assetId: null, thumbnailUrl: url, fullUrl: url }));
+    .map((url) => ({
+      assetId: null,
+      thumbnailUrl: url,
+      fullUrl: url,
+      width: null,
+      height: null,
+      title: null,
+      description: null,
+    }));
   return [...fromAssets, ...legacy];
 }
 

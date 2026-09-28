@@ -41,8 +41,14 @@ const SORT_ORDER_BY: Record<
 
 const assetInclude = {
   tags: { include: { tag: true } },
-  projects: { select: { projectId: true } },
+  projects: {
+    select: { projectId: true, project: { select: { isHidden: true } } },
+  },
 } satisfies Prisma.AssetInclude;
+
+const inHiddenProject = {
+  projects: { some: { project: { isHidden: true } } },
+} satisfies Prisma.AssetWhereInput;
 
 @Injectable()
 export class AssetsService {
@@ -62,8 +68,10 @@ export class AssetsService {
     sort: AssetSortOption,
     page: number,
     pageSize: number,
+    viewer: User | null,
     uploadedById?: string,
   ): Promise<PaginatedAssetsDto> {
+    const visibility = await this.visibleTo(viewer);
     const where: Prisma.AssetWhereInput = {
       AND: [
         query
@@ -82,6 +90,7 @@ export class AssetsService {
           : {},
         tag ? { tags: { some: { tag: { name: tag } } } } : {},
         uploadedById ? { uploadedById } : {},
+        visibility,
       ],
     };
 
@@ -105,9 +114,9 @@ export class AssetsService {
     };
   }
 
-  async get(id: string): Promise<AssetDto> {
-    const asset = await this.db.asset.findUnique({
-      where: { id },
+  async get(id: string, viewer: User | null): Promise<AssetDto> {
+    const asset = await this.db.asset.findFirst({
+      where: { AND: [{ id }, await this.visibleTo(viewer)] },
       include: assetInclude,
     });
     if (!asset) {
@@ -116,8 +125,18 @@ export class AssetsService {
     return toAssetDto(asset);
   }
 
-  async galleryTags(uploadedById?: string): Promise<TagSuggestionDto[]> {
-    const scope = uploadedById ? { asset: { uploadedById } } : {};
+  async galleryTags(
+    viewer: User | null,
+    uploadedById?: string,
+  ): Promise<TagSuggestionDto[]> {
+    const scope = {
+      asset: {
+        AND: [
+          uploadedById ? { uploadedById } : {},
+          await this.visibleTo(viewer),
+        ],
+      },
+    };
     const [usedTags, commissionTypes] = await Promise.all([
       this.db.tag.findMany({
         where: { assets: { some: scope } },
@@ -405,6 +424,15 @@ export class AssetsService {
     await this.processQueue.clearForRef(ProcessType.ASSET_THUMBNAIL, asset.id);
   }
 
+  private async visibleTo(
+    viewer: User | null,
+  ): Promise<Prisma.AssetWhereInput> {
+    if (await this.auth.isAdmin(viewer)) return {};
+    return viewer
+      ? { OR: [{ uploadedById: viewer.id }, { NOT: inHiddenProject }] }
+      : { NOT: inHiddenProject };
+  }
+
   private async assertAdmin(user: User): Promise<void> {
     if (!(await this.auth.isAdmin(user))) {
       throw new ForbiddenException('Admin access denied');
@@ -446,7 +474,7 @@ function fallbackFilename(publicUrl: string): string {
 function toAssetDto(
   asset: Asset & {
     tags: (AssetTag & { tag: Tag })[];
-    projects: { projectId: string }[];
+    projects: { projectId: string; project: { isHidden: boolean } }[];
   },
 ): AssetDto {
   return {
@@ -465,6 +493,7 @@ function toAssetDto(
     height: asset.height,
     tags: asset.tags.map((assetTag) => assetTag.tag.name),
     projectIds: asset.projects.map((link) => link.projectId),
+    isPrivate: asset.projects.some((link) => link.project.isHidden),
     uploadedById: asset.uploadedById,
     createdAt: asset.createdAt.toISOString(),
     updatedAt: asset.updatedAt.toISOString(),

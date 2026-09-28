@@ -1,6 +1,6 @@
 import { assets } from '@hatohui/models';
 import '@/lib/api';
-import { requireArtist } from '@/lib/session';
+import { requireArtist, withSession } from '@/lib/session';
 import { GalleryGrid } from '@/components/gallery/GalleryGrid';
 import {
   GALLERY_PAGE_SIZE,
@@ -10,11 +10,10 @@ import { WORKSPACE_PROJECTS_ROUTE } from '@/constants/projects';
 
 export default async function GalleryPage() {
   const user = await requireArtist();
-  const response = await assets({
-    page: 1,
-    pageSize: GALLERY_PAGE_SIZE,
-    uploadedById: user.id,
-  });
+  const response = await assets(
+    { page: 1, pageSize: GALLERY_PAGE_SIZE, uploadedById: user.id },
+    await withSession(),
+  );
 
   return (
     <GalleryGrid

@@ -16,4 +16,12 @@ export interface ProjectArtworkDto {
   thumbnailUrl: string;
   /** Full-size image for close viewing */
   fullUrl: string;
+  /** @nullable */
+  width: number | null;
+  /** @nullable */
+  height: number | null;
+  /** @nullable */
+  title: string | null;
+  /** @nullable */
+  description: string | null;
 }

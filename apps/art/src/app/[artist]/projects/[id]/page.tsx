@@ -1,25 +1,25 @@
-import { notFound } from 'next/navigation';
-import { project, ApiError } from '@hatohui/models';
-import '@/lib/api';
 import { ProjectDetail } from '@/components/projects/ProjectDetail';
+import { GALLERY_PROJECTS_SECTION_QUERY } from '@/constants/gallery';
+import { resolveArtist } from '@/lib/artist';
+import { loadProject } from '@/lib/project';
+
+export const dynamic = 'force-dynamic';
 
 export default async function ProjectDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ artist: string; id: string }>;
 }) {
-  const { id } = await params;
-
-  const response = await project(id).catch((error: unknown) => {
-    if (error instanceof ApiError && error.status === 404) {
-      notFound();
-    }
-    throw error;
-  });
+  const { artist, id } = await params;
+  const artistUser = await resolveArtist(artist);
+  const project = await loadProject(id, artistUser.id);
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-10">
-      <ProjectDetail project={response.data} />
+    <main className="mx-auto max-w-6xl px-6 py-10">
+      <ProjectDetail
+        project={project}
+        backHref={`/${artist}?${GALLERY_PROJECTS_SECTION_QUERY}`}
+      />
     </main>
   );
 }
