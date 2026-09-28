@@ -47,7 +47,7 @@ export function GalleryGrid({
   const [editTarget, setEditTarget] = useState<AssetDto | null>(null);
   const [section, setSection] = useState<GallerySection>('assets');
   const gridRef = useStaggerReveal<HTMLDivElement>('[data-reveal]', [
-    gallery.items,
+    gallery.itemsKey,
   ]);
   const isOwner = artistId ? user?.id === artistId : (user?.isAdmin ?? false);
 
