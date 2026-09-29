@@ -8,6 +8,11 @@
 import type { CreateCommentDtoVisibility } from './createCommentDtoVisibility';
 
 export interface CreateCommentDto {
+  /** May be empty when images are attached */
   body: string;
+  /** Storage keys of images uploaded with this comment */
+  keys?: string[];
   visibility: CreateCommentDtoVisibility;
+  /** Progress update this comments on; omit for a general note */
+  progressId?: string;
 }

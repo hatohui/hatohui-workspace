@@ -2,14 +2,21 @@
 
 import { KeyRound, Mail } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
+import type { CommissionAccessMatchDto } from '@hatohui/models';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hatohui/ui';
 import { useCommissionAccessLookup } from '@/hooks/useCommissionAccessLookup';
-import { QueueEmailPasscodeForm } from './QueueEmailPasscodeForm';
+import { QueueEmailLookupForm } from './QueueEmailLookupForm';
 import { QueueAccessCodeForm } from './QueueAccessCodeForm';
 
-export function QueueFindMine({ artistId }: { artistId: string }) {
+export function QueueFindMine({
+  artistId,
+  onLocked,
+}: {
+  artistId: string;
+  onLocked: (match: CommissionAccessMatchDto) => void;
+}) {
   const { t } = useTranslation('art');
-  const lookup = useCommissionAccessLookup(artistId);
+  const lookup = useCommissionAccessLookup(artistId, onLocked);
 
   return (
     <section className="space-y-4 rounded-xl border border-border p-5 sm:p-6">
@@ -31,7 +38,7 @@ export function QueueFindMine({ artistId }: { artistId: string }) {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="email">
-          <QueueEmailPasscodeForm lookup={lookup} />
+          <QueueEmailLookupForm lookup={lookup} />
         </TabsContent>
         <TabsContent value="code">
           <QueueAccessCodeForm lookup={lookup} />

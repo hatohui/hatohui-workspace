@@ -7,7 +7,7 @@ import { OrderHeader } from './OrderHeader';
 import { OrderStageTracker } from './OrderStageTracker';
 import { OrderFacts } from './OrderFacts';
 import { OrderTabs } from './OrderTabs';
-import { OrderPasscodeCard } from './OrderPasscodeCard';
+import { ImagePreviewProvider } from '@/components/shared/ImagePreviewProvider';
 
 export function OrderDetail({ code }: { code: string }) {
   const { t } = useTranslation('art');
@@ -32,8 +32,9 @@ export function OrderDetail({ code }: { code: string }) {
       <OrderHeader commission={commission} />
       {commission.queue && <OrderStageTracker placement={commission.queue} />}
       <OrderFacts commission={commission} />
-      <OrderTabs code={code} commission={commission} lookup={lookup} />
-      <OrderPasscodeCard code={code} source={commission.passcodeSource} />
+      <ImagePreviewProvider>
+        <OrderTabs code={code} commission={commission} lookup={lookup} />
+      </ImagePreviewProvider>
     </div>
   );
 }

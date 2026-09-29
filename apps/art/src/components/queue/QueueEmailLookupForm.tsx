@@ -3,10 +3,9 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Input, Label } from '@hatohui/ui';
 import type { useCommissionAccessLookup } from '@/hooks/useCommissionAccessLookup';
-import { PASSCODE_MAX_LENGTH } from '@/constants/queue';
 import { QueueLookupResults } from './QueueLookupResults';
 
-export function QueueEmailPasscodeForm({
+export function QueueEmailLookupForm({
   lookup,
 }: {
   lookup: ReturnType<typeof useCommissionAccessLookup>;
@@ -16,7 +15,7 @@ export function QueueEmailPasscodeForm({
   return (
     <div className="space-y-4">
       <form
-        className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+        className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end"
         onSubmit={(event) => {
           event.preventDefault();
           void lookup.search();
@@ -33,17 +32,6 @@ export function QueueEmailPasscodeForm({
             onChange={(event) => lookup.setEmail(event.target.value)}
           />
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="lookup-passcode">{t('queue.passcode.label')}</Label>
-          <Input
-            id="lookup-passcode"
-            type="password"
-            autoComplete="off"
-            maxLength={PASSCODE_MAX_LENGTH}
-            value={lookup.passcode}
-            onChange={(event) => lookup.setPasscode(event.target.value)}
-          />
-        </div>
         <Button
           type="submit"
           disabled={!lookup.canSearch || lookup.isSearching}
@@ -54,6 +42,11 @@ export function QueueEmailPasscodeForm({
       {lookup.error && (
         <p role="alert" className="text-sm text-destructive">
           {lookup.error}
+        </p>
+      )}
+      {lookup.hasNoMatches && (
+        <p className="text-sm text-muted-foreground">
+          {t('queue.findMine.noMatches')}
         </p>
       )}
       <QueueLookupResults lookup={lookup} />

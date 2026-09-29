@@ -1,5 +1,6 @@
 'use client';
 
+import { Lock } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import {
   Dialog,
@@ -9,9 +10,11 @@ import {
   DialogTitle,
 } from '@hatohui/ui';
 import type { useQueueUnlock } from '@/hooks/useQueueUnlock';
-import { useCommissionFormatters } from '@/hooks/useCommissionFormatters';
+import {
+  QUEUE_PASSCODE_INPUT_ID,
+  QUEUE_UNLOCK_SHEET_CLASS,
+} from '@/constants/queue';
 import { QueueUnlockForm } from './QueueUnlockForm';
-import { QueueNoPasscodeNotice } from './QueueNoPasscodeNotice';
 
 export function QueueUnlockDialog({
   unlock,
@@ -19,38 +22,34 @@ export function QueueUnlockDialog({
   unlock: ReturnType<typeof useQueueUnlock>;
 }) {
   const { t } = useTranslation('art');
-  const format = useCommissionFormatters();
-  const item = unlock.item;
+  const target = unlock.target;
 
   return (
     <Dialog
-      open={item !== null}
+      open={target !== null}
       onOpenChange={(open) => !open && unlock.close()}
     >
-      <DialogContent className="sm:max-w-md">
-        {item && (
+      <DialogContent
+        className={QUEUE_UNLOCK_SHEET_CLASS}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          document.getElementById(QUEUE_PASSCODE_INPUT_ID)?.focus();
+        }}
+      >
+        {target && (
           <>
-            <DialogHeader>
+            <DialogHeader className="items-start text-left">
+              <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Lock className="size-5" aria-hidden />
+              </span>
               <DialogTitle className="font-serif text-xl">
-                {t('queue.unlock.title', {
-                  position: item.position,
-                  type: format.type(
-                    item.commissionTypeKey,
-                    item.commissionTypeLabel,
-                  ),
-                })}
+                {target.title}
               </DialogTitle>
               <DialogDescription>
-                {item.isUnlockable
-                  ? t('queue.unlock.description')
-                  : t('queue.unlock.noPasscode')}
+                {t('queue.unlock.description')}
               </DialogDescription>
             </DialogHeader>
-            {item.isUnlockable ? (
-              <QueueUnlockForm unlock={unlock} />
-            ) : (
-              <QueueNoPasscodeNotice onClose={unlock.close} />
-            )}
+            <QueueUnlockForm unlock={unlock} />
           </>
         )}
       </DialogContent>

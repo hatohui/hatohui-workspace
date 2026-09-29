@@ -662,11 +662,15 @@ model CommissionProgress {
   projectId String?
   project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
-  title      String?
-  body       Json?
-  images     String[]   @default([])
-  isFinal    Boolean    @default(false)
-  visibility Visibility @default(CLIENT)
+  title            String?
+  description      String?
+  body             Json?
+  images           String[]   @default([])
+  isFinal          Boolean    @default(false)
+  visibility       Visibility @default(CLIENT)
+  seenByClientAt   DateTime?
+  requestsApproval Boolean    @default(false)
+  approvedAt       DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -718,6 +722,8 @@ model Comment {
 
   visibility Visibility @default(INTERNAL)
   body       String
+  seenAt     DateTime?
+  images     String[]   @default([])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

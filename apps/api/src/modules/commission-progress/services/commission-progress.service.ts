@@ -6,12 +6,24 @@ import {
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { AssetsService } from '@/modules/assets/services/assets.service';
-import { Visibility, type CommissionProgress } from '@prisma/client';
+import { CommissionAttachmentsService } from '@/modules/commission-attachments/services/commission-attachments.service';
+import {
+  CommissionStatus,
+  Visibility,
+  type Comment,
+  type CommissionProgress,
+} from '@prisma/client';
+import {
+  type CommentDto,
+  toClientCommentDto,
+  toCommentDto,
+} from '@/modules/commissions/dto/comment.dto';
 import {
   CommissionProgressDto,
   CreateCommissionProgressDto,
   UpdateCommissionProgressDto,
 } from '@/modules/commission-progress/dto/commission-progress.dto';
+import { SKETCH_APPROVED_BY_CLIENT_NOTE } from '@/modules/commission-progress/commission-progress.constants';
 
 @Injectable()
 export class CommissionProgressService {
@@ -19,6 +31,7 @@ export class CommissionProgressService {
     private readonly db: Database,
     private readonly storage: Storage,
     private readonly assets: AssetsService,
+    private readonly attachments: CommissionAttachmentsService,
   ) {}
 
   /// Full timeline for the owning artist — includes INTERNAL entries.
@@ -29,9 +42,10 @@ export class CommissionProgressService {
     await this.assertCommissionOwned(artistId, commissionId);
     const rows = await this.db.commissionProgress.findMany({
       where: { commissionId },
+      include: { comments: { orderBy: { createdAt: 'asc' } } },
       orderBy: { createdAt: 'asc' },
     });
-    return rows.map(toDto);
+    return rows.map((row) => toDto(row));
   }
 
   /// The client-facing timeline, reached via access code — CLIENT-visible
@@ -46,9 +60,72 @@ export class CommissionProgressService {
     }
     const rows = await this.db.commissionProgress.findMany({
       where: { commissionId: commission.id, visibility: Visibility.CLIENT },
+      include: {
+        comments: {
+          where: { visibility: Visibility.CLIENT },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
       orderBy: { createdAt: 'asc' },
     });
-    return rows.map(toDto);
+    return rows.map((row) => toDto(row, toClientCommentDto));
+  }
+
+  async approveByAccessCode(
+    code: string,
+    id: string,
+  ): Promise<CommissionProgressDto> {
+    const row = await this.db.commissionProgress.findFirst({
+      where: {
+        id,
+        requestsApproval: true,
+        visibility: Visibility.CLIENT,
+        commission: { accessCode: code },
+      },
+      include: { commission: true },
+    });
+    if (!row) throw new NotFoundException(`Progress entry ${id} not found`);
+    if (row.approvedAt) return this.findForClient(id);
+
+    const { commission } = row;
+    const confirms = commission.status === CommissionStatus.SKETCH;
+    await this.db.$transaction([
+      this.db.commissionProgress.update({
+        where: { id },
+        data: { approvedAt: new Date() },
+      }),
+      ...(confirms
+        ? [
+            this.db.commission.update({
+              where: { id: commission.id },
+              data: { status: CommissionStatus.CONFIRMED },
+            }),
+            this.db.commissionStatusHistory.create({
+              data: {
+                commissionId: commission.id,
+                fromStatus: commission.status,
+                toStatus: CommissionStatus.CONFIRMED,
+                changedById: commission.artistId,
+                note: SKETCH_APPROVED_BY_CLIENT_NOTE,
+              },
+            }),
+          ]
+        : []),
+    ]);
+    return this.findForClient(id);
+  }
+
+  private async findForClient(id: string): Promise<CommissionProgressDto> {
+    const row = await this.db.commissionProgress.findUniqueOrThrow({
+      where: { id },
+      include: {
+        comments: {
+          where: { visibility: Visibility.CLIENT },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+    return toDto(row, toClientCommentDto);
   }
 
   async create(
@@ -61,13 +138,18 @@ export class CommissionProgressService {
       data: {
         commissionId: dto.commissionId,
         title: dto.title ?? null,
+        description: dto.description?.trim() || null,
         body: dto.body ?? undefined,
         images,
         isFinal: dto.isFinal ?? false,
+        requestsApproval:
+          (dto.requestsApproval ?? false) &&
+          dto.visibility === Visibility.CLIENT,
         visibility: dto.visibility,
         projectId: dto.isFinal ? (dto.projectId ?? null) : null,
       },
     });
+    await this.attachments.claim(dto.images, dto.description);
     if (dto.isFinal) {
       await this.db.commissionDetail.update({
         where: { commissionId: dto.commissionId },
@@ -88,12 +170,15 @@ export class CommissionProgressService {
       where: { id },
       data: {
         title: dto.title ?? undefined,
+        description: dto.description?.trim(),
         body: dto.body ?? undefined,
         images,
         visibility: dto.visibility ?? undefined,
         projectId: existing.isFinal ? (dto.projectId ?? undefined) : undefined,
       },
+      include: { comments: { orderBy: { createdAt: 'asc' } } },
     });
+    await this.attachments.claim(dto.images ?? [], dto.description);
     return toDto(row);
   }
 
@@ -107,6 +192,7 @@ export class CommissionProgressService {
     const row = await this.db.commissionProgress.update({
       where: { id },
       data: { isFinal: true, projectId: projectId ?? null },
+      include: { comments: { orderBy: { createdAt: 'asc' } } },
     });
     await this.db.commissionDetail.update({
       where: { commissionId: existing.commissionId },
@@ -119,7 +205,14 @@ export class CommissionProgressService {
 
   async remove(artistId: string, id: string): Promise<void> {
     await this.assertOwned(artistId, id);
-    await this.db.commissionProgress.delete({ where: { id } });
+    const row = await this.db.commissionProgress.delete({
+      where: { id },
+      include: { comments: true },
+    });
+    await this.attachments.release(
+      [...row.images, ...row.comments.flatMap((comment) => comment.images)],
+      [row.description, ...row.comments.map((comment) => comment.body)],
+    );
   }
 
   private async linkImagesToProject(
@@ -194,17 +287,25 @@ export class CommissionProgressService {
   }
 }
 
-function toDto(row: CommissionProgress): CommissionProgressDto {
+function toDto(
+  row: CommissionProgress & { comments?: Comment[] },
+  toComment: (comment: Comment) => CommentDto = toCommentDto,
+): CommissionProgressDto {
   return {
     id: row.id,
     commissionId: row.commissionId,
     projectId: row.projectId,
     title: row.title,
+    description: row.description,
     body: row.body as object | null,
     images: row.images,
     isFinal: row.isFinal,
+    requestsApproval: row.requestsApproval,
+    approvedAt: row.approvedAt?.toISOString() ?? null,
     visibility: row.visibility,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
+    seenByClientAt: row.seenByClientAt?.toISOString() ?? null,
+    comments: (row.comments ?? []).map(toComment),
   };
 }

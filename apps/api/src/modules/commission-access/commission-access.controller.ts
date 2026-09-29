@@ -18,7 +18,7 @@ import { AccessRateLimitGuard } from '@/modules/commission-access/guards/access-
 import {
   CommissionAccessMatchDto,
   CommissionPasscodeDto,
-  PasscodeLookupDto,
+  EmailLookupDto,
   SetArtistPasscodeDto,
   SetClientPasscodeDto,
   UnlockCommissionDto,
@@ -35,7 +35,7 @@ export class CommissionAccessController {
   @UseGuards(AccessRateLimitGuard)
   @ApiOperation({
     operationId: 'unlockQueuedCommission',
-    summary: 'Trade a queue item and its passcode for the order access code',
+    summary: 'Trade a commission id and its passcode for the order access code',
   })
   @ApiOkResponse({ type: UnlockedCommissionDto })
   unlock(@Body() dto: UnlockCommissionDto): Promise<UnlockedCommissionDto> {
@@ -46,11 +46,11 @@ export class CommissionAccessController {
   @HttpCode(200)
   @UseGuards(AccessRateLimitGuard)
   @ApiOperation({
-    operationId: 'lookupCommissionsByPasscode',
-    summary: "Find a client's commissions with an artist by email + passcode",
+    operationId: 'lookupCommissionsByEmail',
+    summary: "Find a client's commissions with an artist by email",
   })
   @ApiOkResponse({ type: CommissionAccessMatchDto, isArray: true })
-  lookup(@Body() dto: PasscodeLookupDto): Promise<CommissionAccessMatchDto[]> {
+  lookup(@Body() dto: EmailLookupDto): Promise<CommissionAccessMatchDto[]> {
     return this.access.lookup(dto);
   }
 

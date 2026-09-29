@@ -9,6 +9,7 @@ import {
   IsString,
 } from 'class-validator';
 import { Visibility } from '@prisma/client';
+import { CommentDto } from '@/modules/commissions/dto/comment.dto';
 
 export class CommissionProgressDto {
   @ApiProperty()
@@ -23,6 +24,9 @@ export class CommissionProgressDto {
   @ApiProperty({ nullable: true, type: String })
   title: string | null;
 
+  @ApiProperty({ nullable: true, type: String, description: 'Markdown' })
+  description: string | null;
+
   @ApiProperty({ nullable: true, type: Object })
   body: object | null;
 
@@ -32,6 +36,12 @@ export class CommissionProgressDto {
   @ApiProperty()
   isFinal: boolean;
 
+  @ApiProperty({ description: 'Asks the client to approve this sketch' })
+  requestsApproval: boolean;
+
+  @ApiProperty({ nullable: true, type: String })
+  approvedAt: string | null;
+
   @ApiProperty({ enum: Visibility })
   visibility: Visibility;
 
@@ -40,6 +50,12 @@ export class CommissionProgressDto {
 
   @ApiProperty()
   updatedAt: string;
+
+  @ApiProperty({ nullable: true, type: String })
+  seenByClientAt: string | null;
+
+  @ApiProperty({ type: CommentDto, isArray: true })
+  comments: CommentDto[];
 }
 
 export class CreateCommissionProgressDto {
@@ -52,6 +68,11 @@ export class CreateCommissionProgressDto {
   @IsOptional()
   @IsString()
   title?: string;
+
+  @ApiProperty({ required: false, description: 'Markdown' })
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @ApiProperty({ required: false, type: Object })
   @IsOptional()
@@ -71,6 +92,11 @@ export class CreateCommissionProgressDto {
   @IsOptional()
   @IsBoolean()
   isFinal?: boolean;
+
+  @ApiProperty({ required: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  requestsApproval?: boolean;
 
   @ApiProperty({ enum: Visibility, default: Visibility.CLIENT })
   @IsEnum(Visibility)
@@ -100,6 +126,11 @@ export class UpdateCommissionProgressDto {
   @IsOptional()
   @IsString()
   title?: string;
+
+  @ApiProperty({ required: false, description: 'Markdown' })
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @ApiProperty({ required: false, type: Object })
   @IsOptional()

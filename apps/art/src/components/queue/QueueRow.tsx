@@ -21,7 +21,7 @@ export function QueueRow({
     <button
       type="button"
       onClick={onSelect}
-      className="group flex w-full cursor-pointer items-center gap-4 px-4 py-4 text-left transition-colors hover:bg-card-hover focus-visible:bg-card-hover focus-visible:outline-none sm:px-5"
+      className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-border bg-card px-4 py-4 text-left text-card-foreground transition-[background-color,box-shadow] duration-200 ease-out hover:bg-card-hover hover:shadow-soft focus-visible:bg-card-hover focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none sm:px-5"
     >
       <span className="w-8 shrink-0 text-center font-serif text-2xl tabular-nums text-muted-foreground">
         {item.position}
@@ -31,8 +31,6 @@ export function QueueRow({
           {format.type(item.commissionTypeKey, item.commissionTypeLabel)}
         </span>
         <span className="block text-sm text-muted-foreground">
-          {t(`queue.stage.${item.stage}`)}
-          <span aria-hidden> · </span>
           {t('queue.since', { date: format.date(item.queuedAt) })}
         </span>
       </span>

@@ -11,9 +11,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  MaxLength,
   Min,
-  MinLength,
 } from 'class-validator';
 import {
   CommissionStatus,
@@ -28,10 +26,6 @@ import {
   REFERENCE_URL_LIMIT,
   REFERENCE_URL_OPTIONS,
 } from '@/modules/commissions/commissions.constants';
-import {
-  PASSCODE_MAX_LENGTH,
-  PASSCODE_MIN_LENGTH,
-} from '@/modules/commission-access/commission-access.constants';
 import { IsTiptapDocument } from '@/common/validators/tiptap-document.validator';
 
 export {
@@ -276,6 +270,20 @@ export class CommissionPublicDto {
   })
   passcodeSource: PasscodeSource | null;
 
+  @ApiProperty({
+    description: 'Whether the client may set a passcode yet (once accepted)',
+  })
+  canSetPasscode: boolean;
+
+  @ApiProperty()
+  isHiddenInQueue: boolean;
+
+  @ApiProperty({ nullable: true, type: String })
+  contactPlatform: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  contactValue: string | null;
+
   @ApiProperty({ nullable: true })
   deliveredAt: string | null;
 
@@ -433,16 +441,6 @@ export class SubmitCommissionDto extends CommissionRequestBaseDto {
   @IsOptional()
   @IsString()
   contactValue?: string;
-
-  @ApiProperty({
-    required: false,
-    description: 'Passcode the client picks to open this from the queue',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(PASSCODE_MIN_LENGTH)
-  @MaxLength(PASSCODE_MAX_LENGTH)
-  passcode?: string;
 }
 
 export class CreatePrivateCommissionDto extends CommissionRequestBaseDto {

@@ -167,17 +167,15 @@
   },
   "queue": {
     "title": "队列",
-    "subtitle": "按制作顺序排列的委托。",
     "empty": "队列目前是空的。",
-    "hint_one": "共有 {{count}} 个委托在排队。点击你的委托并输入口令即可打开。",
-    "hint_other": "共有 {{count}} 个委托在排队。点击你的委托并输入口令即可打开。",
+    "hint_one": "队列中有 {{count}} 个委托。点击你的委托即可打开。",
+    "hint_other": "队列中有 {{count}} 个委托。点击你的委托即可打开。",
     "since": "自 {{date}}",
     "locked": "受口令保护",
     "stageProgress": "第 {{current}} / {{total}} 阶段",
     "stage": {
       "WAITING": "等待中",
       "SKETCHING": "草图中",
-      "SKETCH_APPROVED": "草图已确认",
       "IN_PROGRESS": "制作中"
     },
     "passcode": {
@@ -189,19 +187,19 @@
     "unlock": {
       "title": "#{{position}} · {{type}}",
       "description": "输入该委托的口令以查看详情。",
-      "noPasscode": "该委托还没有口令。",
-      "noPasscodeHelp": "请向画师索取口令，或使用邮件中的订单码打开。",
-      "gotIt": "知道了",
       "open": "打开",
-      "opening": "正在打开…"
+      "opening": "正在打开…",
+      "titlePosition": "#{{position}}",
+      "order": "你的订单"
     },
     "findMine": {
       "title": "找不到你的委托？",
-      "subtitle": "用邮箱和口令查找，或使用你的订单码。",
-      "emailTab": "邮箱和口令",
+      "subtitle": "用邮箱查找，或使用你的订单码。",
+      "emailTab": "邮箱",
       "codeTab": "订单码",
       "email": "邮箱",
-      "codeHint": "订单码在订单邮件的链接中。"
+      "codeHint": "订单码在订单邮件的链接中。",
+      "noMatches": "没有找到该邮箱的订单。"
     }
   },
   "orders": {
@@ -210,7 +208,6 @@
     "codeLabel": "或者，如果我给了你一个代码",
     "codeGo": "查看",
     "deliverables": "最终作品",
-    "existingReferences": "已上传的参考图",
     "addLinkLabel": "或粘贴链接",
     "addLinkPlaceholder": "https://...",
     "addLink": "添加链接",
@@ -224,12 +221,9 @@
     },
     "tabs": {
       "updates": "进度",
-      "messages": "留言",
-      "references": "参考资料",
-      "request": "你的需求"
+      "settings": "设置"
     },
     "noUpdates": "暂无进度。草图和预览会显示在这里。",
-    "noMessages": "暂无留言。",
     "passcode": {
       "title": "队列口令",
       "saved": "口令已保存，可用它从队列打开此委托。",
@@ -244,6 +238,24 @@
       "newLabel": "新口令",
       "save": "保存",
       "hint": "至少 {{min}} 个字符。"
+    },
+    "requestPost": "委托已提交",
+    "approval": {
+      "prompt": "画师请你确认这张草图。",
+      "changesHint": "想修改？请留言说明。",
+      "approve": "确认草图",
+      "approving": "确认中…",
+      "approved": "你已于 {{date}} 确认了这张草图。"
+    },
+    "newestFirst": "最新优先",
+    "oldestFirst": "最早优先",
+    "settings": {
+      "publicQueue": "在公开队列中显示",
+      "publicQueueHint": "其他人只能看到类型和进度，看不到你的名字或详情。",
+      "contact": "联系方式",
+      "contactHint": "画师就此委托联系你的方式。",
+      "contactSaved": "已保存，画师之后会通过这里联系你。",
+      "contactValuePlaceholder": "你的用户名"
     }
   },
   "commission": {
@@ -282,8 +294,7 @@
         "contact": "用于进度更新和沟通。",
         "contactValue": "用户名或主页链接。",
         "references": "角色设定图、服装、姿势，任何有帮助的内容。",
-        "links": "按回车逐个添加。",
-        "passcode": "可让你从公开队列打开此委托。"
+        "links": "按回车逐个添加。"
       },
       "placeholders": {
         "name": "例如：Mira Tanaka",
@@ -297,9 +308,7 @@
         "required": "此项为必填。",
         "ideaRequired": "请简单描述一下你想要的作品。",
         "acceptTerms": "请同意服务条款后继续。",
-        "deadlineTooSoon": "请选择至少 {{count}} 天后的日期。",
-        "passcodeTooShort_one": "至少使用 {{count}} 个字符。",
-        "passcodeTooShort_other": "至少使用 {{count}} 个字符。"
+        "deadlineTooSoon": "请选择至少 {{count}} 天后的日期。"
       },
       "emailMissing": "此身份还没有登记电子邮箱，请填写以便我联系你。",
       "submitFailed": "无法提交请求。请检查填写的信息后重试。",
@@ -326,8 +335,7 @@
         "ideaHint": "描述作品：角色、姿势、氛围，任何重要的细节。",
         "request": "你的请求",
         "requestHint": "你是谁，以及你想要什么作品。"
-      },
-      "passcodeLabel": "队列口令（可选）"
+      }
     },
     "preferredContactMethod": {
       "EMAIL": "邮箱",
@@ -526,6 +534,12 @@
         "rushFee": "加急费",
         "rushFeeDays": "阈值（天）",
         "rushFeeAmount": "费用（$）"
+      },
+      "progress": {
+        "requestApproval": "请委托人确认",
+        "awaitingApproval": "等待确认",
+        "approvedByClient": "委托人已确认",
+        "descriptionPlaceholder": "描述这次更新…支持 Markdown，可粘贴或拖入图片。"
       }
     },
     "closed": {
@@ -703,6 +717,22 @@
     "zoomOut": "缩小",
     "reset": "重置缩放",
     "close": "关闭",
-    "toggleCaption": "显示或隐藏详情"
+    "toggleCaption": "显示或隐藏详情",
+    "image": "图片"
+  },
+  "comments": {
+    "you": "你",
+    "placeholder": "写评论…",
+    "send": "评论",
+    "author": {
+      "ARTIST": "画师",
+      "CLIENT": "委托人"
+    },
+    "new": "新",
+    "seen": "已读",
+    "notSeen": "未读",
+    "attach": "添加图片",
+    "removeAttachment": "移除图片",
+    "sendFailed": "发送失败，请检查图片后重试。"
   }
 }

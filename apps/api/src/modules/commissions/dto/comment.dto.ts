@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { COMMENT_IMAGE_LIMIT } from '@/modules/commissions/commissions.constants';
 import { Visibility } from '@prisma/client';
 
 export { Visibility };
@@ -39,15 +46,39 @@ export class CommentDto {
   @ApiProperty({ example: 'Client confirmed the pose reference.' })
   body: string;
 
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description:
+      'When the other party saw it; always null on client-authored comments in client-facing responses',
+  })
+  seenAt: string | null;
+
+  @ApiProperty({ type: [String] })
+  images: string[];
+
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   createdAt: string;
 }
 
 export class CreateCommentDto {
-  @ApiProperty({ example: 'Client confirmed the pose reference.' })
+  @ApiProperty({
+    example: 'Client confirmed the pose reference.',
+    description: 'May be empty when images are attached',
+  })
   @IsString()
-  @IsNotEmpty()
   body: string;
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Storage keys of images uploaded with this comment',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(COMMENT_IMAGE_LIMIT)
+  @IsString({ each: true })
+  keys?: string[];
 
   @ApiProperty({
     enum: Visibility,
@@ -55,6 +86,14 @@ export class CreateCommentDto {
   })
   @IsEnum(Visibility)
   visibility: Visibility;
+
+  @ApiProperty({
+    required: false,
+    description: 'Progress update this comments on; omit for a general note',
+  })
+  @IsOptional()
+  @IsString()
+  progressId?: string;
 }
 
 interface CommentSource {
@@ -67,6 +106,8 @@ interface CommentSource {
   authorRole: CommentDto['authorRole'];
   visibility: Visibility;
   body: string;
+  seenAt: Date | null;
+  images: string[];
   createdAt: Date;
 }
 
@@ -81,6 +122,13 @@ export function toCommentDto(comment: CommentSource): CommentDto {
     authorRole: comment.authorRole,
     visibility: comment.visibility,
     body: comment.body,
+    seenAt: comment.seenAt?.toISOString() ?? null,
+    images: comment.images,
     createdAt: comment.createdAt.toISOString(),
   };
+}
+
+export function toClientCommentDto(comment: CommentSource): CommentDto {
+  const dto = toCommentDto(comment);
+  return comment.authorRole === 'CLIENT' ? { ...dto, seenAt: null } : dto;
 }

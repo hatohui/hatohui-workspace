@@ -29,6 +29,17 @@ export const QUEUE_STATUSES: CommissionStatus[] = [
   CommissionStatus.ONGOING,
 ];
 
+export const COMMENT_IMAGE_LIMIT = 6;
+export const CONTACT_PLATFORM_MAX_LENGTH = 50;
+export const CONTACT_VALUE_MAX_LENGTH = 200;
+export const EMAIL_CONTACT_PLATFORM = 'email';
+
+export const CLIENT_PASSCODE_STATUSES: CommissionStatus[] = [
+  CommissionStatus.ACCEPTED,
+  ...QUEUE_STATUSES,
+  CommissionStatus.COMPLETED,
+];
+
 export const QUEUE_WORK_ORDER: CommissionStatus[] = [
   CommissionStatus.ONGOING,
   CommissionStatus.CONFIRMED,
@@ -41,12 +52,7 @@ export const QUEUE_STATUS_RANK = new Map(
   QUEUE_WORK_ORDER.map((status, index) => [status, index]),
 );
 
-export const QUEUE_STAGES = [
-  'WAITING',
-  'SKETCHING',
-  'SKETCH_APPROVED',
-  'IN_PROGRESS',
-] as const;
+export const QUEUE_STAGES = ['WAITING', 'SKETCHING', 'IN_PROGRESS'] as const;
 export type QueueStage = (typeof QUEUE_STAGES)[number];
 
 export const QUEUE_STAGE_BY_STATUS: Partial<
@@ -55,7 +61,7 @@ export const QUEUE_STAGE_BY_STATUS: Partial<
   [CommissionStatus.NOT_YET_STARTED]: 'WAITING',
   [CommissionStatus.QUEUED]: 'WAITING',
   [CommissionStatus.SKETCH]: 'SKETCHING',
-  [CommissionStatus.CONFIRMED]: 'SKETCH_APPROVED',
+  [CommissionStatus.CONFIRMED]: 'IN_PROGRESS',
   [CommissionStatus.ONGOING]: 'IN_PROGRESS',
 };
 

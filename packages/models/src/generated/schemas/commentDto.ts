@@ -27,5 +27,11 @@ export interface CommentDto {
   authorRole: CommentDtoAuthorRole;
   visibility: CommentDtoVisibility;
   body: string;
+  /**
+     * When the other party saw it; always null on client-authored comments in client-facing responses
+     * @nullable
+     */
+  seenAt: string | null;
+  images: string[];
   createdAt: string;
 }

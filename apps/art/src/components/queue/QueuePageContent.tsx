@@ -12,12 +12,11 @@ export function QueuePageContent({ artistId }: { artistId: string }) {
 
   return (
     <div className="space-y-12">
-      <header className="space-y-1">
+      <div className="space-y-6">
         <h1 className="font-serif text-3xl">{t('queue.title')}</h1>
-        <p className="text-muted-foreground">{t('queue.subtitle')}</p>
-      </header>
-      <QueueList artistId={artistId} onSelect={unlock.open} />
-      <QueueFindMine artistId={artistId} />
+        <QueueList artistId={artistId} onSelect={unlock.openQueueItem} />
+      </div>
+      <QueueFindMine artistId={artistId} onLocked={unlock.openMatch} />
       <QueueUnlockDialog unlock={unlock} />
     </div>
   );

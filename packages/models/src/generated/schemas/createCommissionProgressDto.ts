@@ -11,10 +11,13 @@ import type { CreateCommissionProgressDtoVisibility } from './createCommissionPr
 export interface CreateCommissionProgressDto {
   commissionId: string;
   title?: string;
+  /** Markdown */
+  description?: string;
   body?: CreateCommissionProgressDtoBody;
   /** Object keys returned by POST /images/sign */
   images: string[];
   isFinal?: boolean;
+  requestsApproval?: boolean;
   visibility: CreateCommissionProgressDtoVisibility;
   /** Attach this progress entry (if final) to a Project */
   projectId?: string;
