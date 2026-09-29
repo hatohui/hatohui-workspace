@@ -72,9 +72,7 @@ describe('CommissionPurgeExecutor', () => {
       where: { id: 'asset-1' },
       data: { commissionId: 'c1' },
     });
-    const tagged = (db.tag.upsert.mock.calls as [TagUpsertArgs][]).map(
-      ([arg]) => arg.where.name,
-    );
+    const tagged = db.tag.upsert.mock.calls.map(([arg]) => arg.where.name);
     expect(tagged.sort()).toEqual(['bg', 'bust', 'flat']);
     expect(attachments.queueDeletes).toHaveBeenCalledWith(
       ['url/final.png', 'url/wip.png', 'url/chat.png'],
