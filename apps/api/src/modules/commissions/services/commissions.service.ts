@@ -77,6 +77,7 @@ import {
 } from '@/modules/commissions/commissions.constants';
 import { CommissionOpeningsService } from '@/modules/commission-openings/services/commission-openings.service';
 import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
+import { CommissionPurgeService } from '@/modules/commission-purge/services/commission-purge.service';
 import { ClientIdentityService } from '@/modules/clients/services/client-identity.service';
 import {
   isEmailContact,
@@ -107,6 +108,7 @@ export class CommissionsService {
     private readonly pricing: CommissionPricingService,
     private readonly clientIdentity: ClientIdentityService,
     private readonly attachments: CommissionAttachmentsService,
+    private readonly purge: CommissionPurgeService,
   ) {}
 
   async submit(
@@ -114,10 +116,14 @@ export class CommissionsService {
     submitter: User | null,
   ): Promise<CommissionDto> {
     assertDeadlineFarEnough(dto.deadline);
+    const allowGalleryPost = await this.galleryPostFor(
+      dto.artistId,
+      dto.allowGalleryPost,
+    );
     const [currency, commissionOpeningId, estimate] = await Promise.all([
       this.currencyFor(dto.artistId),
       this.commissionOpenings.openIdFor(dto.artistId),
-      this.pricing.estimate(dto.artistId, dto),
+      this.pricing.estimate(dto.artistId, { ...dto, allowGalleryPost }),
     ]);
     if (!commissionOpeningId) {
       throw new ForbiddenException(
@@ -134,6 +140,7 @@ export class CommissionsService {
         artistId: dto.artistId,
         clientId: client.id,
         commissionOpeningId,
+        allowGalleryPost,
         status: 'PENDING',
         detail: {
           create: {
@@ -176,6 +183,10 @@ export class CommissionsService {
       data: {
         artistId,
         clientId: client.id,
+        allowGalleryPost: await this.galleryPostFor(
+          artistId,
+          dto.allowGalleryPost,
+        ),
         status: 'NOT_YET_STARTED',
         detail: {
           create: {
@@ -328,6 +339,8 @@ export class CommissionsService {
           ? null
           : toPlacement(workOrder[index], index, workOrder.length),
       comments: comments.map(toClientCommentDto),
+      purgeAt:
+        (await this.purge.purgeAtFor(commission.id))?.toISOString() ?? null,
     };
   }
 
@@ -337,6 +350,12 @@ export class CommissionsService {
   ): Promise<CommissionPublicDto> {
     const { id } = await this.findByAccessCodeOrThrow(code);
     const isEmail = dto.contactPlatform === EMAIL_CONTACT_PLATFORM;
+    if (dto.allowGalleryPost !== undefined) {
+      await this.db.commission.update({
+        where: { id },
+        data: { allowGalleryPost: dto.allowGalleryPost },
+      });
+    }
     await this.db.commissionDetail.update({
       where: { commissionId: id },
       data: {
@@ -474,6 +493,9 @@ export class CommissionsService {
     viewer: User,
   ): Promise<CommissionDto> {
     const existing = await this.findOwnedOrThrow(artistId, id);
+    if (existing.purgedAt) {
+      throw new BadRequestException('This commission has been purged');
+    }
 
     // Snapshot the quote the moment a commission is first accepted, so a
     // later price change can be detected before sending the confirmation
@@ -510,6 +532,12 @@ export class CommissionsService {
     // write later in the same transaction — using it directly would report
     // a stale (pre-snapshot) originalQuote on exactly the call that set it.
     const commission = await this.findOwnedOrThrow(artistId, id);
+
+    if (dto.status === 'COMPLETED') {
+      await this.purge.schedule(artistId, id);
+    } else if (existing.status === 'COMPLETED') {
+      await this.purge.cancel(id);
+    }
 
     if (commission.commissionOpeningId) {
       await this.commissionOpenings.maybeAutoCloseForSlotCap(
@@ -574,6 +602,10 @@ export class CommissionsService {
     dto: UpdateCommissionVisibilityDto,
   ): Promise<CommissionDto> {
     await this.findOwnedOrThrow(artistId, id);
+    await this.db.commission.update({
+      where: { id },
+      data: { allowGalleryPost: dto.allowGalleryPost },
+    });
     await this.db.commissionDetail.update({
       where: { commissionId: id },
       data: { isHiddenInQueue: dto.isHiddenInQueue },
@@ -659,24 +691,25 @@ export class CommissionsService {
       }),
     ]);
 
+    const images = [
+      ...(existing.detail?.referenceAssets ?? []),
+      ...progress.flatMap((row) => row.images),
+      ...comments.flatMap((row) => row.images),
+    ];
+    const markdown = [
+      ...progress.map((row) => row.description),
+      ...comments.map((row) => row.body),
+    ];
+
     await this.db.$transaction([
+      this.attachments.queueDeletes(images, markdown),
       this.db.commissionStatusHistory.deleteMany({
         where: { commissionId: id },
       }),
       this.db.commission.delete({ where: { id } }),
     ]);
 
-    await this.attachments.release(
-      [
-        ...(existing.detail?.referenceAssets ?? []),
-        ...progress.flatMap((row) => row.images),
-        ...comments.flatMap((row) => row.images),
-      ],
-      [
-        ...progress.map((row) => row.description),
-        ...comments.map((row) => row.body),
-      ],
-    );
+    await this.attachments.release(images, markdown);
   }
 
   /// "Confirm" (Use Case 3) — sends the client an email asking them to
@@ -777,6 +810,20 @@ export class CommissionsService {
     return toCommentDto(comment);
   }
 
+  private async galleryPostFor(
+    artistId: string,
+    requested: boolean | undefined,
+  ): Promise<boolean> {
+    if (requested !== undefined) return requested;
+    const setting = USER_SETTING_TYPES.commissionGalleryPostDefault;
+    const value = await this.userSettings.get(
+      artistId,
+      setting.scope,
+      setting.type,
+    );
+    return value !== 'false';
+  }
+
   async currencyFor(artistId: string): Promise<string> {
     const setting = USER_SETTING_TYPES.commissionCurrency;
     const value = await this.userSettings.get(
@@ -871,6 +918,8 @@ export class CommissionsService {
       ...toCommissionDto(commission),
       comments: comments.map(toCommentDto),
       history: history.map(toHistoryDto),
+      purgeAt:
+        (await this.purge.purgeAtFor(commission.id))?.toISOString() ?? null,
     };
   }
 
@@ -997,6 +1046,8 @@ function toCommissionDto(commission: CommissionWithRelations): CommissionDto {
     deadline: detail.deadline?.toISOString() ?? null,
     paymentStatus: detail.paymentStatus,
     isHiddenInQueue: detail.isHiddenInQueue,
+    allowGalleryPost: commission.allowGalleryPost,
+    purgedAt: commission.purgedAt?.toISOString() ?? null,
     commissionTypeId: detail.commissionTypeId,
     commissionTypeKey: detail.commissionType?.key ?? null,
     commissionTypeLabel: detail.commissionType?.label ?? null,
@@ -1048,6 +1099,7 @@ function toPublicDto(commission: CommissionWithRelations): CommissionPublicDto {
     passcodeSource: commission.passcodeSource,
     canSetPasscode: CLIENT_PASSCODE_STATUSES.includes(commission.status),
     isHiddenInQueue: detail.isHiddenInQueue,
+    allowGalleryPost: commission.allowGalleryPost,
     contactPlatform: detail.contactPlatform,
     contactValue: detail.contactValue,
     deliveredAt: detail.deliveredAt?.toISOString() ?? null,

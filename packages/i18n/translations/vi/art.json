@@ -259,8 +259,11 @@
       "contact": "Cách liên hệ bạn",
       "contactHint": "Nơi họa sĩ liên hệ với bạn về đơn này.",
       "contactSaved": "Đã lưu. Họa sĩ sẽ dùng thông tin này từ bây giờ.",
-      "contactValuePlaceholder": "Tên người dùng của bạn"
-    }
+      "contactValuePlaceholder": "Tên người dùng của bạn",
+      "galleryPost": "Đăng lên thư viện",
+      "galleryPostHint": "Cho phép họa sĩ đăng tác phẩm hoàn thành lên thư viện. Tên và thông tin của bạn không bao giờ được hiển thị."
+    },
+    "purgeNotice": "Tin nhắn, cập nhật và tệp bạn tải lên sẽ bị xóa vào {{date}}. Hãy lưu tác phẩm cuối cùng trước thời điểm đó."
   },
   "commission": {
     "gallery": {
@@ -339,7 +342,11 @@
         "ideaHint": "Mô tả tác phẩm - nhân vật, dáng, không khí, bất cứ điều gì quan trọng.",
         "request": "Yêu cầu của bạn",
         "requestHint": "Bạn là ai, và bạn muốn vẽ gì."
-      }
+      },
+      "allowGalleryPostLabel": "Cho phép đăng tác phẩm hoàn thành lên thư viện của họa sĩ",
+      "allowGalleryPostTooltip": "Chỉ ảnh hoàn thành được giữ lại sau khi commission kết thúc. Tin nhắn và tệp của bạn sẽ bị xóa.",
+      "allowGalleryPostFeeTooltip": "Họa sĩ có thể thu phí commission riêng tư nếu bạn không cho phép đăng lên thư viện.",
+      "privateFeeIncluded": "đã gồm phí commission riêng tư +{{amount}}"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -650,6 +657,14 @@
           "percent": "Phần trăm",
           "addRow": "Thêm add-on"
         }
+      },
+      "gallery": {
+        "allow": "Cho phép đăng lên thư viện",
+        "disallow": "Không cho phép đăng lên thư viện"
+      },
+      "purge": {
+        "purged": "Đã xóa dữ liệu vào {{date}}. Chỉ giữ lại khách hàng, nhật ký trạng thái, tài liệu tham khảo và tác phẩm hoàn thành.",
+        "scheduled": "Tin nhắn, dòng thời gian và tệp tải lên sẽ bị xóa vào {{date}}. Tác phẩm hoàn thành vẫn ở trong thư viện."
       }
     },
     "closed": {
@@ -700,6 +715,11 @@
       "settings": "Chung",
       "currency": "Tiền tệ",
       "autoAccept": "Tự động nhận yêu cầu",
+      "retentionDays": "Giữ hồ sơ hoàn thành trong (ngày)",
+      "retentionDaysHint": "Sau số ngày này, tin nhắn, dòng thời gian và tệp tải lên sẽ bị xóa; tác phẩm chuyển vào thư viện của bạn.",
+      "galleryPostDefault": "Mặc định cho phép đăng lên thư viện",
+      "privateFee": "Phí commission riêng tư (đơn vị tiền nhỏ nhất)",
+      "privateFeeHint": "Tính khi khách không cho phép đăng lên thư viện. Để trống nếu không thu phí.",
       "notificationEmail": "Email thông báo",
       "notificationEmailPlaceholder": "ban@example.com",
       "paymentMethods": "Phương thức thanh toán",

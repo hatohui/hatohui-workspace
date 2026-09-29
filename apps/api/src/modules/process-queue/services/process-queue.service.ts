@@ -26,8 +26,10 @@ export class ProcessQueueService {
     });
   }
 
-  async markSucceeded(id: string): Promise<void> {
-    await this.db.processQueue.delete({ where: { id } }).catch(() => {});
+  async markSucceeded(job: ProcessQueue): Promise<void> {
+    await this.db.processQueue.deleteMany({
+      where: { id: job.id, nextAttemptAt: job.nextAttemptAt },
+    });
   }
 
   async enqueueFailure(
@@ -63,6 +65,12 @@ export class ProcessQueueService {
       where: { type_refId: { type, refId } },
       create: { type, refId, nextAttemptAt: at },
       update: { nextAttemptAt: at },
+    });
+  }
+
+  findFor(type: ProcessType, refId: string): Promise<ProcessQueue | null> {
+    return this.db.processQueue.findUnique({
+      where: { type_refId: { type, refId } },
     });
   }
 

@@ -41,6 +41,7 @@ export class CommissionAccessService {
     const commissions = await this.db.commission.findMany({
       where: {
         artistId: dto.artistId,
+        purgedAt: null,
         client: { email: { equals: dto.email.trim(), mode: 'insensitive' } },
       },
       include: { detail: { include: { commissionType: true } } },

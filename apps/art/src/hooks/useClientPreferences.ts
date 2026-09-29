@@ -37,6 +37,9 @@ export function useClientPreferences(
 
   return {
     isPublic: !commission.isHiddenInQueue,
+    allowGalleryPost: commission.allowGalleryPost,
+    setAllowGalleryPost: (allowGalleryPost: boolean) =>
+      update.mutate({ code, data: { allowGalleryPost } }),
     setPublic: (isPublic: boolean) =>
       update.mutate({ code, data: { isHiddenInQueue: !isPublic } }),
     platforms: (platformData?.data ?? []).map((item) => item.name),

@@ -260,8 +260,11 @@
       "contact": "連絡方法",
       "contactHint": "この依頼についてアーティストが連絡する先です。",
       "contactSaved": "保存しました。今後はこちらに連絡します。",
-      "contactValuePlaceholder": "ユーザー名・ID"
-    }
+      "contactValuePlaceholder": "ユーザー名・ID",
+      "galleryPost": "ギャラリー掲載",
+      "galleryPostHint": "完成作品をアーティストのギャラリーに掲載することを許可します。お名前や詳細は表示されません。"
+    },
+    "purgeNotice": "チャット、更新、アップロードしたファイルは{{date}}に削除されます。それまでに完成作品を保存してください。"
   },
   "commission": {
     "gallery": {
@@ -340,7 +343,11 @@
         "ideaHint": "キャラクター、ポーズ、雰囲気など、大切なことを書いてください。",
         "request": "リクエスト内容",
         "requestHint": "あなたのことと、描いてほしいものを教えてください。"
-      }
+      },
+      "allowGalleryPostLabel": "完成した作品をアーティストのギャラリーに掲載してもよい",
+      "allowGalleryPostTooltip": "依頼終了後に残るのは完成画像のみです。チャットとファイルは削除されます。",
+      "allowGalleryPostFeeTooltip": "ギャラリー掲載を許可しない場合、アーティストが非公開依頼料を請求することがあります。",
+      "privateFeeIncluded": "非公開依頼料 +{{amount}} を含む"
     },
     "preferredContactMethod": {
       "EMAIL": "メール",
@@ -649,6 +656,14 @@
           "percent": "割合",
           "addRow": "追加オプションを追加"
         }
+      },
+      "gallery": {
+        "allow": "ギャラリー掲載を許可",
+        "disallow": "ギャラリー掲載を不許可"
+      },
+      "purge": {
+        "purged": "{{date}}に削除済み。顧客情報、ステータス履歴、参考資料、完成作品のみ保持されています。",
+        "scheduled": "チャット、進行履歴、アップロードは{{date}}に削除されます。完成作品はギャラリーに残ります。"
       }
     },
     "closed": {
@@ -699,6 +714,11 @@
       "settings": "一般",
       "currency": "通貨",
       "autoAccept": "依頼を自動承認",
+      "retentionDays": "完了した依頼の保持期間(日)",
+      "retentionDaysHint": "この日数の経過後、チャット・進行履歴・アップロードを削除し、作品はギャラリーへ移ります。",
+      "galleryPostDefault": "デフォルトでギャラリー掲載を許可",
+      "privateFee": "非公開依頼の追加料金(最小通貨単位)",
+      "privateFeeHint": "クライアントがギャラリー掲載を許可しない場合に加算されます。空欄なら追加料金なし。",
       "notificationEmail": "通知メール",
       "notificationEmailPlaceholder": "you@example.com",
       "paymentMethods": "支払い方法",

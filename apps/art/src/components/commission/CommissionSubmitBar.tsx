@@ -8,6 +8,7 @@ import type { CommissionValidation } from '@/hooks/useCommissionValidation';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { CommissionQuoteEstimate } from './CommissionQuoteEstimate';
 import { CommissionVisibilityCheckbox } from './CommissionVisibilityCheckbox';
+import { CommissionGalleryCheckbox } from './CommissionGalleryCheckbox';
 import { CommissionTermsCheckbox } from './CommissionTermsCheckbox';
 
 export function CommissionSubmitBar({
@@ -27,6 +28,11 @@ export function CommissionSubmitBar({
         <CommissionVisibilityCheckbox
           isPublic={form.state.isPublic}
           onChange={(value) => form.update('isPublic', value)}
+        />
+        <CommissionGalleryCheckbox
+          allowGalleryPost={form.pricing.allowGalleryPost}
+          privateFee={form.pricing.privateFee}
+          onChange={(value) => form.update('allowGalleryPost', value)}
         />{' '}
         <CommissionTermsCheckbox
           accepted={form.state.acceptedTerms}

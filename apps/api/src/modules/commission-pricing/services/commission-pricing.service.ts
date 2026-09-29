@@ -14,6 +14,8 @@ import { uniqueSlug } from '@/common/utils/slugify';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
 import { DEFAULT_CURRENCY } from '@/modules/commission-pricing/commission-pricing.constants';
+import { CommissionPurgeService } from '@/modules/commission-purge/services/commission-purge.service';
+import { DEFAULT_COMMISSION_RETENTION_DAYS } from '@/modules/commission-purge/commission-purge.constants';
 import {
   CommissionAddonPricingDto,
   CommissionOptionPricingDto,
@@ -38,18 +40,24 @@ export class CommissionPricingService {
   constructor(
     private readonly db: Database,
     private readonly userSettings: UserSettingsService,
+    private readonly purge: CommissionPurgeService,
   ) {}
 
   async getActive(artistId: string): Promise<CommissionPricingDto> {
-    const [options, addons, rushFee, currency] = await Promise.all([
-      this.db.commissionOption.findMany({
-        where: { artistId, active: true, minPrice: { gt: 0 } },
-      }),
-      this.db.commissionAddon.findMany({ where: { artistId, active: true } }),
-      this.getRushFee(artistId),
-      this.getCurrency(artistId),
-    ]);
+    const [options, addons, rushFee, currency, privateFee, galleryPostDefault] =
+      await Promise.all([
+        this.db.commissionOption.findMany({
+          where: { artistId, active: true, minPrice: { gt: 0 } },
+        }),
+        this.db.commissionAddon.findMany({ where: { artistId, active: true } }),
+        this.getRushFee(artistId),
+        this.getCurrency(artistId),
+        this.getPrivateFee(artistId),
+        this.getGalleryPostDefault(artistId),
+      ]);
     return {
+      privateFee,
+      galleryPostDefault,
       options: options.map(toOptionDto),
       addons: addons.map(toAddonDto),
       rushFee,
@@ -72,6 +80,27 @@ export class CommissionPricingService {
       setting.type,
     );
     return value ?? DEFAULT_CURRENCY;
+  }
+
+  async getGalleryPostDefault(artistId: string): Promise<boolean> {
+    const setting = USER_SETTING_TYPES.commissionGalleryPostDefault;
+    const value = await this.userSettings.get(
+      artistId,
+      setting.scope,
+      setting.type,
+    );
+    return value !== 'false';
+  }
+
+  async getPrivateFee(artistId: string): Promise<number | null> {
+    const setting = USER_SETTING_TYPES.commissionPrivateFee;
+    const value = await this.userSettings.get(
+      artistId,
+      setting.scope,
+      setting.type,
+    );
+    const fee = Number(value);
+    return value && Number.isInteger(fee) && fee > 0 ? fee : null;
   }
 
   async getRushFee(
@@ -116,6 +145,13 @@ export class CommissionPricingService {
       paymentMethods: this.parseMethods(
         stored.get(USER_SETTING_TYPES.commissionPaymentMethods.type),
       ),
+      retentionDays: retentionDaysOf(
+        stored.get(USER_SETTING_TYPES.commissionRetentionDays.type),
+      ),
+      galleryPostDefault:
+        stored.get(USER_SETTING_TYPES.commissionGalleryPostDefault.type) !==
+        'false',
+      privateFee: await this.getPrivateFee(artistId),
     };
   }
 
@@ -149,6 +185,26 @@ export class CommissionPricingService {
       artistId,
       USER_SETTING_TYPES.commissionPaymentMethods,
       methods.length > 0 ? JSON.stringify(methods) : null,
+    );
+
+    const previousDays = await this.purge.retentionDays(artistId);
+    await this.setSetting(
+      artistId,
+      USER_SETTING_TYPES.commissionRetentionDays,
+      String(dto.retentionDays),
+    );
+    if (dto.retentionDays !== previousDays) {
+      await this.purge.rescheduleAll(artistId, dto.retentionDays);
+    }
+    await this.setSetting(
+      artistId,
+      USER_SETTING_TYPES.commissionGalleryPostDefault,
+      String(dto.galleryPostDefault),
+    );
+    await this.setSetting(
+      artistId,
+      USER_SETTING_TYPES.commissionPrivateFee,
+      dto.privateFee ? String(dto.privateFee) : null,
     );
 
     return this.getSettings(artistId);
@@ -425,4 +481,11 @@ function toAddonDto(row: CommissionAddon): CommissionAddonPricingDto {
     active: row.active,
     updatedAt: row.updatedAt.toISOString(),
   };
+}
+
+function retentionDaysOf(value: string | undefined): number {
+  const days = Number(value);
+  return Number.isInteger(days) && days > 0
+    ? days
+    : DEFAULT_COMMISSION_RETENTION_DAYS;
 }

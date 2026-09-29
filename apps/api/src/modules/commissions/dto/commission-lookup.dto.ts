@@ -47,6 +47,11 @@ export class UpdateClientPreferencesDto {
   @IsBoolean()
   isHiddenInQueue?: boolean;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  allowGalleryPost?: boolean;
+
   @ApiProperty({
     required: false,
     example: 'Discord',

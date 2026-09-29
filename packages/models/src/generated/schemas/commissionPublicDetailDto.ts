@@ -39,6 +39,7 @@ export interface CommissionPublicDetailDto {
   /** Whether the client may set a passcode yet (once accepted) */
   canSetPasscode: boolean;
   isHiddenInQueue: boolean;
+  allowGalleryPost: boolean;
   /** @nullable */
   contactPlatform: string | null;
   /** @nullable */
@@ -54,4 +55,9 @@ export interface CommissionPublicDetailDto {
      */
   queue: CommissionQueuePlacementDto | null;
   comments: CommentDto[];
+  /**
+     * When the retention purge is due; null if none is scheduled
+     * @nullable
+     */
+  purgeAt: string | null;
 }

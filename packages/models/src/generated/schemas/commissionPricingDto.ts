@@ -14,5 +14,12 @@ export interface CommissionPricingDto {
   addons: CommissionAddonPricingDto[];
   /** @nullable */
   rushFee: CommissionRushFeeSettingDto | null;
+  /**
+     * Surcharge when the client does not allow gallery posting; null when the artist charges none
+     * @nullable
+     */
+  privateFee: number | null;
+  /** Default for the order form's "OK to post in gallery" choice */
+  galleryPostDefault: boolean;
   currency: string;
 }

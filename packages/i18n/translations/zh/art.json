@@ -255,8 +255,11 @@
       "contact": "联系方式",
       "contactHint": "画师就此委托联系你的方式。",
       "contactSaved": "已保存，画师之后会通过这里联系你。",
-      "contactValuePlaceholder": "你的用户名"
-    }
+      "contactValuePlaceholder": "你的用户名",
+      "galleryPost": "图库发布",
+      "galleryPostHint": "允许画师将完成的作品发布到图库。你的姓名和详情不会公开。"
+    },
+    "purgeNotice": "你的聊天、更新和上传文件将于 {{date}} 删除，请在此之前保存最终作品。"
   },
   "commission": {
     "gallery": {
@@ -335,7 +338,11 @@
         "ideaHint": "描述作品：角色、姿势、氛围，任何重要的细节。",
         "request": "你的请求",
         "requestHint": "你是谁，以及你想要什么作品。"
-      }
+      },
+      "allowGalleryPostLabel": "允许将完成的作品发布到画师的图库",
+      "allowGalleryPostTooltip": "委托结束后只保留成品图，聊天和文件会被删除。",
+      "allowGalleryPostFeeTooltip": "如果不允许发布到图库，画师可能收取私密委托费。",
+      "privateFeeIncluded": "已含私密委托费 +{{amount}}"
     },
     "preferredContactMethod": {
       "EMAIL": "邮箱",
@@ -540,6 +547,14 @@
         "awaitingApproval": "等待确认",
         "approvedByClient": "委托人已确认",
         "descriptionPlaceholder": "描述这次更新…支持 Markdown，可粘贴或拖入图片。"
+      },
+      "gallery": {
+        "allow": "允许发布到图库",
+        "disallow": "不允许发布到图库"
+      },
+      "purge": {
+        "purged": "已于 {{date}} 清理。仅保留客户信息、状态记录、参考资料和成品。",
+        "scheduled": "聊天、进度时间线和上传文件将于 {{date}} 删除，成品会保留在图库中。"
       }
     },
     "closed": {

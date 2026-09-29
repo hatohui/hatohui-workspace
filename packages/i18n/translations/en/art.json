@@ -269,8 +269,11 @@
       "contact": "How to reach you",
       "contactHint": "Where the artist should contact you about this commission.",
       "contactSaved": "Saved. The artist will use this from now on.",
-      "contactValuePlaceholder": "Your handle or username"
-    }
+      "contactValuePlaceholder": "Your handle or username",
+      "galleryPost": "Gallery posting",
+      "galleryPostHint": "Let the artist post the finished artwork in their gallery. Your name and details are never shown."
+    },
+    "purgeNotice": "Your chat, updates and uploaded files will be deleted on {{date}}. Save your final artwork before then."
   },
   "commission": {
     "gallery": {
@@ -349,7 +352,11 @@
         "ideaHint": "Describe the piece - characters, pose, mood, anything that matters.",
         "request": "Your request",
         "requestHint": "Who you are, and what you'd like made."
-      }
+      },
+      "allowGalleryPostLabel": "OK to post the finished artwork in the artist's gallery",
+      "allowGalleryPostTooltip": "Only the finished image is kept after the commission ends. Your chat and files are deleted.",
+      "allowGalleryPostFeeTooltip": "The artist charges a private commission fee if you do not allow gallery posting.",
+      "privateFeeIncluded": "includes +{{amount}} private commission fee"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -660,6 +667,14 @@
           "percent": "Percent",
           "addRow": "Add add-on"
         }
+      },
+      "gallery": {
+        "allow": "Allow gallery post",
+        "disallow": "Disallow gallery post"
+      },
+      "purge": {
+        "purged": "Purged on {{date}}. Only the customer, the status log, references and the finished artwork are kept.",
+        "scheduled": "Chat, timeline and uploads will be deleted on {{date}}. The finished artwork stays in the gallery."
       }
     },
     "closed": {
@@ -710,6 +725,11 @@
       "settings": "General",
       "currency": "Currency",
       "autoAccept": "Auto-accept requests",
+      "retentionDays": "Keep finished commissions for (days)",
+      "retentionDaysHint": "Purged after this many days: chat, timeline and uploads are deleted; the artwork moves to your gallery.",
+      "galleryPostDefault": "Allow gallery posting by default",
+      "privateFee": "Private commission fee (smallest currency unit)",
+      "privateFeeHint": "Charged when the client does not allow gallery posting. Leave empty for no fee.",
       "notificationEmail": "Notification email",
       "notificationEmailPlaceholder": "you@example.com",
       "paymentMethods": "Payment methods",
