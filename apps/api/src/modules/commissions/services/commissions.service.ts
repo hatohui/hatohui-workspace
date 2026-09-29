@@ -689,24 +689,25 @@ export class CommissionsService {
       }),
     ]);
 
+    const images = [
+      ...(existing.detail?.referenceAssets ?? []),
+      ...progress.flatMap((row) => row.images),
+      ...comments.flatMap((row) => row.images),
+    ];
+    const markdown = [
+      ...progress.map((row) => row.description),
+      ...comments.map((row) => row.body),
+    ];
+
     await this.db.$transaction([
+      this.attachments.queueDeletes(images, markdown),
       this.db.commissionStatusHistory.deleteMany({
         where: { commissionId: id },
       }),
       this.db.commission.delete({ where: { id } }),
     ]);
 
-    await this.attachments.release(
-      [
-        ...(existing.detail?.referenceAssets ?? []),
-        ...progress.flatMap((row) => row.images),
-        ...comments.flatMap((row) => row.images),
-      ],
-      [
-        ...progress.map((row) => row.description),
-        ...comments.map((row) => row.body),
-      ],
-    );
+    await this.attachments.release(images, markdown);
   }
 
   /// "Confirm" (Use Case 3) — sends the client an email asking them to

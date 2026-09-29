@@ -64,6 +64,11 @@ export class CommissionPurgeExecutor implements ProcessExecutor {
     };
 
     await this.db.$transaction([
+      this.attachments.queueDeletes(
+        discarded.images,
+        discarded.markdown,
+        finalImages,
+      ),
       this.db.comment.deleteMany({
         where: { OR: [{ commissionId }, { progress: { commissionId } }] },
       }),

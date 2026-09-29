@@ -66,6 +66,32 @@ export class CommissionAttachmentsService {
     );
   }
 
+  /// Queues the deletes as part of the caller's transaction, so a crash after
+  /// the rows are gone can't orphan the files; release() then runs them eagerly.
+  queueDeletes(
+    urls: string[],
+    markdown: (string | null)[],
+    keep: string[] = [],
+  ) {
+    const kept = new Set(
+      keep
+        .map((url) => this.storage.getKeyFromUrl(url))
+        .filter((key): key is string => key !== null),
+    );
+    const keys = new Set([
+      ...urls
+        .map((url) => this.storage.getKeyFromUrl(url))
+        .filter((key): key is string => key !== null),
+      ...this.inlineKeys(markdown),
+    ]);
+    return this.db.processQueue.createMany({
+      data: [...keys]
+        .filter((key) => !kept.has(key))
+        .map((key) => ({ type: ProcessType.STORAGE_DELETE, refId: key })),
+      skipDuplicates: true,
+    });
+  }
+
   /// Call after the owning rows are deleted, so they no longer count as references.
   async release(urls: string[], markdown: (string | null)[]): Promise<void> {
     const keys = new Set([

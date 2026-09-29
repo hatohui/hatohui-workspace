@@ -48,8 +48,9 @@ commissions are not purged yet.
 
 ## Known gaps
 
-- Storage release runs after the purge transaction; a crash between them leaves
-  orphaned objects (no retry, since `purgedAt` is set).
+- Discarded files are queued as `STORAGE_DELETE` jobs inside the same
+  transaction that deletes the rows (purge and `remove()` alike), so a crash
+  cannot orphan them; `release()` then deletes eagerly and clears the jobs.
 - Artists cannot yet create private commissions from the workspace UI, so
   that path only gets the settings default.
 
