@@ -1,5 +1,7 @@
 import { CommissionPurgeExecutor } from '@/modules/commission-purge/services/commission-purge.executor';
 
+type TagUpsertArgs = { where: { name: string } };
+
 function build(overrides: Record<string, unknown> = {}) {
   const commission = {
     id: 'c1',
@@ -26,7 +28,9 @@ function build(overrides: Record<string, unknown> = {}) {
     },
     asset: { update: jest.fn() },
     tag: {
-      upsert: jest.fn(({ where }) => ({ id: `tag-${where.name}` })),
+      upsert: jest.fn(({ where }: TagUpsertArgs) => ({
+        id: `tag-${where.name}`,
+      })),
     },
     assetTag: { createMany: jest.fn() },
     comment: { deleteMany: jest.fn() },
@@ -68,9 +72,10 @@ describe('CommissionPurgeExecutor', () => {
       where: { id: 'asset-1' },
       data: { commissionId: 'c1' },
     });
-    expect(
-      db.tag.upsert.mock.calls.map(([arg]) => arg.where.name).sort(),
-    ).toEqual(['bg', 'bust', 'flat']);
+    const tagged = (db.tag.upsert.mock.calls as [TagUpsertArgs][]).map(
+      ([arg]) => arg.where.name,
+    );
+    expect(tagged.sort()).toEqual(['bg', 'bust', 'flat']);
     expect(attachments.queueDeletes).toHaveBeenCalledWith(
       ['url/final.png', 'url/wip.png', 'url/chat.png'],
       [null, 'see url/x.png', 'hi'],
