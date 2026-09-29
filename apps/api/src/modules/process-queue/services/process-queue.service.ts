@@ -26,8 +26,10 @@ export class ProcessQueueService {
     });
   }
 
-  async markSucceeded(id: string): Promise<void> {
-    await this.db.processQueue.delete({ where: { id } }).catch(() => {});
+  async markSucceeded(job: ProcessQueue): Promise<void> {
+    await this.db.processQueue.deleteMany({
+      where: { id: job.id, nextAttemptAt: job.nextAttemptAt },
+    });
   }
 
   async enqueueFailure(

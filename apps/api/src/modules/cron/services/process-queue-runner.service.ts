@@ -19,7 +19,7 @@ export class ProcessQueueRunnerService {
   constructor(
     private readonly queue: ProcessQueueService,
     @Inject(PROCESS_EXECUTORS) private readonly executors: ProcessExecutor[],
-  ) {}
+  ) { }
 
   async run(
     type?: ProcessType,
@@ -37,7 +37,7 @@ export class ProcessQueueRunnerService {
 
       try {
         await executor.execute(job.refId);
-        await this.queue.markSucceeded(job.id);
+        await this.queue.markSucceeded(job);
         succeeded++;
       } catch (err) {
         this.logger.warn(`Retry failed for ${job.type}/${job.refId}: ${err}`);
