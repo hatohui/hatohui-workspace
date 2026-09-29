@@ -36,6 +36,7 @@ export function CommissionExampleGallery({
             <>
               <JustifiedRows
                 items={gallery.items}
+                getKey={(asset) => asset.id}
                 stretchLastRow
                 className={`gap-2 ${COMMISSION_GALLERY_ROW_HEIGHT_CLASS}`}
                 renderItem={(asset) => (

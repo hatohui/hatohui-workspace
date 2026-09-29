@@ -25,6 +25,7 @@ export function ProjectArtworkGrid({
     <div ref={gridRef}>
       <JustifiedRows
         items={artworks}
+        getKey={(artwork) => artwork.assetId ?? artwork.fullUrl}
         className={`gap-2 sm:gap-3 ${GALLERY_ROW_HEIGHT_CLASS}`}
         renderItem={(artwork) => (
           <ProjectArtworkTile
