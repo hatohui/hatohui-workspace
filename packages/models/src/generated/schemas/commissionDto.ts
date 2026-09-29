@@ -35,6 +35,13 @@ export interface CommissionDto {
   paymentStatus: CommissionDtoPaymentStatus;
   /** Whether this commission is hidden from the public /queue */
   isHiddenInQueue: boolean;
+  /** Whether the finished artwork may be posted in the gallery */
+  allowGalleryPost: boolean;
+  /**
+     * Set once the retention purge has run
+     * @nullable
+     */
+  purgedAt: string | null;
   /** @nullable */
   commissionTypeId: string | null;
   /**

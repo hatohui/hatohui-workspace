@@ -17,6 +17,10 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { PriceMode } from '@prisma/client';
+import {
+  MAX_COMMISSION_RETENTION_DAYS,
+  MIN_COMMISSION_RETENTION_DAYS,
+} from '@/modules/commission-purge/commission-purge.constants';
 import { SUPPORTED_CURRENCIES } from '@/modules/commission-pricing/commission-pricing.constants';
 
 export { PriceMode };
@@ -291,6 +295,20 @@ export class CommissionSettingsDto {
 
   @ApiProperty({ type: PaymentMethodEntryDto, isArray: true })
   paymentMethods: PaymentMethodEntryDto[];
+
+  @ApiProperty({
+    example: 30,
+    description: 'Days after completion before the commission is purged',
+  })
+  retentionDays: number;
+
+  @ApiProperty({
+    description: 'Default for the "OK to post in gallery" choice on new orders',
+  })
+  galleryPostDefault: boolean;
+
+  @ApiProperty({ nullable: true, example: 1500 })
+  privateFee: number | null;
 }
 
 export class UpsertCommissionSettingsDto {
@@ -313,6 +331,22 @@ export class UpsertCommissionSettingsDto {
   @ValidateNested({ each: true })
   @Type(() => UpsertPaymentMethodEntryDto)
   paymentMethods: UpsertPaymentMethodEntryDto[];
+
+  @ApiProperty({ example: 30 })
+  @IsInt()
+  @Min(MIN_COMMISSION_RETENTION_DAYS)
+  @Max(MAX_COMMISSION_RETENTION_DAYS)
+  retentionDays: number;
+
+  @ApiProperty()
+  @IsBoolean()
+  galleryPostDefault: boolean;
+
+  @ApiProperty({ required: false, nullable: true, example: 1500 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  privateFee?: number | null;
 }
 
 export class CommissionPricingDto {
@@ -324,6 +358,14 @@ export class CommissionPricingDto {
 
   @ApiProperty({ type: CommissionRushFeeSettingDto, nullable: true })
   rushFee: CommissionRushFeeSettingDto | null;
+
+  @ApiProperty({
+    nullable: true,
+    example: 1500,
+    description:
+      'Surcharge when the client does not allow gallery posting; null when the artist charges none',
+  })
+  privateFee: number | null;
 
   @ApiProperty({ example: 'USD' })
   currency: string;

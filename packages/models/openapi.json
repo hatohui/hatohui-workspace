@@ -1887,7 +1887,8 @@
               "enum": [
                 "ASSET_THUMBNAIL",
                 "NOTIFICATION_EMAIL",
-                "STORAGE_DELETE"
+                "STORAGE_DELETE",
+                "COMMISSION_PURGE"
               ]
             }
           }
@@ -2246,6 +2247,88 @@
         "summary": "Add tags to several assets; tags already on an asset are skipped",
         "tags": [
           "assets"
+        ]
+      }
+    },
+    "/commission-attachments/code/{code}/sign": {
+      "post": {
+        "operationId": "signClientCommissionAttachment",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignImageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedImageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Client uploads an image for a comment; deleted later unless a comment claims it",
+        "tags": [
+          "commission-attachments"
+        ]
+      }
+    },
+    "/commission-attachments/{commissionId}/sign": {
+      "post": {
+        "operationId": "signCommissionAttachment",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignImageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedImageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Artist uploads an image for a comment or update; deleted later unless claimed",
+        "tags": [
+          "commission-attachments"
         ]
       }
     },
@@ -3799,88 +3882,6 @@
         "summary": "A client of yours, with their linked account and their commissions with you",
         "tags": [
           "clients"
-        ]
-      }
-    },
-    "/commission-attachments/code/{code}/sign": {
-      "post": {
-        "operationId": "signClientCommissionAttachment",
-        "parameters": [
-          {
-            "name": "code",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignImageDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SignedImageDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Client uploads an image for a comment; deleted later unless a comment claims it",
-        "tags": [
-          "commission-attachments"
-        ]
-      }
-    },
-    "/commission-attachments/{commissionId}/sign": {
-      "post": {
-        "operationId": "signCommissionAttachment",
-        "parameters": [
-          {
-            "name": "commissionId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SignImageDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SignedImageDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Artist uploads an image for a comment or update; deleted later unless claimed",
-        "tags": [
-          "commission-attachments"
         ]
       }
     },
@@ -6829,7 +6830,8 @@
             "enum": [
               "ASSET_THUMBNAIL",
               "NOTIFICATION_EMAIL",
-              "STORAGE_DELETE"
+              "STORAGE_DELETE",
+              "COMMISSION_PURGE"
             ],
             "nullable": true,
             "example": null
@@ -7267,6 +7269,10 @@
             "default": false,
             "description": "Whether this commission (status, type) should show in the public /queue"
           },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the artist's gallery; defaults to the artist's setting"
+          },
           "clientName": {
             "type": "string",
             "example": "Jane Doe",
@@ -7417,6 +7423,15 @@
             "type": "boolean",
             "description": "Whether this commission is hidden from the public /queue"
           },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the gallery"
+          },
+          "purgedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Set once the retention purge has run"
+          },
           "commissionTypeId": {
             "type": "string",
             "nullable": true
@@ -7547,6 +7562,8 @@
           "deadline",
           "paymentStatus",
           "isHiddenInQueue",
+          "allowGalleryPost",
+          "purgedAt",
           "commissionTypeId",
           "commissionTypeKey",
           "commissionTypeLabel",
@@ -7634,6 +7651,10 @@
             "type": "boolean",
             "default": false,
             "description": "Whether this commission (status, type) should show in the public /queue"
+          },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the artist's gallery; defaults to the artist's setting"
           },
           "clientName": {
             "type": "string",
@@ -8373,6 +8394,15 @@
             "type": "boolean",
             "description": "Whether this commission is hidden from the public /queue"
           },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the gallery"
+          },
+          "purgedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Set once the retention purge has run"
+          },
           "commissionTypeId": {
             "type": "string",
             "nullable": true
@@ -8515,6 +8545,8 @@
           "deadline",
           "paymentStatus",
           "isHiddenInQueue",
+          "allowGalleryPost",
+          "purgedAt",
           "commissionTypeId",
           "commissionTypeKey",
           "commissionTypeLabel",
@@ -8638,11 +8670,11 @@
         "properties": {
           "isHiddenInQueue": {
             "type": "boolean"
+          },
+          "allowGalleryPost": {
+            "type": "boolean"
           }
-        },
-        "required": [
-          "isHiddenInQueue"
-        ]
+        }
       },
       "UpdateCommissionPriorityDto": {
         "type": "object",
@@ -9027,6 +9059,12 @@
               }
             ]
           },
+          "privateFee": {
+            "type": "number",
+            "nullable": true,
+            "example": 1500,
+            "description": "Surcharge when the client does not allow gallery posting; null when the artist charges none"
+          },
           "currency": {
             "type": "string",
             "example": "USD"
@@ -9036,6 +9074,7 @@
           "options",
           "addons",
           "rushFee",
+          "privateFee",
           "currency"
         ]
       },
@@ -9122,13 +9161,30 @@
             "items": {
               "$ref": "#/components/schemas/PaymentMethodEntryDto"
             }
+          },
+          "retentionDays": {
+            "type": "number",
+            "example": 30,
+            "description": "Days after completion before the commission is purged"
+          },
+          "galleryPostDefault": {
+            "type": "boolean",
+            "description": "Default for the \"OK to post in gallery\" choice on new orders"
+          },
+          "privateFee": {
+            "type": "number",
+            "nullable": true,
+            "example": 1500
           }
         },
         "required": [
           "currency",
           "autoAccept",
           "notificationEmail",
-          "paymentMethods"
+          "paymentMethods",
+          "retentionDays",
+          "galleryPostDefault",
+          "privateFee"
         ]
       },
       "UpsertPaymentMethodEntryDto": {
@@ -9189,12 +9245,26 @@
             "items": {
               "$ref": "#/components/schemas/UpsertPaymentMethodEntryDto"
             }
+          },
+          "retentionDays": {
+            "type": "number",
+            "example": 30
+          },
+          "galleryPostDefault": {
+            "type": "boolean"
+          },
+          "privateFee": {
+            "type": "number",
+            "nullable": true,
+            "example": 1500
           }
         },
         "required": [
           "currency",
           "autoAccept",
-          "paymentMethods"
+          "paymentMethods",
+          "retentionDays",
+          "galleryPostDefault"
         ]
       },
       "UpsertCommissionOptionPricingDto": {

@@ -101,6 +101,17 @@ export class CommissionDto {
   })
   isHiddenInQueue: boolean;
 
+  @ApiProperty({
+    description: 'Whether the finished artwork may be posted in the gallery',
+  })
+  allowGalleryPost: boolean;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Set once the retention purge has run',
+  })
+  purgedAt: string | null;
+
   @ApiProperty({ nullable: true })
   commissionTypeId: string | null;
 
@@ -380,6 +391,15 @@ class CommissionRequestBaseDto {
   @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
+
+  @ApiProperty({
+    required: false,
+    description:
+      "Whether the finished artwork may be posted in the artist's gallery; defaults to the artist's setting",
+  })
+  @IsOptional()
+  @IsBoolean()
+  allowGalleryPost?: boolean;
 }
 
 export class SubmitCommissionDto extends CommissionRequestBaseDto {
@@ -563,9 +583,15 @@ export class UpdateCommissionQuoteDto {
 }
 
 export class UpdateCommissionVisibilityDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsBoolean()
-  isHiddenInQueue: boolean;
+  isHiddenInQueue?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  allowGalleryPost?: boolean;
 }
 
 export class DeliverCommissionDto {

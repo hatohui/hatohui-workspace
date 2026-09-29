@@ -5,6 +5,7 @@ import { CommissionOpeningsModule } from '@/modules/commission-openings/commissi
 import { CommissionPricingModule } from '@/modules/commission-pricing/commission-pricing.module';
 import { ClientsModule } from '@/modules/clients/clients.module';
 import { CommissionAttachmentsModule } from '@/modules/commission-attachments/commission-attachments.module';
+import { CommissionPurgeModule } from '@/modules/commission-purge/commission-purge.module';
 import { CommissionsController } from '@/modules/commissions/commissions.controller';
 import { CommissionsService } from '@/modules/commissions/services/commissions.service';
 
@@ -16,6 +17,7 @@ import { CommissionsService } from '@/modules/commissions/services/commissions.s
     CommissionPricingModule,
     ClientsModule,
     CommissionAttachmentsModule,
+    CommissionPurgeModule,
   ],
   controllers: [CommissionsController],
   providers: [CommissionsService],
