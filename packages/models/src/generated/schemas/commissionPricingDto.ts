@@ -19,5 +19,7 @@ export interface CommissionPricingDto {
      * @nullable
      */
   privateFee: number | null;
+  /** Default for the order form's "OK to post in gallery" choice */
+  galleryPostDefault: boolean;
   currency: string;
 }

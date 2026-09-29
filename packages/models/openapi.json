@@ -7968,6 +7968,9 @@
           "isHiddenInQueue": {
             "type": "boolean"
           },
+          "allowGalleryPost": {
+            "type": "boolean"
+          },
           "contactPlatform": {
             "type": "string",
             "nullable": true
@@ -8025,6 +8028,7 @@
           "passcodeSource",
           "canSetPasscode",
           "isHiddenInQueue",
+          "allowGalleryPost",
           "contactPlatform",
           "contactValue",
           "deliveredAt",
@@ -8143,6 +8147,9 @@
           "isHiddenInQueue": {
             "type": "boolean"
           },
+          "allowGalleryPost": {
+            "type": "boolean"
+          },
           "contactPlatform": {
             "type": "string",
             "nullable": true
@@ -8180,6 +8187,7 @@
           "passcodeSource",
           "canSetPasscode",
           "isHiddenInQueue",
+          "allowGalleryPost",
           "contactPlatform",
           "contactValue",
           "deliveredAt",
@@ -8191,6 +8199,9 @@
         "type": "object",
         "properties": {
           "isHiddenInQueue": {
+            "type": "boolean"
+          },
+          "allowGalleryPost": {
             "type": "boolean"
           },
           "contactPlatform": {
@@ -9065,6 +9076,10 @@
             "example": 1500,
             "description": "Surcharge when the client does not allow gallery posting; null when the artist charges none"
           },
+          "galleryPostDefault": {
+            "type": "boolean",
+            "description": "Default for the order form's \"OK to post in gallery\" choice"
+          },
           "currency": {
             "type": "string",
             "example": "USD"
@@ -9075,6 +9090,7 @@
           "addons",
           "rushFee",
           "privateFee",
+          "galleryPostDefault",
           "currency"
         ]
       },

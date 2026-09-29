@@ -11,6 +11,7 @@ import { CommissionDeliverPanel } from './CommissionDeliverPanel';
 import { CommissionProgressTimeline } from './CommissionProgressTimeline';
 import { CommissionAdminNotes } from './CommissionAdminNotes';
 import { CommissionHistoryList } from './CommissionHistoryList';
+import { CommissionGalleryToggle } from './CommissionGalleryToggle';
 import { CommissionVisibilityToggle } from './CommissionVisibilityToggle';
 import { CommissionPasscodePanel } from './CommissionPasscodePanel';
 
@@ -38,10 +39,16 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
             {commission.clientName} · {commission.clientEmail}
           </p>
         </div>
-        <CommissionVisibilityToggle
-          isHiddenInQueue={commission.isHiddenInQueue}
-          onChange={detail.setVisibility}
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          <CommissionGalleryToggle
+            allowGalleryPost={commission.allowGalleryPost}
+            onChange={detail.setAllowGalleryPost}
+          />
+          <CommissionVisibilityToggle
+            isHiddenInQueue={commission.isHiddenInQueue}
+            onChange={detail.setVisibility}
+          />
+        </div>
       </div>
 
       <RichTextView value={commission.idea} />

@@ -39,6 +39,7 @@ export interface CommissionPublicDetailDto {
   /** Whether the client may set a passcode yet (once accepted) */
   canSetPasscode: boolean;
   isHiddenInQueue: boolean;
+  allowGalleryPost: boolean;
   /** @nullable */
   contactPlatform: string | null;
   /** @nullable */

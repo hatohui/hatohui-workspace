@@ -259,7 +259,9 @@
       "contact": "Cách liên hệ bạn",
       "contactHint": "Nơi họa sĩ liên hệ với bạn về đơn này.",
       "contactSaved": "Đã lưu. Họa sĩ sẽ dùng thông tin này từ bây giờ.",
-      "contactValuePlaceholder": "Tên người dùng của bạn"
+      "contactValuePlaceholder": "Tên người dùng của bạn",
+      "galleryPost": "Đăng lên thư viện",
+      "galleryPostHint": "Cho phép họa sĩ đăng tác phẩm hoàn thành lên thư viện. Tên và thông tin của bạn không bao giờ được hiển thị."
     }
   },
   "commission": {
@@ -339,7 +341,11 @@
         "ideaHint": "Mô tả tác phẩm - nhân vật, dáng, không khí, bất cứ điều gì quan trọng.",
         "request": "Yêu cầu của bạn",
         "requestHint": "Bạn là ai, và bạn muốn vẽ gì."
-      }
+      },
+      "allowGalleryPostLabel": "Cho phép đăng tác phẩm hoàn thành lên thư viện của họa sĩ",
+      "allowGalleryPostTooltip": "Chỉ ảnh hoàn thành được giữ lại sau khi commission kết thúc. Tin nhắn và tệp của bạn sẽ bị xóa.",
+      "allowGalleryPostFeeTooltip": "Họa sĩ có thể thu phí commission riêng tư nếu bạn không cho phép đăng lên thư viện.",
+      "privateFeeIncluded": "đã gồm phí commission riêng tư +{{amount}}"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -650,6 +656,10 @@
           "percent": "Phần trăm",
           "addRow": "Thêm add-on"
         }
+      },
+      "gallery": {
+        "allow": "Cho phép đăng lên thư viện",
+        "disallow": "Không cho phép đăng lên thư viện"
       }
     },
     "closed": {

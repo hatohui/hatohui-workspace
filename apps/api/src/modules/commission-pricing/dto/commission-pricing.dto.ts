@@ -367,6 +367,11 @@ export class CommissionPricingDto {
   })
   privateFee: number | null;
 
+  @ApiProperty({
+    description: 'Default for the order form\'s "OK to post in gallery" choice',
+  })
+  galleryPostDefault: boolean;
+
   @ApiProperty({ example: 'USD' })
   currency: string;
 }

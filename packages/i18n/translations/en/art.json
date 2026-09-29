@@ -269,7 +269,9 @@
       "contact": "How to reach you",
       "contactHint": "Where the artist should contact you about this commission.",
       "contactSaved": "Saved. The artist will use this from now on.",
-      "contactValuePlaceholder": "Your handle or username"
+      "contactValuePlaceholder": "Your handle or username",
+      "galleryPost": "Gallery posting",
+      "galleryPostHint": "Let the artist post the finished artwork in their gallery. Your name and details are never shown."
     }
   },
   "commission": {
@@ -349,7 +351,11 @@
         "ideaHint": "Describe the piece - characters, pose, mood, anything that matters.",
         "request": "Your request",
         "requestHint": "Who you are, and what you'd like made."
-      }
+      },
+      "allowGalleryPostLabel": "OK to post the finished artwork in the artist's gallery",
+      "allowGalleryPostTooltip": "Only the finished image is kept after the commission ends. Your chat and files are deleted.",
+      "allowGalleryPostFeeTooltip": "The artist charges a private commission fee if you do not allow gallery posting.",
+      "privateFeeIncluded": "includes +{{amount}} private commission fee"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -660,6 +666,10 @@
           "percent": "Percent",
           "addRow": "Add add-on"
         }
+      },
+      "gallery": {
+        "allow": "Allow gallery post",
+        "disallow": "Disallow gallery post"
       }
     },
     "closed": {

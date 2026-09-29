@@ -42,17 +42,20 @@ export class CommissionPricingService {
   ) {}
 
   async getActive(artistId: string): Promise<CommissionPricingDto> {
-    const [options, addons, rushFee, currency, privateFee] = await Promise.all([
-      this.db.commissionOption.findMany({
-        where: { artistId, active: true, minPrice: { gt: 0 } },
-      }),
-      this.db.commissionAddon.findMany({ where: { artistId, active: true } }),
-      this.getRushFee(artistId),
-      this.getCurrency(artistId),
-      this.getPrivateFee(artistId),
-    ]);
+    const [options, addons, rushFee, currency, privateFee, galleryPostDefault] =
+      await Promise.all([
+        this.db.commissionOption.findMany({
+          where: { artistId, active: true, minPrice: { gt: 0 } },
+        }),
+        this.db.commissionAddon.findMany({ where: { artistId, active: true } }),
+        this.getRushFee(artistId),
+        this.getCurrency(artistId),
+        this.getPrivateFee(artistId),
+        this.getGalleryPostDefault(artistId),
+      ]);
     return {
       privateFee,
+      galleryPostDefault,
       options: options.map(toOptionDto),
       addons: addons.map(toAddonDto),
       rushFee,
@@ -75,6 +78,16 @@ export class CommissionPricingService {
       setting.type,
     );
     return value ?? DEFAULT_CURRENCY;
+  }
+
+  async getGalleryPostDefault(artistId: string): Promise<boolean> {
+    const setting = USER_SETTING_TYPES.commissionGalleryPostDefault;
+    const value = await this.userSettings.get(
+      artistId,
+      setting.scope,
+      setting.type,
+    );
+    return value !== 'false';
   }
 
   async getPrivateFee(artistId: string): Promise<number | null> {

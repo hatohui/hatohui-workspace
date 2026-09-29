@@ -8,6 +8,7 @@
 
 export interface UpdateClientPreferencesDto {
   isHiddenInQueue?: boolean;
+  allowGalleryPost?: boolean;
   /** A SocialPlatform name, or 'email' */
   contactPlatform?: string;
   /** Handle or address on contactPlatform; ignored for 'email' */

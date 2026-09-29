@@ -260,7 +260,9 @@
       "contact": "連絡方法",
       "contactHint": "この依頼についてアーティストが連絡する先です。",
       "contactSaved": "保存しました。今後はこちらに連絡します。",
-      "contactValuePlaceholder": "ユーザー名・ID"
+      "contactValuePlaceholder": "ユーザー名・ID",
+      "galleryPost": "ギャラリー掲載",
+      "galleryPostHint": "完成作品をアーティストのギャラリーに掲載することを許可します。お名前や詳細は表示されません。"
     }
   },
   "commission": {
@@ -340,7 +342,11 @@
         "ideaHint": "キャラクター、ポーズ、雰囲気など、大切なことを書いてください。",
         "request": "リクエスト内容",
         "requestHint": "あなたのことと、描いてほしいものを教えてください。"
-      }
+      },
+      "allowGalleryPostLabel": "完成した作品をアーティストのギャラリーに掲載してもよい",
+      "allowGalleryPostTooltip": "依頼終了後に残るのは完成画像のみです。チャットとファイルは削除されます。",
+      "allowGalleryPostFeeTooltip": "ギャラリー掲載を許可しない場合、アーティストが非公開依頼料を請求することがあります。",
+      "privateFeeIncluded": "非公開依頼料 +{{amount}} を含む"
     },
     "preferredContactMethod": {
       "EMAIL": "メール",
@@ -649,6 +655,10 @@
           "percent": "割合",
           "addRow": "追加オプションを追加"
         }
+      },
+      "gallery": {
+        "allow": "ギャラリー掲載を許可",
+        "disallow": "ギャラリー掲載を不許可"
       }
     },
     "closed": {

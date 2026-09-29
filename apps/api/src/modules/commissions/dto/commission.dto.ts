@@ -289,6 +289,9 @@ export class CommissionPublicDto {
   @ApiProperty()
   isHiddenInQueue: boolean;
 
+  @ApiProperty()
+  allowGalleryPost: boolean;
+
   @ApiProperty({ nullable: true, type: String })
   contactPlatform: string | null;
 

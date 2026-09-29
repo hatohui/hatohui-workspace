@@ -50,5 +50,13 @@ commissions are not purged yet.
 
 - Storage release runs after the purge transaction; a crash between them leaves
   orphaned objects (no retry, since `purgedAt` is set).
-- Frontend: only the settings form is wired. The order-form checkbox, workspace
-  toggle and queue-item toggle still need UI.
+- Artists cannot yet create private commissions from the workspace UI, so
+  that path only gets the settings default.
+
+## UI
+
+- Order form: "OK to post in gallery" checkbox; the estimate shows the private
+  fee when it is unchecked.
+- Order settings (client, via access code): gallery consent switch.
+- Commission detail (artist): allow/disallow gallery post button.
+- Settings: retention days, gallery default, private fee.

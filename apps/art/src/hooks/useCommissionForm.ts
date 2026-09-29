@@ -31,6 +31,7 @@ export interface CommissionFormState {
   contactValue: string;
   isNewContact: boolean;
   isPublic: boolean;
+  allowGalleryPost: boolean | null;
   acceptedTerms: boolean;
   referenceLinks: string[];
 }
@@ -49,6 +50,7 @@ const INITIAL_STATE: CommissionFormState = {
   contactValue: '',
   isNewContact: false,
   isPublic: true,
+  allowGalleryPost: null,
   acceptedTerms: false,
   referenceLinks: [],
 };
@@ -142,6 +144,7 @@ export function useCommissionForm(artistId: string) {
     state.optionKey || undefined,
     state.addonKeys,
     state.deadline || undefined,
+    state.allowGalleryPost,
   );
 
   const isIdeaEmpty = isTiptapDocEmpty(state.idea);
@@ -207,6 +210,7 @@ export function useCommissionForm(artistId: string) {
         referenceAssets: uploaded.map((asset) => asset.key),
         referenceUrls: state.referenceLinks,
         isPublic: state.isPublic,
+        allowGalleryPost: pricing.allowGalleryPost,
       },
     });
   };

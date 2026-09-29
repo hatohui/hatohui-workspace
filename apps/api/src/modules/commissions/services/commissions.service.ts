@@ -348,6 +348,12 @@ export class CommissionsService {
   ): Promise<CommissionPublicDto> {
     const { id } = await this.findByAccessCodeOrThrow(code);
     const isEmail = dto.contactPlatform === EMAIL_CONTACT_PLATFORM;
+    if (dto.allowGalleryPost !== undefined) {
+      await this.db.commission.update({
+        where: { id },
+        data: { allowGalleryPost: dto.allowGalleryPost },
+      });
+    }
     await this.db.commissionDetail.update({
       where: { commissionId: id },
       data: {
@@ -1088,6 +1094,7 @@ function toPublicDto(commission: CommissionWithRelations): CommissionPublicDto {
     passcodeSource: commission.passcodeSource,
     canSetPasscode: CLIENT_PASSCODE_STATUSES.includes(commission.status),
     isHiddenInQueue: detail.isHiddenInQueue,
+    allowGalleryPost: commission.allowGalleryPost,
     contactPlatform: detail.contactPlatform,
     contactValue: detail.contactValue,
     deliveredAt: detail.deliveredAt?.toISOString() ?? null,
