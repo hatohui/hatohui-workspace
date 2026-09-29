@@ -25,12 +25,8 @@ export function CommissionDetailsPanel({
       title={t('commission.form.panels.details')}
       description={t('commission.form.panels.detailsHint')}
     >
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
-        <CommissionTypeFields
-          form={form}
-          artistId={artistId}
-          validation={validation}
-        />
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+        <CommissionTypeFields form={form} validation={validation} />
         <CommissionExampleGallery form={form} artistId={artistId} />
       </div>
     </CommissionFormPanel>

@@ -275,7 +275,6 @@
       "optionLabel": "Rendering option",
       "optionPlaceholder": "Choose an option",
       "addonsLabel": "Add-ons",
-      "examplesLabel": "Examples",
       "estimateLabel": "Calculated estimate",
       "rushFeeIncluded": "includes +{{amount}} rush fee, deadline under {{days}} days",
       "rushFeeHint": "Deadlines under {{days}} days add a {{amount}} rush fee.",

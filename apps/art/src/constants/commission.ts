@@ -132,7 +132,7 @@ export const EMPTY_VALUE = '-';
 
 export const COMMISSION_GALLERY_PAGE_SIZE = 12;
 export const COMMISSION_GALLERY_ROW_HEIGHT_CLASS =
-  '[--gallery-row:160px] xl:[--gallery-row:200px]';
+  '[--gallery-row:120px] md:[--gallery-row:160px] xl:[--gallery-row:200px]';
 
 export const LEADING_AT_PATTERN = /^@/;
 

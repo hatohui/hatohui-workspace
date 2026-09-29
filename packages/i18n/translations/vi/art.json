@@ -265,7 +265,6 @@
       "optionLabel": "Kiểu vẽ",
       "optionPlaceholder": "Chọn kiểu",
       "addonsLabel": "Tùy chọn thêm",
-      "examplesLabel": "Ví dụ",
       "estimateLabel": "Ước tính tự động",
       "rushFeeIncluded": "đã gồm phụ phí gấp +{{amount}}, thời hạn dưới {{days}} ngày",
       "rushFeeHint": "Thời hạn dưới {{days}} ngày sẽ cộng thêm phí gấp {{amount}}.",
