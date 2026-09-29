@@ -39,6 +39,4 @@ export interface SubmitCommissionDto {
   contactPlatform?: string;
   /** Handle or address on contactPlatform; ignored for 'email' */
   contactValue?: string;
-  /** Passcode the client picks to open this from the queue */
-  passcode?: string;
 }

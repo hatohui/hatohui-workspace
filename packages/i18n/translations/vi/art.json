@@ -170,17 +170,15 @@
   },
   "queue": {
     "title": "Hàng đợi",
-    "subtitle": "Các commission theo thứ tự sẽ được thực hiện.",
     "empty": "Hiện chưa có gì trong hàng đợi.",
-    "hint_one": "Có {{count}} commission đang chờ. Nhấn vào của bạn để mở bằng mật mã.",
-    "hint_other": "Có {{count}} commission đang chờ. Nhấn vào của bạn để mở bằng mật mã.",
+    "hint_one": "{{count}} đơn đang chờ. Chạm vào đơn của bạn để mở.",
+    "hint_other": "{{count}} đơn đang chờ. Chạm vào đơn của bạn để mở.",
     "since": "từ {{date}}",
     "locked": "Được bảo vệ bằng mật mã",
     "stageProgress": "Giai đoạn {{current}} / {{total}}",
     "stage": {
       "WAITING": "Đang chờ",
       "SKETCHING": "Đang phác thảo",
-      "SKETCH_APPROVED": "Đã duyệt phác thảo",
       "IN_PROGRESS": "Đang thực hiện"
     },
     "passcode": {
@@ -192,19 +190,19 @@
     "unlock": {
       "title": "#{{position}} · {{type}}",
       "description": "Nhập mật mã của commission này để xem chi tiết.",
-      "noPasscode": "Commission này chưa có mật mã.",
-      "noPasscodeHelp": "Hãy hỏi họa sĩ mật mã, hoặc mở đơn bằng mã riêng trong email của bạn.",
-      "gotIt": "Đã hiểu",
       "open": "Mở",
-      "opening": "Đang mở…"
+      "opening": "Đang mở…",
+      "titlePosition": "#{{position}}",
+      "order": "Đơn của bạn"
     },
     "findMine": {
       "title": "Không tìm thấy của bạn?",
-      "subtitle": "Tra cứu bằng email và mật mã, hoặc dùng mã đơn riêng của bạn.",
-      "emailTab": "Email & mật mã",
+      "subtitle": "Tra cứu bằng email, hoặc dùng mã đơn riêng của bạn.",
+      "emailTab": "Email",
       "codeTab": "Mã đơn",
       "email": "Email",
-      "codeHint": "Mã nằm trong đường link ở email xác nhận đơn."
+      "codeHint": "Mã nằm trong đường link ở email xác nhận đơn.",
+      "noMatches": "Không tìm thấy đơn nào với email này."
     }
   },
   "orders": {
@@ -214,10 +212,6 @@
     "codeGo": "Xem",
     "deliverables": "Tác phẩm hoàn thiện",
     "deliveredAt": "Đã giao vào {{date}}",
-    "existingReferences": "Ảnh tham khảo đã tải lên",
-    "addLinkLabel": "Hoặc dán liên kết",
-    "addLinkPlaceholder": "https://...",
-    "addLink": "Thêm liên kết",
     "backToQueue": "Hàng đợi",
     "greeting": "Chào {{name}}, đây là commission của bạn",
     "position": "Thứ {{position}} / {{total}} trong hàng đợi",
@@ -228,12 +222,9 @@
     },
     "tabs": {
       "updates": "Cập nhật",
-      "messages": "Tin nhắn",
-      "references": "Tham khảo",
-      "request": "Yêu cầu của bạn"
+      "settings": "Cài đặt"
     },
     "noUpdates": "Chưa có cập nhật. Bản phác và bản xem trước sẽ hiện ở đây.",
-    "noMessages": "Chưa có tin nhắn.",
     "passcode": {
       "title": "Mật mã hàng đợi",
       "saved": "Đã lưu mật mã. Dùng nó để mở từ hàng đợi.",
@@ -248,6 +239,27 @@
       "newLabel": "Mật mã mới",
       "save": "Lưu",
       "hint": "Ít nhất {{min}} ký tự."
+    },
+    "requestPost": "Đã gửi yêu cầu",
+    "approval": {
+      "prompt": "Họa sĩ đang nhờ bạn duyệt bản phác này.",
+      "changesHint": "Muốn chỉnh sửa? Hãy để lại bình luận.",
+      "approve": "Duyệt bản phác",
+      "approving": "Đang duyệt…",
+      "approved": "Bạn đã duyệt bản phác này ngày {{date}}."
+    },
+    "addLink": "Thêm liên kết",
+    "addLinkLabel": "Hoặc dán liên kết",
+    "addLinkPlaceholder": "https://...",
+    "newestFirst": "Mới nhất trước",
+    "oldestFirst": "Cũ nhất trước",
+    "settings": {
+      "publicQueue": "Hiện trong hàng chờ công khai",
+      "publicQueueHint": "Người khác chỉ thấy loại và giai đoạn, không thấy tên hay chi tiết của bạn.",
+      "contact": "Cách liên hệ bạn",
+      "contactHint": "Nơi họa sĩ liên hệ với bạn về đơn này.",
+      "contactSaved": "Đã lưu. Họa sĩ sẽ dùng thông tin này từ bây giờ.",
+      "contactValuePlaceholder": "Tên người dùng của bạn"
     }
   },
   "commission": {
@@ -286,8 +298,7 @@
         "contact": "Để cập nhật tiến độ và hỏi đáp.",
         "contactValue": "Tên người dùng hoặc đường dẫn hồ sơ.",
         "references": "Bảng nhân vật, trang phục, dáng, bất cứ thứ gì hữu ích.",
-        "links": "Nhấn Enter để thêm từng đường dẫn.",
-        "passcode": "Giúp bạn mở đơn này từ hàng đợi công khai."
+        "links": "Nhấn Enter để thêm từng đường dẫn."
       },
       "placeholders": {
         "name": "vd: Mira Tanaka",
@@ -301,9 +312,7 @@
         "required": "Trường này là bắt buộc.",
         "ideaRequired": "Hãy kể một chút về thứ bạn muốn vẽ.",
         "acceptTerms": "Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục.",
-        "deadlineTooSoon": "Hãy chọn ngày cách hôm nay ít nhất {{count}} ngày.",
-        "passcodeTooShort_one": "Dùng ít nhất {{count}} ký tự.",
-        "passcodeTooShort_other": "Dùng ít nhất {{count}} ký tự."
+        "deadlineTooSoon": "Hãy chọn ngày cách hôm nay ít nhất {{count}} ngày."
       },
       "emailMissing": "Danh tính này chưa có email. Hãy thêm email để mình có thể liên hệ với bạn.",
       "submitFailed": "Không thể gửi yêu cầu. Vui lòng kiểm tra thông tin và thử lại.",
@@ -330,8 +339,7 @@
         "ideaHint": "Mô tả tác phẩm - nhân vật, dáng, không khí, bất cứ điều gì quan trọng.",
         "request": "Yêu cầu của bạn",
         "requestHint": "Bạn là ai, và bạn muốn vẽ gì."
-      },
-      "passcodeLabel": "Mật mã hàng đợi (không bắt buộc)"
+      }
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -508,7 +516,11 @@
         "titlePlaceholder": "Cập nhật lần này về gì? (tùy chọn)",
         "imagesLabel": "Hình ảnh",
         "markFinal": "Đây là tác phẩm hoàn thiện",
-        "post": "Đăng"
+        "post": "Đăng",
+        "requestApproval": "Nhờ khách duyệt",
+        "awaitingApproval": "Đang chờ duyệt",
+        "approvedByClient": "Khách đã duyệt",
+        "descriptionPlaceholder": "Mô tả cập nhật này… Hỗ trợ Markdown, có thể dán hoặc kéo thả ảnh."
       },
       "visibility": {
         "show": "Hiển thị công khai",
@@ -909,6 +921,22 @@
     "zoomOut": "Thu nhỏ",
     "reset": "Đặt lại thu phóng",
     "close": "Đóng",
-    "toggleCaption": "Hiện hoặc ẩn chi tiết"
+    "toggleCaption": "Hiện hoặc ẩn chi tiết",
+    "image": "Ảnh"
+  },
+  "comments": {
+    "you": "Bạn",
+    "placeholder": "Viết bình luận…",
+    "send": "Bình luận",
+    "author": {
+      "ARTIST": "Họa sĩ",
+      "CLIENT": "Khách"
+    },
+    "new": "Mới",
+    "seen": "Đã xem",
+    "notSeen": "Chưa xem",
+    "attach": "Đính kèm ảnh",
+    "removeAttachment": "Xóa ảnh",
+    "sendFailed": "Không gửi được. Hãy kiểm tra ảnh và thử lại."
   }
 }

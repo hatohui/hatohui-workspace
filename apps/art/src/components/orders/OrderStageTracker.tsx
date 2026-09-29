@@ -14,7 +14,7 @@ export function OrderStageTracker({
   const { t } = useTranslation('art');
 
   return (
-    <ol className="grid grid-cols-4 gap-2 rounded-xl border border-border bg-card p-4">
+    <ol className="grid auto-cols-fr grid-flow-col gap-2 rounded-xl border border-border bg-card p-4">
       {QUEUE_STAGE_ORDER.map((stage, index) => {
         const isDone = index < placement.stageIndex;
         const isCurrent = index === placement.stageIndex;

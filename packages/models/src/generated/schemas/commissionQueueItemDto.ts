@@ -25,5 +25,10 @@ export interface CommissionQueueItemDto {
   commissionTypeLabel: string | null;
   /** Whether a passcode can open this item */
   isUnlockable: boolean;
+  /**
+     * Order access code, given only when no passcode is set
+     * @nullable
+     */
+  accessCode: string | null;
   queuedAt: string;
 }

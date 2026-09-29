@@ -10,27 +10,26 @@ import {
   hashPasscode,
   verifyPasscode,
 } from '@/common/utils/passcode';
-import { QUEUE_STATUSES } from '@/modules/commissions/commissions.constants';
 import {
   CommissionAccessMatchDto,
   CommissionPasscodeDto,
-  PasscodeLookupDto,
+  EmailLookupDto,
   UnlockCommissionDto,
   UnlockedCommissionDto,
 } from '@/modules/commission-access/dto/commission-access.dto';
-import { WRONG_PASSCODE_MESSAGE } from '@/modules/commission-access/commission-access.constants';
+import {
+  PASSCODE_NOT_YET_ALLOWED_MESSAGE,
+  WRONG_PASSCODE_MESSAGE,
+} from '@/modules/commission-access/commission-access.constants';
+import { CLIENT_PASSCODE_STATUSES } from '@/modules/commissions/commissions.constants';
 
 @Injectable()
 export class CommissionAccessService {
   constructor(private readonly db: Database) {}
 
   async unlock(dto: UnlockCommissionDto): Promise<UnlockedCommissionDto> {
-    const commission = await this.db.commission.findFirst({
-      where: {
-        id: dto.commissionId,
-        status: { in: QUEUE_STATUSES },
-        detail: { isHiddenInQueue: false },
-      },
+    const commission = await this.db.commission.findUnique({
+      where: { id: dto.commissionId },
     });
     if (!commission || !(await this.matches(commission, dto.passcode))) {
       throw new ForbiddenException(WRONG_PASSCODE_MESSAGE);
@@ -38,26 +37,20 @@ export class CommissionAccessService {
     return { accessCode: commission.accessCode };
   }
 
-  async lookup(dto: PasscodeLookupDto): Promise<CommissionAccessMatchDto[]> {
+  async lookup(dto: EmailLookupDto): Promise<CommissionAccessMatchDto[]> {
     const commissions = await this.db.commission.findMany({
       where: {
         artistId: dto.artistId,
         client: { email: { equals: dto.email.trim(), mode: 'insensitive' } },
-        passcodeHash: { not: null },
       },
       include: { detail: { include: { commissionType: true } } },
       orderBy: { createdAt: 'desc' },
     });
-    const verified = await Promise.all(
-      commissions.map((commission) => this.matches(commission, dto.passcode)),
-    );
-    const matches = commissions.filter((_, index) => verified[index]);
-    if (matches.length === 0) {
-      throw new ForbiddenException(WRONG_PASSCODE_MESSAGE);
-    }
 
-    return matches.map((commission) => ({
-      accessCode: commission.accessCode,
+    return commissions.map((commission) => ({
+      id: commission.id,
+      accessCode: commission.passcodeHash ? null : commission.accessCode,
+      requiresPasscode: commission.passcodeHash !== null,
       status: commission.status,
       commissionTypeKey: commission.detail?.commissionType?.key ?? null,
       commissionTypeLabel: commission.detail?.commissionType?.label ?? null,
@@ -109,6 +102,9 @@ export class CommissionAccessService {
       where: { accessCode },
     });
     if (!existing) throw new NotFoundException('Commission not found');
+    if (!CLIENT_PASSCODE_STATUSES.includes(existing.status)) {
+      throw new ForbiddenException(PASSCODE_NOT_YET_ALLOWED_MESSAGE);
+    }
     const commission = await this.store(
       { accessCode },
       passcode,

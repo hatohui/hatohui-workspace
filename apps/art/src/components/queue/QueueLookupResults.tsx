@@ -1,7 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Lock } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { useCommissionAccessLookup } from '@/hooks/useCommissionAccessLookup';
 import { useCommissionFormatters } from '@/hooks/useCommissionFormatters';
@@ -14,15 +13,16 @@ export function QueueLookupResults({
   const { t } = useTranslation('art');
   const format = useCommissionFormatters();
 
-  if (lookup.matches.length < 2) return null;
+  if (lookup.matches.length === 0) return null;
 
   return (
     <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border">
       {lookup.matches.map((match) => (
-        <li key={match.accessCode}>
-          <Link
-            href={lookup.orderHref(match.accessCode)}
-            className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-card-hover"
+        <li key={match.id}>
+          <button
+            type="button"
+            onClick={() => lookup.openMatch(match)}
+            className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-card-hover focus-visible:bg-card-hover focus-visible:outline-none"
           >
             <span className="min-w-0 flex-1">
               <span className="block truncate font-medium">
@@ -37,11 +37,17 @@ export function QueueLookupResults({
                 {format.date(match.createdAt)}
               </span>
             </span>
+            {match.requiresPasscode && (
+              <Lock
+                className="size-4 shrink-0 text-muted-foreground"
+                aria-label={t('queue.locked')}
+              />
+            )}
             <ChevronRight
               className="size-4 text-muted-foreground"
               aria-hidden
             />
-          </Link>
+          </button>
         </li>
       ))}
     </ul>

@@ -8,7 +8,13 @@
 import type { CommissionAccessMatchDtoStatus } from './commissionAccessMatchDtoStatus';
 
 export interface CommissionAccessMatchDto {
-  accessCode: string;
+  id: string;
+  /**
+     * Null when the order is passcode protected
+     * @nullable
+     */
+  accessCode: string | null;
+  requiresPasscode: boolean;
   status: CommissionAccessMatchDtoStatus;
   /** @nullable */
   commissionTypeKey: string | null;

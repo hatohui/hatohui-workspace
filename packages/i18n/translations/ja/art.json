@@ -171,17 +171,15 @@
   },
   "queue": {
     "title": "キュー",
-    "subtitle": "制作する順番に並んだ依頼です。",
     "empty": "現在キューには何もありません。",
-    "hint_one": "{{count}}件の依頼が並んでいます。自分の依頼をタップしてパスコードで開いてください。",
-    "hint_other": "{{count}}件の依頼が並んでいます。自分の依頼をタップしてパスコードで開いてください。",
+    "hint_one": "{{count}}件の依頼が待機中です。自分の依頼をタップして開けます。",
+    "hint_other": "{{count}}件の依頼が待機中です。自分の依頼をタップして開けます。",
     "since": "{{date}}から",
     "locked": "パスコードで保護",
     "stageProgress": "段階 {{current}} / {{total}}",
     "stage": {
       "WAITING": "順番待ち",
       "SKETCHING": "ラフ制作中",
-      "SKETCH_APPROVED": "ラフ確認済み",
       "IN_PROGRESS": "制作中"
     },
     "passcode": {
@@ -193,19 +191,19 @@
     "unlock": {
       "title": "#{{position}} · {{type}}",
       "description": "この依頼のパスコードを入力すると詳細を確認できます。",
-      "noPasscode": "この依頼にはまだパスコードがありません。",
-      "noPasscodeHelp": "アーティストにパスコードを依頼するか、メールに記載された注文コードで開いてください。",
-      "gotIt": "わかりました",
       "open": "開く",
-      "opening": "開いています…"
+      "opening": "開いています…",
+      "titlePosition": "#{{position}}",
+      "order": "あなたの注文"
     },
     "findMine": {
       "title": "自分の依頼が見つからない場合",
-      "subtitle": "メールアドレスとパスコード、または注文コードで検索できます。",
-      "emailTab": "メールとパスコード",
+      "subtitle": "メールアドレス、または注文コードで検索できます。",
+      "emailTab": "メールアドレス",
       "codeTab": "注文コード",
       "email": "メールアドレス",
-      "codeHint": "コードは注文メールのリンクに含まれています。"
+      "codeHint": "コードは注文メールのリンクに含まれています。",
+      "noMatches": "このメールアドレスの注文は見つかりませんでした。"
     }
   },
   "orders": {
@@ -215,10 +213,6 @@
     "codeGo": "表示",
     "deliverables": "完成イラスト",
     "deliveredAt": "{{date}} に納品済み",
-    "existingReferences": "アップロード済みの参考画像",
-    "addLinkLabel": "またはリンクを貼り付け",
-    "addLinkPlaceholder": "https://...",
-    "addLink": "リンクを追加",
     "backToQueue": "キュー",
     "greeting": "{{name}}さん、あなたの依頼です",
     "position": "キューの{{total}}件中{{position}}番目",
@@ -229,12 +223,9 @@
     },
     "tabs": {
       "updates": "進捗",
-      "messages": "メッセージ",
-      "references": "資料",
-      "request": "依頼内容"
+      "settings": "設定"
     },
     "noUpdates": "まだ進捗はありません。ラフやプレビューはここに表示されます。",
-    "noMessages": "まだメッセージはありません。",
     "passcode": {
       "title": "キューのパスコード",
       "saved": "パスコードを保存しました。キューから開くときに使えます。",
@@ -249,6 +240,27 @@
       "newLabel": "新しいパスコード",
       "save": "保存",
       "hint": "{{min}}文字以上。"
+    },
+    "requestPost": "依頼を送信しました",
+    "approval": {
+      "prompt": "アーティストがこのラフの承認をお願いしています。",
+      "changesHint": "修正したい場合はコメントを残してください。",
+      "approve": "ラフを承認",
+      "approving": "承認中…",
+      "approved": "{{date}}にこのラフを承認しました。"
+    },
+    "addLink": "リンクを追加",
+    "addLinkLabel": "またはリンクを貼り付け",
+    "addLinkPlaceholder": "https://...",
+    "newestFirst": "新しい順",
+    "oldestFirst": "古い順",
+    "settings": {
+      "publicQueue": "公開キューに表示",
+      "publicQueueHint": "他の人に見えるのは種類と進捗だけで、名前や詳細は表示されません。",
+      "contact": "連絡方法",
+      "contactHint": "この依頼についてアーティストが連絡する先です。",
+      "contactSaved": "保存しました。今後はこちらに連絡します。",
+      "contactValuePlaceholder": "ユーザー名・ID"
     }
   },
   "commission": {
@@ -287,8 +299,7 @@
         "contact": "進捗や質問の連絡に使います。",
         "contactValue": "ユーザー名またはプロフィールのリンク。",
         "references": "キャラクターシート、衣装、ポーズなど、参考になるものなら何でも。",
-        "links": "Enterで1件ずつ追加します。",
-        "passcode": "公開キューからこの依頼を開けるようになります。"
+        "links": "Enterで1件ずつ追加します。"
       },
       "placeholders": {
         "name": "例: 田中ミラ",
@@ -302,9 +313,7 @@
         "required": "この項目は必須です。",
         "ideaRequired": "描いてほしいものを少し教えてください。",
         "acceptTerms": "続行するには利用規約に同意してください。",
-        "deadlineTooSoon": "本日から{{count}}日以上先の日付を選んでください。",
-        "passcodeTooShort_one": "{{count}}文字以上にしてください。",
-        "passcodeTooShort_other": "{{count}}文字以上にしてください。"
+        "deadlineTooSoon": "本日から{{count}}日以上先の日付を選んでください。"
       },
       "emailMissing": "この依頼者にはまだメールアドレスが登録されていません。連絡できるよう入力してください。",
       "submitFailed": "リクエストを送信できませんでした。入力内容を確認して、もう一度お試しください。",
@@ -331,8 +340,7 @@
         "ideaHint": "キャラクター、ポーズ、雰囲気など、大切なことを書いてください。",
         "request": "リクエスト内容",
         "requestHint": "あなたのことと、描いてほしいものを教えてください。"
-      },
-      "passcodeLabel": "キューのパスコード（任意）"
+      }
     },
     "preferredContactMethod": {
       "EMAIL": "メール",
@@ -507,7 +515,11 @@
         "titlePlaceholder": "今回の更新内容（任意）",
         "imagesLabel": "画像",
         "markFinal": "これが完成イラストです",
-        "post": "投稿"
+        "post": "投稿",
+        "requestApproval": "依頼者に承認を依頼",
+        "awaitingApproval": "承認待ち",
+        "approvedByClient": "依頼者が承認済み",
+        "descriptionPlaceholder": "この更新の説明…Markdown対応、画像の貼り付け・ドロップも可能です。"
       },
       "visibility": {
         "show": "公開する",
@@ -908,6 +920,22 @@
     "zoomOut": "縮小",
     "reset": "ズームをリセット",
     "close": "閉じる",
-    "toggleCaption": "詳細の表示/非表示"
+    "toggleCaption": "詳細の表示/非表示",
+    "image": "画像"
+  },
+  "comments": {
+    "you": "あなた",
+    "placeholder": "コメントを書く…",
+    "send": "コメント",
+    "author": {
+      "ARTIST": "アーティスト",
+      "CLIENT": "依頼者"
+    },
+    "new": "新着",
+    "seen": "既読",
+    "notSeen": "未読",
+    "attach": "画像を添付",
+    "removeAttachment": "画像を削除",
+    "sendFailed": "送信できませんでした。画像を確認してもう一度お試しください。"
   }
 }

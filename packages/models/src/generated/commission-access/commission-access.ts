@@ -27,7 +27,7 @@ import type {
 import type {
   CommissionAccessMatchDto,
   CommissionPasscodeDto,
-  PasscodeLookupDto,
+  EmailLookupDto,
   SetArtistPasscodeDto,
   SetClientPasscodeDto,
   UnlockCommissionDto,
@@ -77,7 +77,7 @@ export const getUnlockQueuedCommissionUrl = () => {
 }
 
 /**
- * @summary Trade a queue item and its passcode for the order access code
+ * @summary Trade a commission id and its passcode for the order access code
  */
 export const unlockQueuedCommission = async (unlockCommissionDto: UnlockCommissionDto, options?: RequestInit): Promise<unlockQueuedCommissionResponse> => {
 
@@ -126,7 +126,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type UnlockQueuedCommissionMutationError = unknown
 
     /**
- * @summary Trade a queue item and its passcode for the order access code
+ * @summary Trade a commission id and its passcode for the order access code
  */
 export const useUnlockQueuedCommission = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unlockQueuedCommission>>, TError,{data: UnlockCommissionDto}, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -138,19 +138,19 @@ export const useUnlockQueuedCommission = <TError = unknown,
       > => {
       return useMutation(getUnlockQueuedCommissionMutationOptions(options), queryClient);
     }
-    export type lookupCommissionsByPasscodeResponse200 = {
+    export type lookupCommissionsByEmailResponse200 = {
   data: CommissionAccessMatchDto[]
   status: 200
 }
 
-export type lookupCommissionsByPasscodeResponseSuccess = (lookupCommissionsByPasscodeResponse200) & {
+export type lookupCommissionsByEmailResponseSuccess = (lookupCommissionsByEmailResponse200) & {
   headers: Headers;
 };
 ;
 
-export type lookupCommissionsByPasscodeResponse = (lookupCommissionsByPasscodeResponseSuccess)
+export type lookupCommissionsByEmailResponse = (lookupCommissionsByEmailResponseSuccess)
 
-export const getLookupCommissionsByPasscodeUrl = () => {
+export const getLookupCommissionsByEmailUrl = () => {
 
 
 
@@ -159,16 +159,16 @@ export const getLookupCommissionsByPasscodeUrl = () => {
 }
 
 /**
- * @summary Find a client's commissions with an artist by email + passcode
+ * @summary Find a client's commissions with an artist by email
  */
-export const lookupCommissionsByPasscode = async (passcodeLookupDto: PasscodeLookupDto, options?: RequestInit): Promise<lookupCommissionsByPasscodeResponse> => {
+export const lookupCommissionsByEmail = async (emailLookupDto: EmailLookupDto, options?: RequestInit): Promise<lookupCommissionsByEmailResponse> => {
 
-  return customFetch<lookupCommissionsByPasscodeResponse>(getLookupCommissionsByPasscodeUrl(),
+  return customFetch<lookupCommissionsByEmailResponse>(getLookupCommissionsByEmailUrl(),
   {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(passcodeLookupDto)
+    body: JSON.stringify(emailLookupDto)
   }
 );}
 
@@ -176,11 +176,11 @@ export const lookupCommissionsByPasscode = async (passcodeLookupDto: PasscodeLoo
 
 
 
-export const getLookupCommissionsByPasscodeMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lookupCommissionsByPasscode>>, TError,{data: PasscodeLookupDto}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof lookupCommissionsByPasscode>>, TError,{data: PasscodeLookupDto}, TContext> => {
+export const getLookupCommissionsByEmailMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError,{data: EmailLookupDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError,{data: EmailLookupDto}, TContext> => {
 
-const mutationKey = ['lookupCommissionsByPasscode'];
+const mutationKey = ['lookupCommissionsByEmail'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -190,10 +190,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lookupCommissionsByPasscode>>, {data: PasscodeLookupDto}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, {data: EmailLookupDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  lookupCommissionsByPasscode(data,requestOptions)
+          return  lookupCommissionsByEmail(data,requestOptions)
         }
 
 
@@ -203,22 +203,22 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type LookupCommissionsByPasscodeMutationResult = NonNullable<Awaited<ReturnType<typeof lookupCommissionsByPasscode>>>
-    export type LookupCommissionsByPasscodeMutationBody = PasscodeLookupDto
-    export type LookupCommissionsByPasscodeMutationError = unknown
+    export type LookupCommissionsByEmailMutationResult = NonNullable<Awaited<ReturnType<typeof lookupCommissionsByEmail>>>
+    export type LookupCommissionsByEmailMutationBody = EmailLookupDto
+    export type LookupCommissionsByEmailMutationError = unknown
 
     /**
- * @summary Find a client's commissions with an artist by email + passcode
+ * @summary Find a client's commissions with an artist by email
  */
-export const useLookupCommissionsByPasscode = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lookupCommissionsByPasscode>>, TError,{data: PasscodeLookupDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+export const useLookupCommissionsByEmail = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lookupCommissionsByEmail>>, TError,{data: EmailLookupDto}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof lookupCommissionsByPasscode>>,
+        Awaited<ReturnType<typeof lookupCommissionsByEmail>>,
         TError,
-        {data: PasscodeLookupDto},
+        {data: EmailLookupDto},
         TContext
       > => {
-      return useMutation(getLookupCommissionsByPasscodeMutationOptions(options), queryClient);
+      return useMutation(getLookupCommissionsByEmailMutationOptions(options), queryClient);
     }
     export type setClientCommissionPasscodeResponse200 = {
   data: CommissionPasscodeDto

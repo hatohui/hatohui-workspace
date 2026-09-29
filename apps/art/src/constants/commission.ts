@@ -140,7 +140,6 @@ export const COMMISSION_REQUIRED_FIELDS = [
   'clientName',
   'clientEmail',
   'contactValue',
-  'passcode',
   'idea',
   'deadline',
   'acceptTerms',

@@ -6,7 +6,7 @@ import type { CommissionQueueItemDto } from '@hatohui/models';
 import { Skeleton } from '@hatohui/ui';
 import { useCommissionQueue } from '@/hooks/useCommissionQueue';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
-import { QueueRow } from './QueueRow';
+import { QueueStageSection } from './QueueStageSection';
 
 const SKELETON_ROWS = 3;
 
@@ -18,7 +18,7 @@ export function QueueList({
   onSelect: (item: CommissionQueueItemDto) => void;
 }) {
   const { t } = useTranslation('art');
-  const { items, revealKey, isLoading } = useCommissionQueue(artistId);
+  const { items, groups, revealKey, isLoading } = useCommissionQueue(artistId);
   const listRef = useStaggerReveal<HTMLOListElement>('[data-reveal]', [
     revealKey,
   ]);
@@ -41,18 +41,17 @@ export function QueueList({
     );
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-6">
       <p className="text-sm text-muted-foreground">
         {t('queue.hint', { count: items.length })}
       </p>
-      <ol
-        ref={listRef}
-        className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card"
-      >
-        {items.map((item) => (
-          <li key={item.id} data-reveal>
-            <QueueRow item={item} onSelect={() => onSelect(item)} />
-          </li>
+      <ol ref={listRef} className="flex flex-col gap-6">
+        {groups.map((group) => (
+          <QueueStageSection
+            key={group.key}
+            group={group}
+            onSelect={onSelect}
+          />
         ))}
       </ol>
     </section>

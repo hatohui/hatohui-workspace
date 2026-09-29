@@ -58,6 +58,14 @@ export class ProcessQueueService {
     });
   }
 
+  async schedule(type: ProcessType, refId: string, at: Date): Promise<void> {
+    await this.db.processQueue.upsert({
+      where: { type_refId: { type, refId } },
+      create: { type, refId, nextAttemptAt: at },
+      update: { nextAttemptAt: at },
+    });
+  }
+
   async clearForRef(type: ProcessType, refId: string): Promise<void> {
     await this.db.processQueue.deleteMany({ where: { type, refId } });
   }
