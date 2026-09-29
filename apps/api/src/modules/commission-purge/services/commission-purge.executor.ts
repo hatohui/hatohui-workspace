@@ -46,7 +46,7 @@ export class CommissionPurgeExecutor implements ProcessExecutor {
         where: { id: assetId },
         data: {
           commissionId,
-          isPrivate: !commission.allowGalleryPost,
+          ...(commission.allowGalleryPost ? {} : { isPrivate: true }),
         },
       });
       await this.tag(assetId, tagNames);

@@ -46,13 +46,24 @@ commissions are not purged yet.
   `allowGalleryPost` is false at submission. Later toggles never touch `quote`,
   which only changes through `updateQuote`.
 
+## Retention changes, notices and lookups
+
+- Saving a new retention value reschedules every queued purge for that artist
+  (completion time + new days).
+- Clients see when their chat and files will be deleted (`purgeAt` on the order
+  page); artists see the same on the detail page, or "purged on" afterwards,
+  where only the status log is shown.
+- The client's email lookup omits purged commissions; their old links 404.
+- Result images are only forced private when gallery posting was refused; the
+  purge never publishes an image.
+
 ## Known gaps
 
-- Discarded files are queued as `STORAGE_DELETE` jobs inside the same
-  transaction that deletes the rows (purge and `remove()` alike), so a crash
-  cannot orphan them; `release()` then deletes eagerly and clears the jobs.
-- Artists cannot yet create private commissions from the workspace UI, so
-  that path only gets the settings default.
+- Artists cannot create private commissions from the workspace UI (no such form
+  exists yet), so that path only gets the settings default.
+- Commission-group comments are not touched by the purge.
+- The order form still recomputes the estimate client-side, as before.
+- Tags use the type tag plus raw option/add-on keys, by design.
 
 ## UI
 

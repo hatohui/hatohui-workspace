@@ -111,4 +111,9 @@ export interface CommissionDetailDto {
   updatedAt: string;
   comments: CommentDto[];
   history: CommissionStatusHistoryDto[];
+  /**
+     * When the retention purge is due; null if none is scheduled
+     * @nullable
+     */
+  purgeAt: string | null;
 }

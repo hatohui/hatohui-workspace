@@ -14,6 +14,7 @@ import { uniqueSlug } from '@/common/utils/slugify';
 import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.constants';
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
 import { DEFAULT_CURRENCY } from '@/modules/commission-pricing/commission-pricing.constants';
+import { CommissionPurgeService } from '@/modules/commission-purge/services/commission-purge.service';
 import { DEFAULT_COMMISSION_RETENTION_DAYS } from '@/modules/commission-purge/commission-purge.constants';
 import {
   CommissionAddonPricingDto,
@@ -39,6 +40,7 @@ export class CommissionPricingService {
   constructor(
     private readonly db: Database,
     private readonly userSettings: UserSettingsService,
+    private readonly purge: CommissionPurgeService,
   ) {}
 
   async getActive(artistId: string): Promise<CommissionPricingDto> {
@@ -185,11 +187,15 @@ export class CommissionPricingService {
       methods.length > 0 ? JSON.stringify(methods) : null,
     );
 
+    const previousDays = await this.purge.retentionDays(artistId);
     await this.setSetting(
       artistId,
       USER_SETTING_TYPES.commissionRetentionDays,
       String(dto.retentionDays),
     );
+    if (dto.retentionDays !== previousDays) {
+      await this.purge.rescheduleAll(artistId, dto.retentionDays);
+    }
     await this.setSetting(
       artistId,
       USER_SETTING_TYPES.commissionGalleryPostDefault,

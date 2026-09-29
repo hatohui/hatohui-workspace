@@ -8010,6 +8010,11 @@
             "items": {
               "$ref": "#/components/schemas/CommentDto"
             }
+          },
+          "purgeAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "When the retention purge is due; null if none is scheduled"
           }
         },
         "required": [
@@ -8036,7 +8041,8 @@
           "updatedAt",
           "clientName",
           "queue",
-          "comments"
+          "comments",
+          "purgeAt"
         ]
       },
       "AddReferenceAssetsDto": {
@@ -8541,6 +8547,11 @@
             "items": {
               "$ref": "#/components/schemas/CommissionStatusHistoryDto"
             }
+          },
+          "purgeAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "When the retention purge is due; null if none is scheduled"
           }
         },
         "required": [
@@ -8582,7 +8593,8 @@
           "createdAt",
           "updatedAt",
           "comments",
-          "history"
+          "history",
+          "purgeAt"
         ]
       },
       "UpdateCommissionStatusDto": {

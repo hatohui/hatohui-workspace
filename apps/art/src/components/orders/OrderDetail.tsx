@@ -6,6 +6,7 @@ import { useCommissionCodeLookup } from '@/hooks/useCommissionLookup';
 import { OrderHeader } from './OrderHeader';
 import { OrderStageTracker } from './OrderStageTracker';
 import { OrderFacts } from './OrderFacts';
+import { OrderPurgeNotice } from './OrderPurgeNotice';
 import { OrderTabs } from './OrderTabs';
 import { ImagePreviewProvider } from '@/components/shared/ImagePreviewProvider';
 
@@ -32,6 +33,7 @@ export function OrderDetail({ code }: { code: string }) {
       <OrderHeader commission={commission} />
       {commission.queue && <OrderStageTracker placement={commission.queue} />}
       <OrderFacts commission={commission} />
+      <OrderPurgeNotice purgeAt={commission.purgeAt} />
       <ImagePreviewProvider>
         <OrderTabs code={code} commission={commission} lookup={lookup} />
       </ImagePreviewProvider>

@@ -68,6 +68,12 @@ export class ProcessQueueService {
     });
   }
 
+  findFor(type: ProcessType, refId: string): Promise<ProcessQueue | null> {
+    return this.db.processQueue.findUnique({
+      where: { type_refId: { type, refId } },
+    });
+  }
+
   async clearForRef(type: ProcessType, refId: string): Promise<void> {
     await this.db.processQueue.deleteMany({ where: { type, refId } });
   }

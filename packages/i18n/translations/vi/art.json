@@ -262,7 +262,8 @@
       "contactValuePlaceholder": "Tên người dùng của bạn",
       "galleryPost": "Đăng lên thư viện",
       "galleryPostHint": "Cho phép họa sĩ đăng tác phẩm hoàn thành lên thư viện. Tên và thông tin của bạn không bao giờ được hiển thị."
-    }
+    },
+    "purgeNotice": "Tin nhắn, cập nhật và tệp bạn tải lên sẽ bị xóa vào {{date}}. Hãy lưu tác phẩm cuối cùng trước thời điểm đó."
   },
   "commission": {
     "gallery": {
@@ -660,6 +661,10 @@
       "gallery": {
         "allow": "Cho phép đăng lên thư viện",
         "disallow": "Không cho phép đăng lên thư viện"
+      },
+      "purge": {
+        "purged": "Đã xóa dữ liệu vào {{date}}. Chỉ giữ lại khách hàng, nhật ký trạng thái, tài liệu tham khảo và tác phẩm hoàn thành.",
+        "scheduled": "Tin nhắn, dòng thời gian và tệp tải lên sẽ bị xóa vào {{date}}. Tác phẩm hoàn thành vẫn ở trong thư viện."
       }
     },
     "closed": {

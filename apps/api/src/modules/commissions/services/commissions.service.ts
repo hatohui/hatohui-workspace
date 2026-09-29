@@ -339,6 +339,8 @@ export class CommissionsService {
           ? null
           : toPlacement(workOrder[index], index, workOrder.length),
       comments: comments.map(toClientCommentDto),
+      purgeAt:
+        (await this.purge.purgeAtFor(commission.id))?.toISOString() ?? null,
     };
   }
 
@@ -916,6 +918,8 @@ export class CommissionsService {
       ...toCommissionDto(commission),
       comments: comments.map(toCommentDto),
       history: history.map(toHistoryDto),
+      purgeAt:
+        (await this.purge.purgeAtFor(commission.id))?.toISOString() ?? null,
     };
   }
 

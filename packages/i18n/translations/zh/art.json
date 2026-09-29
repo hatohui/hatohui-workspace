@@ -258,7 +258,8 @@
       "contactValuePlaceholder": "你的用户名",
       "galleryPost": "图库发布",
       "galleryPostHint": "允许画师将完成的作品发布到图库。你的姓名和详情不会公开。"
-    }
+    },
+    "purgeNotice": "你的聊天、更新和上传文件将于 {{date}} 删除，请在此之前保存最终作品。"
   },
   "commission": {
     "gallery": {
@@ -550,6 +551,10 @@
       "gallery": {
         "allow": "允许发布到图库",
         "disallow": "不允许发布到图库"
+      },
+      "purge": {
+        "purged": "已于 {{date}} 清理。仅保留客户信息、状态记录、参考资料和成品。",
+        "scheduled": "聊天、进度时间线和上传文件将于 {{date}} 删除，成品会保留在图库中。"
       }
     },
     "closed": {

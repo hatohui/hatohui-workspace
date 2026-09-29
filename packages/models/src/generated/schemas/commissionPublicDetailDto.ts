@@ -55,4 +55,9 @@ export interface CommissionPublicDetailDto {
      */
   queue: CommissionQueuePlacementDto | null;
   comments: CommentDto[];
+  /**
+     * When the retention purge is due; null if none is scheduled
+     * @nullable
+     */
+  purgeAt: string | null;
 }

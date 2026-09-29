@@ -272,7 +272,8 @@
       "contactValuePlaceholder": "Your handle or username",
       "galleryPost": "Gallery posting",
       "galleryPostHint": "Let the artist post the finished artwork in their gallery. Your name and details are never shown."
-    }
+    },
+    "purgeNotice": "Your chat, updates and uploaded files will be deleted on {{date}}. Save your final artwork before then."
   },
   "commission": {
     "gallery": {
@@ -670,6 +671,10 @@
       "gallery": {
         "allow": "Allow gallery post",
         "disallow": "Disallow gallery post"
+      },
+      "purge": {
+        "purged": "Purged on {{date}}. Only the customer, the status log, references and the finished artwork are kept.",
+        "scheduled": "Chat, timeline and uploads will be deleted on {{date}}. The finished artwork stays in the gallery."
       }
     },
     "closed": {
