@@ -6,6 +6,7 @@ import { useJustifiedRows } from '@/hooks/useJustifiedRows';
 import type { TileSize } from '@/lib/justifiedRows';
 
 const LAST_ROW_CLASS = "after:grow-[999999] after:content-['']";
+const SIZED_TILE_CLASS = '[&>*]:max-w-none!';
 
 export function JustifiedRows<T extends TileSize>({
   items,
@@ -20,32 +21,32 @@ export function JustifiedRows<T extends TileSize>({
   className: string;
   stretchLastRow?: boolean;
 }) {
-  const { ref, rows, isLastRowFull } = useJustifiedRows(items);
-  const lastRowClass =
-    stretchLastRow && isLastRowFull ? undefined : LAST_ROW_CLASS;
+  const { ref, tileStyles, isLastRowOpen } = useJustifiedRows(
+    items,
+    stretchLastRow,
+  );
 
   return (
-    <div ref={ref} className={cn('flex flex-col', className)}>
-      {rows ? (
-        rows.map((row, index) => {
-          const isLast = index === rows.length - 1;
-          return (
-            <div
-              key={getKey(items[row[0]])}
-              className={cn(
-                'flex gap-[inherit]',
-                isLast ? lastRowClass : '[&>*]:max-w-none!',
-              )}
-            >
-              {row.map((itemIndex) => renderItem(items[itemIndex]))}
-            </div>
-          );
-        })
-      ) : (
-        <div className={cn('flex flex-wrap gap-[inherit]', LAST_ROW_CLASS)}>
-          {items.map(renderItem)}
-        </div>
+    <div
+      ref={ref}
+      className={cn(
+        'flex flex-wrap',
+        isLastRowOpen && LAST_ROW_CLASS,
+        className,
       )}
+    >
+      {items.map((item, index) => {
+        const style = tileStyles[index];
+        return (
+          <div
+            key={getKey(item)}
+            style={style}
+            className={style ? SIZED_TILE_CLASS : 'contents'}
+          >
+            {renderItem(item)}
+          </div>
+        );
+      })}
     </div>
   );
 }
