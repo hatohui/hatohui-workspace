@@ -9,11 +9,13 @@ const LAST_ROW_CLASS = "after:grow-[999999] after:content-['']";
 
 export function JustifiedRows<T extends TileSize>({
   items,
+  getKey,
   renderItem,
   className,
   stretchLastRow = false,
 }: {
   items: T[];
+  getKey: (item: T) => string;
   renderItem: (item: T) => ReactNode;
   className: string;
   stretchLastRow?: boolean;
@@ -29,7 +31,7 @@ export function JustifiedRows<T extends TileSize>({
           const isLast = index === rows.length - 1;
           return (
             <div
-              key={index}
+              key={getKey(items[row[0]])}
               className={cn(
                 'flex gap-[inherit]',
                 isLast ? lastRowClass : '[&>*]:max-w-none!',

@@ -96,6 +96,7 @@ export function GalleryGrid({
           <div ref={gridRef} className="mt-6">
             <JustifiedRows
               items={gallery.items}
+              getKey={(asset) => asset.id}
               className={`gap-2 sm:gap-3 ${GALLERY_ROW_HEIGHT_CLASS}`}
               renderItem={(asset) => (
                 <GalleryCard
