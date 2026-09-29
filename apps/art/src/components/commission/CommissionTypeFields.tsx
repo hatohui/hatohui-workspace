@@ -11,11 +11,9 @@ import { CommissionDeadlineField } from './CommissionDeadlineField';
 
 export function CommissionTypeFields({
   form,
-  artistId,
   validation,
 }: {
   form: ReturnType<typeof useCommissionForm>;
-  artistId: string;
   validation: CommissionValidation;
 }) {
   const labels = useCommissionPriceLabels(form.pricing);
@@ -23,7 +21,7 @@ export function CommissionTypeFields({
   return (
     <div className="space-y-4">
       <CommissionPriceTable rows={labels.rows} />
-      <CommissionTypeSelect form={form} labels={labels} artistId={artistId} />
+      <CommissionTypeSelect form={form} labels={labels} />
       <CommissionOptionSelect form={form} labels={labels} />
       <CommissionAddonChecklist form={form} labels={labels} />
       <CommissionDeadlineField form={form} validation={validation} />

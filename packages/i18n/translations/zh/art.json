@@ -261,7 +261,6 @@
       "optionLabel": "绘制方式",
       "optionPlaceholder": "选择方式",
       "addonsLabel": "附加选项",
-      "examplesLabel": "示例",
       "estimateLabel": "自动估算",
       "rushFeeIncluded": "已含加急费 +{{amount}}，截止日期不足 {{days}} 天",
       "rushFeeHint": "截止日期少于 {{days}} 天将加收 {{amount}} 加急费。",

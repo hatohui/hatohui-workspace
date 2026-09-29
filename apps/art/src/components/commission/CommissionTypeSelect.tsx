@@ -12,16 +12,13 @@ import {
 import type { useCommissionForm } from '@/hooks/useCommissionForm';
 import type { useCommissionPriceLabels } from '@/hooks/useCommissionPriceLabels';
 import { InfoTooltip } from '@/components/shared/InfoTooltip';
-import { CommissionReferenceExamples } from './CommissionReferenceExamples';
 
 export function CommissionTypeSelect({
   form,
   labels,
-  artistId,
 }: {
   form: ReturnType<typeof useCommissionForm>;
   labels: ReturnType<typeof useCommissionPriceLabels>;
-  artistId: string;
 }) {
   const { t } = useTranslation('art');
   const { types } = form.pricing;
@@ -59,10 +56,6 @@ export function CommissionTypeSelect({
           ))}
         </SelectContent>
       </Select>
-      <CommissionReferenceExamples
-        artistId={artistId}
-        tag={selectedType?.tagName ?? undefined}
-      />
     </div>
   );
 }
