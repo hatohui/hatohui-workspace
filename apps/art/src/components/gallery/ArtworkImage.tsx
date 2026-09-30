@@ -20,7 +20,7 @@ export function ArtworkImage({ asset }: { asset: AssetDto }) {
     });
 
   return (
-    <div className="relative flex justify-center rounded-lg bg-card">
+    <div className="relative flex justify-center bg-card">
       <button
         type="button"
         aria-label={t('gallery.viewLarge')}
