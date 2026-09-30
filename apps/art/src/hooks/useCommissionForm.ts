@@ -109,11 +109,6 @@ export function useCommissionForm(artistId: string) {
   const [isDraftRestored, setIsDraftRestored] = useState(false);
   const [hasSubmitError, setHasSubmitError] = useState(false);
 
-  // Restoring a draft must happen post-mount, not in a lazy initializer:
-  // localStorage doesn't exist during the server render, so an initializer
-  // that read it would disagree with the client's first paint and fail
-  // hydration. This is exactly what an effect is for - syncing from an
-  // external system unavailable at render time.
   useEffect(() => {
     const draft = loadDraft();
     if (draft) {
@@ -181,8 +176,9 @@ export function useCommissionForm(artistId: string) {
   };
 
   const submitWithUploads = async () => {
+    const uploaderName = state.clientName.trim() || user?.name || undefined;
     const uploaded = await Promise.all(
-      files.map((file) => uploadImage(file, state.clientName)),
+      files.map((file) => uploadImage(file, uploaderName)),
     );
 
     await submitCommission.mutateAsync({
