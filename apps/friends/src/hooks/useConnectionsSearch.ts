@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { keepPreviousData } from '@tanstack/react-query';
 import { useSearchUsers } from '@hatohui/models';
-import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { useDebouncedValue } from '@hatohui/libs';
 import {
   CONNECTIONS_SEARCH_DEBOUNCE_MS,
   CONNECTIONS_PAGE_SIZE,
-} from './onboardingSearch';
+} from '../constants/onboarding';
 
 export function useConnectionsSearch() {
   const [query, setQuery] = useState('');

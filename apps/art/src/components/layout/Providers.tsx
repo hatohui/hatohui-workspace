@@ -35,7 +35,7 @@ export function Providers({ children }: { children: ReactNode }) {
         <OnboardingModalProvider>
           <ToastProvider>
             <TooltipProvider>{children}</TooltipProvider>
-            <OnboardingModal mode="identity" />
+            <OnboardingModal />
           </ToastProvider>
         </OnboardingModalProvider>
       </AuthProvider>

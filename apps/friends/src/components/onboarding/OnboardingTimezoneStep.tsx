@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Label, SearchableSelect } from '@hatohui/ui';
-import { timezoneOptions } from './timezones';
+import { timezoneOptions } from '@hatohui/libs';
 
 type Props = {
   initialTimezone: string;
@@ -20,21 +20,21 @@ function OnboardingTimezoneStep({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">{t('common:onboarding.timezone.title')}</h2>
+      <h2 className="text-xl">{t('onboarding.timezone.title')}</h2>
       <p className="text-sm text-muted-foreground">
-        {t('common:onboarding.timezone.description')}
+        {t('onboarding.timezone.description')}
       </p>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="onboarding-timezone">
-          {t('common:onboarding.timezone.label')}
+          {t('onboarding.timezone.label')}
         </Label>
         <SearchableSelect
           id="onboarding-timezone"
           value={timezone}
           options={options}
-          placeholder={t('common:onboarding.timezone.label')}
-          searchPlaceholder={t('common:onboarding.timezone.search')}
-          emptyLabel={t('common:onboarding.timezone.empty')}
+          placeholder={t('onboarding.timezone.label')}
+          searchPlaceholder={t('onboarding.timezone.search')}
+          emptyLabel={t('onboarding.timezone.empty')}
           onChange={setTimezone}
         />
       </div>

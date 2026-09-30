@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
-import VisibilityField from './VisibilityField';
-import type { Visibility } from './visibility';
+import VisibilityField from '../friends/VisibilityField';
+import type { Visibility } from '../../constants/visibility';
 
 type Props = {
   initialVisibility: Visibility;
@@ -20,7 +20,7 @@ function OnboardingVisibilityStep({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">{t('common:onboarding.visibility.title')}</h2>
+      <h2 className="text-xl">{t('onboarding.visibility.title')}</h2>
       <VisibilityField value={visibility} onChange={setVisibility} />
       <Button
         disabled={submitting}

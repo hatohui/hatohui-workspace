@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import {
-  useOnboardingAddConnections,
   useOnboardingComplete,
   useOnboardingOptIn,
-  useOnboardingSetBirthday,
   useOnboardingSetProfile,
-  useOnboardingSetVisibility,
   useOnboardingSkip,
   useOnboardingState,
   useUpdateMe,
@@ -14,14 +11,11 @@ import { useAuth } from '../auth/AuthContext';
 import { useOnboardingModal } from './useOnboardingModal';
 import {
   ONBOARDING_STEP_STORAGE_PREFIX,
-  type OnboardingMode,
   type OnboardingStep,
 } from './onboardingStep';
-import type { Visibility } from './visibility';
 
 function readStoredStep(userId: string): OnboardingStep | null {
-  const value = localStorage.getItem(ONBOARDING_STEP_STORAGE_PREFIX + userId);
-  return (value as OnboardingStep | null) ?? null;
+  return localStorage.getItem(ONBOARDING_STEP_STORAGE_PREFIX + userId);
 }
 
 function writeStoredStep(userId: string, step: OnboardingStep): void {
@@ -32,32 +26,27 @@ function clearStoredStep(userId: string): void {
   localStorage.removeItem(ONBOARDING_STEP_STORAGE_PREFIX + userId);
 }
 
-/// `mode: 'identity'` (art, www, ...) only walks optIn -> profile -> handle
-/// -> complete — no birthday-directory concepts. `mode: 'full'` (friends)
-/// keeps the original visibility/birthday/connections steps.
-/// `onEntityChanged` lets the consuming app invalidate its own query cache
-/// (e.g. friends invalidates its `/friends` queries) without this shared
-/// hook needing to know that app's query-key scheme.
-export function useOnboardingWizard(
-  mode: OnboardingMode = 'full',
-  onEntityChanged?: () => void,
-) {
+export type UseOnboardingWizardOptions = {
+  afterHandle?: OnboardingStep;
+  onEntityChanged?: () => void;
+};
+
+export function useOnboardingWizard({
+  afterHandle = 'complete',
+  onEntityChanged,
+}: UseOnboardingWizardOptions = {}) {
   const { user, refetchUser } = useAuth();
   const { close } = useOnboardingModal();
   const stateQuery = useOnboardingState({ query: { enabled: !!user } });
   const onChanged = { onSuccess: () => onEntityChanged?.() };
 
   const [stepOverride, setStepOverride] = useState<OnboardingStep | null>(null);
-  // Visibility governs the birthday, which does not exist yet when it is
-  // chosen, so it rides along to the birthday step.
-  const [birthdayVisibility, setBirthdayVisibility] =
-    useState<Visibility>('PUBLIC');
   const entry = stateQuery.data?.data.entry ?? null;
   const defaultStep: OnboardingStep = entry ? 'profile' : 'optIn';
   const step =
     stepOverride ?? (user ? readStoredStep(user.id) : null) ?? defaultStep;
 
-  const setStep = (next: OnboardingStep) => {
+  const goTo = (next: OnboardingStep) => {
     if (user) writeStoredStep(user.id, next);
     setStepOverride(next);
   };
@@ -70,9 +59,6 @@ export function useOnboardingWizard(
   const optIn = useOnboardingOptIn({ mutation: onChanged });
   const setProfile = useOnboardingSetProfile({ mutation: onChanged });
   const updateMe = useUpdateMe();
-  const setVisibility = useOnboardingSetVisibility({ mutation: onChanged });
-  const setBirthday = useOnboardingSetBirthday({ mutation: onChanged });
-  const addConnections = useOnboardingAddConnections({ mutation: onChanged });
   const complete = useOnboardingComplete({ mutation: onChanged });
   const skip = useOnboardingSkip({ mutation: onChanged });
 
@@ -80,8 +66,8 @@ export function useOnboardingWizard(
     entry,
     isLoading: stateQuery.isLoading,
     step,
+    goTo,
     isSubmittingHandle: updateMe.isPending,
-    isSubmittingTimezone: updateMe.isPending,
     handleError: updateMe.error,
 
     submitOptIn: (join: boolean) => {
@@ -90,12 +76,12 @@ export function useOnboardingWizard(
         skip.mutate();
         return;
       }
-      setStep('profile');
+      goTo('profile');
       optIn.mutate({ data: { join } });
     },
 
     submitProfile: (name: string, avatarKey?: string) => {
-      setStep('handle');
+      goTo('handle');
       setProfile.mutate(
         { data: { name, avatarKey } },
         { onSuccess: () => void refetchUser() },
@@ -103,51 +89,19 @@ export function useOnboardingWizard(
     },
 
     submitHandle: (handle?: string) => {
-      const next: OnboardingStep =
-        mode === 'identity' ? 'complete' : 'visibility';
       if (!handle) {
-        setStep(next);
+        goTo(afterHandle);
         return;
       }
       updateMe.mutate(
         { data: { handle } },
         {
           onSuccess: () => {
-            setStep(next);
+            goTo(afterHandle);
             void refetchUser();
           },
         },
       );
-    },
-
-    submitVisibility: (visibility: Visibility) => {
-      setBirthdayVisibility(visibility);
-      setStep(visibility === 'NONE' ? 'connections' : 'birthday');
-      setVisibility.mutate({ data: { visibility } });
-    },
-
-    submitBirthday: (data: {
-      birthYear?: number;
-      birthMonth: number;
-      birthDay: number;
-    }) => {
-      setStep('timezone');
-      setBirthday.mutate({ data: { ...data, visibility: birthdayVisibility } });
-    },
-
-    submitTimezone: (timezone: string) => {
-      setStep('connections');
-      updateMe.mutate(
-        { data: { timezone } },
-        { onSuccess: () => void refetchUser() },
-      );
-    },
-
-    submitConnections: (userIds: string[]) => {
-      setStep('complete');
-      if (userIds.length > 0) {
-        addConnections.mutate({ data: { userIds } });
-      }
     },
 
     submitComplete: () => {

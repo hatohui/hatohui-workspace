@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { Avatar, Button, Input } from '@hatohui/ui';
-import { useConnectionsSearch } from './useConnectionsSearch';
+import { useConnectionsSearch } from '../../hooks/useConnectionsSearch';
 
 type Props = {
   onSubmit: (userIds: string[]) => void;
@@ -30,7 +30,7 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">{t('common:onboarding.connections.title')}</h2>
+      <h2 className="text-xl">{t('onboarding.connections.title')}</h2>
 
       {selected.size > 0 && (
         <div className="flex flex-wrap gap-2">
@@ -43,7 +43,7 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
               <button
                 type="button"
                 onClick={() => remove(id)}
-                aria-label={t('common:onboarding.connections.removeAria', {
+                aria-label={t('onboarding.connections.removeAria', {
                   name,
                 })}
                 className="rounded-full p-0.5 hover:bg-primary/20"
@@ -58,7 +58,7 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
       <Input
         value={search.query}
         onChange={(e) => search.setQuery(e.target.value)}
-        placeholder={t('common:onboarding.connections.searchPlaceholder')}
+        placeholder={t('onboarding.connections.searchPlaceholder')}
       />
 
       {/* Result list — fixed height (room for CONNECTIONS_PAGE_SIZE rows) so
@@ -70,7 +70,7 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
               className="flex items-center justify-center p-3 text-sm text-muted-foreground"
               style={{ minHeight: 220 }}
             >
-              {t('common:onboarding.connections.empty')}
+              {t('onboarding.connections.empty')}
             </div>
           )}
           {suggestions.map((item) => (
@@ -103,13 +103,13 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
             type="button"
             disabled={search.page <= 1}
             onClick={() => search.setPage((p) => p - 1)}
-            aria-label={t('common:onboarding.connections.prevPage')}
+            aria-label={t('onboarding.connections.prevPage')}
             className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
           >
             <ChevronLeft className="size-4" />
           </button>
           <span className="text-xs text-muted-foreground">
-            {t('common:onboarding.connections.pageIndicator', {
+            {t('onboarding.connections.pageIndicator', {
               page: search.page,
               total: search.totalPages,
             })}
@@ -118,7 +118,7 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
             type="button"
             disabled={search.page >= search.totalPages}
             onClick={() => search.setPage((p) => p + 1)}
-            aria-label={t('common:onboarding.connections.nextPage')}
+            aria-label={t('onboarding.connections.nextPage')}
             className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
           >
             <ChevronRight className="size-4" />
@@ -127,7 +127,7 @@ function OnboardingConnectionsStep({ onSubmit, submitting }: Props) {
       </div>
 
       <p className="text-sm text-muted-foreground">
-        {t('common:onboarding.connections.selectedCount', {
+        {t('onboarding.connections.selectedCount', {
           count: selected.size,
         })}
       </p>

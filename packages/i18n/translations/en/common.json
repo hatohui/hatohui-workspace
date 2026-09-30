@@ -53,32 +53,6 @@
       "placeholder": "yourhandle",
       "invalid": "3-20 characters: lowercase letters, numbers, and underscores only"
     },
-    "visibility": {
-      "title": "Who can see your birthday?"
-    },
-    "birthday": {
-      "title": "Is this your birthday?",
-      "confirmedFromGoogle": "We got this from your Google account.",
-      "confirm": "Yes, that's right",
-      "enterManually": "Enter it manually"
-    },
-    "timezone": {
-      "title": "Where are you?",
-      "description": "Birthday reminders about you are timed to this zone, so people are told on your day.",
-      "label": "Timezone",
-      "search": "Search timezones...",
-      "empty": "No matching timezone."
-    },
-    "connections": {
-      "title": "Do you already know anyone here?",
-      "searchPlaceholder": "Search people...",
-      "empty": "No matches.",
-      "selectedCount": "{{count}} selected",
-      "removeAria": "Remove {{name}}",
-      "pageIndicator": "Page {{page}} of {{total}}",
-      "prevPage": "Previous",
-      "nextPage": "Next"
-    },
     "complete": {
       "title": "You're all set!",
       "cta": "Woohoo!"

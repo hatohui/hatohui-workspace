@@ -12,7 +12,7 @@ type Props = {
   onFileSelected: (file: File) => void;
 };
 
-function FriendAvatarField({
+function AvatarField({
   alt,
   previewUrl,
   isBusy,
@@ -48,4 +48,4 @@ function FriendAvatarField({
   );
 }
 
-export default FriendAvatarField;
+export default AvatarField;

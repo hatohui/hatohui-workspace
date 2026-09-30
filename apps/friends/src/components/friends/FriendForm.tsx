@@ -2,17 +2,13 @@ import { useState, type FormEvent } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Input, Label } from '@hatohui/ui';
 import type { CreateFriendDto, FriendDto } from '@hatohui/models';
-import {
-  getErrorCategory,
-  useStagedAvatar,
-  BirthdayFields,
-  FriendAvatarField,
-  VisibilityField,
-  type Visibility,
-} from '@hatohui/libs';
+import { getErrorCategory, useStagedAvatar, AvatarField } from '@hatohui/libs';
 import { useSocialMediaFields } from '../../hooks/useSocialMediaFields';
+import type { Visibility } from '../../constants/visibility';
 import SocialMediaFieldList from './SocialMediaFieldList';
 import AvatarHistoryGallery from './AvatarHistoryGallery';
+import BirthdayFields from './BirthdayFields';
+import VisibilityField from './VisibilityField';
 
 type Props = {
   title: string;
@@ -77,7 +73,7 @@ function FriendForm({
       className="flex flex-col gap-5"
     >
       <h1 className="text-3xl">{title}</h1>
-      <FriendAvatarField
+      <AvatarField
         alt={name || t('friendForm.nameLabel')}
         previewUrl={avatar.previewUrl}
         isBusy={avatar.isBusy}

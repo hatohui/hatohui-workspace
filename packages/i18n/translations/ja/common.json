@@ -53,32 +53,6 @@
       "placeholder": "yourhandle",
       "invalid": "3〜20文字：小文字の英数字とアンダースコアのみ使用できます"
     },
-    "visibility": {
-      "title": "誕生日を誰に見せますか？"
-    },
-    "birthday": {
-      "title": "これはあなたの誕生日ですか？",
-      "confirmedFromGoogle": "Googleアカウントから取得しました。",
-      "confirm": "はい、合っています",
-      "enterManually": "手動で入力する"
-    },
-    "timezone": {
-      "title": "お住まいの地域は？",
-      "description": "あなたの誕生日のお知らせはこのタイムゾーンを基準に送られます。",
-      "label": "タイムゾーン",
-      "search": "タイムゾーンを検索...",
-      "empty": "一致するタイムゾーンがありません。"
-    },
-    "connections": {
-      "title": "すでに知っている人はいますか？",
-      "searchPlaceholder": "名前で検索...",
-      "empty": "該当する人が見つかりません。",
-      "selectedCount": "{{count}}人選択中",
-      "removeAria": "{{name}}を削除",
-      "pageIndicator": "{{total}}ページ中{{page}}ページ目",
-      "prevPage": "前へ",
-      "nextPage": "次へ"
-    },
     "complete": {
       "title": "設定が完了しました！",
       "cta": "やったー！"
