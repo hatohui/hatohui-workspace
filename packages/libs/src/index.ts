@@ -23,7 +23,7 @@ export type { OnboardingWizardProps } from './onboarding/OnboardingWizard';
 export { useOnboardingWizard } from './onboarding/useOnboardingWizard';
 export { default as AvatarField } from './onboarding/AvatarField';
 export { useStagedAvatar } from './onboarding/useStagedAvatar';
-export * from './onboarding/timezones';
+export * from './timezone/timezones';
 export * from './tiptap/tiptap';
 export * from './theme/themeConstants';
 export { useTheme } from './theme/useTheme';
