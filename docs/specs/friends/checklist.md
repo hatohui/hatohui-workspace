@@ -32,9 +32,9 @@ implementation spec.
 
 ## Open items for the implementation spec (not decided here)
 
-- [ ] Exact session mechanism (signed cookie vs JWT) for `apps/api`.
-- [ ] Prisma schema for `Friend` (and `Session`, if persisted server-side).
+- [x] Exact session mechanism: a JWT in a cookie, signed with `SESSION_JWT_SECRET`.
+- [x] Prisma schema: `Friend` became `Profile` + `Birthday`; no server-side `Session` table. See [profile-model](./profile-model/PRD.md).
 - [ ] MinIO bucket name/creation (not currently defined in `docker-compose.yml`) and
       whether `STORAGE_FORCE_PATH_STYLE`/bucket setup needs a compose change.
-- [ ] `apps/friends` page structure (`pages/`, routes) and component breakdown.
-- [ ] OpenAPI operationIds for the new `auth` and `friends` endpoints.
+- [x] `apps/friends` page structure: file-based routes under `src/pages/`.
+- [x] OpenAPI operationIds for the `auth` and `friends` endpoints.

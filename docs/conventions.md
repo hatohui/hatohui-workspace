@@ -19,6 +19,19 @@ chosen, what a failure mode is, what a constraint protects against) goes in
 reference at most. This applies to `///` doc comments, inline `//` notes, and
 Prisma schema comments alike.
 
+## Feature lists
+
+Every app keeps a `features.md` at its root (`apps/<app>/features.md`) — one table row per feature, with its sub-features as short fragment bullets (`• Inbox<br>• Unread count`) in a Sub-features column and a link to its spec in `docs/specs/<app>/` when one exists.
+
+- **Sub-features name a capability.** Not acceptance criteria ("nothing is lost if a step fails"), not implementation ("fast path after commit"), not UI chrome (navigation, sidebars, panels, tables), not a restatement of the feature.
+- **User-facing features go in the app's file; technical features go in `apps/api/features.md`.**
+- **Two tables only: features and "Planned".** A feature counts once users can reach it; anything not yet usable (including an endpoint with no UI) is planned. [`docs/features.md`](./features.md) indexes them.
+
+- **Shipping a feature means adding or updating its row in the same PR.** A feature that changes behavior, moves, or is removed updates or deletes its row too. Don't merge a feature the list doesn't mention.
+- **Planned work goes in the same file**, in a "Planned" table, and moves into the main table when it ships.
+- **A new app** gets its own `features.md` and a row in `docs/features.md`.
+- Backend-only capabilities (a cron job, a queue) go in `apps/api/features.md`; a feature that spans the API and a frontend is listed in the frontend's file.
+
 ## NestJS apps (`apps/api` and future backend apps)
 
 Standard folder layout:
@@ -95,10 +108,10 @@ src/
   decorator in `common/validators/`. Anything only `main.ts` calls is
   `bootstrap/`. These were one flat `libs/` folder that had drifted into holding
   all five kinds at once.
-- **Path alias `@/*` → `src/*`.** Use it for cross-cutting imports (`@/libs/db`, `@/config/env`); same-directory sibling imports (e.g. a controller importing its own service) stay relative.
-- **Env validation:** a zod schema in `src/config/env.ts`, wired via `ConfigModule.forRoot({ validate })`. Every required env var must be declared there, even if a lib (like `libs/db.ts`) reads `process.env` directly.
-- **Database: Prisma.** Generator must be the classic `prisma-client-js` (the newer ESM-only `prisma-client` generator doesn't interop with this CJS build). Prisma 7 requires a driver adapter (`@prisma/adapter-pg` for Postgres) — plain `new PrismaClient()` no longer works. The client + module live together in `src/libs/db.ts` (`Database` injectable + `@Global() DatabaseModule`), not split across a separate module/service file pair.
-- **API docs:** Scalar at `/docs`, built from `@nestjs/swagger`'s `DocumentBuilder`/`SwaggerModule` in `src/libs/openapi.ts`.
+- **Path alias `@/*` → `src/*`.** Use it for cross-cutting imports (`@/infra/db`, `@/config/env`); same-directory sibling imports (e.g. a controller importing its own service) stay relative.
+- **Env validation:** a zod schema in `src/config/env.ts`, wired via `ConfigModule.forRoot({ validate })`. Every required env var must be declared there, even if a client (like `infra/db.ts`) reads `process.env` directly.
+- **Database: Prisma.** Generator must be the classic `prisma-client-js` (the newer ESM-only `prisma-client` generator doesn't interop with this CJS build). Prisma 7 requires a driver adapter (`@prisma/adapter-pg` for Postgres) — plain `new PrismaClient()` no longer works. The client + module live together in `src/infra/db.ts` (`Database` injectable + `@Global() DatabaseModule`), not split across a separate module/service file pair.
+- **API docs:** Scalar at `/docs`, built from `@nestjs/swagger`'s `DocumentBuilder`/`SwaggerModule` in `src/bootstrap/openapi.ts` (`src/openapi.ts` is the entry `print-openapi` runs).
 - **OpenAPI operationId convention:** every `@ApiOperation` must set an explicit `operationId` (e.g. `operationId: 'messages'`, `operationId: 'createMessage'`). Without it, Nest defaults to `<Controller>_<method>` (e.g. `MessagesController_findAll`), which Orval turns into an ugly generated hook name (`useMessagesControllerFindAll`). An explicit id keeps the generated client readable (`useMessages`, `useCreateMessage`).
 
 ## React apps (`apps/www` and future frontend apps)
@@ -126,7 +139,10 @@ src/
   Check `packages/libs` before writing a helper — it already exports
   `timezoneOptions`, `detectTimezone`, `useDebouncedValue`,
   `useIntersectionObserver`, `useImageUpload` and the onboarding wizard, all of
-  which are easy to reinvent locally.
+  which are easy to reinvent locally. The wizard in `packages/libs` only holds
+  the shared identity steps (opt-in, profile, handle, complete); an app adds its
+  own steps through `afterHandle` and `renderStep` and keeps them in its own
+  `components/onboarding/` (see `apps/friends`).
 
 - **Logic goes in hooks, not components.** A component reads props/hook return values and renders; it doesn't compute, transform, or branch on business rules itself.
 - **One React component per file.** No multi-component files, no inline helper components defined inside another component's body.
@@ -155,7 +171,7 @@ Conventions the template expects from `src/pages/`:
 ## Shared OpenAPI client (`packages/models`)
 
 - `apps/api` is the source of truth. `scripts/export-openapi.ts` boots the Nest app and writes `packages/models/openapi.json`; Orval (`packages/models/orval.config.ts`) turns that into a TanStack Query client under `packages/models/src/generated/`.
-- Both `openapi.json` and `src/generated/` are **committed**, not gitignored — frontend CD workflows (`friends-cd.yml`, `www-cd.yml`) build straight from `bun install` without a database, so the generated client must already be up to date in the tree. Whenever `apps/api`'s routes/DTOs change, run `task app:openapi:generate` (needs local Postgres up) and commit the diff alongside the backend change. The `openapi-client` check (`openapi-ci.yml`) runs on every PR and fails on a stale client; it is the only gate, since `api-cd` deploys without re-checking.
+- Both `openapi.json` and `src/generated/` are **committed**, not gitignored — frontend CD workflows (`friends-cd.yml`, `www-cd.yml`, `workspace-cd.yml`) build straight from `bun install` without a database, so the generated client must already be up to date in the tree. Whenever `apps/api`'s routes/DTOs change, run `task app:openapi:generate` (needs local Postgres up) and commit the diff alongside the backend change. The `openapi-client` check (`openapi-ci.yml`) runs on every PR and fails on a stale client; it is the only gate, since `api-cd` deploys without re-checking.
 - Orval's `schemas` output must **not** be named `models` (it collides with the package's own name, producing a confusing `models/src/generated/models` path) — it's `src/generated/schemas`.
 - Consumers configure the base URL once via `setApiBaseUrl(url)` before rendering; `customFetch` throws if it's never called, instead of silently defaulting to `localhost`.
 
@@ -164,7 +180,7 @@ Conventions the template expects from `src/pages/`:
 | Server                 | Type           | Use for                                                                                                                                                                                                                                                                                                                                                                                     |
 | ---------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `postgres-mcp-hatohui` | Docker (stdio) | Inspecting/querying the local workspace Postgres (`docker-compose.yml`, `localhost:5437`, db `hatohui`) directly — schema exploration, ad-hoc queries, EXPLAIN/performance analysis. Prefer this over `psql`/raw `docker exec` for anything beyond a one-off.                                                                                                                               |
-| `doppler`              | `bunx` (stdio) | Reading/managing secrets if this workspace's env vars move to Doppler. Not currently wired into any app's `.env` flow — apps still use `.env.example` → `.env` (see Tooling above).                                                                                                                                                                                                         |
+| `doppler`              | `bunx` (stdio) | Reading/managing secrets in Doppler. `task setup` already pulls the external-API credentials from Doppler into `apps/api/.env` (see Taskfile below); prod config also lives there.                                                                                                                                                                                                         |
 | `aws-knowledge`        | Remote HTTP    | Looking up current AWS service/API documentation. No auth, rate-limited. Use instead of guessing AWS behavior from training data.                                                                                                                                                                                                                                                           |
 | `shadcn`               | `bunx` (stdio) | Pulling shadcn/ui component source when `packages/ui` (or an app) adopts shadcn. Not wired into any package yet.                                                                                                                                                                                                                                                                            |
 | `cloudflare-api`       | Remote HTTP    | Inspecting/managing the Cloudflare account behind `infra/` — zones, DNS records, Pages projects, R2 buckets. Cloudflare's unified server, covering the whole API. Authenticates with `CLOUDFLARE_API_TOKEN` from the environment (the same token `infra/` needs); without it set, the server won't start. Use it to look up real resource IDs instead of guessing them for `import` blocks. |
@@ -174,8 +190,9 @@ Adding a new MCP server: register it in `.mcp.json`, then add a row here explain
 
 ## Taskfile
 
-- `task setup` — installs deps, copies every app's `.env.example` → `.env`, generates the Prisma client. Safe to re-run.
+- `task setup` — installs Bun and the Doppler CLI if missing, logs into Doppler, installs deps, syncs every app's `.env` (`.env.example` defaults plus Doppler-sourced secrets), generates the Prisma client, then starts local infra and migrates/seeds the database. Safe to re-run.
 - **Any required env var that can't ship a real default in `.env.example`** (an external API credential, or a local secret with a validation constraint like `apps/api`'s `ADMIN_API_KEY` min-length) **must be in `DOPPLER_SOURCED_VARS`** in `scripts/sync-local-env.ts`, or `task setup` silently leaves it unset and the app fails env validation on first boot. `.env.example` may only default vars that are genuinely safe as committed values (local infra URLs, ports).
 - `task app:openapi:generate` — full chain: export spec from Nest, regenerate the Orval client.
-- `task db:migrate` / `task db:generate` / `task db:studio` — local Prisma workflows, always run with `apps/api` as `dir`.
-- `task db:prod:apply` — applies pending migrations to the production database via `prisma migrate deploy`, sourcing `DATABASE_URL` from Doppler's `prod_api` config (no dev-mode prompts).
+- `task db:migrate` / `task db:generate` / `task db:studio` / `task db:seed` — local Prisma workflows, always run with `apps/api` as `dir`.
+- `task db:prod:apply` — applies pending migrations to the production database via `prisma migrate deploy`, sourcing `DATABASE_URL` from Doppler's `prod_api` config (no dev-mode prompts). `db-migrate-cd.yml` does the same on merge.
+- `task db:prod:seed` — seeds production; CI only runs it when core seed files change.

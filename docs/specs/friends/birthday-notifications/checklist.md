@@ -16,13 +16,13 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
 - [x] Indexes on `(status, createdAt)` for claiming and `(status, sentAt)` for
       the quota count and cleanup sweep.
 - [x] `friends.birthday.{reminderdays,dailysendcap,senderemail,sendername}`
-      seeded into `AppConfig` with `update: {}`, so re-seeding never overwrites
+      seeded into `SystemParameters` with `update: {}`, so re-seeding never overwrites
       a value edited in the database.
 
 ## API
 
 - [x] `CronGuard` — `x-admin-key` only, no session. `ADMIN_KEY_HEADER` and the
-      timing-safe compare moved to `libs/admin-key.ts` and shared with
+      timing-safe compare moved to `common/utils/admin-key.ts` and shared with
       `AdminGuard` rather than duplicated.
 - [x] `cron` module at `POST /cron/friends/birthdays/{evaluate,process,cleanup}`.
 - [x] `birthday-schedule.ts` — pure civil-date maths (zone resolution, next
@@ -92,7 +92,7 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
 
 ## Outstanding
 
-- [ ] Set `friends.birthday.senderemail` / `sendername` in `AppConfig` per
+- [ ] Set `friends.birthday.senderemail` / `sendername` in `SystemParameters` per
       environment if the seeded defaults aren't right for that environment.
       Until set, `process` logs a warning and sends nothing.
 - [ ] No alerting on rows stuck in `SENDING` or sitting at `FAILED`. At this

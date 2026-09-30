@@ -16,9 +16,9 @@ implementation spec.
 - [x] ~~Roles are a flat `Role` enum (`ADMIN` / `MEMBER`) on `User`.~~
       **Superseded by [connections-graph](../connections-graph/PRD.md):** the
       `Role` enum and `User.role` column were dropped. Admin-ness is derived per
-      request from the `AppConfig` admin email instead of cached on the row.
-- [x] Admin identity comes from a singleton `AppConfig` table (`adminEmail`, seeded
-      `hatohui@gmail.com` via `apps/api/prisma/seeds/core/app-config.ts`).
+      request from the admin email system parameter instead of cached on the row.
+- [x] Admin identity comes from the `admin.email` row in `SystemParameters` (the
+      table was `AppConfig`; renamed in `20260820000000_rename_app_config_to_system_parameters`).
       ~~assigned to `User.role` on every Google login.~~ **Superseded:** resolved
       at request time (cached in Redis), so it can no longer go stale when the
       config changes.
@@ -105,5 +105,5 @@ implementation spec.
       unstructured JSON column not practical to filter portably at the DB layer.
       The main directory view's search (US1) covers handles client-side instead,
       since that list is already fully fetched.
-- [ ] No admin UI yet for changing `AppConfig.adminEmail` — it's only seeded/DB-
-      editable today.
+- [x] ~~No admin UI for changing the admin email.~~ `apps/workspace` now edits system
+      parameters, but the super-admin email is deliberately seed/DB-only there.
