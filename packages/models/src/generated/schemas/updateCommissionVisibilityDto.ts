@@ -7,5 +7,6 @@
  */
 
 export interface UpdateCommissionVisibilityDto {
-  isHiddenInQueue: boolean;
+  isHiddenInQueue?: boolean;
+  allowGalleryPost?: boolean;
 }

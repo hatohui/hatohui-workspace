@@ -68,6 +68,9 @@ export function useCommissionDetail(id: string) {
     setVisibility: (isHiddenInQueue: boolean) =>
       updateVisibility.mutateAsync({ id, data: { isHiddenInQueue } }),
 
+    setAllowGalleryPost: (allowGalleryPost: boolean) =>
+      updateVisibility.mutateAsync({ id, data: { allowGalleryPost } }),
+
     deliver: async (files: File[]) => {
       const uploaded = await Promise.all(
         files.map((file) => uploadImage(file)),

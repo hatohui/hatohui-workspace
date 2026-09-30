@@ -4,7 +4,8 @@ import { UserSettingsModule } from '@/modules/user-settings/user-settings.module
 import { CommissionOpeningsModule } from '@/modules/commission-openings/commission-openings.module';
 import { CommissionPricingModule } from '@/modules/commission-pricing/commission-pricing.module';
 import { ClientsModule } from '@/modules/clients/clients.module';
-import { StorageCleanupModule } from '@/modules/storage-cleanup/storage-cleanup.module';
+import { CommissionAttachmentsModule } from '@/modules/commission-attachments/commission-attachments.module';
+import { CommissionPurgeModule } from '@/modules/commission-purge/commission-purge.module';
 import { CommissionsController } from '@/modules/commissions/commissions.controller';
 import { CommissionsService } from '@/modules/commissions/services/commissions.service';
 
@@ -15,7 +16,8 @@ import { CommissionsService } from '@/modules/commissions/services/commissions.s
     CommissionOpeningsModule,
     CommissionPricingModule,
     ClientsModule,
-    StorageCleanupModule,
+    CommissionAttachmentsModule,
+    CommissionPurgeModule,
   ],
   controllers: [CommissionsController],
   providers: [CommissionsService],

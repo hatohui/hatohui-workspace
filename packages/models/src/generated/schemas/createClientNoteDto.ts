@@ -7,5 +7,10 @@
  */
 
 export interface CreateClientNoteDto {
+  /** May be empty when images are attached */
   body: string;
+  /** Storage keys of images uploaded with this comment */
+  keys?: string[];
+  /** Progress update this comments on; omit for a general note */
+  progressId?: string;
 }

@@ -5,6 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { CommentDto } from './commentDto';
 import type { CommissionProgressDtoBody } from './commissionProgressDtoBody';
 import type { CommissionProgressDtoVisibility } from './commissionProgressDtoVisibility';
 
@@ -15,11 +16,23 @@ export interface CommissionProgressDto {
   projectId: string | null;
   /** @nullable */
   title: string | null;
+  /**
+     * Markdown
+     * @nullable
+     */
+  description: string | null;
   /** @nullable */
   body: CommissionProgressDtoBody;
   images: string[];
   isFinal: boolean;
+  /** Asks the client to approve this sketch */
+  requestsApproval: boolean;
+  /** @nullable */
+  approvedAt: string | null;
   visibility: CommissionProgressDtoVisibility;
   createdAt: string;
   updatedAt: string;
+  /** @nullable */
+  seenByClientAt: string | null;
+  comments: CommentDto[];
 }

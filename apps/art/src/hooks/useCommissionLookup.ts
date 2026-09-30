@@ -2,12 +2,13 @@
 
 import {
   useLookupCommissionByCode,
-  useAddCommissionReferenceAssets,
   useAddClientCommissionNote,
+  useApproveCommissionProgress,
   getLookupCommissionByCodeQueryKey,
+  getCommissionProgressByCodeQueryKey,
 } from '@hatohui/models';
 import { useQueryClient } from '@tanstack/react-query';
-import { useImageUpload } from '@hatohui/libs';
+import type { CommentInput } from './useCommentComposer';
 
 export function useCommissionCodeLookup(code: string) {
   const queryClient = useQueryClient();
@@ -15,33 +16,32 @@ export function useCommissionCodeLookup(code: string) {
     queryClient.invalidateQueries({
       queryKey: getLookupCommissionByCodeQueryKey(code),
     });
+  const invalidateProgress = () =>
+    queryClient.invalidateQueries({
+      queryKey: getCommissionProgressByCodeQueryKey(code),
+    });
 
   const detailQuery = useLookupCommissionByCode(code);
-  const addReferenceAssets = useAddCommissionReferenceAssets({
-    mutation: { onSuccess: invalidate },
-  });
   const addNote = useAddClientCommissionNote({
     mutation: { onSuccess: invalidate },
   });
-  const { uploadImage, isUploading } = useImageUpload();
+  const approve = useApproveCommissionProgress({
+    mutation: {
+      onSuccess: () => Promise.all([invalidate(), invalidateProgress()]),
+    },
+  });
 
   return {
     commission: detailQuery.data?.data,
     isLoading: detailQuery.isPending,
 
-    addReferenceAssets: async (files: File[], urls: string[] = []) => {
-      const uploaded = await Promise.all(
-        files.map((file) =>
-          uploadImage(file, detailQuery.data?.data.clientName),
-        ),
-      );
-      return addReferenceAssets.mutateAsync({
-        code,
-        data: { keys: uploaded.map((asset) => asset.key), urls },
-      });
+    addNote: async (input: CommentInput, progressId?: string) => {
+      await addNote.mutateAsync({ code, data: { ...input, progressId } });
+      if (progressId) await invalidateProgress();
     },
-    isUploadingReferences: isUploading || addReferenceAssets.isPending,
 
-    addNote: (body: string) => addNote.mutateAsync({ code, data: { body } }),
+    approve: (progressId: string) =>
+      approve.mutateAsync({ code, id: progressId }),
+    approvingId: approve.isPending ? approve.variables.id : null,
   };
 }

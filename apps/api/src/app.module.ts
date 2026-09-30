@@ -33,6 +33,7 @@ import { ClientsModule } from '@/modules/clients/clients.module';
 import { CommissionFollowersModule } from '@/modules/commission-followers/commission-followers.module';
 import { CommissionGroupsModule } from '@/modules/commission-groups/commission-groups.module';
 import { CommissionAccessModule } from '@/modules/commission-access/commission-access.module';
+import { CommissionAttachmentsModule } from '@/modules/commission-attachments/commission-attachments.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { CommissionAccessModule } from '@/modules/commission-access/commission-a
     CommissionFollowersModule,
     CommissionGroupsModule,
     CommissionAccessModule,
+    CommissionAttachmentsModule,
   ],
 })
 export class AppModule {}

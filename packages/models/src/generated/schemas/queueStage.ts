@@ -12,6 +12,5 @@ export type QueueStage = typeof QueueStage[keyof typeof QueueStage];
 export const QueueStage = {
   WAITING: 'WAITING',
   SKETCHING: 'SKETCHING',
-  SKETCH_APPROVED: 'SKETCH_APPROVED',
   IN_PROGRESS: 'IN_PROGRESS',
 } as const;

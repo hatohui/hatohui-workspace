@@ -367,7 +367,91 @@ export function useCommissionProgressByCode<TData = Awaited<ReturnType<typeof co
 
 
 
-export type updateCommissionProgressResponse200 = {
+export type approveCommissionProgressResponse200 = {
+  data: CommissionProgressDto
+  status: 200
+}
+
+export type approveCommissionProgressResponseSuccess = (approveCommissionProgressResponse200) & {
+  headers: Headers;
+};
+;
+
+export type approveCommissionProgressResponse = (approveCommissionProgressResponseSuccess)
+
+export const getApproveCommissionProgressUrl = (code: string,
+    id: string,) => {
+
+
+
+
+  return `/commission-progress/by-code/${code}/${id}/approve`
+}
+
+/**
+ * @summary Client approves a sketch the artist asked them to approve
+ */
+export const approveCommissionProgress = async (code: string,
+    id: string, options?: RequestInit): Promise<approveCommissionProgressResponse> => {
+
+  return customFetch<approveCommissionProgressResponse>(getApproveCommissionProgressUrl(code,id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getApproveCommissionProgressMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof approveCommissionProgress>>, TError,{code: string;id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof approveCommissionProgress>>, TError,{code: string;id: string}, TContext> => {
+
+const mutationKey = ['approveCommissionProgress'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof approveCommissionProgress>>, {code: string;id: string}> = (props) => {
+          const {code,id} = props ?? {};
+
+          return  approveCommissionProgress(code,id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ApproveCommissionProgressMutationResult = NonNullable<Awaited<ReturnType<typeof approveCommissionProgress>>>
+
+    export type ApproveCommissionProgressMutationError = unknown
+
+    /**
+ * @summary Client approves a sketch the artist asked them to approve
+ */
+export const useApproveCommissionProgress = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof approveCommissionProgress>>, TError,{code: string;id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof approveCommissionProgress>>,
+        TError,
+        {code: string;id: string},
+        TContext
+      > => {
+      return useMutation(getApproveCommissionProgressMutationOptions(options), queryClient);
+    }
+    export type updateCommissionProgressResponse200 = {
   data: CommissionProgressDto
   status: 200
 }

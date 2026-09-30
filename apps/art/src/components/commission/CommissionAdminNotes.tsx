@@ -12,6 +12,8 @@ import {
   SelectValue,
   Textarea,
 } from '@hatohui/ui';
+import { SeenStatus } from '@/components/shared/SeenStatus';
+import { commentSeenState } from '@/lib/seenState';
 
 export function CommissionAdminNotes({
   notes,
@@ -42,6 +44,9 @@ export function CommissionAdminNotes({
                 : t('commission.admin.detail.noteVisibilityInternal')}
             </span>
             {note.body}
+            <span className="ml-2">
+              <SeenStatus state={commentSeenState(note, 'ARTIST', true)} />
+            </span>
           </p>
         ))}
       </div>

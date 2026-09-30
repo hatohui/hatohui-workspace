@@ -296,12 +296,18 @@ model Asset {
 
   uploadedById String?
   uploadedBy   User?   @relation(fields: [uploadedById], references: [id])
+
+  commissionId String?
+  commission   Commission? @relation(fields: [commissionId], references: [id], onDelete: SetNull)
+
+  @@index([commissionId])
 }
 
 enum ProcessType {
   ASSET_THUMBNAIL
   NOTIFICATION_EMAIL
   STORAGE_DELETE
+  COMMISSION_PURGE
 }
 
 model ProcessQueue {
@@ -528,8 +534,13 @@ model Commission {
   passcodeSource    PasscodeSource?
   passcodeUpdatedAt DateTime?
 
+  allowGalleryPost Boolean   @default(true)
+  purgedAt         DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  resultAssets Asset[]
 
   detail   CommissionDetail?
   comments Comment[]
@@ -662,11 +673,15 @@ model CommissionProgress {
   projectId String?
   project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
-  title      String?
-  body       Json?
-  images     String[]   @default([])
-  isFinal    Boolean    @default(false)
-  visibility Visibility @default(CLIENT)
+  title            String?
+  description      String?
+  body             Json?
+  images           String[]   @default([])
+  isFinal          Boolean    @default(false)
+  visibility       Visibility @default(CLIENT)
+  seenByClientAt   DateTime?
+  requestsApproval Boolean    @default(false)
+  approvedAt       DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -718,6 +733,8 @@ model Comment {
 
   visibility Visibility @default(INTERNAL)
   body       String
+  seenAt     DateTime?
+  images     String[]   @default([])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

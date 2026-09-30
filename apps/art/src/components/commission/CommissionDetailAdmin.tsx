@@ -11,7 +11,9 @@ import { CommissionDeliverPanel } from './CommissionDeliverPanel';
 import { CommissionProgressTimeline } from './CommissionProgressTimeline';
 import { CommissionAdminNotes } from './CommissionAdminNotes';
 import { CommissionHistoryList } from './CommissionHistoryList';
+import { CommissionGalleryToggle } from './CommissionGalleryToggle';
 import { CommissionVisibilityToggle } from './CommissionVisibilityToggle';
+import { CommissionPurgeBanner } from './CommissionPurgeBanner';
 import { CommissionPasscodePanel } from './CommissionPasscodePanel';
 
 export function CommissionDetailAdmin({ id }: { id: string }) {
@@ -38,12 +40,44 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
             {commission.clientName} · {commission.clientEmail}
           </p>
         </div>
-        <CommissionVisibilityToggle
-          isHiddenInQueue={commission.isHiddenInQueue}
-          onChange={detail.setVisibility}
-        />
+        {!commission.purgedAt && (
+          <div className="flex flex-wrap items-center gap-2">
+            <CommissionGalleryToggle
+              allowGalleryPost={commission.allowGalleryPost}
+              onChange={detail.setAllowGalleryPost}
+            />
+            <CommissionVisibilityToggle
+              isHiddenInQueue={commission.isHiddenInQueue}
+              onChange={detail.setVisibility}
+            />
+          </div>
+        )}
       </div>
 
+      <CommissionPurgeBanner
+        purgedAt={commission.purgedAt}
+        purgeAt={commission.purgeAt}
+      />
+
+      {commission.purgedAt ? (
+        <CommissionHistoryList history={commission.history} />
+      ) : (
+        <CommissionDetailBody detail={detail} />
+      )}
+    </div>
+  );
+}
+
+function CommissionDetailBody({
+  detail,
+}: {
+  detail: ReturnType<typeof useCommissionDetail>;
+}) {
+  const commission = detail.commission;
+  if (!commission) return null;
+
+  return (
+    <>
       <RichTextView value={commission.idea} />
 
       <CommissionStatusControl
@@ -75,6 +109,6 @@ export function CommissionDetailAdmin({ id }: { id: string }) {
         onAdd={detail.addNote}
       />
       <CommissionHistoryList history={commission.history} />
-    </div>
+    </>
   );
 }

@@ -180,17 +180,15 @@
   },
   "queue": {
     "title": "Queue",
-    "subtitle": "Commissions in the order they will be worked on.",
     "empty": "Nothing in the queue right now.",
-    "hint_one": "{{count}} commission in line. Tap yours to open it with your passcode.",
-    "hint_other": "{{count}} commissions in line. Tap yours to open it with your passcode.",
+    "hint_one": "{{count}} commission in line. Tap yours to open it.",
+    "hint_other": "{{count}} commissions in line. Tap yours to open it.",
     "since": "since {{date}}",
     "locked": "Passcode protected",
     "stageProgress": "Stage {{current}} of {{total}}",
     "stage": {
       "WAITING": "Waiting",
       "SKETCHING": "Sketching",
-      "SKETCH_APPROVED": "Sketch approved",
       "IN_PROGRESS": "In progress"
     },
     "passcode": {
@@ -202,19 +200,19 @@
     "unlock": {
       "title": "#{{position}} · {{type}}",
       "description": "Enter the passcode for this commission to see its details.",
-      "noPasscode": "This one doesn't have a passcode yet.",
-      "noPasscodeHelp": "Ask the artist for a passcode, or open your order with the private code from your email.",
-      "gotIt": "Got it",
       "open": "Open",
-      "opening": "Opening…"
+      "opening": "Opening…",
+      "titlePosition": "#{{position}}",
+      "order": "Your order"
     },
     "findMine": {
       "title": "Can't find yours?",
-      "subtitle": "Look it up with your email and passcode, or use your private order code.",
-      "emailTab": "Email & passcode",
+      "subtitle": "Look it up with your email, or use your private order code.",
+      "emailTab": "Email",
       "codeTab": "Order code",
       "email": "Email",
-      "codeHint": "The code is in the link from your order email."
+      "codeHint": "The code is in the link from your order email.",
+      "noMatches": "No orders found for that email."
     }
   },
   "orders": {
@@ -224,10 +222,6 @@
     "codeGo": "Go",
     "deliverables": "Final artwork",
     "deliveredAt": "Delivered on {{date}}",
-    "existingReferences": "Your uploaded references",
-    "addLinkLabel": "Or paste a link",
-    "addLinkPlaceholder": "https://...",
-    "addLink": "Add link",
     "backToQueue": "Queue",
     "greeting": "Hi {{name}}, here is your commission",
     "position": "#{{position}} of {{total}} in the queue",
@@ -238,12 +232,9 @@
     },
     "tabs": {
       "updates": "Updates",
-      "messages": "Messages",
-      "references": "References",
-      "request": "Your request"
+      "settings": "Settings"
     },
     "noUpdates": "No updates yet. Progress sketches and previews will show up here.",
-    "noMessages": "No messages yet.",
     "passcode": {
       "title": "Queue passcode",
       "saved": "Passcode saved. Use it to open this from the queue.",
@@ -258,7 +249,31 @@
       "newLabel": "New passcode",
       "save": "Save",
       "hint": "At least {{min}} characters."
-    }
+    },
+    "requestPost": "Request sent",
+    "approval": {
+      "prompt": "The artist is asking you to approve this sketch.",
+      "changesHint": "Want changes? Leave a comment instead.",
+      "approve": "Approve sketch",
+      "approving": "Approving…",
+      "approved": "You approved this sketch on {{date}}."
+    },
+    "addLink": "Add link",
+    "addLinkLabel": "Or paste a link",
+    "addLinkPlaceholder": "https://...",
+    "newestFirst": "Newest first",
+    "oldestFirst": "Oldest first",
+    "settings": {
+      "publicQueue": "Show in the public queue",
+      "publicQueueHint": "Others see only the type and stage, never your name or details.",
+      "contact": "How to reach you",
+      "contactHint": "Where the artist should contact you about this commission.",
+      "contactSaved": "Saved. The artist will use this from now on.",
+      "contactValuePlaceholder": "Your handle or username",
+      "galleryPost": "Gallery posting",
+      "galleryPostHint": "Let the artist post the finished artwork in their gallery. Your name and details are never shown."
+    },
+    "purgeNotice": "Your chat, updates and uploaded files will be deleted on {{date}}. Save your final artwork before then."
   },
   "commission": {
     "gallery": {
@@ -275,7 +290,6 @@
       "optionLabel": "Rendering option",
       "optionPlaceholder": "Choose an option",
       "addonsLabel": "Add-ons",
-      "examplesLabel": "Examples",
       "estimateLabel": "Calculated estimate",
       "rushFeeIncluded": "includes +{{amount}} rush fee, deadline under {{days}} days",
       "rushFeeHint": "Deadlines under {{days}} days add a {{amount}} rush fee.",
@@ -297,8 +311,7 @@
         "contact": "For updates and questions.",
         "contactValue": "Username or profile link.",
         "references": "Character sheets, outfits, poses, anything that helps.",
-        "links": "Press Enter to add each one.",
-        "passcode": "Lets you open this from the public queue."
+        "links": "Press Enter to add each one."
       },
       "placeholders": {
         "name": "e.g. Mira Tanaka",
@@ -312,9 +325,7 @@
         "required": "This field is required.",
         "ideaRequired": "Tell me a little about what you'd like made.",
         "acceptTerms": "Please accept the terms of service to continue.",
-        "deadlineTooSoon": "Pick a date at least {{count}} days from today.",
-        "passcodeTooShort_one": "Use at least {{count}} character.",
-        "passcodeTooShort_other": "Use at least {{count}} characters."
+        "deadlineTooSoon": "Pick a date at least {{count}} days from today."
       },
       "emailMissing": "There's no email on file for this identity yet. Add one so I can reach you.",
       "submitFailed": "Couldn't submit your request. Check your details and try again.",
@@ -342,7 +353,10 @@
         "request": "Your request",
         "requestHint": "Who you are, and what you'd like made."
       },
-      "passcodeLabel": "Queue passcode (optional)"
+      "allowGalleryPostLabel": "OK to post the finished artwork in the artist's gallery",
+      "allowGalleryPostTooltip": "Only the finished image is kept after the commission ends. Your chat and files are deleted.",
+      "allowGalleryPostFeeTooltip": "The artist charges a private commission fee if you do not allow gallery posting.",
+      "privateFeeIncluded": "includes +{{amount}} private commission fee"
     },
     "preferredContactMethod": {
       "EMAIL": "Email",
@@ -519,7 +533,11 @@
         "titlePlaceholder": "What's this update about? (optional)",
         "imagesLabel": "Images",
         "markFinal": "This is the final artwork",
-        "post": "Post"
+        "post": "Post",
+        "requestApproval": "Ask client to approve",
+        "awaitingApproval": "Waiting for approval",
+        "approvedByClient": "Approved by client",
+        "descriptionPlaceholder": "Describe this update… Markdown works, and you can paste or drop images."
       },
       "visibility": {
         "show": "Show publicly",
@@ -649,6 +667,14 @@
           "percent": "Percent",
           "addRow": "Add add-on"
         }
+      },
+      "gallery": {
+        "allow": "Allow gallery post",
+        "disallow": "Disallow gallery post"
+      },
+      "purge": {
+        "purged": "Purged on {{date}}. Only the customer, the status log, references and the finished artwork are kept.",
+        "scheduled": "Chat, timeline and uploads will be deleted on {{date}}. The finished artwork stays in the gallery."
       }
     },
     "closed": {
@@ -699,6 +725,11 @@
       "settings": "General",
       "currency": "Currency",
       "autoAccept": "Auto-accept requests",
+      "retentionDays": "Keep finished commissions for (days)",
+      "retentionDaysHint": "Purged after this many days: chat, timeline and uploads are deleted; the artwork moves to your gallery.",
+      "galleryPostDefault": "Allow gallery posting by default",
+      "privateFee": "Private commission fee (smallest currency unit)",
+      "privateFeeHint": "Charged when the client does not allow gallery posting. Leave empty for no fee.",
       "notificationEmail": "Notification email",
       "notificationEmailPlaceholder": "you@example.com",
       "paymentMethods": "Payment methods",
@@ -923,6 +954,22 @@
     "zoomOut": "Zoom out",
     "reset": "Reset zoom",
     "close": "Close",
-    "toggleCaption": "Show or hide details"
+    "toggleCaption": "Show or hide details",
+    "image": "Image"
+  },
+  "comments": {
+    "you": "You",
+    "placeholder": "Write a comment…",
+    "send": "Comment",
+    "author": {
+      "ARTIST": "Artist",
+      "CLIENT": "Client"
+    },
+    "new": "New",
+    "seen": "Seen",
+    "notSeen": "Not seen yet",
+    "attach": "Attach images",
+    "removeAttachment": "Remove image",
+    "sendFailed": "Couldn't send. Check the images and try again."
   }
 }

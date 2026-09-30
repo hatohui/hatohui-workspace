@@ -18,4 +18,10 @@ export interface CommissionSettingsDto {
      */
   notificationEmail: string | null;
   paymentMethods: PaymentMethodEntryDto[];
+  /** Days after completion before the commission is purged */
+  retentionDays: number;
+  /** Default for the "OK to post in gallery" choice on new orders */
+  galleryPostDefault: boolean;
+  /** @nullable */
+  privateFee: number | null;
 }

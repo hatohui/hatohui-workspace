@@ -10,6 +10,13 @@ export class CommissionDetailDto extends CommissionDto {
 
   @ApiProperty({ type: CommissionStatusHistoryDto, isArray: true })
   history: CommissionStatusHistoryDto[];
+
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'When the retention purge is due; null if none is scheduled',
+  })
+  purgeAt: string | null;
 }
 
 export class CommissionPublicDetailDto extends CommissionPublicDto {
@@ -25,4 +32,11 @@ export class CommissionPublicDetailDto extends CommissionPublicDto {
 
   @ApiProperty({ type: CommentDto, isArray: true })
   comments: CommentDto[];
+
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'When the retention purge is due; null if none is scheduled',
+  })
+  purgeAt: string | null;
 }

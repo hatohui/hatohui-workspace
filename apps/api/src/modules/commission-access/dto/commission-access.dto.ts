@@ -28,7 +28,7 @@ export class UnlockedCommissionDto {
   accessCode: string;
 }
 
-export class PasscodeLookupDto {
+export class EmailLookupDto {
   @ApiProperty({ description: 'Artist whose queue is being searched' })
   @IsString()
   artistId: string;
@@ -36,16 +36,21 @@ export class PasscodeLookupDto {
   @ApiProperty({ example: 'jane@example.com' })
   @IsEmail()
   email: string;
-
-  @ApiProperty({ example: 'K7QM2PXA' })
-  @IsString()
-  @MaxLength(PASSCODE_MAX_LENGTH)
-  passcode: string;
 }
 
 export class CommissionAccessMatchDto {
   @ApiProperty()
-  accessCode: string;
+  id: string;
+
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'Null when the order is passcode protected',
+  })
+  accessCode: string | null;
+
+  @ApiProperty()
+  requiresPasscode: boolean;
 
   @ApiProperty({ enum: CommissionStatus })
   status: CommissionStatus;

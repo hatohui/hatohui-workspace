@@ -9,6 +9,7 @@ export interface EstimateSelection {
   optionKey?: string;
   addonKeys?: string[];
   deadline?: string;
+  allowGalleryPost?: boolean;
 }
 
 export interface Estimate {
@@ -85,5 +86,11 @@ export function estimateCommission(
   const rushFee = isRush(pricing, selection.deadline, now)
     ? (pricing.rushFee?.feeAmount ?? 0)
     : 0;
-  return { low: low + rushFee, high: high == null ? null : high + rushFee };
+  const privateFee =
+    selection.allowGalleryPost === false ? (pricing.privateFee ?? 0) : 0;
+  const surcharge = rushFee + privateFee;
+  return {
+    low: low + surcharge,
+    high: high == null ? null : high + surcharge,
+  };
 }

@@ -32,6 +32,7 @@ export interface CommissionFormState {
   contactValue: string;
   isNewContact: boolean;
   isPublic: boolean;
+  allowGalleryPost: boolean | null;
   acceptedTerms: boolean;
   referenceLinks: string[];
 }
@@ -50,6 +51,7 @@ const INITIAL_STATE: CommissionFormState = {
   contactValue: '',
   isNewContact: false,
   isPublic: true,
+  allowGalleryPost: null,
   acceptedTerms: false,
   referenceLinks: [],
 };
@@ -103,7 +105,6 @@ function loadDraft(): CommissionFormState | null {
 export function useCommissionForm(artistId: string) {
   const [state, setState] = useState<CommissionFormState>(INITIAL_STATE);
   const [files, setFiles] = useState<File[]>([]);
-  const [passcode, setPasscode] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isDraftRestored, setIsDraftRestored] = useState(false);
   const [hasSubmitError, setHasSubmitError] = useState(false);
@@ -144,6 +145,7 @@ export function useCommissionForm(artistId: string) {
     state.optionKey || undefined,
     state.addonKeys,
     state.deadline || undefined,
+    state.allowGalleryPost,
   );
 
   const isIdeaEmpty = isTiptapDocEmpty(state.idea);
@@ -209,7 +211,7 @@ export function useCommissionForm(artistId: string) {
         referenceAssets: uploaded.map((asset) => asset.key),
         referenceUrls: state.referenceLinks,
         isPublic: state.isPublic,
-        passcode: passcode.trim() || undefined,
+        allowGalleryPost: pricing.allowGalleryPost,
       },
     });
   };
@@ -242,7 +244,6 @@ export function useCommissionForm(artistId: string) {
   const reset = () => {
     setState(INITIAL_STATE);
     setFiles([]);
-    setPasscode('');
     setIsDraftRestored(false);
     window.localStorage.removeItem(DRAFT_STORAGE_KEY);
   };
@@ -252,8 +253,6 @@ export function useCommissionForm(artistId: string) {
     update,
     files,
     setFiles,
-    passcode,
-    setPasscode,
     submit,
     reset,
     isSubmitting: submitCommission.isPending || isUploading,

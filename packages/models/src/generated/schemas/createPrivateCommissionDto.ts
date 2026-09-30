@@ -27,6 +27,8 @@ export interface CreatePrivateCommissionDto {
   referenceUrls?: string[];
   /** Whether this commission (status, type) should show in the public /queue */
   isPublic?: boolean;
+  /** Whether the finished artwork may be posted in the artist's gallery; defaults to the artist's setting */
+  allowGalleryPost?: boolean;
   clientName: string;
   clientEmail: string;
 }

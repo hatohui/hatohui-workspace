@@ -41,6 +41,15 @@ export function CommissionArtSettingsForm({
     initial.currency,
   );
   const [autoAccept, setAutoAccept] = useState(initial.autoAccept);
+  const [retentionDays, setRetentionDays] = useState(
+    String(initial.retentionDays),
+  );
+  const [galleryPostDefault, setGalleryPostDefault] = useState(
+    initial.galleryPostDefault,
+  );
+  const [privateFee, setPrivateFee] = useState(
+    initial.privateFee == null ? '' : String(initial.privateFee),
+  );
   const [email, setEmail] = useState(initial.notificationEmail ?? '');
   const [methods, setMethods] = useState<PaymentMethodDraft[]>(
     initial.paymentMethods.map((m) => ({
@@ -54,6 +63,9 @@ export function CommissionArtSettingsForm({
       await onSave({
         currency,
         autoAccept,
+        retentionDays: Number(retentionDays),
+        galleryPostDefault,
+        privateFee: privateFee.trim() ? Number(privateFee) : null,
         notificationEmail: email.trim() || null,
         paymentMethods: methods
           .filter((m) => m.name.trim())
@@ -117,6 +129,52 @@ export function CommissionArtSettingsForm({
         <Label htmlFor="art-auto-accept">
           {t('app.commissionSettings.autoAccept')}
         </Label>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <Switch
+          id="art-gallery-default"
+          checked={galleryPostDefault}
+          onCheckedChange={setGalleryPostDefault}
+        />
+        <Label htmlFor="art-gallery-default">
+          {t('app.commissionSettings.galleryPostDefault')}
+        </Label>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label htmlFor="art-retention-days">
+            {t('app.commissionSettings.retentionDays')}
+          </Label>
+          <Input
+            id="art-retention-days"
+            type="number"
+            min={1}
+            max={365}
+            value={retentionDays}
+            onChange={(event) => setRetentionDays(event.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            {t('app.commissionSettings.retentionDaysHint')}
+          </p>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="art-private-fee">
+            {t('app.commissionSettings.privateFee')}
+          </Label>
+          <Input
+            id="art-private-fee"
+            type="number"
+            min={0}
+            value={privateFee}
+            onChange={(event) => setPrivateFee(event.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            {t('app.commissionSettings.privateFeeHint')}
+          </p>
+        </div>
       </div>
 
       <div className="space-y-2">

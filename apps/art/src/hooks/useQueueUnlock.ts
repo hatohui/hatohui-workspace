@@ -2,39 +2,75 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from '@hatohui/i18n';
 import {
   useUnlockQueuedCommission,
+  type CommissionAccessMatchDto,
   type CommissionQueueItemDto,
 } from '@hatohui/models';
 import { queueOrderPath } from '@/constants/queue';
+import { useCommissionFormatters } from './useCommissionFormatters';
 import { usePasscodeError } from './usePasscodeError';
 
+interface UnlockTarget {
+  id: string;
+  title: string;
+}
+
+type TypeFields = Pick<
+  CommissionQueueItemDto,
+  'commissionTypeKey' | 'commissionTypeLabel'
+>;
+
 export function useQueueUnlock() {
+  const { t } = useTranslation('art');
+  const format = useCommissionFormatters();
   const router = useRouter();
   const { artist } = useParams<{ artist: string }>();
-  const [item, setItem] = useState<CommissionQueueItemDto | null>(null);
+  const [target, setTarget] = useState<UnlockTarget | null>(null);
   const [passcode, setPasscode] = useState('');
   const unlock = useUnlockQueuedCommission();
   const errorMessage = usePasscodeError();
 
-  const open = (next: CommissionQueueItemDto) => {
+  const typeOf = (item: TypeFields) =>
+    item.commissionTypeKey || item.commissionTypeLabel
+      ? format.type(item.commissionTypeKey, item.commissionTypeLabel)
+      : null;
+
+  const open = (next: UnlockTarget) => {
     unlock.reset();
     setPasscode('');
-    setItem(next);
+    setTarget(next);
   };
 
   const submit = async () => {
-    if (!item || !passcode.trim()) return;
+    if (!target || !passcode.trim()) return;
     const result = await unlock
-      .mutateAsync({ data: { commissionId: item.id, passcode } })
+      .mutateAsync({ data: { commissionId: target.id, passcode } })
       .catch(() => null);
     if (result) router.push(queueOrderPath(artist, result.data.accessCode));
   };
 
+  const openQueueItem = (item: CommissionQueueItemDto) => {
+    if (item.accessCode) {
+      router.push(queueOrderPath(artist, item.accessCode));
+      return;
+    }
+    const type = typeOf(item);
+    open({
+      id: item.id,
+      title: type
+        ? t('queue.unlock.title', { position: item.position, type })
+        : t('queue.unlock.titlePosition', { position: item.position }),
+    });
+  };
+
   return {
-    item,
-    open,
-    close: () => setItem(null),
+    target,
+    openQueueItem,
+    openMatch: (match: CommissionAccessMatchDto) =>
+      open({ id: match.id, title: typeOf(match) ?? t('queue.unlock.order') }),
+    close: () => setTarget(null),
     passcode,
     setPasscode,
     submit,
