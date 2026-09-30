@@ -7,7 +7,8 @@ import {
   useSubmitCommission,
   type CommissionIdentityDto,
 } from '@hatohui/models';
-import { useAuth, useImageUpload, isTiptapDocEmpty } from '@hatohui/libs';
+import { useAuth, useImageUpload } from '@hatohui/libs';
+import { isTiptapDocEmpty } from '@/lib/tiptap';
 import {
   EMAIL_CONTACT_PLATFORM,
   COMMISSION_MIN_DEADLINE_DAYS,

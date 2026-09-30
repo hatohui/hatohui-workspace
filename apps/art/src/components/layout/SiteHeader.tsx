@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslation } from '@hatohui/i18n';
-import { useAuth, GoogleLoginIconButton } from '@hatohui/libs';
+import { useAuth } from '@hatohui/libs';
+import { GoogleLoginIconButton } from './GoogleLoginIconButton';
 import { PreferencesMenu } from './PreferencesMenu';
 import { SiteNav } from './SiteNav';
 import { WorkspaceButton } from './WorkspaceButton';
