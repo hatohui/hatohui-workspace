@@ -21,6 +21,11 @@ tasks:
     dir: apps/art
     cmd: bun run dev
 
+  workspace:
+    desc: 'Run the workspace admin console dev server'
+    dir: apps/workspace
+    cmd: bun run dev
+
   openapi:export:
     desc: 'Export the NestJS OpenAPI spec to packages/models/openapi.json'
     internal: true
