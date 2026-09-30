@@ -8,7 +8,6 @@ import {
   EMAIL_REGEX,
   type CommissionRequiredField,
 } from '@/constants/commission';
-import { PASSCODE_MIN_LENGTH } from '@/constants/queue';
 import type { useCommissionForm } from './useCommissionForm';
 import type { useCommissionContact } from './useCommissionContact';
 
@@ -37,12 +36,6 @@ export function useCommissionValidation(
             ? null
             : t('commission.form.invalidEmail'),
     contactValue: contact.needsValue && !contact.value.trim() ? required : null,
-    passcode:
-      form.passcode.trim() && form.passcode.trim().length < PASSCODE_MIN_LENGTH
-        ? t('commission.form.errors.passcodeTooShort', {
-            count: PASSCODE_MIN_LENGTH,
-          })
-        : null,
     idea: form.isIdeaEmpty ? t('commission.form.errors.ideaRequired') : null,
     acceptTerms: state.acceptedTerms
       ? null

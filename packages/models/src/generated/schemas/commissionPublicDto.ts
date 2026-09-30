@@ -34,6 +34,14 @@ export interface CommissionPublicDto {
   quote: number | null;
   referenceAssets: string[];
   passcodeSource: PasscodeSource | null;
+  /** Whether the client may set a passcode yet (once accepted) */
+  canSetPasscode: boolean;
+  isHiddenInQueue: boolean;
+  allowGalleryPost: boolean;
+  /** @nullable */
+  contactPlatform: string | null;
+  /** @nullable */
+  contactValue: string | null;
   /** @nullable */
   deliveredAt: string | null;
   createdAt: string;

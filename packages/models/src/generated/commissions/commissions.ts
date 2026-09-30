@@ -42,6 +42,7 @@ import type {
   SendConfirmationEmailDto,
   SendQuoteDto,
   SubmitCommissionDto,
+  UpdateClientPreferencesDto,
   UpdateCommissionPriorityDto,
   UpdateCommissionQuoteDto,
   UpdateCommissionStatusDto,
@@ -669,6 +670,171 @@ export const useAddCommissionReferenceAssets = <TError = unknown,
       > => {
       return useMutation(getAddCommissionReferenceAssetsMutationOptions(options), queryClient);
     }
+    export type updateClientCommissionPreferencesResponse200 = {
+  data: CommissionPublicDto
+  status: 200
+}
+
+export type updateClientCommissionPreferencesResponseSuccess = (updateClientCommissionPreferencesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateClientCommissionPreferencesResponse = (updateClientCommissionPreferencesResponseSuccess)
+
+export const getUpdateClientCommissionPreferencesUrl = (code: string,) => {
+
+
+
+
+  return `/commissions/lookup/code/${code}/preferences`
+}
+
+/**
+ * @summary Client changes queue visibility or how to reach them
+ */
+export const updateClientCommissionPreferences = async (code: string,
+    updateClientPreferencesDto: UpdateClientPreferencesDto, options?: RequestInit): Promise<updateClientCommissionPreferencesResponse> => {
+
+  return customFetch<updateClientCommissionPreferencesResponse>(getUpdateClientCommissionPreferencesUrl(code),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateClientPreferencesDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateClientCommissionPreferencesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateClientCommissionPreferences>>, TError,{code: string;data: UpdateClientPreferencesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateClientCommissionPreferences>>, TError,{code: string;data: UpdateClientPreferencesDto}, TContext> => {
+
+const mutationKey = ['updateClientCommissionPreferences'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateClientCommissionPreferences>>, {code: string;data: UpdateClientPreferencesDto}> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  updateClientCommissionPreferences(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateClientCommissionPreferencesMutationResult = NonNullable<Awaited<ReturnType<typeof updateClientCommissionPreferences>>>
+    export type UpdateClientCommissionPreferencesMutationBody = UpdateClientPreferencesDto
+    export type UpdateClientCommissionPreferencesMutationError = unknown
+
+    /**
+ * @summary Client changes queue visibility or how to reach them
+ */
+export const useUpdateClientCommissionPreferences = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateClientCommissionPreferences>>, TError,{code: string;data: UpdateClientPreferencesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateClientCommissionPreferences>>,
+        TError,
+        {code: string;data: UpdateClientPreferencesDto},
+        TContext
+      > => {
+      return useMutation(getUpdateClientCommissionPreferencesMutationOptions(options), queryClient);
+    }
+    export type markCommissionSeenByClientResponse204 = {
+  data: void
+  status: 204
+}
+
+export type markCommissionSeenByClientResponseSuccess = (markCommissionSeenByClientResponse204) & {
+  headers: Headers;
+};
+;
+
+export type markCommissionSeenByClientResponse = (markCommissionSeenByClientResponseSuccess)
+
+export const getMarkCommissionSeenByClientUrl = (code: string,) => {
+
+
+
+
+  return `/commissions/lookup/code/${code}/seen`
+}
+
+/**
+ * @summary Client opened their order: mark the artist's posts as seen
+ */
+export const markCommissionSeenByClient = async (code: string, options?: RequestInit): Promise<markCommissionSeenByClientResponse> => {
+
+  return customFetch<markCommissionSeenByClientResponse>(getMarkCommissionSeenByClientUrl(code),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getMarkCommissionSeenByClientMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markCommissionSeenByClient>>, TError,{code: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof markCommissionSeenByClient>>, TError,{code: string}, TContext> => {
+
+const mutationKey = ['markCommissionSeenByClient'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof markCommissionSeenByClient>>, {code: string}> = (props) => {
+          const {code} = props ?? {};
+
+          return  markCommissionSeenByClient(code,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MarkCommissionSeenByClientMutationResult = NonNullable<Awaited<ReturnType<typeof markCommissionSeenByClient>>>
+
+    export type MarkCommissionSeenByClientMutationError = unknown
+
+    /**
+ * @summary Client opened their order: mark the artist's posts as seen
+ */
+export const useMarkCommissionSeenByClient = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markCommissionSeenByClient>>, TError,{code: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof markCommissionSeenByClient>>,
+        TError,
+        {code: string},
+        TContext
+      > => {
+      return useMutation(getMarkCommissionSeenByClientMutationOptions(options), queryClient);
+    }
     export type addClientCommissionNoteResponse200 = {
   data: CommentDto
   status: 200
@@ -751,6 +917,88 @@ export const useAddClientCommissionNote = <TError = unknown,
         TContext
       > => {
       return useMutation(getAddClientCommissionNoteMutationOptions(options), queryClient);
+    }
+    export type markCommissionSeenByArtistResponse204 = {
+  data: void
+  status: 204
+}
+
+export type markCommissionSeenByArtistResponseSuccess = (markCommissionSeenByArtistResponse204) & {
+  headers: Headers;
+};
+;
+
+export type markCommissionSeenByArtistResponse = (markCommissionSeenByArtistResponseSuccess)
+
+export const getMarkCommissionSeenByArtistUrl = (id: string,) => {
+
+
+
+
+  return `/commissions/${id}/seen`
+}
+
+/**
+ * @summary Artist opened a commission: mark the client's comments as seen
+ */
+export const markCommissionSeenByArtist = async (id: string, options?: RequestInit): Promise<markCommissionSeenByArtistResponse> => {
+
+  return customFetch<markCommissionSeenByArtistResponse>(getMarkCommissionSeenByArtistUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getMarkCommissionSeenByArtistMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markCommissionSeenByArtist>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof markCommissionSeenByArtist>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['markCommissionSeenByArtist'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof markCommissionSeenByArtist>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  markCommissionSeenByArtist(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MarkCommissionSeenByArtistMutationResult = NonNullable<Awaited<ReturnType<typeof markCommissionSeenByArtist>>>
+
+    export type MarkCommissionSeenByArtistMutationError = unknown
+
+    /**
+ * @summary Artist opened a commission: mark the client's comments as seen
+ */
+export const useMarkCommissionSeenByArtist = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof markCommissionSeenByArtist>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof markCommissionSeenByArtist>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getMarkCommissionSeenByArtistMutationOptions(options), queryClient);
     }
     export type commissionResponse200 = {
   data: CommissionDetailDto

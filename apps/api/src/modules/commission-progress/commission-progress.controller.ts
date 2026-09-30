@@ -63,6 +63,20 @@ export class CommissionProgressController {
     return this.progressService.listByAccessCode(code);
   }
 
+  @Post('by-code/:code/:id/approve')
+  @HttpCode(200)
+  @ApiOperation({
+    operationId: 'approveCommissionProgress',
+    summary: 'Client approves a sketch the artist asked them to approve',
+  })
+  @ApiOkResponse({ type: CommissionProgressDto })
+  approve(
+    @Param('code') code: string,
+    @Param('id') id: string,
+  ): Promise<CommissionProgressDto> {
+    return this.progressService.approveByAccessCode(code, id);
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   @ApiOperation({

@@ -1,7 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { GALLERY_LAST_ROW_STRETCH_MIN_FILL } from '@/constants/gallery';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
+import {
+  GALLERY_FULL_ROW_BASIS_SLACK,
+  GALLERY_LAST_ROW_STRETCH_MIN_FILL,
+} from '@/constants/gallery';
 import {
   galleryTileAspect,
   packJustifiedRows,
@@ -14,7 +23,7 @@ interface Measure {
   targetHeight: number;
 }
 
-export function useJustifiedRows(items: TileSize[]) {
+export function useJustifiedRows(items: TileSize[], stretchLastRow: boolean) {
   const ref = useRef<HTMLDivElement>(null);
   const [measure, setMeasure] = useState<Measure | null>(null);
 
@@ -33,8 +42,12 @@ export function useJustifiedRows(items: TileSize[]) {
     return () => observer.disconnect();
   }, []);
 
-  const layout = useMemo(() => {
-    if (!measure || !measure.width || !measure.targetHeight) return null;
+  return useMemo(() => {
+    const tileStyles: (CSSProperties | undefined)[] = [];
+    if (!measure || !measure.width || !measure.targetHeight) {
+      return { ref, tileStyles, isLastRowOpen: true };
+    }
+
     const aspects = items.map(galleryTileAspect);
     const rows = packJustifiedRows(
       aspects,
@@ -47,16 +60,31 @@ export function useJustifiedRows(items: TileSize[]) {
       lastRow.reduce((sum, index) => sum + aspects[index], 0) *
         measure.targetHeight +
       measure.gap * Math.max(0, lastRow.length - 1);
-    return {
-      rows,
-      isLastRowFull:
-        lastRowWidth / measure.width >= GALLERY_LAST_ROW_STRETCH_MIN_FILL,
-    };
-  }, [items, measure]);
+    const lastRowFill = lastRowWidth / measure.width;
+    const isLastRowOpen =
+      lastRowFill < 1 &&
+      (!stretchLastRow || lastRowFill < GALLERY_LAST_ROW_STRETCH_MIN_FILL);
 
-  return {
-    ref,
-    rows: layout?.rows ?? null,
-    isLastRowFull: layout?.isLastRowFull ?? false,
-  };
+    rows.forEach((row, rowIndex) => {
+      if (isLastRowOpen && rowIndex === rows.length - 1) {
+        row.forEach((index) => {
+          tileStyles[index] = {
+            flex: `0 0 calc(var(--gallery-row) * ${aspects[index]})`,
+          };
+        });
+        return;
+      }
+      const aspectSum = row.reduce((sum, index) => sum + aspects[index], 0);
+      const gaps = measure.gap * (row.length - 1);
+      row.forEach((index) => {
+        const share =
+          (aspects[index] / aspectSum) * GALLERY_FULL_ROW_BASIS_SLACK;
+        tileStyles[index] = {
+          flex: `${aspects[index]} 1 calc((100% - ${gaps}px) * ${share})`,
+        };
+      });
+    });
+
+    return { ref, tileStyles, isLastRowOpen };
+  }, [items, measure, stretchLastRow]);
 }

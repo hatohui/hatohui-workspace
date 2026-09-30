@@ -10,6 +10,8 @@ import type { UpdateCommissionProgressDtoVisibility } from './updateCommissionPr
 
 export interface UpdateCommissionProgressDto {
   title?: string;
+  /** Markdown */
+  description?: string;
   body?: UpdateCommissionProgressDtoBody;
   /** Object keys returned by POST /images/sign */
   images?: string[];

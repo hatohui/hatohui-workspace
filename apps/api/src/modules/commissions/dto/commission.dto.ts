@@ -11,9 +11,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  MaxLength,
   Min,
-  MinLength,
 } from 'class-validator';
 import {
   CommissionStatus,
@@ -28,10 +26,6 @@ import {
   REFERENCE_URL_LIMIT,
   REFERENCE_URL_OPTIONS,
 } from '@/modules/commissions/commissions.constants';
-import {
-  PASSCODE_MAX_LENGTH,
-  PASSCODE_MIN_LENGTH,
-} from '@/modules/commission-access/commission-access.constants';
 import { IsTiptapDocument } from '@/common/validators/tiptap-document.validator';
 
 export {
@@ -106,6 +100,17 @@ export class CommissionDto {
     description: 'Whether this commission is hidden from the public /queue',
   })
   isHiddenInQueue: boolean;
+
+  @ApiProperty({
+    description: 'Whether the finished artwork may be posted in the gallery',
+  })
+  allowGalleryPost: boolean;
+
+  @ApiProperty({
+    nullable: true,
+    description: 'Set once the retention purge has run',
+  })
+  purgedAt: string | null;
 
   @ApiProperty({ nullable: true })
   commissionTypeId: string | null;
@@ -276,6 +281,23 @@ export class CommissionPublicDto {
   })
   passcodeSource: PasscodeSource | null;
 
+  @ApiProperty({
+    description: 'Whether the client may set a passcode yet (once accepted)',
+  })
+  canSetPasscode: boolean;
+
+  @ApiProperty()
+  isHiddenInQueue: boolean;
+
+  @ApiProperty()
+  allowGalleryPost: boolean;
+
+  @ApiProperty({ nullable: true, type: String })
+  contactPlatform: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  contactValue: string | null;
+
   @ApiProperty({ nullable: true })
   deliveredAt: string | null;
 
@@ -372,6 +394,15 @@ class CommissionRequestBaseDto {
   @IsOptional()
   @IsBoolean()
   isPublic?: boolean;
+
+  @ApiProperty({
+    required: false,
+    description:
+      "Whether the finished artwork may be posted in the artist's gallery; defaults to the artist's setting",
+  })
+  @IsOptional()
+  @IsBoolean()
+  allowGalleryPost?: boolean;
 }
 
 export class SubmitCommissionDto extends CommissionRequestBaseDto {
@@ -433,16 +464,6 @@ export class SubmitCommissionDto extends CommissionRequestBaseDto {
   @IsOptional()
   @IsString()
   contactValue?: string;
-
-  @ApiProperty({
-    required: false,
-    description: 'Passcode the client picks to open this from the queue',
-  })
-  @IsOptional()
-  @IsString()
-  @MinLength(PASSCODE_MIN_LENGTH)
-  @MaxLength(PASSCODE_MAX_LENGTH)
-  passcode?: string;
 }
 
 export class CreatePrivateCommissionDto extends CommissionRequestBaseDto {
@@ -565,9 +586,15 @@ export class UpdateCommissionQuoteDto {
 }
 
 export class UpdateCommissionVisibilityDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsBoolean()
-  isHiddenInQueue: boolean;
+  isHiddenInQueue?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  allowGalleryPost?: boolean;
 }
 
 export class DeliverCommissionDto {

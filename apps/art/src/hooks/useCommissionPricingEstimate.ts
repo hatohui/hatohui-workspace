@@ -49,6 +49,7 @@ export function useCommissionPricingEstimate(
   optionKey: string | undefined,
   addonKeys: string[],
   deadline?: string,
+  allowGalleryPostChoice: boolean | null = null,
 ) {
   const typesQuery = useCommissionTypesByArtist(artistId ?? '', {
     query: { enabled: !!artistId, staleTime: COMMISSION_PRICING_STALE_MS },
@@ -74,6 +75,11 @@ export function useCommissionPricingEstimate(
     optionsForType.find((option) => option.key === optionKey) ??
     (optionsForType.length === 1 ? optionsForType[0] : undefined);
 
+  const galleryPostDefault = pricing?.galleryPostDefault ?? true;
+  const allowGalleryPost = allowGalleryPostChoice ?? galleryPostDefault;
+  const privateFee = pricing?.privateFee ?? null;
+  const isPrivateFee = !allowGalleryPost && privateFee !== null;
+
   const isRush = useMemo(() => {
     if (!pricing?.rushFee?.enabled || !deadline) return false;
     return daysUntil(deadline) < pricing.rushFee.thresholdDays;
@@ -91,12 +97,14 @@ export function useCommissionPricingEstimate(
       low += add.low;
       high = high == null || add.high == null ? null : high + add.high;
     }
-    const rushFee = isRush ? (pricing.rushFee?.feeAmount ?? 0) : 0;
+    const surcharge =
+      (isRush ? (pricing.rushFee?.feeAmount ?? 0) : 0) +
+      (isPrivateFee ? (privateFee ?? 0) : 0);
     return {
-      low: low + rushFee,
-      high: high == null ? null : high + rushFee,
+      low: low + surcharge,
+      high: high == null ? null : high + surcharge,
     };
-  }, [pricing, selectedOption, addonKeys, isRush]);
+  }, [pricing, selectedOption, addonKeys, isRush, isPrivateFee, privateFee]);
 
   const estimateMode: 'exact' | 'from' | 'range' | null = bounds
     ? bounds.high == null
@@ -115,6 +123,9 @@ export function useCommissionPricingEstimate(
     rushFee: pricing?.rushFee ?? null,
     currency: pricing?.currency ?? 'USD',
     isRush,
+    allowGalleryPost,
+    privateFee,
+    isPrivateFee,
     estimate: bounds?.low ?? null,
     estimateHigh: bounds?.high ?? null,
     estimateMode,

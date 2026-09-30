@@ -19,7 +19,10 @@ import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { AuthService } from '@/modules/auth/services/auth.service';
 import type { User } from '@prisma/client';
 import { CommissionsService } from '@/modules/commissions/services/commissions.service';
-import { CreateClientNoteDto } from '@/modules/commissions/dto/commission-lookup.dto';
+import {
+  CreateClientNoteDto,
+  UpdateClientPreferencesDto,
+} from '@/modules/commissions/dto/commission-lookup.dto';
 import {
   CommissionQueryDto,
   PaginatedCommissionsDto,
@@ -123,6 +126,29 @@ export class CommissionsController {
     return this.commissionsService.addClientReferenceAssets(code, dto);
   }
 
+  @Patch('lookup/code/:code/preferences')
+  @ApiOperation({
+    operationId: 'updateClientCommissionPreferences',
+    summary: 'Client changes queue visibility or how to reach them',
+  })
+  @ApiOkResponse({ type: CommissionPublicDto })
+  updateClientPreferences(
+    @Param('code') code: string,
+    @Body() dto: UpdateClientPreferencesDto,
+  ): Promise<CommissionPublicDto> {
+    return this.commissionsService.updateClientPreferences(code, dto);
+  }
+
+  @Post('lookup/code/:code/seen')
+  @HttpCode(204)
+  @ApiOperation({
+    operationId: 'markCommissionSeenByClient',
+    summary: "Client opened their order: mark the artist's posts as seen",
+  })
+  markSeenByClient(@Param('code') code: string): Promise<void> {
+    return this.commissionsService.markSeenByClient(code);
+  }
+
   @Post('lookup/code/:code/notes')
   @ApiOperation({
     operationId: 'addClientCommissionNote',
@@ -133,7 +159,7 @@ export class CommissionsController {
     @Param('code') code: string,
     @Body() dto: CreateClientNoteDto,
   ): Promise<CommentDto> {
-    return this.commissionsService.addClientNote(code, dto.body);
+    return this.commissionsService.addClientNote(code, dto);
   }
 
   @Get()
@@ -157,6 +183,20 @@ export class CommissionsController {
       query.page ?? 1,
       query.pageSize ?? 20,
     );
+  }
+
+  @Post(':id/seen')
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'markCommissionSeenByArtist',
+    summary: "Artist opened a commission: mark the client's comments as seen",
+  })
+  markSeenByArtist(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<void> {
+    return this.commissionsService.markSeenByArtist(user.id, id);
   }
 
   @Get(':id')

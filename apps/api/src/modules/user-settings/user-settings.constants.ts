@@ -17,6 +17,18 @@ export const USER_SETTING_TYPES = {
     scope: AppScope.ART,
     type: 'art.commission.rushfee',
   },
+  commissionPrivateFee: {
+    scope: AppScope.ART,
+    type: 'art.commission.privatefee',
+  },
+  commissionRetentionDays: {
+    scope: AppScope.ART,
+    type: 'art.commission.retentiondays',
+  },
+  commissionGalleryPostDefault: {
+    scope: AppScope.ART,
+    type: 'art.commission.gallerypostdefault',
+  },
   commissionAutoAccept: {
     scope: AppScope.ART,
     type: 'art.commission.autoaccept',

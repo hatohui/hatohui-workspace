@@ -2,43 +2,51 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useLookupCommissionsByPasscode } from '@hatohui/models';
+import {
+  useLookupCommissionsByEmail,
+  type CommissionAccessMatchDto,
+} from '@hatohui/models';
 import { queueOrderPath } from '@/constants/queue';
 import { usePasscodeError } from './usePasscodeError';
 
-export function useCommissionAccessLookup(artistId: string) {
+export function useCommissionAccessLookup(
+  artistId: string,
+  onLocked: (match: CommissionAccessMatchDto) => void,
+) {
   const router = useRouter();
   const { artist } = useParams<{ artist: string }>();
   const [email, setEmail] = useState('');
-  const [passcode, setPasscode] = useState('');
   const [code, setCode] = useState('');
-  const lookup = useLookupCommissionsByPasscode();
+  const lookup = useLookupCommissionsByEmail();
   const errorMessage = usePasscodeError();
+
+  const openMatch = (match: CommissionAccessMatchDto) => {
+    if (match.accessCode) router.push(queueOrderPath(artist, match.accessCode));
+    else onLocked(match);
+  };
 
   const search = async () => {
     const result = await lookup
-      .mutateAsync({ data: { artistId, email: email.trim(), passcode } })
+      .mutateAsync({ data: { artistId, email: email.trim() } })
       .catch(() => null);
     const matches = result?.data ?? [];
-    if (matches.length === 1)
-      router.push(queueOrderPath(artist, matches[0].accessCode));
+    if (matches.length === 1) openMatch(matches[0]);
   };
 
   return {
     email,
     setEmail,
-    passcode,
-    setPasscode,
-    canSearch: Boolean(email.trim() && passcode.trim()),
+    canSearch: Boolean(email.trim()),
     search,
     isSearching: lookup.isPending,
     matches: lookup.data?.data ?? [],
+    hasNoMatches: lookup.isSuccess && lookup.data.data.length === 0,
+    openMatch,
     error: errorMessage(lookup.error),
     code,
     setCode,
     openCode: () => {
       if (code.trim()) router.push(queueOrderPath(artist, code.trim()));
     },
-    orderHref: (accessCode: string) => queueOrderPath(artist, accessCode),
   };
 }

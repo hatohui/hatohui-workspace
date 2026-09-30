@@ -1887,7 +1887,8 @@
               "enum": [
                 "ASSET_THUMBNAIL",
                 "NOTIFICATION_EMAIL",
-                "STORAGE_DELETE"
+                "STORAGE_DELETE",
+                "COMMISSION_PURGE"
               ]
             }
           }
@@ -2249,6 +2250,88 @@
         ]
       }
     },
+    "/commission-attachments/code/{code}/sign": {
+      "post": {
+        "operationId": "signClientCommissionAttachment",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignImageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedImageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Client uploads an image for a comment; deleted later unless a comment claims it",
+        "tags": [
+          "commission-attachments"
+        ]
+      }
+    },
+    "/commission-attachments/{commissionId}/sign": {
+      "post": {
+        "operationId": "signCommissionAttachment",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignImageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedImageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Artist uploads an image for a comment or update; deleted later unless claimed",
+        "tags": [
+          "commission-attachments"
+        ]
+      }
+    },
     "/commissions": {
       "post": {
         "operationId": "submitCommission",
@@ -2526,6 +2609,71 @@
         ]
       }
     },
+    "/commissions/lookup/code/{code}/preferences": {
+      "patch": {
+        "operationId": "updateClientCommissionPreferences",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClientPreferencesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionPublicDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Client changes queue visibility or how to reach them",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/lookup/code/{code}/seen": {
+      "post": {
+        "operationId": "markCommissionSeenByClient",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Client opened their order: mark the artist's posts as seen",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
     "/commissions/lookup/code/{code}/notes": {
       "post": {
         "operationId": "addClientCommissionNote",
@@ -2562,6 +2710,30 @@
           }
         },
         "summary": "Client leaves a note (e.g. confirming a sketch)",
+        "tags": [
+          "commissions"
+        ]
+      }
+    },
+    "/commissions/{id}/seen": {
+      "post": {
+        "operationId": "markCommissionSeenByArtist",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Artist opened a commission: mark the client's comments as seen",
         "tags": [
           "commissions"
         ]
@@ -4381,6 +4553,45 @@
         ]
       }
     },
+    "/commission-progress/by-code/{code}/{id}/approve": {
+      "post": {
+        "operationId": "approveCommissionProgress",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Client approves a sketch the artist asked them to approve",
+        "tags": [
+          "commission-progress"
+        ]
+      }
+    },
     "/commission-progress/{id}": {
       "put": {
         "operationId": "updateCommissionProgress",
@@ -4828,7 +5039,7 @@
             }
           }
         },
-        "summary": "Trade a queue item and its passcode for the order access code",
+        "summary": "Trade a commission id and its passcode for the order access code",
         "tags": [
           "commission-access"
         ]
@@ -4836,14 +5047,14 @@
     },
     "/commission-access/lookup": {
       "post": {
-        "operationId": "lookupCommissionsByPasscode",
+        "operationId": "lookupCommissionsByEmail",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PasscodeLookupDto"
+                "$ref": "#/components/schemas/EmailLookupDto"
               }
             }
           }
@@ -4863,7 +5074,7 @@
             }
           }
         },
-        "summary": "Find a client's commissions with an artist by email + passcode",
+        "summary": "Find a client's commissions with an artist by email",
         "tags": [
           "commission-access"
         ]
@@ -6619,7 +6830,8 @@
             "enum": [
               "ASSET_THUMBNAIL",
               "NOTIFICATION_EMAIL",
-              "STORAGE_DELETE"
+              "STORAGE_DELETE",
+              "COMMISSION_PURGE"
             ],
             "nullable": true,
             "example": null
@@ -7057,6 +7269,10 @@
             "default": false,
             "description": "Whether this commission (status, type) should show in the public /queue"
           },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the artist's gallery; defaults to the artist's setting"
+          },
           "clientName": {
             "type": "string",
             "example": "Jane Doe",
@@ -7084,10 +7300,6 @@
           "contactValue": {
             "type": "string",
             "description": "Handle or address on contactPlatform; ignored for 'email'"
-          },
-          "passcode": {
-            "type": "string",
-            "description": "Passcode the client picks to open this from the queue"
           }
         },
         "required": [
@@ -7210,6 +7422,15 @@
           "isHiddenInQueue": {
             "type": "boolean",
             "description": "Whether this commission is hidden from the public /queue"
+          },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the gallery"
+          },
+          "purgedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Set once the retention purge has run"
           },
           "commissionTypeId": {
             "type": "string",
@@ -7341,6 +7562,8 @@
           "deadline",
           "paymentStatus",
           "isHiddenInQueue",
+          "allowGalleryPost",
+          "purgedAt",
           "commissionTypeId",
           "commissionTypeKey",
           "commissionTypeLabel",
@@ -7429,6 +7652,10 @@
             "default": false,
             "description": "Whether this commission (status, type) should show in the public /queue"
           },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the artist's gallery; defaults to the artist's setting"
+          },
           "clientName": {
             "type": "string",
             "example": "Jane Doe"
@@ -7450,7 +7677,6 @@
         "enum": [
           "WAITING",
           "SKETCHING",
-          "SKETCH_APPROVED",
           "IN_PROGRESS"
         ]
       },
@@ -7499,6 +7725,11 @@
             "type": "boolean",
             "description": "Whether a passcode can open this item"
           },
+          "accessCode": {
+            "type": "string",
+            "nullable": true,
+            "description": "Order access code, given only when no passcode is set"
+          },
           "queuedAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
@@ -7514,6 +7745,7 @@
           "commissionTypeKey",
           "commissionTypeLabel",
           "isUnlockable",
+          "accessCode",
           "queuedAt"
         ]
       },
@@ -7616,6 +7848,17 @@
             "type": "string",
             "example": "Client confirmed the pose reference."
           },
+          "seenAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "When the other party saw it; always null on client-authored comments in client-facing responses"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "createdAt": {
             "type": "string",
             "example": "2026-07-23T00:00:00.000Z"
@@ -7631,6 +7874,8 @@
           "authorRole",
           "visibility",
           "body",
+          "seenAt",
+          "images",
           "createdAt"
         ]
       },
@@ -7716,6 +7961,24 @@
               }
             ]
           },
+          "canSetPasscode": {
+            "type": "boolean",
+            "description": "Whether the client may set a passcode yet (once accepted)"
+          },
+          "isHiddenInQueue": {
+            "type": "boolean"
+          },
+          "allowGalleryPost": {
+            "type": "boolean"
+          },
+          "contactPlatform": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactValue": {
+            "type": "string",
+            "nullable": true
+          },
           "deliveredAt": {
             "type": "string",
             "nullable": true
@@ -7747,6 +8010,11 @@
             "items": {
               "$ref": "#/components/schemas/CommentDto"
             }
+          },
+          "purgeAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "When the retention purge is due; null if none is scheduled"
           }
         },
         "required": [
@@ -7763,12 +8031,18 @@
           "quote",
           "referenceAssets",
           "passcodeSource",
+          "canSetPasscode",
+          "isHiddenInQueue",
+          "allowGalleryPost",
+          "contactPlatform",
+          "contactValue",
           "deliveredAt",
           "createdAt",
           "updatedAt",
           "clientName",
           "queue",
-          "comments"
+          "comments",
+          "purgeAt"
         ]
       },
       "AddReferenceAssetsDto": {
@@ -7872,6 +8146,24 @@
               }
             ]
           },
+          "canSetPasscode": {
+            "type": "boolean",
+            "description": "Whether the client may set a passcode yet (once accepted)"
+          },
+          "isHiddenInQueue": {
+            "type": "boolean"
+          },
+          "allowGalleryPost": {
+            "type": "boolean"
+          },
+          "contactPlatform": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactValue": {
+            "type": "string",
+            "nullable": true
+          },
           "deliveredAt": {
             "type": "string",
             "nullable": true
@@ -7899,17 +8191,54 @@
           "quote",
           "referenceAssets",
           "passcodeSource",
+          "canSetPasscode",
+          "isHiddenInQueue",
+          "allowGalleryPost",
+          "contactPlatform",
+          "contactValue",
           "deliveredAt",
           "createdAt",
           "updatedAt"
         ]
+      },
+      "UpdateClientPreferencesDto": {
+        "type": "object",
+        "properties": {
+          "isHiddenInQueue": {
+            "type": "boolean"
+          },
+          "allowGalleryPost": {
+            "type": "boolean"
+          },
+          "contactPlatform": {
+            "type": "string",
+            "example": "Discord",
+            "description": "A SocialPlatform name, or 'email'"
+          },
+          "contactValue": {
+            "type": "string",
+            "description": "Handle or address on contactPlatform; ignored for 'email'"
+          }
+        }
       },
       "CreateClientNoteDto": {
         "type": "object",
         "properties": {
           "body": {
             "type": "string",
-            "example": "Looks great, approved!"
+            "example": "Looks great, approved!",
+            "description": "May be empty when images are attached"
+          },
+          "keys": {
+            "description": "Storage keys of images uploaded with this comment",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "progressId": {
+            "type": "string",
+            "description": "Progress update this comments on; omit for a general note"
           }
         },
         "required": [
@@ -8082,6 +8411,15 @@
             "type": "boolean",
             "description": "Whether this commission is hidden from the public /queue"
           },
+          "allowGalleryPost": {
+            "type": "boolean",
+            "description": "Whether the finished artwork may be posted in the gallery"
+          },
+          "purgedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Set once the retention purge has run"
+          },
           "commissionTypeId": {
             "type": "string",
             "nullable": true
@@ -8209,6 +8547,11 @@
             "items": {
               "$ref": "#/components/schemas/CommissionStatusHistoryDto"
             }
+          },
+          "purgeAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "When the retention purge is due; null if none is scheduled"
           }
         },
         "required": [
@@ -8224,6 +8567,8 @@
           "deadline",
           "paymentStatus",
           "isHiddenInQueue",
+          "allowGalleryPost",
+          "purgedAt",
           "commissionTypeId",
           "commissionTypeKey",
           "commissionTypeLabel",
@@ -8248,7 +8593,8 @@
           "createdAt",
           "updatedAt",
           "comments",
-          "history"
+          "history",
+          "purgeAt"
         ]
       },
       "UpdateCommissionStatusDto": {
@@ -8347,11 +8693,11 @@
         "properties": {
           "isHiddenInQueue": {
             "type": "boolean"
+          },
+          "allowGalleryPost": {
+            "type": "boolean"
           }
-        },
-        "required": [
-          "isHiddenInQueue"
-        ]
+        }
       },
       "UpdateCommissionPriorityDto": {
         "type": "object",
@@ -8417,7 +8763,15 @@
         "properties": {
           "body": {
             "type": "string",
-            "example": "Client confirmed the pose reference."
+            "example": "Client confirmed the pose reference.",
+            "description": "May be empty when images are attached"
+          },
+          "keys": {
+            "description": "Storage keys of images uploaded with this comment",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "visibility": {
             "type": "string",
@@ -8426,6 +8780,10 @@
               "CLIENT"
             ],
             "default": "INTERNAL"
+          },
+          "progressId": {
+            "type": "string",
+            "description": "Progress update this comments on; omit for a general note"
           }
         },
         "required": [
@@ -8724,6 +9082,16 @@
               }
             ]
           },
+          "privateFee": {
+            "type": "number",
+            "nullable": true,
+            "example": 1500,
+            "description": "Surcharge when the client does not allow gallery posting; null when the artist charges none"
+          },
+          "galleryPostDefault": {
+            "type": "boolean",
+            "description": "Default for the order form's \"OK to post in gallery\" choice"
+          },
           "currency": {
             "type": "string",
             "example": "USD"
@@ -8733,6 +9101,8 @@
           "options",
           "addons",
           "rushFee",
+          "privateFee",
+          "galleryPostDefault",
           "currency"
         ]
       },
@@ -8819,13 +9189,30 @@
             "items": {
               "$ref": "#/components/schemas/PaymentMethodEntryDto"
             }
+          },
+          "retentionDays": {
+            "type": "number",
+            "example": 30,
+            "description": "Days after completion before the commission is purged"
+          },
+          "galleryPostDefault": {
+            "type": "boolean",
+            "description": "Default for the \"OK to post in gallery\" choice on new orders"
+          },
+          "privateFee": {
+            "type": "number",
+            "nullable": true,
+            "example": 1500
           }
         },
         "required": [
           "currency",
           "autoAccept",
           "notificationEmail",
-          "paymentMethods"
+          "paymentMethods",
+          "retentionDays",
+          "galleryPostDefault",
+          "privateFee"
         ]
       },
       "UpsertPaymentMethodEntryDto": {
@@ -8886,12 +9273,26 @@
             "items": {
               "$ref": "#/components/schemas/UpsertPaymentMethodEntryDto"
             }
+          },
+          "retentionDays": {
+            "type": "number",
+            "example": 30
+          },
+          "galleryPostDefault": {
+            "type": "boolean"
+          },
+          "privateFee": {
+            "type": "number",
+            "nullable": true,
+            "example": 1500
           }
         },
         "required": [
           "currency",
           "autoAccept",
-          "paymentMethods"
+          "paymentMethods",
+          "retentionDays",
+          "galleryPostDefault"
         ]
       },
       "UpsertCommissionOptionPricingDto": {
@@ -9714,6 +10115,11 @@
             "type": "string",
             "nullable": true
           },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown"
+          },
           "body": {
             "type": "object",
             "nullable": true
@@ -9727,6 +10133,14 @@
           "isFinal": {
             "type": "boolean"
           },
+          "requestsApproval": {
+            "type": "boolean",
+            "description": "Asks the client to approve this sketch"
+          },
+          "approvedAt": {
+            "type": "string",
+            "nullable": true
+          },
           "visibility": {
             "type": "string",
             "enum": [
@@ -9739,6 +10153,16 @@
           },
           "updatedAt": {
             "type": "string"
+          },
+          "seenByClientAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentDto"
+            }
           }
         },
         "required": [
@@ -9746,12 +10170,17 @@
           "commissionId",
           "projectId",
           "title",
+          "description",
           "body",
           "images",
           "isFinal",
+          "requestsApproval",
+          "approvedAt",
           "visibility",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "seenByClientAt",
+          "comments"
         ]
       },
       "CreateCommissionProgressDto": {
@@ -9762,6 +10191,10 @@
           },
           "title": {
             "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "description": "Markdown"
           },
           "body": {
             "type": "object"
@@ -9774,6 +10207,10 @@
             }
           },
           "isFinal": {
+            "type": "boolean",
+            "default": false
+          },
+          "requestsApproval": {
             "type": "boolean",
             "default": false
           },
@@ -9801,6 +10238,10 @@
         "properties": {
           "title": {
             "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "description": "Markdown"
           },
           "body": {
             "type": "object"
@@ -10142,7 +10583,7 @@
           "accessCode"
         ]
       },
-      "PasscodeLookupDto": {
+      "EmailLookupDto": {
         "type": "object",
         "properties": {
           "artistId": {
@@ -10152,23 +10593,26 @@
           "email": {
             "type": "string",
             "example": "jane@example.com"
-          },
-          "passcode": {
-            "type": "string",
-            "example": "K7QM2PXA"
           }
         },
         "required": [
           "artistId",
-          "email",
-          "passcode"
+          "email"
         ]
       },
       "CommissionAccessMatchDto": {
         "type": "object",
         "properties": {
-          "accessCode": {
+          "id": {
             "type": "string"
+          },
+          "accessCode": {
+            "type": "string",
+            "nullable": true,
+            "description": "Null when the order is passcode protected"
+          },
+          "requiresPasscode": {
+            "type": "boolean"
           },
           "status": {
             "type": "string",
@@ -10199,7 +10643,9 @@
           }
         },
         "required": [
+          "id",
           "accessCode",
+          "requiresPasscode",
           "status",
           "commissionTypeKey",
           "commissionTypeLabel",

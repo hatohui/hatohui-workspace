@@ -8,6 +8,8 @@ import { AssetThumbnailExecutor } from '@/modules/assets/services/asset-thumbnai
 import { NotificationEmailExecutor } from '@/modules/notifications/services/notification-email.executor';
 import { StorageCleanupModule } from '@/modules/storage-cleanup/storage-cleanup.module';
 import { StorageDeleteExecutor } from '@/modules/storage-cleanup/services/storage-delete.executor';
+import { CommissionPurgeModule } from '@/modules/commission-purge/commission-purge.module';
+import { CommissionPurgeExecutor } from '@/modules/commission-purge/services/commission-purge.executor';
 import { PROCESS_EXECUTORS } from '@/modules/process-queue/process-queue.constants';
 import { BirthdayConfigModule } from './birthday-config.module';
 import { BirthdayCronController } from '@/modules/cron/birthday-cron.controller';
@@ -25,6 +27,7 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
     AssetsModule,
     ProcessQueueModule,
     StorageCleanupModule,
+    CommissionPurgeModule,
   ],
   controllers: [BirthdayCronController, ProcessQueueCronController],
   providers: [
@@ -37,11 +40,13 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         assetThumbnail: AssetThumbnailExecutor,
         notificationEmail: NotificationEmailExecutor,
         storageDelete: StorageDeleteExecutor,
-      ) => [assetThumbnail, notificationEmail, storageDelete],
+        commissionPurge: CommissionPurgeExecutor,
+      ) => [assetThumbnail, notificationEmail, storageDelete, commissionPurge],
       inject: [
         AssetThumbnailExecutor,
         NotificationEmailExecutor,
         StorageDeleteExecutor,
+        CommissionPurgeExecutor,
       ],
     },
   ],

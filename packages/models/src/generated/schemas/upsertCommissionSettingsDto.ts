@@ -14,4 +14,8 @@ export interface UpsertCommissionSettingsDto {
   /** @nullable */
   notificationEmail?: string | null;
   paymentMethods: UpsertPaymentMethodEntryDto[];
+  retentionDays: number;
+  galleryPostDefault: boolean;
+  /** @nullable */
+  privateFee?: number | null;
 }

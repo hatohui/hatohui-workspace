@@ -8,5 +8,6 @@ import { ImageUploadLimitsService } from '@/modules/images/services/image-upload
   imports: [AuthModule],
   controllers: [ImagesController],
   providers: [ImagesService, ImageUploadLimitsService],
+  exports: [ImagesService],
 })
 export class ImagesModule {}

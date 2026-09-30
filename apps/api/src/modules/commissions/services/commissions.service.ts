@@ -11,7 +11,6 @@ import { USER_SETTING_TYPES } from '@/modules/user-settings/user-settings.consta
 import { UserSettingsService } from '@/modules/user-settings/services/user-settings.service';
 import {
   AppScope,
-  PasscodeSource,
   Visibility,
   type Client,
   type Commission,
@@ -48,15 +47,22 @@ import {
 import {
   CommentDto,
   CreateCommentDto,
+  toClientCommentDto,
   toCommentDto,
 } from '@/modules/commissions/dto/comment.dto';
+import {
+  CreateClientNoteDto,
+  UpdateClientPreferencesDto,
+} from '@/modules/commissions/dto/commission-lookup.dto';
+import { CommissionAttachmentsService } from '@/modules/commission-attachments/services/commission-attachments.service';
 import { CommissionStatusHistoryDto } from '@/modules/commissions/dto/commission-history.dto';
 import {
   CommissionQueueDto,
   CommissionQueuePlacementDto,
 } from '@/modules/commissions/dto/commission-queue.dto';
-import { hashPasscode } from '@/common/utils/passcode';
 import {
+  CLIENT_PASSCODE_STATUSES,
+  EMAIL_CONTACT_PLATFORM,
   COMMISSION_VIEW_STATUSES,
   CONFIRMATION_EMAIL_TEMPLATE_CONFIG_TYPE,
   DELIVERY_EMAIL_TEMPLATE_CONFIG_TYPE,
@@ -71,8 +77,8 @@ import {
 } from '@/modules/commissions/commissions.constants';
 import { CommissionOpeningsService } from '@/modules/commission-openings/services/commission-openings.service';
 import { CommissionPricingService } from '@/modules/commission-pricing/services/commission-pricing.service';
+import { CommissionPurgeService } from '@/modules/commission-purge/services/commission-purge.service';
 import { ClientIdentityService } from '@/modules/clients/services/client-identity.service';
-import { StorageCleanupService } from '@/modules/storage-cleanup/services/storage-cleanup.service';
 import {
   isEmailContact,
   platformForContactMethod,
@@ -101,7 +107,8 @@ export class CommissionsService {
     private readonly commissionOpenings: CommissionOpeningsService,
     private readonly pricing: CommissionPricingService,
     private readonly clientIdentity: ClientIdentityService,
-    private readonly storageCleanup: StorageCleanupService,
+    private readonly attachments: CommissionAttachmentsService,
+    private readonly purge: CommissionPurgeService,
   ) {}
 
   async submit(
@@ -109,10 +116,14 @@ export class CommissionsService {
     submitter: User | null,
   ): Promise<CommissionDto> {
     assertDeadlineFarEnough(dto.deadline);
+    const allowGalleryPost = await this.galleryPostFor(
+      dto.artistId,
+      dto.allowGalleryPost,
+    );
     const [currency, commissionOpeningId, estimate] = await Promise.all([
       this.currencyFor(dto.artistId),
       this.commissionOpenings.openIdFor(dto.artistId),
-      this.pricing.estimate(dto.artistId, dto),
+      this.pricing.estimate(dto.artistId, { ...dto, allowGalleryPost }),
     ]);
     if (!commissionOpeningId) {
       throw new ForbiddenException(
@@ -129,17 +140,8 @@ export class CommissionsService {
         artistId: dto.artistId,
         clientId: client.id,
         commissionOpeningId,
+        allowGalleryPost,
         status: 'PENDING',
-        ...(dto.passcode
-          ? {
-              passcodeHash: await hashPasscode(
-                dto.passcode,
-                PasscodeSource.CLIENT,
-              ),
-              passcodeSource: PasscodeSource.CLIENT,
-              passcodeUpdatedAt: new Date(),
-            }
-          : {}),
         detail: {
           create: {
             idea: dto.idea,
@@ -181,6 +183,10 @@ export class CommissionsService {
       data: {
         artistId,
         clientId: client.id,
+        allowGalleryPost: await this.galleryPostFor(
+          artistId,
+          dto.allowGalleryPost,
+        ),
         status: 'NOT_YET_STARTED',
         detail: {
           create: {
@@ -315,7 +321,11 @@ export class CommissionsService {
     const commission = await this.findByAccessCodeOrThrow(code);
     const [comments, workOrder] = await Promise.all([
       this.db.comment.findMany({
-        where: { commissionId: commission.id, visibility: Visibility.CLIENT },
+        where: {
+          commissionId: commission.id,
+          progressId: null,
+          visibility: Visibility.CLIENT,
+        },
         orderBy: { createdAt: 'desc' },
       }),
       this.workOrder(commission.artistId),
@@ -328,8 +338,65 @@ export class CommissionsService {
         index === -1
           ? null
           : toPlacement(workOrder[index], index, workOrder.length),
-      comments: comments.map(toCommentDto),
+      comments: comments.map(toClientCommentDto),
+      purgeAt:
+        (await this.purge.purgeAtFor(commission.id))?.toISOString() ?? null,
     };
+  }
+
+  async updateClientPreferences(
+    code: string,
+    dto: UpdateClientPreferencesDto,
+  ): Promise<CommissionPublicDto> {
+    const { id } = await this.findByAccessCodeOrThrow(code);
+    const isEmail = dto.contactPlatform === EMAIL_CONTACT_PLATFORM;
+    if (dto.allowGalleryPost !== undefined) {
+      await this.db.commission.update({
+        where: { id },
+        data: { allowGalleryPost: dto.allowGalleryPost },
+      });
+    }
+    await this.db.commissionDetail.update({
+      where: { commissionId: id },
+      data: {
+        isHiddenInQueue: dto.isHiddenInQueue,
+        contactPlatform: dto.contactPlatform,
+        contactValue: isEmail ? null : dto.contactValue?.trim(),
+      },
+    });
+    return toPublicDto(await this.findByAccessCodeOrThrow(code));
+  }
+
+  async markSeenByClient(code: string): Promise<void> {
+    const { id } = await this.findByAccessCodeOrThrow(code);
+    const now = new Date();
+    await this.db.$transaction([
+      this.db.comment.updateMany({
+        where: {
+          commissionId: id,
+          authorRole: 'ARTIST',
+          visibility: Visibility.CLIENT,
+          seenAt: null,
+        },
+        data: { seenAt: now },
+      }),
+      this.db.commissionProgress.updateMany({
+        where: {
+          commissionId: id,
+          visibility: Visibility.CLIENT,
+          seenByClientAt: null,
+        },
+        data: { seenByClientAt: now },
+      }),
+    ]);
+  }
+
+  async markSeenByArtist(artistId: string, id: string): Promise<void> {
+    await this.findOwnedOrThrow(artistId, id);
+    await this.db.comment.updateMany({
+      where: { commissionId: id, authorRole: 'CLIENT', seenAt: null },
+      data: { seenAt: new Date() },
+    });
   }
 
   async queue(artistId: string): Promise<CommissionQueueDto> {
@@ -347,6 +414,9 @@ export class CommissionsService {
                 commissionTypeLabel:
                   commission.detail?.commissionType?.label ?? null,
                 isUnlockable: commission.passcodeHash !== null,
+                accessCode: commission.passcodeHash
+                  ? null
+                  : commission.accessCode,
                 queuedAt: commission.createdAt.toISOString(),
               },
             ],
@@ -392,18 +462,28 @@ export class CommissionsService {
     return toPublicDto(commission);
   }
 
-  async addClientNote(code: string, body: string): Promise<CommentDto> {
+  async addClientNote(
+    code: string,
+    dto: CreateClientNoteDto,
+  ): Promise<CommentDto> {
     const existing = await this.findByAccessCodeOrThrow(code);
+    const images = this.commentImages(dto);
+    if (dto.progressId) {
+      await this.assertProgressOf(existing.id, dto.progressId, true);
+    }
     const comment = await this.db.comment.create({
       data: {
         commissionId: existing.id,
+        progressId: dto.progressId ?? null,
         authorRole: 'CLIENT',
         authorClientId: existing.clientId,
         visibility: Visibility.CLIENT,
-        body,
+        body: dto.body.trim(),
+        images,
       },
     });
-    return toCommentDto(comment);
+    await this.attachments.claim(dto.keys ?? [], dto.body);
+    return toClientCommentDto(comment);
   }
 
   async updateStatus(
@@ -413,6 +493,9 @@ export class CommissionsService {
     viewer: User,
   ): Promise<CommissionDto> {
     const existing = await this.findOwnedOrThrow(artistId, id);
+    if (existing.purgedAt) {
+      throw new BadRequestException('This commission has been purged');
+    }
 
     // Snapshot the quote the moment a commission is first accepted, so a
     // later price change can be detected before sending the confirmation
@@ -449,6 +532,12 @@ export class CommissionsService {
     // write later in the same transaction — using it directly would report
     // a stale (pre-snapshot) originalQuote on exactly the call that set it.
     const commission = await this.findOwnedOrThrow(artistId, id);
+
+    if (dto.status === 'COMPLETED') {
+      await this.purge.schedule(artistId, id);
+    } else if (existing.status === 'COMPLETED') {
+      await this.purge.cancel(id);
+    }
 
     if (commission.commissionOpeningId) {
       await this.commissionOpenings.maybeAutoCloseForSlotCap(
@@ -513,6 +602,10 @@ export class CommissionsService {
     dto: UpdateCommissionVisibilityDto,
   ): Promise<CommissionDto> {
     await this.findOwnedOrThrow(artistId, id);
+    await this.db.commission.update({
+      where: { id },
+      data: { allowGalleryPost: dto.allowGalleryPost },
+    });
     await this.db.commissionDetail.update({
       where: { commissionId: id },
       data: { isHiddenInQueue: dto.isHiddenInQueue },
@@ -587,18 +680,36 @@ export class CommissionsService {
   /// doesn't (no onDelete: Cascade on that relation), so it's cleared first.
   async remove(artistId: string, id: string): Promise<void> {
     const existing = await this.findOwnedOrThrow(artistId, id);
+    const [progress, comments] = await Promise.all([
+      this.db.commissionProgress.findMany({
+        where: { commissionId: id },
+        select: { images: true, description: true },
+      }),
+      this.db.comment.findMany({
+        where: { commissionId: id },
+        select: { images: true, body: true },
+      }),
+    ]);
+
+    const images = [
+      ...(existing.detail?.referenceAssets ?? []),
+      ...progress.flatMap((row) => row.images),
+      ...comments.flatMap((row) => row.images),
+    ];
+    const markdown = [
+      ...progress.map((row) => row.description),
+      ...comments.map((row) => row.body),
+    ];
 
     await this.db.$transaction([
+      this.attachments.queueDeletes(images, markdown),
       this.db.commissionStatusHistory.deleteMany({
         where: { commissionId: id },
       }),
       this.db.commission.delete({ where: { id } }),
     ]);
 
-    for (const url of existing.detail?.referenceAssets ?? []) {
-      const key = this.storage.getKeyFromUrl(url);
-      if (key) await this.storageCleanup.delete(key);
-    }
+    await this.attachments.release(images, markdown);
   }
 
   /// "Confirm" (Use Case 3) — sends the client an email asking them to
@@ -683,15 +794,34 @@ export class CommissionsService {
     dto: CreateCommentDto,
   ): Promise<CommentDto> {
     await this.findOwnedOrThrow(artistId, id);
+    const images = this.commentImages(dto);
+    if (dto.progressId) await this.assertProgressOf(id, dto.progressId, false);
     const comment = await this.db.comment.create({
       data: {
         commissionId: id,
+        progressId: dto.progressId ?? null,
         authorRole: 'ARTIST',
         visibility: dto.visibility,
-        body: dto.body,
+        body: dto.body.trim(),
+        images,
       },
     });
+    await this.attachments.claim(dto.keys ?? [], dto.body);
     return toCommentDto(comment);
+  }
+
+  private async galleryPostFor(
+    artistId: string,
+    requested: boolean | undefined,
+  ): Promise<boolean> {
+    if (requested !== undefined) return requested;
+    const setting = USER_SETTING_TYPES.commissionGalleryPostDefault;
+    const value = await this.userSettings.get(
+      artistId,
+      setting.scope,
+      setting.type,
+    );
+    return value !== 'false';
   }
 
   async currencyFor(artistId: string): Promise<string> {
@@ -742,12 +872,40 @@ export class CommissionsService {
     });
   }
 
+  private commentImages(dto: { body: string; keys?: string[] }): string[] {
+    const images = (dto.keys ?? []).map((key) =>
+      this.storage.getPublicUrl(key),
+    );
+    if (!dto.body.trim() && images.length === 0) {
+      throw new BadRequestException('A comment needs text or an image');
+    }
+    return images;
+  }
+
+  private async assertProgressOf(
+    commissionId: string,
+    progressId: string,
+    clientVisibleOnly: boolean,
+  ): Promise<void> {
+    const progress = await this.db.commissionProgress.findFirst({
+      where: {
+        id: progressId,
+        commissionId,
+        ...(clientVisibleOnly ? { visibility: Visibility.CLIENT } : {}),
+      },
+      select: { id: true },
+    });
+    if (!progress) {
+      throw new NotFoundException(`Progress entry ${progressId} not found`);
+    }
+  }
+
   private async withCommentsAndHistory(
     commission: CommissionWithRelations,
   ): Promise<CommissionDetailDto> {
     const [comments, history] = await Promise.all([
       this.db.comment.findMany({
-        where: { commissionId: commission.id },
+        where: { commissionId: commission.id, progressId: null },
         orderBy: { createdAt: 'desc' },
       }),
       this.db.commissionStatusHistory.findMany({
@@ -760,6 +918,8 @@ export class CommissionsService {
       ...toCommissionDto(commission),
       comments: comments.map(toCommentDto),
       history: history.map(toHistoryDto),
+      purgeAt:
+        (await this.purge.purgeAtFor(commission.id))?.toISOString() ?? null,
     };
   }
 
@@ -886,6 +1046,8 @@ function toCommissionDto(commission: CommissionWithRelations): CommissionDto {
     deadline: detail.deadline?.toISOString() ?? null,
     paymentStatus: detail.paymentStatus,
     isHiddenInQueue: detail.isHiddenInQueue,
+    allowGalleryPost: commission.allowGalleryPost,
+    purgedAt: commission.purgedAt?.toISOString() ?? null,
     commissionTypeId: detail.commissionTypeId,
     commissionTypeKey: detail.commissionType?.key ?? null,
     commissionTypeLabel: detail.commissionType?.label ?? null,
@@ -935,6 +1097,11 @@ function toPublicDto(commission: CommissionWithRelations): CommissionPublicDto {
     quote: detail.quote,
     referenceAssets: detail.referenceAssets,
     passcodeSource: commission.passcodeSource,
+    canSetPasscode: CLIENT_PASSCODE_STATUSES.includes(commission.status),
+    isHiddenInQueue: detail.isHiddenInQueue,
+    allowGalleryPost: commission.allowGalleryPost,
+    contactPlatform: detail.contactPlatform,
+    contactValue: detail.contactValue,
     deliveredAt: detail.deliveredAt?.toISOString() ?? null,
     createdAt: commission.createdAt.toISOString(),
     updatedAt: commission.updatedAt.toISOString(),

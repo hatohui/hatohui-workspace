@@ -38,6 +38,13 @@ export class CommissionQueueItemDto extends CommissionQueuePlacementDto {
   @ApiProperty({ description: 'Whether a passcode can open this item' })
   isUnlockable: boolean;
 
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'Order access code, given only when no passcode is set',
+  })
+  accessCode: string | null;
+
   @ApiProperty({ example: '2026-07-23T00:00:00.000Z' })
   queuedAt: string;
 }

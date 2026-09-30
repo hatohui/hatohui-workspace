@@ -24,7 +24,7 @@ export function CommissionExampleGallery({
   );
 
   return (
-    <div className="hidden min-h-64 flex-col gap-1.5 md:flex">
+    <div className="flex h-96 flex-col gap-1.5 md:h-auto md:min-h-64">
       <p className="text-sm font-medium">{gallery.title}</p>
       <div className="relative flex-1">
         <div className="absolute inset-0 overflow-y-auto rounded-md">

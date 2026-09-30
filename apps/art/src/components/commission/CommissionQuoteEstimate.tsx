@@ -39,6 +39,15 @@ export function CommissionQuoteEstimate({
           {')'}
         </span>
       )}
+      {pricing.isPrivateFee && pricing.privateFee !== null && (
+        <span>
+          {' ('}
+          {t('commission.form.privateFeeIncluded', {
+            amount: money(pricing.privateFee),
+          })}
+          {')'}
+        </span>
+      )}
     </p>
   );
 }

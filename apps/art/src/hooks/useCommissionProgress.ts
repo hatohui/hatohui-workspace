@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useCommissionProgress,
@@ -8,9 +9,13 @@ import {
   useUpdateCommissionProgress,
   useFinalizeCommissionProgress,
   useDeleteCommissionProgress,
+  useCreateCommissionNote,
+  useMarkCommissionSeenByArtist,
   getCommissionProgressQueryKey,
   type CreateCommissionProgressDto,
 } from '@hatohui/models';
+import { useMarkSeenOnce } from './useMarkSeenOnce';
+import type { CommentInput } from './useCommentComposer';
 
 export function useCommissionProgressAdmin(commissionId: string) {
   const queryClient = useQueryClient();
@@ -32,6 +37,14 @@ export function useCommissionProgressAdmin(commissionId: string) {
   const remove = useDeleteCommissionProgress({
     mutation: { onSuccess: invalidate },
   });
+  const addComment = useCreateCommissionNote({
+    mutation: { onSuccess: invalidate },
+  });
+  const { mutate: markSeen } = useMarkCommissionSeenByArtist();
+  useMarkSeenOnce(
+    listQuery.isSuccess,
+    useCallback(() => markSeen({ id: commissionId }), [markSeen, commissionId]),
+  );
 
   return {
     items: listQuery.data?.data ?? [],
@@ -45,6 +58,11 @@ export function useCommissionProgressAdmin(commissionId: string) {
     finalize: (id: string, projectId?: string) =>
       finalize.mutateAsync({ id, data: { projectId } }),
     remove: (id: string) => remove.mutateAsync({ id }),
+    comment: (progressId: string, input: CommentInput) =>
+      addComment.mutateAsync({
+        id: commissionId,
+        data: { ...input, progressId, visibility: 'CLIENT' },
+      }),
   };
 }
 

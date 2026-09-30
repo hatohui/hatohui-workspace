@@ -19,7 +19,7 @@ export function CommissionExampleTile({
     <button
       type="button"
       style={tileStyle}
-      className="group relative overflow-hidden rounded-lg bg-card focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+      className="group relative block w-full overflow-hidden rounded-lg bg-card focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
       onClick={() =>
         onView(asset.publicUrl, {
           title: asset.title,
