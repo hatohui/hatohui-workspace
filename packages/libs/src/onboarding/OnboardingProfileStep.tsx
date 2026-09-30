@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Input, Label } from '@hatohui/ui';
 import { useStagedAvatar } from './useStagedAvatar';
-import FriendAvatarField from './FriendAvatarField';
+import AvatarField from './AvatarField';
 
 type Props = {
   initialName: string;
@@ -35,7 +35,7 @@ function OnboardingProfileStep({
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">{t('common:onboarding.profile.title')}</h2>
       <div className="flex flex-col gap-1.5">
-        <FriendAvatarField
+        <AvatarField
           alt={name || t('common:onboarding.profile.nameLabel')}
           previewUrl={avatar.previewUrl}
           isBusy={avatar.isBusy}

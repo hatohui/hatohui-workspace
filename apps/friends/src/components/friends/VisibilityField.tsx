@@ -7,7 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@hatohui/ui';
-import { VISIBILITY_OPTIONS, type Visibility } from './visibility';
+import {
+  VISIBILITY_OPTIONS,
+  type Visibility,
+} from '../../constants/visibility';
 
 type Props = {
   value: Visibility;

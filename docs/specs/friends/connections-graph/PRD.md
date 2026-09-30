@@ -46,9 +46,10 @@ Three consequences followed from the conflation:
   pending request out to B, the existing request is accepted rather than a
   second one created.
 - **Admin powers no longer apply on normal routes.** An admin browsing the app
-  is just a user; the unfiltered listing moved to `GET /admin/birthdays` behind
-  a dedicated guard. `User.role` was dropped entirely — it was a cache of
-  "email == AppConfig admin email" computed only at login, so it went stale
+  is just a user; the unfiltered listing moved behind a dedicated admin guard
+  (`GET /admin/birthdays` was planned; the admin module now serves
+  `admin/users`, `admin/profiles` and `admin/system-parameters`). `User.role` was dropped entirely — it was a cache of
+  "email == admin email system parameter" computed only at login, so it went stale
   whenever that config changed. It is now derived per request.
 - **Admin routes need two independent factors:** the session's email must match
   the configured admin address *and* the request must carry `x-admin-key`

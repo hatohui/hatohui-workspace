@@ -2,27 +2,31 @@ import { useTranslation } from '@hatohui/i18n';
 import { Button, DialogTitle, LoadingDots } from '@hatohui/ui';
 import { useAuth } from '../auth/AuthContext';
 import { useOnboardingWizard } from './useOnboardingWizard';
-import type { OnboardingMode } from './onboardingStep';
+import {
+  isCoreOnboardingStep,
+  type OnboardingStep,
+  type RenderOnboardingStep,
+} from './onboardingStep';
 import OnboardingOptInStep from './OnboardingOptInStep';
 import OnboardingProfileStep from './OnboardingProfileStep';
 import OnboardingHandleStep from './OnboardingHandleStep';
-import OnboardingVisibilityStep from './OnboardingVisibilityStep';
-import OnboardingBirthdayStep from './OnboardingBirthdayStep';
-import OnboardingTimezoneStep from './OnboardingTimezoneStep';
-import { detectTimezone } from './timezones';
-import OnboardingConnectionsStep from './OnboardingConnectionsStep';
 import OnboardingCompleteStep from './OnboardingCompleteStep';
 import OnboardingLanguageSwitcher from './OnboardingLanguageSwitcher';
 
-type Props = {
-  mode?: OnboardingMode;
+export type OnboardingWizardProps = {
+  afterHandle?: OnboardingStep;
+  renderStep?: RenderOnboardingStep;
   onEntityChanged?: () => void;
 };
 
-function OnboardingWizard({ mode = 'full', onEntityChanged }: Props) {
+function OnboardingWizard({
+  afterHandle,
+  renderStep,
+  onEntityChanged,
+}: OnboardingWizardProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const wizard = useOnboardingWizard(mode, onEntityChanged);
+  const wizard = useOnboardingWizard({ afterHandle, onEntityChanged });
 
   if (wizard.isLoading) {
     return (
@@ -68,32 +72,8 @@ function OnboardingWizard({ mode = 'full', onEntityChanged }: Props) {
           onSkip={() => wizard.submitHandle(undefined)}
         />
       )}
-      {wizard.step === 'visibility' && (
-        <OnboardingVisibilityStep
-          initialVisibility="PUBLIC"
-          submitting={false}
-          onSubmit={wizard.submitVisibility}
-        />
-      )}
-      {wizard.step === 'birthday' && (
-        <OnboardingBirthdayStep
-          submitting={false}
-          onSubmit={wizard.submitBirthday}
-        />
-      )}
-      {wizard.step === 'timezone' && (
-        <OnboardingTimezoneStep
-          initialTimezone={detectTimezone()}
-          submitting={wizard.isSubmittingTimezone}
-          onSubmit={wizard.submitTimezone}
-        />
-      )}
-      {wizard.step === 'connections' && (
-        <OnboardingConnectionsStep
-          submitting={false}
-          onSubmit={wizard.submitConnections}
-        />
-      )}
+      {!isCoreOnboardingStep(wizard.step) &&
+        renderStep?.(wizard.step, wizard.goTo)}
       {wizard.step === 'complete' && (
         <OnboardingCompleteStep
           submitting={false}

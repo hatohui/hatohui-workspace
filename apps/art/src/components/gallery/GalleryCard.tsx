@@ -42,7 +42,7 @@ export function GalleryCard({
     <div
       data-reveal
       style={tileStyle}
-      className="group artwork-frame relative overflow-hidden rounded-lg bg-card"
+      className="group artwork-frame relative overflow-hidden bg-card"
     >
       <div style={frameStyle} />
       {selection ? (

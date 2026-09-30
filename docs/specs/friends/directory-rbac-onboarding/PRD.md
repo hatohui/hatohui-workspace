@@ -37,9 +37,11 @@ everyone else is read-only).
   enum (`ADMIN` / `MEMBER`) on `User`, not a many-to-many roles↔permissions schema —
   there are exactly two authenticated tiers plus anonymous, so a join-table model
   would be premature.
-- **Admin identity is data-driven.** A singleton `AppConfig` table holds the admin
-  email (seeded with `hatohui@gmail.com`) instead of hardcoding it in source, so it
-  can change without a code deploy.
+- **Admin identity is data-driven.** The `admin.email` row in `SystemParameters`
+  (formerly the singleton `AppConfig` table, renamed in migration
+  `20260820000000_rename_app_config_to_system_parameters`) holds the admin email
+  instead of hardcoding it in source. Seeding grants that account the `admin` and
+  `artist` roles.
 - **Ownership-scoped mutation.** `Friend` gains an `ownerId` (the `User` who added
   it). Admin bypasses ownership checks entirely; a member can only mutate rows they
   own; unauthenticated requests are read-only.
@@ -126,7 +128,7 @@ directory later, so declining once doesn't lock me out permanently.
 As the system, I want to enforce who can create/edit/delete friend entries based on
 role and ownership, so the directory can't be tampered with by the wrong people.
 
-- **AC1 (Admin):** Given my account's email matches `AppConfig.adminEmail`, then I
+- **AC1 (Admin):** Given my account's email matches the `admin.email` system parameter (formerly `AppConfig.adminEmail`), then I
   can view, create, edit, and delete any friend entry.
 - **AC2 (Member):** Given I'm authenticated and not admin, then I can create new
   friend entries and edit/delete only entries where `ownerId` is me.

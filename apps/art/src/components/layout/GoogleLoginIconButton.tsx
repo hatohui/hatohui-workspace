@@ -1,8 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Button, Spinner } from '@hatohui/ui';
-import { useAuth } from './AuthContext';
-import { useGoogleAuth } from './useGoogleAuth';
-import GoogleIcon from './GoogleIcon';
+import { GoogleIcon, useAuth, useGoogleAuth } from '@hatohui/libs';
 
 export function GoogleLoginIconButton() {
   const { t } = useTranslation('common');

@@ -1,14 +1,14 @@
 # User settings
 
-Per-user overrides of the app-wide defaults in `AppConfig`, stored generically
+Per-user overrides of the app-wide defaults in `SystemParameters`, stored generically
 so every app in the monorepo can use one table rather than growing its own
 columns on `User`.
 
 ## The table
 
-`UserSetting` is deliberately the mirror image of `AppConfig`:
+`UserSetting` is deliberately the mirror image of `SystemParameters` (formerly `AppConfig`):
 
-| | `AppConfig` | `UserSetting` |
+| | `SystemParameters` | `UserSetting` |
 | --- | --- | --- |
 | Key | `(type, scope)` | `(userId, type, scope)` |
 | Value | `String` | `String` |
@@ -16,7 +16,7 @@ columns on `User`.
 
 Same `type` vocabulary, same `AppScope` partition, same stringly-typed value.
 A reader resolves a setting by looking for the `UserSetting` row first and
-falling back to `AppConfig`.
+falling back to `SystemParameters`.
 
 **An absent row means "inherit the default".** That is the whole reason the
 value is not stored as a column on `User`: a scalar list column cannot be null
@@ -44,7 +44,7 @@ fields backed by the same table rather than exposing the bag.
 
 `friends.birthday.reminderleaddays`, scope `FRIENDS`, value a sorted CSV of
 days before the birthday (`"0,7"` — 0 being the day itself). The app-wide
-default remains `friends.birthday.reminderdays` in `AppConfig`, which an
+default remains `friends.birthday.reminderdays` in `SystemParameters`, which an
 unconfigured account inherits as `[0, <reminderdays>]`, matching the behaviour
 before the setting existed.
 

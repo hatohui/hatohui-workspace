@@ -1,5 +1,12 @@
 # Commission Opening — Checklist
 
+> **Route names below are historical.** `/admin/*` was folded into the `/app`
+> artist workspace (PR #14), and `TriageBoard.tsx` was replaced by
+> `CommissionsHub.tsx`. Current mapping: `/admin/pricing` and
+> `/app/commission-settings` → `/app/configure`; `/admin/commissions` (triage,
+> production, `[id]`) → `/app/commissions` (tabs for requests, queue and past,
+> plus the kanban) and `/app/commissions/[id]`; `/admin/groups` → `/app/groups`.
+
 Read [prd.md](./prd.md) in full first — it has the reasoning behind every
 decision below, not just the outcome. This checklist is the resumable state:
 what's done, what's broken right now, and the order to fix it in.

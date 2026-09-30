@@ -1,2 +1,0 @@
-export const CONNECTIONS_SEARCH_DEBOUNCE_MS = 300;
-export const CONNECTIONS_PAGE_SIZE = 5;

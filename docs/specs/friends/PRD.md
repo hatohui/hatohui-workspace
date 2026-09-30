@@ -1,5 +1,14 @@
 # @friends — Personal CRM MVP
 
+> **Historical discovery doc.** The shipped app diverged from it:
+>
+> - Multi-user, not a single whitelisted owner. Access is role-based (`Role` / `UserRole`), and users connect to each other. See [connections-graph](./connections-graph/PRD.md).
+> - Login is a Google credential posted to `POST /auth/google` (client-side Google sign-in), not a Passport redirect flow. Sessions are a JWT cookie signed with `SESSION_JWT_SECRET`.
+> - `Friend` became `Profile` + `Birthday`, served by the `profiles`, `birthdays` and `social-graph` modules. See [profile-model](./profile-model/PRD.md).
+> - Avatar storage is Cloudflare R2 (`R2_*` env vars), with MinIO only as the local stand-in.
+> - There is no Google Calendar sync. Reminders are emails. See [birthday-notifications](./birthday-notifications/PRD.md).
+> - The env vars listed at the bottom are not the real ones. `apps/api/src/config/env.ts` is the source of truth.
+
 ## Idea
 
 A private birthday tracker and social-circle CRM for a single owner. Tracks friends'

@@ -21,7 +21,7 @@ export function GalleryCardSelectToggle({
       aria-checked={selected}
       aria-label={t('gallery.selection.toggle', { name: filename })}
       onClick={onToggle}
-      className={`absolute inset-0 cursor-pointer rounded-lg transition-shadow outline-none focus-visible:ring-[3px] focus-visible:ring-ring/60 ${
+      className={`absolute inset-0 cursor-pointer transition-shadow outline-none focus-visible:ring-[3px] focus-visible:ring-ring/60 ${
         selected ? 'bg-primary/20 ring-[3px] ring-primary ring-inset' : ''
       }`}
     >

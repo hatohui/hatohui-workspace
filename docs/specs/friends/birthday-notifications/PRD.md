@@ -86,7 +86,7 @@ reminder go out?", short enough that the table stays trivial.
 
 ## Configuration
 
-Tunables live in `AppConfig` (scope `FRIENDS`) rather than env vars, so they
+Tunables live in `SystemParameters` (scope `FRIENDS`; formerly `AppConfig`) rather than env vars, so they
 change without a redeploy:
 
 | `type`                          | Meaning                                       |

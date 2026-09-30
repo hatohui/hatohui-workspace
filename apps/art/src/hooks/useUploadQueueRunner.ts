@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { putToSignedUrl, signImageFiles } from '@hatohui/libs';
+import { putToSignedUrl } from '@hatohui/libs';
+import { signImageFiles } from '@/lib/signImageFiles';
 import { useCreateAsset } from '@hatohui/models';
 import { UPLOAD_CONCURRENCY } from '@/constants/gallery';
 import { readImageDimensions } from '@/lib/imageDimensions';

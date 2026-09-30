@@ -1,4 +1,5 @@
-import { AccountBar, ThemeToggle } from '@hatohui/libs';
+import { ThemeToggle } from '@hatohui/libs';
+import { AccountBar } from './components/auth/AccountBar';
 import { Button } from '@hatohui/ui';
 import AmbientBackground from './components/AmbientBackground';
 import { useStaggerReveal } from './hooks/useStaggerReveal';

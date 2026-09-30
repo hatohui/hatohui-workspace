@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
-import BirthdayFields from './BirthdayFields';
+import BirthdayFields from '../friends/BirthdayFields';
 
 type Props = {
   onSubmit: (data: {
@@ -22,7 +22,7 @@ function OnboardingBirthdayStep({ onSubmit, submitting }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">{t('common:onboarding.birthday.title')}</h2>
+      <h2 className="text-xl">{t('onboarding.birthday.title')}</h2>
       <BirthdayFields
         birthYear={birthYear}
         birthMonth={birthMonth}

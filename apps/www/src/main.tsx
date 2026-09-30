@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')).render(
       >
         <OnboardingModalProvider>
           <App />
-          <OnboardingModal mode="identity" />
+          <OnboardingModal />
         </OnboardingModalProvider>
       </AuthProvider>
     </QueryClientProvider>

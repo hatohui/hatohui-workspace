@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import {
-  compressImageToFit,
   useUploadLimits,
   validateImageFile,
   type ImageFileProblem,
 } from '@hatohui/libs';
+import { compressImageToFit } from '@/lib/compressImageToFit';
 
 export type UploadItemStatus = 'pending' | 'uploading' | 'done' | 'failed';
 

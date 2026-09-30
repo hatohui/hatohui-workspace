@@ -27,7 +27,7 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
       Subjects resolved at read time, batched by type; rows with a vanished
       subject are dropped.
 - [x] `admin` module: `AdminGuard` (derived admin email + `x-admin-key`) and
-      `GET /admin/birthdays` for the unfiltered listing.
+      admin listings (`admin/users`, `admin/profiles`, `admin/system-parameters`). `GET /admin/birthdays` was never added.
 - [x] `GET /users/search` — claimed accounts only, `PublicUserDto` shaped.
 - [x] `friends`: `viewerIncludes` no longer joins connections; a `ViewerContext`
       is resolved once per request and threaded down. `FRIENDS_ONLY` is a real
@@ -42,7 +42,7 @@ See [PRD.md](./PRD.md) for the reasoning behind each decision.
 
 ## Caching
 
-- [x] `libs/cache.ts` — read-through Redis helper; a cache failure falls back to
+- [x] `infra/cache.ts` — read-through Redis helper; a cache failure falls back to
       loading directly rather than failing the request.
 - [x] Admin email (TTL 300s), connection context (600s), unread count (300s).
 - [x] Invalidated explicitly on both sides of every connection mutation and on
@@ -71,6 +71,7 @@ clearing the badge, claim inheritance, admin gate, no PII on `/auth/me`).
 - [ ] Per-item read-on-view for notifications (only "mark all read" exists).
 - [ ] Anything emitting `BIRTHDAY_REMINDER` / `SYSTEM`.
 - [ ] Blocking/muting or a re-request cooldown.
-- [ ] An admin screen consuming `GET /admin/birthdays`.
-- [ ] `apps/art`'s admin section still has no way to supply `x-admin-key`, so
-      its admin routes are unreachable from that UI until a key entry is added.
+- [x] ~~An admin screen consuming `GET /admin/birthdays`.~~ Superseded: `apps/workspace` provides admin screens for users, profiles and system parameters instead.
+- [x] ~~`apps/art`'s admin section has no way to supply `x-admin-key`.~~ Moot: art's
+      admin section became the role-gated `/app` workspace and no longer calls
+      key-guarded routes. `apps/workspace` has the admin-key form.

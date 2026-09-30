@@ -20,7 +20,7 @@ export function ProjectCard({
   return (
     <Link
       href={href}
-      className="group artwork-frame relative block aspect-square overflow-hidden rounded-lg bg-card focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+      className="group artwork-frame relative block aspect-square overflow-hidden bg-card focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
     >
       {project.coverImageUrl ? (
         <Image
