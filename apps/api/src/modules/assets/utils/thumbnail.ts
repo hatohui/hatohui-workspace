@@ -1,18 +1,34 @@
 import sharp from 'sharp';
 
-export const ASSET_THUMBNAIL_MAX_DIMENSION = 1600;
-export const ASSET_THUMBNAIL_WEBP_QUALITY = 90;
+export const ASSET_THUMBNAIL_MAX_DIMENSION = 512;
+export const ASSET_PREVIEW_MAX_DIMENSION = 2048;
+export const ASSET_WEBP_QUALITY = 90;
 
-export async function generateThumbnail(original: Buffer): Promise<Buffer> {
+export interface AssetVariants {
+  thumbnail: Buffer;
+  preview: Buffer;
+}
+
+export async function generateVariants(
+  original: Buffer,
+): Promise<AssetVariants> {
+  const [thumbnail, preview] = await Promise.all([
+    resizeToWebp(original, ASSET_THUMBNAIL_MAX_DIMENSION),
+    resizeToWebp(original, ASSET_PREVIEW_MAX_DIMENSION),
+  ]);
+  return { thumbnail, preview };
+}
+
+function resizeToWebp(original: Buffer, maxDimension: number): Promise<Buffer> {
   return sharp(original)
     .rotate()
     .resize({
-      width: ASSET_THUMBNAIL_MAX_DIMENSION,
-      height: ASSET_THUMBNAIL_MAX_DIMENSION,
+      width: maxDimension,
+      height: maxDimension,
       fit: 'inside',
       withoutEnlargement: true,
     })
-    .webp({ quality: ASSET_THUMBNAIL_WEBP_QUALITY, smartSubsample: true })
+    .webp({ quality: ASSET_WEBP_QUALITY, smartSubsample: true })
     .toBuffer();
 }
 

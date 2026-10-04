@@ -1,6 +1,6 @@
 'use client';
 
-import { Info, Minus, Plus, RotateCcw, X } from 'lucide-react';
+import { Download, Info, Minus, Plus, RotateCcw, X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { Button, cn } from '@hatohui/ui';
 import type { useZoomPan } from '@/hooks/useZoomPan';
@@ -10,10 +10,12 @@ const CONTROL_CLASS =
 
 export function ImageViewerControls({
   zoom,
+  originalUrl,
   onClose,
   caption,
 }: {
   zoom: ReturnType<typeof useZoomPan>;
+  originalUrl: string | null;
   onClose: () => void;
   caption: { isOpen: boolean; toggle: () => void } | null;
 }) {
@@ -69,6 +71,20 @@ export function ImageViewerControls({
             onClick={caption.toggle}
           >
             <Info />
+          </Button>
+        )}
+        {originalUrl && (
+          <Button asChild variant="ghost" size="icon" className={CONTROL_CLASS}>
+            <a
+              href={originalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+              aria-label={t('imageViewer.download')}
+              title={t('imageViewer.download')}
+            >
+              <Download />
+            </a>
           </Button>
         )}
       </div>

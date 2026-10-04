@@ -292,6 +292,8 @@ model Asset {
 
   thumbnailKey    String?
   thumbnailUrl    String?
+  previewKey      String?
+  previewUrl      String?
   thumbnailStatus AssetThumbnailStatus @default(PENDING)
 
   uploadedById String?

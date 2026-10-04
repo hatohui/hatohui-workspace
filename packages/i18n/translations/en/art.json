@@ -954,6 +954,7 @@
     "zoomOut": "Zoom out",
     "reset": "Reset zoom",
     "close": "Close",
+    "download": "Download original",
     "toggleCaption": "Show or hide details",
     "image": "Image"
   },

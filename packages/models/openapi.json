@@ -6880,6 +6880,12 @@
             "example": "http://localhost:9010/hatohui-dev/art/assets/thumbnails/abc.webp",
             "nullable": true
           },
+          "previewUrl": {
+            "type": "string",
+            "example": "http://localhost:9010/hatohui-dev/art/assets/previews/abc.webp",
+            "nullable": true,
+            "description": "Large WebP for on-page viewing; the original is publicUrl"
+          },
           "thumbnailStatus": {
             "type": "string",
             "enum": [
@@ -6967,6 +6973,7 @@
           "key",
           "publicUrl",
           "thumbnailUrl",
+          "previewUrl",
           "thumbnailStatus",
           "filename",
           "title",
@@ -9784,9 +9791,13 @@
             "type": "string",
             "description": "Small image for grids and cards"
           },
+          "previewUrl": {
+            "type": "string",
+            "description": "Large WebP for close viewing"
+          },
           "fullUrl": {
             "type": "string",
-            "description": "Full-size image for close viewing"
+            "description": "Original file, for download"
           },
           "width": {
             "type": "number",
@@ -9808,6 +9819,7 @@
         "required": [
           "assetId",
           "thumbnailUrl",
+          "previewUrl",
           "fullUrl",
           "width",
           "height",

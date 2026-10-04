@@ -15,6 +15,7 @@
 ///   avatars/<profileId>/<uuid>.<ext>        live avatar + its version history
 ///   art/<artist>/gallery/<uuid>.<ext>       an artist's gallery uploads
 ///   art/<artist>/thumbnails/<uuid>-<name>.webp  gallery thumbnails
+///   art/<artist>/previews/<uuid>-<name>.webp    gallery viewer previews
 ///   art/commissions/<userId>/<uuid>.<ext>   delivered commission artwork
 ///   art/references/<userId>/<uuid>.<ext>    client-supplied reference images
 ///
@@ -34,6 +35,7 @@ export const REFERENCES_PREFIX = 'art/references';
 export const ART_PREFIX = 'art';
 export const GALLERY_SEGMENT = 'gallery';
 export const THUMBNAILS_SEGMENT = 'thumbnails';
+export const PREVIEWS_SEGMENT = 'previews';
 export const UNASSIGNED_ARTIST_SEGMENT = 'unassigned';
 
 /// Where a freshly signed upload goes before its owning record exists.
@@ -84,8 +86,23 @@ export function assetThumbnailKeyFor(
   artist: string,
   sourceKeyOrFilename: string,
 ): string {
+  return derivedImageKeyFor(THUMBNAILS_SEGMENT, artist, sourceKeyOrFilename);
+}
+
+export function assetPreviewKeyFor(
+  artist: string,
+  sourceKeyOrFilename: string,
+): string {
+  return derivedImageKeyFor(PREVIEWS_SEGMENT, artist, sourceKeyOrFilename);
+}
+
+function derivedImageKeyFor(
+  segment: string,
+  artist: string,
+  sourceKeyOrFilename: string,
+): string {
   const base = fileNameOf(sourceKeyOrFilename).replace(/\.[^.]+$/, '');
-  return `${ART_PREFIX}/${artist}/${THUMBNAILS_SEGMENT}/${randomUUID()}-${base}.webp`;
+  return `${ART_PREFIX}/${artist}/${segment}/${randomUUID()}-${base}.webp`;
 }
 
 function fileNameOf(key: string): string {

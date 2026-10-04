@@ -180,6 +180,7 @@ function toArtworks(
     .map(({ asset }) => ({
       assetId: asset.id,
       thumbnailUrl: asset.thumbnailUrl ?? asset.publicUrl,
+      previewUrl: asset.previewUrl ?? asset.publicUrl,
       fullUrl: asset.publicUrl,
       width: asset.width,
       height: asset.height,
@@ -193,6 +194,7 @@ function toArtworks(
     .map((url) => ({
       assetId: null,
       thumbnailUrl: url,
+      previewUrl: url,
       fullUrl: url,
       width: null,
       height: null,

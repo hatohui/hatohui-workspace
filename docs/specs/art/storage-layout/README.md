@@ -10,7 +10,17 @@ way it does.
 ```text
 art/<artist>/gallery/<uuid>.<ext>            original
 art/<artist>/thumbnails/<uuid>-<name>.webp   generated thumbnail
+art/<artist>/previews/<uuid>-<name>.webp     generated preview
 ```
+
+- Three sizes, so nothing loads a multi-megabyte original just to look at it:
+  the **thumbnail** (512px WebP) fills grids and cards, the **preview** (2048px
+  WebP) fills the artwork page and the zoom viewer, and the **original** is only
+  fetched through the viewer's download button and the "Open original" link.
+  Both derived sizes keep the aspect ratio and are never upscaled.
+- Assets created before previews existed were re-queued by the
+  `asset_preview` migration, which regenerates both sizes and deletes the old
+  1600px thumbnail.
 
 - `<artist>` is the storefront handle (`Profile.handle`, `^[a-z0-9_]{3,20}$`,
   so it is already a safe path segment). An artist without a handle falls back

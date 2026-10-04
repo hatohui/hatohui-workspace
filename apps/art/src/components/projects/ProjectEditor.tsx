@@ -67,6 +67,7 @@ export function ProjectEditor({ id }: { id: string }) {
         src={editor.viewer.src}
         alt={editor.viewer.caption.title ?? project.title}
         caption={editor.viewer.caption}
+        originalUrl={editor.viewer.originalUrl}
         onClose={editor.viewer.close}
       />
       <ConfirmDialog

@@ -427,6 +427,9 @@ export class AssetsService {
     if (asset.thumbnailKey) {
       await this.storageCleanup.delete(asset.thumbnailKey);
     }
+    if (asset.previewKey) {
+      await this.storageCleanup.delete(asset.previewKey);
+    }
     await this.processQueue.clearForRef(ProcessType.ASSET_THUMBNAIL, asset.id);
   }
 
@@ -489,6 +492,7 @@ function toAssetDto(
     key: asset.key,
     publicUrl: asset.publicUrl,
     thumbnailUrl: asset.thumbnailUrl,
+    previewUrl: asset.previewUrl,
     thumbnailStatus: asset.thumbnailStatus,
     filename: asset.filename,
     title: asset.title,

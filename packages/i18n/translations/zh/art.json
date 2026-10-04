@@ -732,6 +732,7 @@
     "zoomOut": "缩小",
     "reset": "重置缩放",
     "close": "关闭",
+    "download": "下载原图",
     "toggleCaption": "显示或隐藏详情",
     "image": "图片"
   },
