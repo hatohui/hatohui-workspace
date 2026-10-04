@@ -8,11 +8,13 @@ export function ImageViewer({
   src,
   alt,
   caption = {},
+  originalUrl = null,
   onClose,
 }: {
   src: string | null;
   alt: string;
   caption?: ImageViewerCaption;
+  originalUrl?: string | null;
   onClose: () => void;
 }) {
   return (
@@ -29,6 +31,7 @@ export function ImageViewer({
             src={src}
             alt={alt}
             caption={caption}
+            originalUrl={originalUrl}
             onClose={onClose}
           />
         )}

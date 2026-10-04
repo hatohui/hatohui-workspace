@@ -107,10 +107,11 @@ export function GalleryGrid({
                   onAddToProject={() => setProjectTarget(asset)}
                   onEdit={() => setEditTarget(asset)}
                   onZoom={() =>
-                    viewer.open(asset.publicUrl, {
-                      title: asset.title,
-                      description: asset.description,
-                    })
+                    viewer.open(
+                      asset.previewUrl ?? asset.publicUrl,
+                      { title: asset.title, description: asset.description },
+                      asset.publicUrl,
+                    )
                   }
                   selection={
                     selection.isSelecting
@@ -143,6 +144,7 @@ export function GalleryGrid({
         src={viewer.src}
         alt={viewer.caption.title ?? t('gallery.title')}
         caption={viewer.caption}
+        originalUrl={viewer.originalUrl}
         onClose={viewer.close}
       />
       <UploadDialog open={isUploadOpen} onOpenChange={setIsUploadOpen} />

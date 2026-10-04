@@ -940,6 +940,7 @@
     "zoomOut": "縮小",
     "reset": "ズームをリセット",
     "close": "閉じる",
+    "download": "元画像をダウンロード",
     "toggleCaption": "詳細の表示/非表示",
     "image": "画像"
   },

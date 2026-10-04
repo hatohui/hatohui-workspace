@@ -19,7 +19,10 @@ export class ProjectArtworkDto {
   @ApiProperty({ description: 'Small image for grids and cards' })
   thumbnailUrl: string;
 
-  @ApiProperty({ description: 'Full-size image for close viewing' })
+  @ApiProperty({ description: 'Large WebP for close viewing' })
+  previewUrl: string;
+
+  @ApiProperty({ description: 'Original file, for download' })
   fullUrl: string;
 
   @ApiProperty({ nullable: true, type: Number })

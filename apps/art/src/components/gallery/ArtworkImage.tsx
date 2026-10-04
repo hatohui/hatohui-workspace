@@ -14,10 +14,11 @@ export function ArtworkImage({ asset }: { asset: AssetDto }) {
   const viewer = useImageViewer();
   const alt = asset.title ?? asset.filename;
   const openViewer = () =>
-    viewer.open(asset.publicUrl, {
-      title: asset.title,
-      description: asset.description,
-    });
+    viewer.open(
+      asset.previewUrl ?? asset.publicUrl,
+      { title: asset.title, description: asset.description },
+      asset.publicUrl,
+    );
 
   return (
     <div className="relative flex justify-center bg-card">
@@ -28,7 +29,7 @@ export function ArtworkImage({ asset }: { asset: AssetDto }) {
         onClick={openViewer}
       >
         <Image
-          src={asset.publicUrl}
+          src={asset.previewUrl ?? asset.publicUrl}
           alt={alt}
           width={asset.width ?? ARTWORK_FALLBACK_DIMENSION_PX}
           height={asset.height ?? ARTWORK_FALLBACK_DIMENSION_PX}
@@ -51,6 +52,7 @@ export function ArtworkImage({ asset }: { asset: AssetDto }) {
         src={viewer.src}
         alt={alt}
         caption={viewer.caption}
+        originalUrl={viewer.originalUrl}
         onClose={viewer.close}
       />
     </div>

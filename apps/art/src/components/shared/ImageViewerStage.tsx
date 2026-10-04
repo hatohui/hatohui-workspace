@@ -11,11 +11,13 @@ export function ImageViewerStage({
   src,
   alt,
   caption,
+  originalUrl,
   onClose,
 }: {
   src: string;
   alt: string;
   caption: Caption;
+  originalUrl: string | null;
   onClose: () => void;
 }) {
   const zoom = useZoomPan();
@@ -52,6 +54,7 @@ export function ImageViewerStage({
       )}
       <ImageViewerControls
         zoom={zoom}
+        originalUrl={originalUrl}
         onClose={onClose}
         caption={
           hasCaption

@@ -40,10 +40,11 @@ export function useProjectEditor(id: string) {
     removeArtwork: (assetId: string) => mutations.removeAsset(id, assetId),
     viewer,
     view: (artwork: ProjectArtworkDto) =>
-      viewer.open(artwork.fullUrl, {
-        title: artwork.title,
-        description: artwork.description,
-      }),
+      viewer.open(
+        artwork.previewUrl,
+        { title: artwork.title, description: artwork.description },
+        artwork.fullUrl,
+      ),
     isAdding,
     setIsAdding,
     isConfirmingDelete,

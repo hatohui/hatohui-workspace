@@ -14,7 +14,9 @@ export interface ProjectArtworkDto {
   assetId: string | null;
   /** Small image for grids and cards */
   thumbnailUrl: string;
-  /** Full-size image for close viewing */
+  /** Large WebP for close viewing */
+  previewUrl: string;
+  /** Original file, for download */
   fullUrl: string;
   /** @nullable */
   width: number | null;

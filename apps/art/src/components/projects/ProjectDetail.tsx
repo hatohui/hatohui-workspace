@@ -49,10 +49,11 @@ export function ProjectDetail({
           artworks={project.artworks}
           alt={project.title}
           onView={(artwork) =>
-            viewer.open(artwork.fullUrl, {
-              title: artwork.title,
-              description: artwork.description,
-            })
+            viewer.open(
+              artwork.previewUrl,
+              { title: artwork.title, description: artwork.description },
+              artwork.fullUrl,
+            )
           }
         />
       )}
@@ -60,6 +61,7 @@ export function ProjectDetail({
         src={viewer.src}
         alt={viewer.caption.title ?? project.title}
         caption={viewer.caption}
+        originalUrl={viewer.originalUrl}
         onClose={viewer.close}
       />
     </div>

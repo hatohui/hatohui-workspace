@@ -39,6 +39,13 @@ export class AssetDto {
   thumbnailUrl: string | null;
 
   @ApiProperty({
+    example: 'http://localhost:9010/hatohui-dev/art/assets/previews/abc.webp',
+    nullable: true,
+    description: 'Large WebP for on-page viewing; the original is publicUrl',
+  })
+  previewUrl: string | null;
+
+  @ApiProperty({
     enum: AssetThumbnailStatus,
     example: AssetThumbnailStatus.READY,
   })

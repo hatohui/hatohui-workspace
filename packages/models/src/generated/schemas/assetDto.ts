@@ -16,6 +16,11 @@ export interface AssetDto {
   publicUrl: string;
   /** @nullable */
   thumbnailUrl: string | null;
+  /**
+     * Large WebP for on-page viewing; the original is publicUrl
+     * @nullable
+     */
+  previewUrl: string | null;
   thumbnailStatus: AssetDtoThumbnailStatus;
   filename: string;
   /** @nullable */

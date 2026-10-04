@@ -11,13 +11,18 @@ export function useImageViewer() {
   const [state, setState] = useState<{
     src: string;
     caption: ImageViewerCaption;
+    originalUrl: string | null;
   } | null>(null);
 
   return {
     src: state?.src ?? null,
     caption: state?.caption ?? {},
-    open: (src: string, caption: ImageViewerCaption = {}) =>
-      setState({ src, caption }),
+    originalUrl: state?.originalUrl ?? null,
+    open: (
+      src: string,
+      caption: ImageViewerCaption = {},
+      originalUrl: string | null = null,
+    ) => setState({ src, caption, originalUrl }),
     close: () => setState(null),
   };
 }

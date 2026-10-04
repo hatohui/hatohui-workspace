@@ -11,7 +11,11 @@ export function CommissionExampleTile({
   onView,
 }: {
   asset: AssetDto;
-  onView: (src: string, caption: ImageViewerCaption) => void;
+  onView: (
+    src: string,
+    caption: ImageViewerCaption,
+    originalUrl: string,
+  ) => void;
 }) {
   const { tileStyle, frameStyle, sizes } = useGalleryTile(asset);
 
@@ -21,10 +25,11 @@ export function CommissionExampleTile({
       style={tileStyle}
       className="group relative block w-full overflow-hidden rounded-lg bg-card focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
       onClick={() =>
-        onView(asset.publicUrl, {
-          title: asset.title,
-          description: asset.description,
-        })
+        onView(
+          asset.previewUrl ?? asset.publicUrl,
+          { title: asset.title, description: asset.description },
+          asset.publicUrl,
+        )
       }
     >
       <div style={frameStyle} />
