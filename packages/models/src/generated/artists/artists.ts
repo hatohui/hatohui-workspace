@@ -6,22 +6,28 @@
  * OpenAPI spec version: 0.1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  PublicUserDto
+  ArtistAboutDto,
+  PublicUserDto,
+  UpdateArtistAboutDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -46,144 +52,32 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type artistsResponse200 = {
-  data: PublicUserDto[]
-  status: 200
-}
-
-export type artistsResponseSuccess = (artistsResponse200) & {
-  headers: Headers;
-};
-;
-
-export type artistsResponse = (artistsResponseSuccess)
-
-export const getArtistsUrl = () => {
-
-
-
-
-  return `/artists`
-}
-
-/**
- * @summary List every artist with a public storefront handle
- */
-export const artists = async ( options?: RequestInit): Promise<artistsResponse> => {
-
-  return customFetch<artistsResponse>(getArtistsUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getArtistsQueryKey = () => {
-    return [
-    `/artists`
-    ] as const;
-    }
-
-
-export const getArtistsQueryOptions = <TData = Awaited<ReturnType<typeof artists>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artists>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getArtistsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof artists>>> = ({ signal }) => artists({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof artists>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ArtistsQueryResult = NonNullable<Awaited<ReturnType<typeof artists>>>
-export type ArtistsQueryError = unknown
-
-
-export function useArtists<TData = Awaited<ReturnType<typeof artists>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof artists>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof artists>>,
-          TError,
-          Awaited<ReturnType<typeof artists>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useArtists<TData = Awaited<ReturnType<typeof artists>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artists>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof artists>>,
-          TError,
-          Awaited<ReturnType<typeof artists>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useArtists<TData = Awaited<ReturnType<typeof artists>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artists>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary List every artist with a public storefront handle
- */
-
-export function useArtists<TData = Awaited<ReturnType<typeof artists>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artists>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getArtistsQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-export type artistByHandleResponse200 = {
+export type siteArtistResponse200 = {
   data: PublicUserDto
   status: 200
 }
 
-export type artistByHandleResponseSuccess = (artistByHandleResponse200) & {
+export type siteArtistResponseSuccess = (siteArtistResponse200) & {
   headers: Headers;
 };
 ;
 
-export type artistByHandleResponse = (artistByHandleResponseSuccess)
+export type siteArtistResponse = (siteArtistResponseSuccess)
 
-export const getArtistByHandleUrl = (handle: string,) => {
-
-
+export const getSiteArtistUrl = () => {
 
 
-  return `/artists/${handle}`
+
+
+  return `/artist`
 }
 
 /**
- * @summary Resolve an artist's storefront handle
+ * @summary The artist this site belongs to
  */
-export const artistByHandle = async (handle: string, options?: RequestInit): Promise<artistByHandleResponse> => {
+export const siteArtist = async ( options?: RequestInit): Promise<siteArtistResponse> => {
 
-  return customFetch<artistByHandleResponse>(getArtistByHandleUrl(handle),
+  return customFetch<siteArtistResponse>(getSiteArtistUrl(),
   {
     ...options,
     method: 'GET'
@@ -196,69 +90,69 @@ export const artistByHandle = async (handle: string, options?: RequestInit): Pro
 
 
 
-export const getArtistByHandleQueryKey = (handle: string,) => {
+export const getSiteArtistQueryKey = () => {
     return [
-    `/artists/${handle}`
+    `/artist`
     ] as const;
     }
 
 
-export const getArtistByHandleQueryOptions = <TData = Awaited<ReturnType<typeof artistByHandle>>, TError = unknown>(handle: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistByHandle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export const getSiteArtistQueryOptions = <TData = Awaited<ReturnType<typeof siteArtist>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof siteArtist>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getArtistByHandleQueryKey(handle);
+  const queryKey =  queryOptions?.queryKey ?? getSiteArtistQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof artistByHandle>>> = ({ signal }) => artistByHandle(handle, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof siteArtist>>> = ({ signal }) => siteArtist({ signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, enabled: handle !== null && handle !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof artistByHandle>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof siteArtist>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type ArtistByHandleQueryResult = NonNullable<Awaited<ReturnType<typeof artistByHandle>>>
-export type ArtistByHandleQueryError = unknown
+export type SiteArtistQueryResult = NonNullable<Awaited<ReturnType<typeof siteArtist>>>
+export type SiteArtistQueryError = unknown
 
 
-export function useArtistByHandle<TData = Awaited<ReturnType<typeof artistByHandle>>, TError = unknown>(
- handle: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistByHandle>>, TError, TData>> & Pick<
+export function useSiteArtist<TData = Awaited<ReturnType<typeof siteArtist>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof siteArtist>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof artistByHandle>>,
+          Awaited<ReturnType<typeof siteArtist>>,
           TError,
-          Awaited<ReturnType<typeof artistByHandle>>
+          Awaited<ReturnType<typeof siteArtist>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useArtistByHandle<TData = Awaited<ReturnType<typeof artistByHandle>>, TError = unknown>(
- handle: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistByHandle>>, TError, TData>> & Pick<
+export function useSiteArtist<TData = Awaited<ReturnType<typeof siteArtist>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof siteArtist>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof artistByHandle>>,
+          Awaited<ReturnType<typeof siteArtist>>,
           TError,
-          Awaited<ReturnType<typeof artistByHandle>>
+          Awaited<ReturnType<typeof siteArtist>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useArtistByHandle<TData = Awaited<ReturnType<typeof artistByHandle>>, TError = unknown>(
- handle: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistByHandle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function useSiteArtist<TData = Awaited<ReturnType<typeof siteArtist>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof siteArtist>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Resolve an artist's storefront handle
+ * @summary The artist this site belongs to
  */
 
-export function useArtistByHandle<TData = Awaited<ReturnType<typeof artistByHandle>>, TError = unknown>(
- handle: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistByHandle>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+export function useSiteArtist<TData = Awaited<ReturnType<typeof siteArtist>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof siteArtist>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getArtistByHandleQueryOptions(handle,options)
+  const queryOptions = getSiteArtistQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -270,3 +164,197 @@ export function useArtistByHandle<TData = Awaited<ReturnType<typeof artistByHand
 
 
 
+export type artistAboutResponse200 = {
+  data: ArtistAboutDto
+  status: 200
+}
+
+export type artistAboutResponseSuccess = (artistAboutResponse200) & {
+  headers: Headers;
+};
+;
+
+export type artistAboutResponse = (artistAboutResponseSuccess)
+
+export const getArtistAboutUrl = () => {
+
+
+
+
+  return `/artist/about`
+}
+
+/**
+ * @summary About page content for the site artist
+ */
+export const artistAbout = async ( options?: RequestInit): Promise<artistAboutResponse> => {
+
+  return customFetch<artistAboutResponse>(getArtistAboutUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getArtistAboutQueryKey = () => {
+    return [
+    `/artist/about`
+    ] as const;
+    }
+
+
+export const getArtistAboutQueryOptions = <TData = Awaited<ReturnType<typeof artistAbout>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistAbout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getArtistAboutQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof artistAbout>>> = ({ signal }) => artistAbout({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof artistAbout>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ArtistAboutQueryResult = NonNullable<Awaited<ReturnType<typeof artistAbout>>>
+export type ArtistAboutQueryError = unknown
+
+
+export function useArtistAbout<TData = Awaited<ReturnType<typeof artistAbout>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistAbout>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof artistAbout>>,
+          TError,
+          Awaited<ReturnType<typeof artistAbout>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useArtistAbout<TData = Awaited<ReturnType<typeof artistAbout>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistAbout>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof artistAbout>>,
+          TError,
+          Awaited<ReturnType<typeof artistAbout>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useArtistAbout<TData = Awaited<ReturnType<typeof artistAbout>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistAbout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary About page content for the site artist
+ */
+
+export function useArtistAbout<TData = Awaited<ReturnType<typeof artistAbout>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistAbout>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getArtistAboutQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type updateArtistAboutResponse200 = {
+  data: ArtistAboutDto
+  status: 200
+}
+
+export type updateArtistAboutResponseSuccess = (updateArtistAboutResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateArtistAboutResponse = (updateArtistAboutResponseSuccess)
+
+export const getUpdateArtistAboutUrl = () => {
+
+
+
+
+  return `/artist/about`
+}
+
+/**
+ * @summary Replace your About page content
+ */
+export const updateArtistAbout = async (updateArtistAboutDto: UpdateArtistAboutDto, options?: RequestInit): Promise<updateArtistAboutResponse> => {
+
+  return customFetch<updateArtistAboutResponse>(getUpdateArtistAboutUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateArtistAboutDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateArtistAboutMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateArtistAbout>>, TError,{data: UpdateArtistAboutDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateArtistAbout>>, TError,{data: UpdateArtistAboutDto}, TContext> => {
+
+const mutationKey = ['updateArtistAbout'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateArtistAbout>>, {data: UpdateArtistAboutDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateArtistAbout(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateArtistAboutMutationResult = NonNullable<Awaited<ReturnType<typeof updateArtistAbout>>>
+    export type UpdateArtistAboutMutationBody = UpdateArtistAboutDto
+    export type UpdateArtistAboutMutationError = unknown
+
+    /**
+ * @summary Replace your About page content
+ */
+export const useUpdateArtistAbout = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateArtistAbout>>, TError,{data: UpdateArtistAboutDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateArtistAbout>>,
+        TError,
+        {data: UpdateArtistAboutDto},
+        TContext
+      > => {
+      return useMutation(getUpdateArtistAboutMutationOptions(options), queryClient);
+    }

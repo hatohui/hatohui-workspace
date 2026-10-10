@@ -1,7 +1,16 @@
 {
-  "artistPicker": {
-    "title": "Chọn một nghệ sĩ",
-    "empty": "Chưa có nghệ sĩ nào mở gian hàng."
+  "landing": {
+    "greeting": "Xin chào, mình là",
+    "aboutTitle": "Về mình",
+    "viewGallery": "Xem thư viện",
+    "commission": "Đặt commission",
+    "recentWork": "Tác phẩm gần đây",
+    "viewAll": "Xem tất cả",
+    "status": {
+      "open": "Đang nhận commission",
+      "scheduled": "Mở nhận commission vào {{date}}",
+      "closed": "Đã đóng commission"
+    }
   },
   "site": {
     "title": "Art",
@@ -704,7 +713,8 @@
       "gallery": "Thư viện",
       "projects": "Dự án",
       "groups": "Nhóm",
-      "configure": "Thiết lập"
+      "configure": "Thiết lập",
+      "about": "Trang giới thiệu"
     },
     "commissionSettings": {
       "title": "Cài đặt commission",
@@ -804,11 +814,6 @@
         "waiting_other": "Bạn có {{count}} yêu cầu mới đang chờ",
         "openQuiet": "Đang nhận đơn. Yêu cầu mới sẽ hiện ở đây.",
         "review": "Xem ngay"
-      },
-      "setup": {
-        "title": "Hoàn tất thiết lập nhận đơn",
-        "progress": "Đã xong {{done}}/{{total}} bước",
-        "cta": "Tiếp tục thiết lập"
       }
     },
     "requests": {
@@ -879,7 +884,6 @@
       "contact": "Cách liên hệ ưu tiên",
       "guest": "Không có tài khoản - gửi với tư cách khách",
       "linkedAccount": "Có tài khoản",
-      "viewProfile": "Xem hồ sơ",
       "history_other": "{{count}} đơn với bạn"
     },
     "quotes": {
@@ -906,34 +910,19 @@
       "sent_accept": "Đã nhận yêu cầu.",
       "failed": "Không gửi được. Vui lòng thử lại."
     },
-    "setup": {
-      "progress": "Bước {{current}}/{{total}}",
-      "skip": "Để sau",
-      "back": "Quay lại",
-      "continue": "Tiếp tục",
-      "examplesNeedTypes": "Hãy bật ít nhất một loại tranh trước, rồi thêm tranh mẫu ở đây.",
-      "steps": {
-        "payment": {
-          "short": "Thanh toán",
-          "title": "Khách trả tiền thế nào",
-          "description": "Chọn đơn vị tiền tệ và thêm các cách khách có thể thanh toán. Bạn có thể đổi sau trong Thiết lập."
-        },
-        "pricing": {
-          "short": "Giá",
-          "title": "Bạn nhận vẽ gì",
-          "description": "Bật các loại tranh bạn nhận và đặt giá cho từng loại. Khách sẽ thấy dưới dạng bảng giá."
-        },
-        "examples": {
-          "short": "Tranh mẫu",
-          "title": "Khoe tranh của bạn",
-          "description": "Thêm vài tranh mẫu cho từng loại. Chúng hiện trên form đặt tranh và trong thư viện."
-        },
-        "opening": {
-          "short": "Mở đơn",
-          "title": "Mở nhận đơn",
-          "description": "Chọn cách kết thúc đợt mở đơn, hoặc hẹn giờ mở. Xong bạn sẽ được chuyển đến trang đơn đặt tranh."
-        }
-      }
+    "about": {
+      "title": "Trang giới thiệu",
+      "description": "Nội dung khách thấy ở trang chủ.",
+      "viewPage": "Xem trang",
+      "headline": "Tiêu đề",
+      "intro": "Giới thiệu ngắn",
+      "body": "Về mình",
+      "bodyHint": "Hỗ trợ Markdown.",
+      "facts": "Điều thú vị",
+      "factsHint": "Mỗi dòng một mục. Hiển thị dạng thẻ nổi.",
+      "save": "Lưu",
+      "saved": "Đã lưu trang giới thiệu",
+      "saveFailed": "Không lưu được trang giới thiệu"
     }
   },
   "imageViewer": {

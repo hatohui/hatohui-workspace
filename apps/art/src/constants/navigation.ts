@@ -4,7 +4,12 @@ export const TAB_SEARCH_PARAM = 'tab';
 
 export const WORKSPACE_HOME_ROUTE = '/app';
 
-export const artistFaqPath = (artist: string) => `/${artist}/faq`;
+export const HOME_ROUTE = '/';
+export const GALLERY_ROUTE = '/gallery';
+export const PROJECTS_ROUTE = '/projects';
+export const COMMISSION_ROUTE = '/commission';
+export const FAQ_ROUTE = '/faq';
+export const GROUPS_ROUTE = '/groups';
 
 export interface SiteNavItem {
   key: 'gallery' | 'commission' | 'queue';
@@ -16,8 +21,8 @@ export interface SiteNavItem {
 export const SITE_NAV_ITEMS: SiteNavItem[] = [
   {
     key: 'gallery',
-    segment: '',
-    activeSegments: ['', '/gallery', '/projects'],
+    segment: '/gallery',
+    activeSegments: ['/gallery', '/projects'],
     icon: Images,
   },
   {

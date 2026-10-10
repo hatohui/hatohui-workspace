@@ -1,12 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { CommissionPublicDetailDto } from '@hatohui/models';
 import { useCommissionFormatters } from '@/hooks/useCommissionFormatters';
-import { queuePath } from '@/constants/queue';
+import { QUEUE_ROUTE } from '@/constants/queue';
 
 export function OrderHeader({
   commission,
@@ -14,7 +13,6 @@ export function OrderHeader({
   commission: CommissionPublicDetailDto;
 }) {
   const { t } = useTranslation('art');
-  const { artist } = useParams<{ artist: string }>();
   const format = useCommissionFormatters();
 
   const summary = commission.deliveredAt
@@ -29,7 +27,7 @@ export function OrderHeader({
   return (
     <header className="space-y-3">
       <Link
-        href={queuePath(artist)}
+        href={QUEUE_ROUTE}
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" aria-hidden />

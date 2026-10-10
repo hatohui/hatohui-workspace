@@ -100,7 +100,7 @@ export async function seedCommissionPricing(prisma: PrismaClient) {
     },
   });
 
-  // A public handle is what makes the artist reachable at /[artist] at all —
+  // A public handle is what makes the artist show up as a public profile —
   // real artists get one through onboarding, but the dev seed has to set it
   // directly since nothing here goes through that flow.
   await prisma.profile.upsert({

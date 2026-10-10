@@ -16,6 +16,7 @@ import { SocialPlatformsModule } from '@/modules/social-platforms/social-platfor
 import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
 import { UsersModule } from '@/modules/users/users.module';
 import { ArtistsModule } from '@/modules/artists/artists.module';
+import { ArtistAboutModule } from '@/modules/artist-about/artist-about.module';
 import { AdminModule } from '@/modules/admin/admin.module';
 import { ConnectionsModule } from '@/modules/connections/connections.module';
 import { CronModule } from '@/modules/cron/cron.module';
@@ -27,7 +28,6 @@ import { CommissionPricingModule } from '@/modules/commission-pricing/commission
 import { ProjectsModule } from '@/modules/projects/projects.module';
 import { CommissionOpeningsModule } from '@/modules/commission-openings/commission-openings.module';
 import { ArtistDashboardModule } from '@/modules/artist-dashboard/artist-dashboard.module';
-import { ArtistSetupModule } from '@/modules/artist-setup/artist-setup.module';
 import { CommissionProgressModule } from '@/modules/commission-progress/commission-progress.module';
 import { ClientsModule } from '@/modules/clients/clients.module';
 import { CommissionFollowersModule } from '@/modules/commission-followers/commission-followers.module';
@@ -57,6 +57,7 @@ import { CommissionAttachmentsModule } from '@/modules/commission-attachments/co
     OnboardingModule,
     UsersModule,
     ArtistsModule,
+    ArtistAboutModule,
     AdminModule,
     ConnectionsModule,
     CronModule,
@@ -68,7 +69,6 @@ import { CommissionAttachmentsModule } from '@/modules/commission-attachments/co
     ProjectsModule,
     CommissionOpeningsModule,
     ArtistDashboardModule,
-    ArtistSetupModule,
     CommissionProgressModule,
     ClientsModule,
     CommissionFollowersModule,

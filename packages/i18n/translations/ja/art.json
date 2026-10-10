@@ -1,7 +1,16 @@
 {
-  "artistPicker": {
-    "title": "アーティストを選択",
-    "empty": "まだ公開されているアーティストがいません。"
+  "landing": {
+    "greeting": "こんにちは、私は",
+    "aboutTitle": "自己紹介",
+    "viewGallery": "ギャラリーを見る",
+    "commission": "コミッションを依頼する",
+    "recentWork": "最近の作品",
+    "viewAll": "すべて見る",
+    "status": {
+      "open": "コミッション受付中",
+      "scheduled": "{{date}}に受付開始",
+      "closed": "コミッション受付終了"
+    }
   },
   "site": {
     "title": "Art",
@@ -703,7 +712,8 @@
       "gallery": "ギャラリー",
       "projects": "プロジェクト",
       "groups": "グループ",
-      "configure": "設定"
+      "configure": "設定",
+      "about": "自己紹介ページ"
     },
     "commissionSettings": {
       "title": "コミッション設定",
@@ -803,11 +813,6 @@
         "waiting_other": "新しい依頼が {{count}} 件届いています",
         "openQuiet": "受付中です。新しい依頼はここに表示されます。",
         "review": "確認する"
-      },
-      "setup": {
-        "title": "コミッションの設定を完了しましょう",
-        "progress": "{{total}} ステップ中 {{done}} 完了",
-        "cta": "設定を続ける"
       }
     },
     "requests": {
@@ -878,7 +883,6 @@
       "contact": "希望の連絡方法",
       "guest": "アカウントなし（ゲストとして送信）",
       "linkedAccount": "アカウントあり",
-      "viewProfile": "プロフィールを見る",
       "history_other": "あなたへの依頼 {{count}} 件"
     },
     "quotes": {
@@ -905,34 +909,19 @@
       "sent_accept": "依頼を承諾しました。",
       "failed": "送信できませんでした。もう一度お試しください。"
     },
-    "setup": {
-      "progress": "ステップ {{current}} / {{total}}",
-      "skip": "あとで",
-      "back": "戻る",
-      "continue": "次へ",
-      "examplesNeedTypes": "まずコミッションタイプを1つ以上オンにしてから、ここで作例を追加してください。",
-      "steps": {
-        "payment": {
-          "short": "支払い",
-          "title": "支払い方法",
-          "description": "通貨と支払い方法を設定します。あとから「設定」で変更できます。"
-        },
-        "pricing": {
-          "short": "料金",
-          "title": "受け付ける内容",
-          "description": "受け付けるコミッションタイプをオンにして価格を設定します。依頼者には料金表として表示されます。"
-        },
-        "examples": {
-          "short": "作例",
-          "title": "作品を見せる",
-          "description": "タイプごとに作例をいくつか追加しましょう。依頼フォームとギャラリーに表示されます。"
-        },
-        "opening": {
-          "short": "受付開始",
-          "title": "受付を開始",
-          "description": "受付の終わり方を選ぶか、開始日時を予約します。完了するとコミッションページに移動します。"
-        }
-      }
+    "about": {
+      "title": "自己紹介ページ",
+      "description": "ホームページに表示される内容です。",
+      "viewPage": "ページを見る",
+      "headline": "見出し",
+      "intro": "紹介文",
+      "body": "自己紹介",
+      "bodyHint": "Markdown が使えます。",
+      "facts": "ちょっとした事実",
+      "factsHint": "1行に1つ。チップとして表示されます。",
+      "save": "保存",
+      "saved": "自己紹介ページを保存しました",
+      "saveFailed": "自己紹介ページを保存できませんでした"
     }
   },
   "imageViewer": {

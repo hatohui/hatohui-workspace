@@ -1303,44 +1303,10 @@
         ]
       }
     },
-    "/artists": {
+    "/artist": {
       "get": {
-        "operationId": "artists",
+        "operationId": "siteArtist",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PublicUserDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "List every artist with a public storefront handle",
-        "tags": [
-          "artists"
-        ]
-      }
-    },
-    "/artists/{handle}": {
-      "get": {
-        "operationId": "artistByHandle",
-        "parameters": [
-          {
-            "name": "handle",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "",
@@ -1353,7 +1319,59 @@
             }
           }
         },
-        "summary": "Resolve an artist's storefront handle",
+        "summary": "The artist this site belongs to",
+        "tags": [
+          "artists"
+        ]
+      }
+    },
+    "/artist/about": {
+      "get": {
+        "operationId": "artistAbout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistAboutDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "About page content for the site artist",
+        "tags": [
+          "artists"
+        ]
+      },
+      "put": {
+        "operationId": "updateArtistAbout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArtistAboutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistAboutDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Replace your About page content",
         "tags": [
           "artists"
         ]
@@ -4411,50 +4429,6 @@
         ]
       }
     },
-    "/artist-setup": {
-      "get": {
-        "operationId": "artistSetup",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArtistSetupDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Where you are in first-time commission setup",
-        "tags": [
-          "artist-setup"
-        ]
-      }
-    },
-    "/artist-setup/dismiss": {
-      "post": {
-        "operationId": "dismissArtistSetup",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArtistSetupDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Skip first-time setup; the workspace stops sending you there",
-        "tags": [
-          "artist-setup"
-        ]
-      }
-    },
     "/commission-progress": {
       "get": {
         "operationId": "commissionProgress",
@@ -6427,6 +6401,64 @@
             "description": "Weeks before a birthday for the weekly reminder; 0 turns the weekly reminder off. Omitting the field leaves it untouched."
           }
         }
+      },
+      "ArtistAboutDto": {
+        "type": "object",
+        "properties": {
+          "headline": {
+            "type": "string"
+          },
+          "intro": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string",
+            "description": "Markdown"
+          },
+          "facts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "headline",
+          "intro",
+          "body",
+          "facts"
+        ]
+      },
+      "UpdateArtistAboutDto": {
+        "type": "object",
+        "properties": {
+          "headline": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "intro": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 10000,
+            "description": "Markdown"
+          },
+          "facts": {
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "headline",
+          "intro",
+          "body",
+          "facts"
+        ]
       },
       "AdminProfileDto": {
         "type": "object",
@@ -10050,64 +10082,6 @@
           "opening",
           "recentRequests",
           "upcomingDeadlines"
-        ]
-      },
-      "ArtistSetupStepDto": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "enum": [
-              "payment",
-              "pricing",
-              "examples",
-              "opening"
-            ]
-          },
-          "done": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "key",
-          "done"
-        ]
-      },
-      "ArtistSetupDto": {
-        "type": "object",
-        "properties": {
-          "steps": {
-            "description": "Setup steps in order, each marked done from real data",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ArtistSetupStepDto"
-            }
-          },
-          "nextStep": {
-            "type": "string",
-            "enum": [
-              "payment",
-              "pricing",
-              "examples",
-              "opening"
-            ],
-            "nullable": true,
-            "description": "First step not done yet; null when everything is done"
-          },
-          "dismissed": {
-            "type": "boolean",
-            "description": "Whether the artist chose to skip setup"
-          },
-          "shouldShow": {
-            "type": "boolean",
-            "description": "Whether the workspace should send the artist to setup"
-          }
-        },
-        "required": [
-          "steps",
-          "nextStep",
-          "dismissed",
-          "shouldShow"
         ]
       },
       "CommissionProgressDto": {

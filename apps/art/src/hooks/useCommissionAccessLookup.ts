@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   useLookupCommissionsByEmail,
   type CommissionAccessMatchDto,
@@ -14,14 +14,13 @@ export function useCommissionAccessLookup(
   onLocked: (match: CommissionAccessMatchDto) => void,
 ) {
   const router = useRouter();
-  const { artist } = useParams<{ artist: string }>();
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const lookup = useLookupCommissionsByEmail();
   const errorMessage = usePasscodeError();
 
   const openMatch = (match: CommissionAccessMatchDto) => {
-    if (match.accessCode) router.push(queueOrderPath(artist, match.accessCode));
+    if (match.accessCode) router.push(queueOrderPath(match.accessCode));
     else onLocked(match);
   };
 
@@ -46,7 +45,7 @@ export function useCommissionAccessLookup(
     code,
     setCode,
     openCode: () => {
-      if (code.trim()) router.push(queueOrderPath(artist, code.trim()));
+      if (code.trim()) router.push(queueOrderPath(code.trim()));
     },
   };
 }

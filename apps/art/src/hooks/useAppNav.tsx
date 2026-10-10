@@ -8,6 +8,7 @@ import {
   Inbox,
   LayoutDashboard,
   Settings,
+  Sparkles,
   UsersRound,
 } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
@@ -48,6 +49,7 @@ export function useAppNav(): AppNavItem[] {
     item('/app/gallery', 'gallery', <Images />),
     item('/app/projects', 'projects', <FolderKanban />),
     item('/app/groups', 'groups', <UsersRound />),
+    item('/app/about', 'about', <Sparkles />),
     item('/app/configure', 'configure', <Settings />, 'footer'),
   ];
 }

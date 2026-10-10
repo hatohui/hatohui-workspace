@@ -121,7 +121,7 @@ profile URLs — not a new one) — every public route
 `/[artist]/projects/[id]`) lives under it, resolved once per request by
 `/[artist]/layout.tsx` and 404ing on an unknown handle or a handle that
 isn't an artist. The site root `/` became an artist picker rather than
-gallery content.
+gallery content. (Since reversed — see [single-artist](../single-artist/README.md).)
 
 Two things this decision required that didn't previously exist:
 - A public **`artists`** module (`GET /artists`, `GET /artists/:handle`),

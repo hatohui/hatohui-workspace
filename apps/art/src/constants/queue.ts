@@ -14,9 +14,9 @@ export const HTTP_TOO_MANY_REQUESTS = 429;
 
 export const PASSCODE_COPIED_FLASH_MS = 2000;
 
-export const queueOrderPath = (artist: string, accessCode: string) =>
-  `/${artist}/queue/${accessCode}`;
-export const queuePath = (artist: string) => `/${artist}/queue`;
+export const QUEUE_ROUTE = '/queue';
+export const queueOrderPath = (accessCode: string) =>
+  `${QUEUE_ROUTE}/${accessCode}`;
 
 export const QUEUE_PASSCODE_INPUT_ID = 'queue-passcode';
 export const QUEUE_UNLOCK_SHEET_CLASS =

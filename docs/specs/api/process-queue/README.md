@@ -8,7 +8,7 @@ rather than leaving `thumbnailUrl` permanently `null`.
 That retry mechanism was built as a **generic process queue**
 (`ProcessQueue` model, `apps/api/src/modules/process-queue/`) instead of an
 asset-specific job table, because the commission "queue" progress-timeline
-feature (the public queue under `apps/art/src/app/[artist]/queue/`) is expected to need the same
+feature (the public queue under `apps/art/src/app/queue/`) is expected to need the same
 fetch-then-process-with-retry shape later (e.g. thumbnailing progress photos).
 Building the retry engine generically now means that feature can register its
 own `ProcessExecutor` without new queue infrastructure — no new table, no new

@@ -1,6 +1,6 @@
 # Queue passcodes
 
-The public queue (`/[artist]/queue`) lists an artist's active commissions in
+The public queue (`/queue`) lists an artist's active commissions in
 work order. Each row is clickable. A row with a **passcode** asks for it and
 trades it for the private order `accessCode`; a row without one carries its
 `accessCode` and opens directly, so any visitor can open it. A client or artist
