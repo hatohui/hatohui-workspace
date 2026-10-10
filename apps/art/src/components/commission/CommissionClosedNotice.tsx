@@ -5,15 +5,14 @@ import { useTranslation } from '@hatohui/i18n';
 import { DoorClosed } from 'lucide-react';
 import { Button } from '@hatohui/ui';
 import type { CommissionOpeningDto } from '@hatohui/models';
+import { QUEUE_ROUTE } from '@/constants/queue';
 
 export function CommissionClosedNotice({
   opening,
   artistName,
-  artistHandle,
 }: {
   opening: CommissionOpeningDto | undefined;
   artistName: string;
-  artistHandle: string;
 }) {
   const { t } = useTranslation('art');
 
@@ -44,9 +43,7 @@ export function CommissionClosedNotice({
         )}
       </div>
       <Button asChild variant="outline">
-        <Link href={`/${artistHandle}/queue`}>
-          {t('commission.closed.seeQueue')}
-        </Link>
+        <Link href={QUEUE_ROUTE}>{t('commission.closed.seeQueue')}</Link>
       </Button>
     </div>
   );

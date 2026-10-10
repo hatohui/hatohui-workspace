@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { Trans } from '@hatohui/i18n';
 import { Checkbox } from '@hatohui/ui';
-import { artistFaqPath } from '@/constants/navigation';
+import { FAQ_ROUTE } from '@/constants/navigation';
 import { CommissionFieldError } from './CommissionFieldError';
 
 export function CommissionTermsCheckbox({
@@ -16,8 +15,6 @@ export function CommissionTermsCheckbox({
   onChange: (accepted: boolean) => void;
   error: string | null;
 }) {
-  const { artist } = useParams<{ artist: string }>();
-
   return (
     <div className="space-y-1">
       <label className="flex items-center gap-2 text-sm">
@@ -35,7 +32,7 @@ export function CommissionTermsCheckbox({
             components={{
               link: (
                 <Link
-                  href={artistFaqPath(artist)}
+                  href={FAQ_ROUTE}
                   target="_blank"
                   className="text-primary underline-offset-2 hover:underline"
                 />

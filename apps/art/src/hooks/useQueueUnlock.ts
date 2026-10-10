@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from '@hatohui/i18n';
 import {
   useUnlockQueuedCommission,
@@ -26,7 +26,6 @@ export function useQueueUnlock() {
   const { t } = useTranslation('art');
   const format = useCommissionFormatters();
   const router = useRouter();
-  const { artist } = useParams<{ artist: string }>();
   const [target, setTarget] = useState<UnlockTarget | null>(null);
   const [passcode, setPasscode] = useState('');
   const unlock = useUnlockQueuedCommission();
@@ -48,12 +47,12 @@ export function useQueueUnlock() {
     const result = await unlock
       .mutateAsync({ data: { commissionId: target.id, passcode } })
       .catch(() => null);
-    if (result) router.push(queueOrderPath(artist, result.data.accessCode));
+    if (result) router.push(queueOrderPath(result.data.accessCode));
   };
 
   const openQueueItem = (item: CommissionQueueItemDto) => {
     if (item.accessCode) {
-      router.push(queueOrderPath(artist, item.accessCode));
+      router.push(queueOrderPath(item.accessCode));
       return;
     }
     const type = typeOf(item);

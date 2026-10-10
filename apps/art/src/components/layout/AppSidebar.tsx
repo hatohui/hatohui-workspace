@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { PanelLeftClose, PanelLeftOpen, ArrowLeft } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
-import { useAuth } from '@hatohui/libs';
 import {
   Sidebar,
   SidebarContent,
@@ -13,10 +12,10 @@ import {
   SidebarToggle,
 } from '@hatohui/ui';
 import { useAppNav } from '@/hooks/useAppNav';
+import { HOME_ROUTE } from '@/constants/navigation';
 
 export function AppSidebar() {
   const { t } = useTranslation('art');
-  const { user } = useAuth();
   const navItems = useAppNav();
 
   return (
@@ -58,11 +57,7 @@ export function AppSidebar() {
               {item.label}
             </SidebarNavItem>
           ))}
-        <SidebarNavItem
-          as={Link}
-          href={user?.handle ? `/${user.handle}` : '/'}
-          icon={<ArrowLeft />}
-        >
+        <SidebarNavItem as={Link} href={HOME_ROUTE} icon={<ArrowLeft />}>
           {t('app.nav.backToSite')}
         </SidebarNavItem>
       </SidebarFooter>

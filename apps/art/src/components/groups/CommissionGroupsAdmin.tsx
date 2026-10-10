@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { useAuth } from '@hatohui/libs';
 import { Button, Card, CardContent, Input, Label } from '@hatohui/ui';
 import type { CommissionGroupDto } from '@hatohui/models';
 import { useCommissionGroupsAdmin } from '@/hooks/useCommissionGroupsAdmin';
+import { GROUPS_ROUTE } from '@/constants/navigation';
 
 function AddMemberForm({
   onAdd,
@@ -64,8 +64,7 @@ function GroupCard({
   onRemoveMember: (clientId: string) => void;
 }) {
   const { t } = useTranslation('art');
-  const { user } = useAuth();
-  const shareUrl = `/${user?.handle ?? ''}/groups/${group.accessCode}`;
+  const shareUrl = `${GROUPS_ROUTE}/${group.accessCode}`;
 
   return (
     <Card>

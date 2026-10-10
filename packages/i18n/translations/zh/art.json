@@ -1,4 +1,17 @@
 {
+  "landing": {
+    "greeting": "你好，我是",
+    "aboutTitle": "关于我",
+    "viewGallery": "浏览作品集",
+    "commission": "申请约稿",
+    "recentWork": "近期作品",
+    "viewAll": "查看全部",
+    "status": {
+      "open": "约稿开放中",
+      "scheduled": "{{date}} 开放约稿",
+      "closed": "约稿已关闭"
+    }
+  },
   "site": {
     "title": "Art",
     "nav": {
@@ -605,7 +618,8 @@
       "projects": "项目",
       "groups": "群组",
       "configure": "设置",
-      "dashboard": "主页"
+      "dashboard": "主页",
+      "about": "关于页面"
     },
     "commissions": {
       "title": "委托",
@@ -650,7 +664,6 @@
       "contact": "首选联系方式",
       "guest": "无账户 - 以访客身份提交",
       "linkedAccount": "已有账户",
-      "viewProfile": "查看主页",
       "history_other": "与你的 {{count}} 个委托"
     },
     "dashboard": {
@@ -666,11 +679,6 @@
         "slotsOfCap": "已占 {{taken}}/{{cap}} 个名额 · 剩余 {{left}} 个",
         "accepted_other": "已接受 {{count}} 个",
         "noneTaken": "还没有名额被占用"
-      },
-      "setup": {
-        "title": "完成委托设置",
-        "progress": "已完成 {{done}}/{{total}} 步",
-        "cta": "继续设置"
       }
     },
     "quotes": {
@@ -697,34 +705,19 @@
       "sent_accept": "已接受请求。",
       "failed": "发送失败，请重试。"
     },
-    "setup": {
-      "progress": "第 {{current}}/{{total}} 步",
-      "skip": "稍后再说",
-      "back": "上一步",
-      "continue": "继续",
-      "examplesNeedTypes": "请先开启至少一种委托类型，再在这里添加样例。",
-      "steps": {
-        "payment": {
-          "short": "付款",
-          "title": "委托人如何付款",
-          "description": "选择货币并添加付款方式。之后可以在“设置”中修改。"
-        },
-        "pricing": {
-          "short": "价格",
-          "title": "你提供什么",
-          "description": "开启你接受的委托类型并为每种设定价格。委托人会看到价目表。"
-        },
-        "examples": {
-          "short": "样例",
-          "title": "展示你的作品",
-          "description": "为每种类型添加几张样例。它们会显示在委托表单和你的作品集中。"
-        },
-        "opening": {
-          "short": "开放",
-          "title": "开放委托",
-          "description": "选择本次开放如何结束，或预约开放时间。完成后会跳转到委托页面。"
-        }
-      }
+    "about": {
+      "title": "关于页面",
+      "description": "访客在首页看到的内容。",
+      "viewPage": "查看页面",
+      "headline": "标题",
+      "intro": "简介",
+      "body": "关于我",
+      "bodyHint": "支持 Markdown。",
+      "facts": "趣味小事",
+      "factsHint": "每行一条，以浮动标签显示。",
+      "save": "保存",
+      "saved": "关于页面已保存",
+      "saveFailed": "无法保存关于页面"
     }
   },
   "imageViewer": {

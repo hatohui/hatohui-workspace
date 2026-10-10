@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { UserRound } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { Avatar } from '@hatohui/ui';
@@ -9,7 +8,6 @@ interface ClientAccount {
   name: string;
   avatarUrl: string | null;
   handle: string | null;
-  profileHref: string | null;
 }
 
 export function ClientAccountCard({
@@ -43,14 +41,6 @@ export function ClientAccountCard({
             : t('app.clients.linkedAccount')}
         </p>
       </div>
-      {account.profileHref && (
-        <Link
-          href={account.profileHref}
-          className="text-sm underline-offset-4 hover:underline"
-        >
-          {t('app.clients.viewProfile')}
-        </Link>
-      )}
     </div>
   );
 }

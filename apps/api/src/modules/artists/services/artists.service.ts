@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { AppScope } from '@prisma/client';
 import { Database } from '@/infra/db';
-import { AuthService } from '@/modules/auth/services/auth.service';
-import { ROLE_KEYS } from '@/modules/auth/auth.constants';
+import {
+  ADMIN_EMAIL_CONFIG_TYPE,
+  ROLE_KEYS,
+} from '@/modules/auth/auth.constants';
 import {
   PUBLIC_USER_SELECT,
   PublicUserDto,
@@ -10,35 +13,26 @@ import {
 
 @Injectable()
 export class ArtistsService {
-  constructor(
-    private readonly db: Database,
-    private readonly auth: AuthService,
-  ) {}
+  constructor(private readonly db: Database) {}
 
-  /** Every artist with a public handle — a handle-less artist has no
-   * storefront URL yet, so they're excluded from the picker. */
-  async list(): Promise<PublicUserDto[]> {
-    const rows = await this.db.user.findMany({
-      where: {
-        roles: { some: { role: { key: ROLE_KEYS.artist } } },
-        profile: { handle: { not: null } },
-      },
-      select: PUBLIC_USER_SELECT,
-      orderBy: { name: 'asc' },
-    });
-    return rows.map(toPublicUserDto);
-  }
+  async findSiteArtist(): Promise<PublicUserDto | null> {
+    const [adminEmail, artists] = await Promise.all([
+      this.db.systemParameters.findUnique({
+        where: {
+          type_scope: { type: ADMIN_EMAIL_CONFIG_TYPE, scope: AppScope.ALL },
+        },
+        select: { value: true },
+      }),
+      this.db.user.findMany({
+        where: { roles: { some: { role: { key: ROLE_KEYS.artist } } } },
+        select: { ...PUBLIC_USER_SELECT, email: true },
+        orderBy: { createdAt: 'asc' },
+      }),
+    ]);
 
-  /** Resolves a storefront handle to its artist, or null if the handle
-   * doesn't exist or belongs to someone who isn't an artist — both cases are
-   * a 404 to the caller, so they're deliberately not distinguished here. */
-  async findByHandle(handle: string): Promise<PublicUserDto | null> {
-    const profile = await this.db.profile.findUnique({
-      where: { handle },
-      select: { user: { select: PUBLIC_USER_SELECT } },
-    });
-    if (!profile?.user) return null;
-    if (!(await this.auth.isArtistById(profile.user.id))) return null;
-    return toPublicUserDto(profile.user);
+    const owner = adminEmail?.value.toLowerCase();
+    const artist =
+      artists.find((user) => user.email.toLowerCase() === owner) ?? artists[0];
+    return artist ? toPublicUserDto(artist) : null;
   }
 }

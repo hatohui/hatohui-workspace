@@ -4,14 +4,8 @@ import Link from 'next/link';
 import { cn } from '@hatohui/ui';
 import { useSiteNav } from '@/hooks/useSiteNav';
 
-export function SiteNav({
-  artist,
-  className,
-}: {
-  artist: string;
-  className?: string;
-}) {
-  const items = useSiteNav(artist);
+export function SiteNav({ className }: { className?: string }) {
+  const items = useSiteNav();
 
   return (
     <nav

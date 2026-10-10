@@ -22,7 +22,6 @@ export * from './generated/commission-groups/commission-groups';
 export * from './generated/commission-access/commission-access';
 export * from './generated/commission-attachments/commission-attachments';
 export * from './generated/artist-dashboard/artist-dashboard';
-export * from './generated/artist-setup/artist-setup';
 export * from './generated/schemas';
 export {
   setApiBaseUrl,

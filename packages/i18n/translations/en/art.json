@@ -1,7 +1,16 @@
 {
-  "artistPicker": {
-    "title": "Choose an artist",
-    "empty": "No artists have a storefront open yet."
+  "landing": {
+    "greeting": "Hello, I'm",
+    "aboutTitle": "About me",
+    "viewGallery": "See the gallery",
+    "commission": "Request a commission",
+    "recentWork": "Recent work",
+    "viewAll": "View all",
+    "status": {
+      "open": "Commissions open",
+      "scheduled": "Commissions open {{date}}",
+      "closed": "Commissions closed"
+    }
   },
   "site": {
     "title": "Art",
@@ -714,7 +723,8 @@
       "gallery": "Gallery",
       "projects": "Projects",
       "groups": "Groups",
-      "configure": "Configure"
+      "configure": "Configure",
+      "about": "About page"
     },
     "commissionSettings": {
       "title": "Commission settings",
@@ -816,11 +826,6 @@
         "waiting_other": "You have {{count}} new requests waiting",
         "openQuiet": "Commissions are open. New requests will show up here.",
         "review": "Review"
-      },
-      "setup": {
-        "title": "Finish setting up commissions",
-        "progress": "{{done}} of {{total}} steps done",
-        "cta": "Continue setup"
       }
     },
     "requests": {
@@ -891,7 +896,6 @@
       "contact": "Preferred contact",
       "guest": "No account - sent as a guest",
       "linkedAccount": "Has an account",
-      "viewProfile": "View profile",
       "history_one": "{{count}} commission with you",
       "history_other": "{{count}} commissions with you"
     },
@@ -919,34 +923,19 @@
       "sent_accept": "Request accepted.",
       "failed": "Couldn't send that. Try again."
     },
-    "setup": {
-      "progress": "Step {{current}} of {{total}}",
-      "skip": "Skip for now",
-      "back": "Back",
-      "continue": "Continue",
-      "examplesNeedTypes": "Turn on at least one commission type first, then add examples here.",
-      "steps": {
-        "payment": {
-          "short": "Payment",
-          "title": "How clients pay you",
-          "description": "Pick your currency and add the ways clients can pay. You can change these later in Configure."
-        },
-        "pricing": {
-          "short": "Prices",
-          "title": "What you offer",
-          "description": "Turn on the commission types you take and give each a price. Clients see these as a price list."
-        },
-        "examples": {
-          "short": "Examples",
-          "title": "Show your work",
-          "description": "Add a few example pieces for each type. They show on your request form and in your gallery."
-        },
-        "opening": {
-          "short": "Open",
-          "title": "Open commissions",
-          "description": "Choose how this opening ends, or schedule it for later. You'll land on your commissions page when it's done."
-        }
-      }
+    "about": {
+      "title": "About page",
+      "description": "What visitors see on your home page.",
+      "viewPage": "View page",
+      "headline": "Headline",
+      "intro": "Intro",
+      "body": "About me",
+      "bodyHint": "Markdown is supported.",
+      "facts": "Fun facts",
+      "factsHint": "One per line. Shown as floating chips.",
+      "save": "Save",
+      "saved": "About page saved",
+      "saveFailed": "Couldn't save the About page"
     }
   },
   "imageViewer": {

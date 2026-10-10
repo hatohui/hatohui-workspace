@@ -29,7 +29,6 @@ export function useClientPanel(clientId: string | null) {
         name: client.account.name,
         avatarUrl: client.account.avatarUrl,
         handle: client.account.handle,
-        profileHref: client.account.handle ? `/${client.account.handle}` : null,
       },
       commissions: client.commissions.map((commission) => ({
         id: commission.id,

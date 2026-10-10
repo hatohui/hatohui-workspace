@@ -8,11 +8,9 @@ import { CommissionClosedNotice } from './CommissionClosedNotice';
 export function CommissionIntake({
   artistId,
   artistName,
-  artistHandle,
 }: {
   artistId: string;
   artistName: string;
-  artistHandle: string;
 }) {
   const { t } = useTranslation('art');
   const { opening, isOpen, isLoading } = useArtistCommissionOpening(artistId);
@@ -31,11 +29,7 @@ export function CommissionIntake({
 
   return (
     <div className="mx-auto max-w-xl">
-      <CommissionClosedNotice
-        opening={opening}
-        artistName={artistName}
-        artistHandle={artistHandle}
-      />
+      <CommissionClosedNotice opening={opening} artistName={artistName} />
     </div>
   );
 }
