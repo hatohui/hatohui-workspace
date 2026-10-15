@@ -31,15 +31,6 @@ export function useNavItems(): NavLinkItem[] {
     },
   ];
 
-  if (!user) {
-    items.push({
-      to: routes.birthdays,
-      label: t('navigation.dashboard'),
-      icon: 'cake',
-      active: isActive(routes.birthdays),
-    });
-  }
-
   if (user) {
     items.push({
       to: routes.social,

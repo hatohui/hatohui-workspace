@@ -62,8 +62,7 @@
   },
   "welcome": {
     "title": "A cozy little nest for friends",
-    "subtitle": "Keep track of the people you care about, one warm reminder at a time.",
-    "birthdaysCta": "Browse birthdays"
+    "subtitle": "Keep track of the people you care about, one warm reminder at a time."
   },
   "birthdays": {
     "empty": "No birthdays to show here yet. Check back soon!"

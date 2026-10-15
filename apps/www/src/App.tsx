@@ -1,4 +1,4 @@
-import { ThemeToggle } from '@hatohui/libs';
+import { SocialLinks, ThemeToggle } from '@hatohui/libs';
 import { AccountBar } from './components/auth/AccountBar';
 import { Button } from '@hatohui/ui';
 import AmbientBackground from './components/AmbientBackground';
@@ -39,6 +39,9 @@ function App() {
               </a>
             </Button>
           ))}
+        </div>
+        <div data-reveal>
+          <SocialLinks />
         </div>
       </main>
     </>
