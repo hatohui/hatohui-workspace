@@ -16,6 +16,4 @@ export interface UpdateArtistAboutDto {
      * @maxLength 10000
      */
   body: string;
-  /** @maxItems 12 */
-  facts: string[];
 }

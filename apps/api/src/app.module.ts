@@ -17,6 +17,7 @@ import { OnboardingModule } from '@/modules/onboarding/onboarding.module';
 import { UsersModule } from '@/modules/users/users.module';
 import { ArtistsModule } from '@/modules/artists/artists.module';
 import { ArtistAboutModule } from '@/modules/artist-about/artist-about.module';
+import { ArtistFaqModule } from '@/modules/artist-faq/artist-faq.module';
 import { AdminModule } from '@/modules/admin/admin.module';
 import { ConnectionsModule } from '@/modules/connections/connections.module';
 import { CronModule } from '@/modules/cron/cron.module';
@@ -58,6 +59,7 @@ import { CommissionAttachmentsModule } from '@/modules/commission-attachments/co
     UsersModule,
     ArtistsModule,
     ArtistAboutModule,
+    ArtistFaqModule,
     AdminModule,
     ConnectionsModule,
     CronModule,

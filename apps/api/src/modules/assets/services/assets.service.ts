@@ -82,6 +82,7 @@ export class AssetsService {
           ? {
               OR: [
                 { filename: { contains: query, mode: 'insensitive' } },
+                { title: { contains: query, mode: 'insensitive' } },
                 {
                   tags: {
                     some: {

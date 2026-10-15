@@ -62,7 +62,7 @@ export class BirthdaysService {
     direction: SortDirection,
     page: number,
     pageSize: number,
-    viewer: User | null,
+    viewer: User,
   ): Promise<PaginatedUpcomingSectionsDto> {
     const ctx = await this.viewerContext.for(viewer);
     const computed = await this.computeUpcoming(ctx);
@@ -100,7 +100,7 @@ export class BirthdaysService {
   async findBirthdaysByMonth(
     month: number,
     query: string | undefined,
-    viewer: User | null,
+    viewer: User,
   ): Promise<BirthdaysByMonthDto> {
     const ctx = await this.viewerContext.for(viewer);
     const all = await this.allBirthdays();
