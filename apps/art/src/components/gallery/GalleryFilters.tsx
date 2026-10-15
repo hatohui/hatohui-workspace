@@ -1,15 +1,6 @@
 'use client';
 
 import { useTranslation } from '@hatohui/i18n';
-import type { AssetsSort } from '@hatohui/models';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@hatohui/ui';
-import { GALLERY_SORT_OPTIONS } from '@/constants/gallery';
 import type { useGalleryAssets } from '@/hooks/useGalleryAssets';
 import { GallerySearch } from './GallerySearch';
 import { GalleryHidePrivateToggle } from './GalleryHidePrivateToggle';
@@ -24,23 +15,13 @@ export function GalleryFilters({
   const { t } = useTranslation('art');
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
       <GallerySearch gallery={gallery} />
-      <Select
-        value={gallery.sort}
-        onValueChange={(value) => gallery.setSort(value as AssetsSort)}
-      >
-        <SelectTrigger className="w-40">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {GALLERY_SORT_OPTIONS.map((option) => (
-            <SelectItem key={option} value={option}>
-              {t(`gallery.sort.${option}`)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!gallery.isLoading && gallery.total > 0 && (
+        <p className="text-sm text-muted-foreground tabular-nums">
+          {t('gallery.count', { count: gallery.total })}
+        </p>
+      )}
       {canHidePrivate && (
         <GalleryHidePrivateToggle
           hidePrivate={gallery.hidePrivate}

@@ -11,7 +11,7 @@ import {
 import { GalleryFilters } from './GalleryFilters';
 import { GalleryLoadMore } from './GalleryLoadMore';
 import { GalleryCard } from './GalleryCard';
-import { JustifiedRows } from '@/components/shared/JustifiedRows';
+import { MosaicGrid } from '@/components/shared/MosaicGrid';
 import { UploadDialog } from './UploadDialog';
 import { GalleryOwnerActions } from './GalleryOwnerActions';
 import { GallerySelectionBar } from './GallerySelectionBar';
@@ -24,7 +24,6 @@ import { AddToProjectDialog } from '@/components/projects/AddToProjectDialog';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
 import { useImageViewer } from '@/hooks/useImageViewer';
 import { ImageViewer } from '@/components/shared/ImageViewer';
-import { GALLERY_ROW_HEIGHT_CLASS } from '@/constants/gallery';
 
 export function GalleryGrid({
   artistId,
@@ -55,9 +54,9 @@ export function GalleryGrid({
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div className="flex items-end gap-4">
-          <h1 className="font-serif text-3xl">{t('gallery.title')}</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <h1 className="sr-only">{t('gallery.title')}</h1>
           <GallerySectionTabs
             active={section}
             onChange={setSection}
@@ -94,23 +93,21 @@ export function GalleryGrid({
           )}
 
           <div ref={gridRef} className="mt-6">
-            <JustifiedRows
+            <MosaicGrid
               items={gallery.items}
               getKey={(asset) => asset.id}
-              className={`gap-2 sm:gap-3 ${GALLERY_ROW_HEIGHT_CLASS}`}
               renderItem={(asset) => (
                 <GalleryCard
                   key={asset.id}
                   asset={asset}
                   isAdmin={isOwner}
-                  href={`${galleryBasePath}/${asset.id}`}
                   onAddToProject={() => setProjectTarget(asset)}
                   onEdit={() => setEditTarget(asset)}
-                  onZoom={() =>
-                    viewer.open(
-                      asset.previewUrl ?? asset.publicUrl,
-                      { title: asset.title, description: asset.description },
-                      asset.publicUrl,
+                  onView={() =>
+                    viewer.openAssets(
+                      gallery.items,
+                      gallery.items.indexOf(asset),
+                      (item) => `${galleryBasePath}/${item.id}`,
                     )
                   }
                   selection={
@@ -145,6 +142,9 @@ export function GalleryGrid({
         alt={viewer.caption.title ?? t('gallery.title')}
         caption={viewer.caption}
         originalUrl={viewer.originalUrl}
+        detailsUrl={viewer.detailsUrl}
+        onPrevious={viewer.previous ?? undefined}
+        onNext={viewer.next ?? undefined}
         onClose={viewer.close}
       />
       <UploadDialog open={isUploadOpen} onOpenChange={setIsUploadOpen} />

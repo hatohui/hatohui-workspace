@@ -13,11 +13,13 @@
     }
   },
   "site": {
+    "backToTop": "ページの先頭へ",
     "title": "Art",
     "nav": {
       "gallery": "ギャラリー",
       "commission": "コミッション依頼",
       "queue": "キュー",
+      "faq": "Q&A",
       "projects": "プロジェクト",
       "workspace": "ワークスペース"
     }
@@ -60,16 +62,15 @@
       "uploading": "アップロード中…"
     }
   },
+  "faq": {
+    "title": "よくある質問",
+    "intro": "コミッションについてのよくある質問です。",
+    "empty": "まだ質問はありません。"
+  },
   "gallery": {
     "title": "ギャラリー",
     "subtitle": "完成作品、参考資料、納品物のコレクションです。",
-    "searchPlaceholder": "タグで検索",
-    "sort": {
-      "newest": "新しい順",
-      "oldest": "古い順",
-      "size": "ファイルサイズ",
-      "alphabetical": "A-Z"
-    },
+    "searchPlaceholder": "名前またはタグで検索",
     "tagAll": "すべてのタグ",
     "empty": "まだ何もありません。",
     "loadMore": "もっと見る",
@@ -176,7 +177,8 @@
       "editTitle": "作品を編集",
       "tagsLabel": "タグ"
     },
-    "viewLarge": "大きく表示"
+    "viewLarge": "大きく表示",
+    "count_other": "作品 {{count}} 点"
   },
   "queue": {
     "title": "キュー",
@@ -713,7 +715,8 @@
       "projects": "プロジェクト",
       "groups": "グループ",
       "configure": "設定",
-      "about": "自己紹介ページ"
+      "about": "自己紹介ページ",
+      "faq": "Q&A"
     },
     "commissionSettings": {
       "title": "コミッション設定",
@@ -917,11 +920,24 @@
       "intro": "紹介文",
       "body": "自己紹介",
       "bodyHint": "Markdown が使えます。",
-      "facts": "ちょっとした事実",
-      "factsHint": "1行に1つ。チップとして表示されます。",
       "save": "保存",
       "saved": "自己紹介ページを保存しました",
       "saveFailed": "自己紹介ページを保存できませんでした"
+    },
+    "faq": {
+      "title": "Q&Aページ",
+      "description": "訪問者がQ&Aページで見る質問と回答です。",
+      "viewPage": "ページを見る",
+      "question": "質問",
+      "answer": "回答（Markdown対応）",
+      "add": "質問を追加",
+      "remove": "質問を削除",
+      "moveUp": "上へ移動",
+      "moveDown": "下へ移動",
+      "empty": "まだ質問はありません。最初の1件を追加してください。",
+      "save": "保存",
+      "saved": "Q&Aを保存しました",
+      "saveFailed": "Q&Aを保存できませんでした"
     }
   },
   "imageViewer": {
@@ -931,7 +947,10 @@
     "close": "閉じる",
     "download": "元画像をダウンロード",
     "toggleCaption": "詳細の表示/非表示",
-    "image": "画像"
+    "openDetails": "作品の詳細を見る",
+    "image": "画像",
+    "previous": "前の画像",
+    "next": "次の画像"
   },
   "comments": {
     "you": "あなた",

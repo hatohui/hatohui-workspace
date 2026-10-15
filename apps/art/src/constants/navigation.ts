@@ -1,8 +1,16 @@
-import { Images, ListOrdered, Palette, type LucideIcon } from 'lucide-react';
+import {
+  CircleHelp,
+  Images,
+  ListOrdered,
+  Palette,
+  type LucideIcon,
+} from 'lucide-react';
 
 export const TAB_SEARCH_PARAM = 'tab';
 
 export const WORKSPACE_HOME_ROUTE = '/app';
+
+export const SITE_LOGO_SRC = '/icon.png';
 
 export const HOME_ROUTE = '/';
 export const GALLERY_ROUTE = '/gallery';
@@ -12,7 +20,7 @@ export const FAQ_ROUTE = '/faq';
 export const GROUPS_ROUTE = '/groups';
 
 export interface SiteNavItem {
-  key: 'gallery' | 'commission' | 'queue';
+  key: 'gallery' | 'commission' | 'queue' | 'faq';
   segment: string;
   activeSegments: string[];
   icon: LucideIcon;
@@ -36,5 +44,11 @@ export const SITE_NAV_ITEMS: SiteNavItem[] = [
     segment: '/queue',
     activeSegments: ['/queue', '/groups'],
     icon: ListOrdered,
+  },
+  {
+    key: 'faq',
+    segment: '/faq',
+    activeSegments: ['/faq'],
+    icon: CircleHelp,
   },
 ];

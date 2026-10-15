@@ -7,7 +7,7 @@ export function AssetHoverDetails({ asset }: { asset: AssetDto }) {
   const { tags, date } = useAssetSummary(asset);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-1 flex-col gap-1.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-2 pt-10 pb-2 text-left text-white opacity-0 transition duration-200 group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-1 flex-col gap-1.5 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-2 pt-10 pb-2 text-left text-white opacity-0 transition duration-200 group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100">
       {asset.title && (
         <p className="line-clamp-2 text-sm leading-snug font-medium">
           {asset.title}

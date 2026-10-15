@@ -5,10 +5,13 @@ import { ArrowRight } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { AssetDto } from '@hatohui/models';
 import { GALLERY_ROUTE } from '@/constants/navigation';
+import { useImageViewer } from '@/hooks/useImageViewer';
+import { ImageViewer } from '@/components/shared/ImageViewer';
 import { LandingArtworkTile } from './LandingArtworkTile';
 
 export function LandingRecentWork({ items }: { items: AssetDto[] }) {
   const { t } = useTranslation('art');
+  const viewer = useImageViewer();
 
   if (items.length === 0) return null;
 
@@ -32,9 +35,29 @@ export function LandingRecentWork({ items }: { items: AssetDto[] }) {
         className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
       >
         {items.map((asset) => (
-          <LandingArtworkTile key={asset.id} asset={asset} />
+          <LandingArtworkTile
+            key={asset.id}
+            asset={asset}
+            onView={() =>
+              viewer.openAssets(
+                items,
+                items.indexOf(asset),
+                (item) => `${GALLERY_ROUTE}/${item.id}`,
+              )
+            }
+          />
         ))}
       </div>
+      <ImageViewer
+        src={viewer.src}
+        alt={viewer.caption.title ?? t('landing.recentWork')}
+        caption={viewer.caption}
+        originalUrl={viewer.originalUrl}
+        detailsUrl={viewer.detailsUrl}
+        onPrevious={viewer.previous ?? undefined}
+        onNext={viewer.next ?? undefined}
+        onClose={viewer.close}
+      />
     </section>
   );
 }

@@ -20,8 +20,8 @@ could come back later without a data migration.
 
 ## Home page
 
-`/` is an animated About page. Its content (headline, intro, Markdown body, fun
-facts) is the `art.about` user setting on the site artist, edited at
+`/` is an animated About page. Its content (headline, intro and Markdown
+body) is the `art.about` user setting on the site artist, edited at
 `/app/about` and served by `GET /artist/about`. Until it is saved, the API
 returns lorem ipsum defaults (`ABOUT_DEFAULTS`). Animation runs on GSAP in
 `useLandingAnimation` and is skipped entirely under `prefers-reduced-motion`.

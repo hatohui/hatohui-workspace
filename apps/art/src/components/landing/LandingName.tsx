@@ -1,6 +1,9 @@
 export function LandingName({ name }: { name: string }) {
   return (
-    <h1 aria-label={name} className="font-serif text-5xl sm:text-7xl">
+    <h1
+      aria-label={name}
+      className="font-serif text-5xl tracking-tight sm:text-7xl"
+    >
       {name.split(' ').map((word, wordIndex) => (
         <span
           key={`${word}-${wordIndex}`}

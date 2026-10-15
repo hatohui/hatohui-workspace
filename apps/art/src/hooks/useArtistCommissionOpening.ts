@@ -1,6 +1,6 @@
 'use client';
 
-import { useCurrentCommissionOpening } from '@hatohui/models';
+import { ApiError, useCurrentCommissionOpening } from '@hatohui/models';
 
 export function useArtistCommissionOpening(artistId: string) {
   const query = useCurrentCommissionOpening(
@@ -13,5 +13,8 @@ export function useArtistCommissionOpening(artistId: string) {
     opening,
     isOpen: opening?.status === 'OPEN',
     isLoading: query.isPending,
+    isUnknown:
+      query.isError &&
+      !(query.error instanceof ApiError && query.error.status === 404),
   };
 }

@@ -27,7 +27,7 @@ export function CommissionFormPanel({
           <Icon className="size-4" aria-hidden />
         </span>
         <div className="min-w-0">
-          <h2 className="font-medium leading-8">{title}</h2>
+          <h2 className="text-lg leading-8 font-medium">{title}</h2>
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>
           )}

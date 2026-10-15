@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { useToast } from '@hatohui/ui';
 import type { ArtistAboutDto, UpdateArtistAboutDto } from '@hatohui/models';
-import { ABOUT_FACTS_SEPARATOR } from '@/constants/about';
 
 export function useAboutForm(
   initial: ArtistAboutDto,
@@ -15,17 +14,11 @@ export function useAboutForm(
   const [headline, setHeadline] = useState(initial.headline);
   const [intro, setIntro] = useState(initial.intro);
   const [body, setBody] = useState(initial.body);
-  const [facts, setFacts] = useState(initial.facts.join(ABOUT_FACTS_SEPARATOR));
 
   const save = async () => {
     try {
       await onSave({
-        data: {
-          headline,
-          intro,
-          body,
-          facts: facts.split(ABOUT_FACTS_SEPARATOR).filter((f) => f.trim()),
-        },
+        data: { headline, intro, body },
       });
       toast.success(t('app.about.saved'));
     } catch {
@@ -40,8 +33,6 @@ export function useAboutForm(
     setIntro,
     body,
     setBody,
-    facts,
-    setFacts,
     save,
   };
 }

@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import {
+  CircleHelp,
   FolderKanban,
   Images,
   Inbox,
@@ -50,6 +51,7 @@ export function useAppNav(): AppNavItem[] {
     item('/app/projects', 'projects', <FolderKanban />),
     item('/app/groups', 'groups', <UsersRound />),
     item('/app/about', 'about', <Sparkles />),
+    item('/app/faq', 'faq', <CircleHelp />),
     item('/app/configure', 'configure', <Settings />, 'footer'),
   ];
 }

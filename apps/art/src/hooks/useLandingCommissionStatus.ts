@@ -7,7 +7,8 @@ import { useCommissionFormatters } from './useCommissionFormatters';
 export function useLandingCommissionStatus(artistId: string) {
   const { t } = useTranslation('art');
   const format = useCommissionFormatters();
-  const { opening, isOpen, isLoading } = useArtistCommissionOpening(artistId);
+  const { opening, isOpen, isLoading, isUnknown } =
+    useArtistCommissionOpening(artistId);
 
   const label = isOpen
     ? t('landing.status.open')
@@ -17,5 +18,5 @@ export function useLandingCommissionStatus(artistId: string) {
         })
       : t('landing.status.closed');
 
-  return { label, isOpen, isLoading };
+  return { label, isOpen, isLoading, isUnknown };
 }
