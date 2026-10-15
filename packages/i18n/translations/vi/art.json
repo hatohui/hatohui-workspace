@@ -13,11 +13,13 @@
     }
   },
   "site": {
+    "backToTop": "Lên đầu trang",
     "title": "Art",
     "nav": {
       "gallery": "Thư viện",
       "commission": "Đặt vẽ tranh",
       "queue": "Hàng đợi",
+      "faq": "Hỏi đáp",
       "projects": "Dự án",
       "workspace": "Không gian làm việc"
     }
@@ -60,15 +62,14 @@
       "uploading": "Đang tải lên…"
     }
   },
+  "faq": {
+    "title": "Câu hỏi thường gặp",
+    "intro": "Giải đáp các câu hỏi phổ biến về commission.",
+    "empty": "Chưa có câu hỏi nào."
+  },
   "gallery": {
     "title": "Thư viện",
-    "searchPlaceholder": "Tìm theo thẻ",
-    "sort": {
-      "newest": "Mới nhất",
-      "oldest": "Cũ nhất",
-      "size": "Dung lượng",
-      "alphabetical": "A-Z"
-    },
+    "searchPlaceholder": "Tìm theo tên hoặc thẻ",
     "tagAll": "Tất cả thẻ",
     "empty": "Chưa có tệp nào.",
     "loadMore": "Xem thêm",
@@ -175,7 +176,8 @@
       "editTitle": "Sửa tác phẩm",
       "tagsLabel": "Thẻ"
     },
-    "viewLarge": "Xem kích thước đầy đủ"
+    "viewLarge": "Xem kích thước đầy đủ",
+    "count_other": "{{count}} tác phẩm"
   },
   "queue": {
     "title": "Hàng đợi",
@@ -714,7 +716,8 @@
       "projects": "Dự án",
       "groups": "Nhóm",
       "configure": "Thiết lập",
-      "about": "Trang giới thiệu"
+      "about": "Trang giới thiệu",
+      "faq": "Hỏi đáp"
     },
     "commissionSettings": {
       "title": "Cài đặt commission",
@@ -918,11 +921,24 @@
       "intro": "Giới thiệu ngắn",
       "body": "Về mình",
       "bodyHint": "Hỗ trợ Markdown.",
-      "facts": "Điều thú vị",
-      "factsHint": "Mỗi dòng một mục. Hiển thị dạng thẻ nổi.",
       "save": "Lưu",
       "saved": "Đã lưu trang giới thiệu",
       "saveFailed": "Không lưu được trang giới thiệu"
+    },
+    "faq": {
+      "title": "Trang hỏi đáp",
+      "description": "Các câu hỏi và câu trả lời khách truy cập thấy ở trang Hỏi đáp.",
+      "viewPage": "Xem trang",
+      "question": "Câu hỏi",
+      "answer": "Câu trả lời (hỗ trợ Markdown)",
+      "add": "Thêm câu hỏi",
+      "remove": "Xóa câu hỏi",
+      "moveUp": "Di chuyển lên",
+      "moveDown": "Di chuyển xuống",
+      "empty": "Chưa có câu hỏi nào. Hãy thêm câu đầu tiên.",
+      "save": "Lưu",
+      "saved": "Đã lưu hỏi đáp",
+      "saveFailed": "Không thể lưu hỏi đáp"
     }
   },
   "imageViewer": {
@@ -932,7 +948,10 @@
     "close": "Đóng",
     "download": "Tải ảnh gốc",
     "toggleCaption": "Hiện hoặc ẩn chi tiết",
-    "image": "Ảnh"
+    "openDetails": "Xem chi tiết tác phẩm",
+    "image": "Ảnh",
+    "previous": "Ảnh trước",
+    "next": "Ảnh tiếp theo"
   },
   "comments": {
     "you": "Bạn",

@@ -1,33 +1,29 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import type { AssetDto } from '@hatohui/models';
-import { useGalleryTile } from '@/hooks/useGalleryTile';
+import { useMosaicTile } from '@/hooks/useMosaicTile';
 import { GalleryCardActions } from './GalleryCardActions';
 import { GalleryCardSelectToggle } from './GalleryCardSelectToggle';
-import { GalleryCardZoomButton } from './GalleryCardZoomButton';
 import { GalleryCardPrivateBadge } from './GalleryCardPrivateBadge';
 import { AssetHoverDetails } from '@/components/shared/AssetHoverDetails';
 
 export function GalleryCard({
   asset,
   isAdmin,
-  href,
   onAddToProject,
   onEdit,
-  onZoom,
+  onView,
   selection,
 }: {
   asset: AssetDto;
   isAdmin: boolean;
-  href: string;
   onAddToProject: () => void;
   onEdit: () => void;
-  onZoom: () => void;
+  onView: () => void;
   selection?: { selected: boolean; onToggle: () => void };
 }) {
-  const { tileStyle, frameStyle, sizes } = useGalleryTile(asset);
+  const { frameStyle, sizes } = useMosaicTile(asset);
   const image = (
     <Image
       src={asset.thumbnailUrl ?? asset.publicUrl}
@@ -41,7 +37,6 @@ export function GalleryCard({
   return (
     <div
       data-reveal
-      style={tileStyle}
       className="group artwork-frame relative overflow-hidden bg-card"
     >
       <div style={frameStyle} />
@@ -55,12 +50,16 @@ export function GalleryCard({
           />
         </>
       ) : (
-        <Link href={href} className="absolute inset-0">
+        <button
+          type="button"
+          aria-label={asset.title ?? asset.filename}
+          className="absolute inset-0 cursor-zoom-in focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+          onClick={onView}
+        >
           {image}
-        </Link>
+        </button>
       )}
       {!selection && <AssetHoverDetails asset={asset} />}
-      {!selection && <GalleryCardZoomButton onZoom={onZoom} />}
       {(asset.isPrivate || asset.inPrivateProject) && (
         <GalleryCardPrivateBadge viaProject={asset.inPrivateProject} />
       )}

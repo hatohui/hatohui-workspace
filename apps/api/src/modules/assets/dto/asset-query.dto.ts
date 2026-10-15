@@ -17,7 +17,7 @@ import {
 export class AssetQueryDto {
   @ApiProperty({
     required: false,
-    description: 'Match against filename or tags',
+    description: 'Match against filename, title or tags',
   })
   @IsOptional()
   @IsString()

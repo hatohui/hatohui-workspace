@@ -131,6 +131,7 @@ export const COMMISSION_LIST_ORDERS = ['desc', 'asc'] as const;
 export const EMPTY_VALUE = '-';
 
 export const COMMISSION_GALLERY_PAGE_SIZE = 12;
+export const COMMISSION_GALLERY_SKELETON_COUNT = 6;
 export const COMMISSION_GALLERY_ROW_HEIGHT_CLASS =
   '[--gallery-row:120px] md:[--gallery-row:160px] xl:[--gallery-row:200px]';
 

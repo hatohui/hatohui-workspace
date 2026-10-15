@@ -1,0 +1,1 @@
+export const BACK_TO_TOP_THRESHOLD_PX = 600;

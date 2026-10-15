@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { OptionalAuthGuard } from '@/modules/auth/guards/optional-auth.guard';
-import { OptionalCurrentUser } from '@/modules/auth/decorators/optional-current-user.decorator';
+import { AuthGuard } from '@/modules/auth/guards/auth.guard';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import {
   BirthdaysByMonthDto,
   MonthQueryDto,
@@ -19,7 +19,7 @@ export class BirthdaysController {
   constructor(private readonly birthdays: BirthdaysService) {}
 
   @Get('upcoming/sections')
-  @UseGuards(OptionalAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'upcomingFriendSections',
     summary:
@@ -28,7 +28,7 @@ export class BirthdaysController {
   @ApiOkResponse({ type: PaginatedUpcomingSectionsDto })
   findUpcomingSections(
     @Query() query: UpcomingSectionsQueryDto,
-    @OptionalCurrentUser() viewer: User | null,
+    @CurrentUser() viewer: User,
   ): Promise<PaginatedUpcomingSectionsDto> {
     return this.birthdays.findUpcomingSections(
       query.query,
@@ -41,7 +41,7 @@ export class BirthdaysController {
   }
 
   @Get('birthdays-by-month')
-  @UseGuards(OptionalAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiOperation({
     operationId: 'birthdaysByMonth',
     summary: 'Friends whose birthday falls in a given calendar month',
@@ -49,7 +49,7 @@ export class BirthdaysController {
   @ApiOkResponse({ type: BirthdaysByMonthDto })
   findBirthdaysByMonth(
     @Query() query: MonthQueryDto,
-    @OptionalCurrentUser() viewer: User | null,
+    @CurrentUser() viewer: User,
   ): Promise<BirthdaysByMonthDto> {
     return this.birthdays.findBirthdaysByMonth(
       query.month,

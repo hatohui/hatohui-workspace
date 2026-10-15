@@ -22,9 +22,8 @@ export function CommissionSubmitBar({
   const [isClearOpen, setIsClearOpen] = useState(false);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
+    <div className="space-y-4 border-t border-border pt-4">
       <div className="space-y-1.5">
-        <CommissionQuoteEstimate pricing={form.pricing} />
         <CommissionVisibilityCheckbox
           isPublic={form.state.isPublic}
           onChange={(value) => form.update('isPublic', value)}
@@ -33,7 +32,7 @@ export function CommissionSubmitBar({
           allowGalleryPost={form.pricing.allowGalleryPost}
           privateFee={form.pricing.privateFee}
           onChange={(value) => form.update('allowGalleryPost', value)}
-        />{' '}
+        />
         <CommissionTermsCheckbox
           accepted={form.state.acceptedTerms}
           error={validation.errorFor('acceptTerms')}
@@ -48,19 +47,22 @@ export function CommissionSubmitBar({
           </p>
         )}
       </div>
-      <div className="flex gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setIsClearOpen(true)}
-        >
-          {t('commission.form.clear')}
-        </Button>
-        <Button type="submit" disabled={form.isSubmitting}>
-          {form.isSubmitting
-            ? t('commission.form.submitting')
-            : t('commission.form.submit')}
-        </Button>
+      <div className="sticky bottom-0 z-10 -mx-1 flex flex-wrap items-center justify-between gap-3 border-t border-border bg-background/95 px-1 py-3 backdrop-blur-sm max-lg:pr-14">
+        <CommissionQuoteEstimate pricing={form.pricing} />
+        <div className="ml-auto flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setIsClearOpen(true)}
+          >
+            {t('commission.form.clear')}
+          </Button>
+          <Button type="submit" disabled={form.isSubmitting}>
+            {form.isSubmitting
+              ? t('commission.form.submitting')
+              : t('commission.form.submit')}
+          </Button>
+        </div>
       </div>
       <ConfirmDialog
         open={isClearOpen}

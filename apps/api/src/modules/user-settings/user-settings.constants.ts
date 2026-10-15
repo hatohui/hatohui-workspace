@@ -45,6 +45,10 @@ export const USER_SETTING_TYPES = {
     scope: AppScope.ART,
     type: 'art.about',
   },
+  artistFaq: {
+    scope: AppScope.ART,
+    type: 'art.faq',
+  },
   notificationEmailEnabled: {
     scope: AppScope.FRIENDS,
     type: 'friends.notifications.emailenabled',

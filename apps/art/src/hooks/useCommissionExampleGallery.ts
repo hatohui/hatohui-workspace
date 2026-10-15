@@ -43,6 +43,7 @@ export function useCommissionExampleGallery(
         })
       : t('commission.gallery.recentTitle'),
     items,
+    isLoading: query.isPending,
     isEmpty: !query.isPending && items.length === 0,
     hasMore: query.hasNextPage,
     isFetchingMore: query.isFetchingNextPage,

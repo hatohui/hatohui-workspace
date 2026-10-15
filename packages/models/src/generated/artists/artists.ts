@@ -26,8 +26,10 @@ import type {
 
 import type {
   ArtistAboutDto,
+  ArtistFaqDto,
   PublicUserDto,
-  UpdateArtistAboutDto
+  UpdateArtistAboutDto,
+  UpdateArtistFaqDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -357,4 +359,198 @@ export const useUpdateArtistAbout = <TError = unknown,
         TContext
       > => {
       return useMutation(getUpdateArtistAboutMutationOptions(options), queryClient);
+    }
+    export type artistFaqResponse200 = {
+  data: ArtistFaqDto
+  status: 200
+}
+
+export type artistFaqResponseSuccess = (artistFaqResponse200) & {
+  headers: Headers;
+};
+;
+
+export type artistFaqResponse = (artistFaqResponseSuccess)
+
+export const getArtistFaqUrl = () => {
+
+
+
+
+  return `/artist/faq`
+}
+
+/**
+ * @summary Questions and answers for the site artist
+ */
+export const artistFaq = async ( options?: RequestInit): Promise<artistFaqResponse> => {
+
+  return customFetch<artistFaqResponse>(getArtistFaqUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getArtistFaqQueryKey = () => {
+    return [
+    `/artist/faq`
+    ] as const;
+    }
+
+
+export const getArtistFaqQueryOptions = <TData = Awaited<ReturnType<typeof artistFaq>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistFaq>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getArtistFaqQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof artistFaq>>> = ({ signal }) => artistFaq({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof artistFaq>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ArtistFaqQueryResult = NonNullable<Awaited<ReturnType<typeof artistFaq>>>
+export type ArtistFaqQueryError = unknown
+
+
+export function useArtistFaq<TData = Awaited<ReturnType<typeof artistFaq>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistFaq>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof artistFaq>>,
+          TError,
+          Awaited<ReturnType<typeof artistFaq>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useArtistFaq<TData = Awaited<ReturnType<typeof artistFaq>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistFaq>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof artistFaq>>,
+          TError,
+          Awaited<ReturnType<typeof artistFaq>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useArtistFaq<TData = Awaited<ReturnType<typeof artistFaq>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistFaq>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Questions and answers for the site artist
+ */
+
+export function useArtistFaq<TData = Awaited<ReturnType<typeof artistFaq>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof artistFaq>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getArtistFaqQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type updateArtistFaqResponse200 = {
+  data: ArtistFaqDto
+  status: 200
+}
+
+export type updateArtistFaqResponseSuccess = (updateArtistFaqResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateArtistFaqResponse = (updateArtistFaqResponseSuccess)
+
+export const getUpdateArtistFaqUrl = () => {
+
+
+
+
+  return `/artist/faq`
+}
+
+/**
+ * @summary Replace your questions and answers
+ */
+export const updateArtistFaq = async (updateArtistFaqDto: UpdateArtistFaqDto, options?: RequestInit): Promise<updateArtistFaqResponse> => {
+
+  return customFetch<updateArtistFaqResponse>(getUpdateArtistFaqUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateArtistFaqDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateArtistFaqMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateArtistFaq>>, TError,{data: UpdateArtistFaqDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateArtistFaq>>, TError,{data: UpdateArtistFaqDto}, TContext> => {
+
+const mutationKey = ['updateArtistFaq'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateArtistFaq>>, {data: UpdateArtistFaqDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateArtistFaq(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateArtistFaqMutationResult = NonNullable<Awaited<ReturnType<typeof updateArtistFaq>>>
+    export type UpdateArtistFaqMutationBody = UpdateArtistFaqDto
+    export type UpdateArtistFaqMutationError = unknown
+
+    /**
+ * @summary Replace your questions and answers
+ */
+export const useUpdateArtistFaq = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateArtistFaq>>, TError,{data: UpdateArtistFaqDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateArtistFaq>>,
+        TError,
+        {data: UpdateArtistFaqDto},
+        TContext
+      > => {
+      return useMutation(getUpdateArtistFaqMutationOptions(options), queryClient);
     }

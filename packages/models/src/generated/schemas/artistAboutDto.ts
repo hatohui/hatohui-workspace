@@ -11,5 +11,4 @@ export interface ArtistAboutDto {
   intro: string;
   /** Markdown */
   body: string;
-  facts: string[];
 }

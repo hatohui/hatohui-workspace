@@ -33,7 +33,6 @@ export class ArtistAboutService {
       headline: dto.headline.trim(),
       intro: dto.intro.trim(),
       body: dto.body.trim(),
-      facts: dto.facts.map((fact) => fact.trim()).filter(Boolean),
     };
     await this.settings.set(
       userId,
@@ -46,7 +45,11 @@ export class ArtistAboutService {
 
   private parse(stored: string): ArtistAboutDto {
     try {
-      return { ...ABOUT_DEFAULTS, ...(JSON.parse(stored) as ArtistAboutDto) };
+      const { headline, intro, body } = {
+        ...ABOUT_DEFAULTS,
+        ...(JSON.parse(stored) as Partial<ArtistAboutDto>),
+      };
+      return { headline, intro, body };
     } catch {
       return ABOUT_DEFAULTS;
     }

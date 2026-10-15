@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { ProjectArtworkDto } from '@hatohui/models';
 import { Button } from '@hatohui/ui';
-import { useGalleryTile } from '@/hooks/useGalleryTile';
+import { useMosaicTile } from '@/hooks/useMosaicTile';
 
 export function ProjectArtworkTile({
   artwork,
@@ -19,12 +19,11 @@ export function ProjectArtworkTile({
   onRemove?: () => void;
 }) {
   const { t } = useTranslation('art');
-  const { tileStyle, frameStyle, sizes } = useGalleryTile(artwork);
+  const { frameStyle, sizes } = useMosaicTile(artwork);
 
   return (
     <div
       data-reveal
-      style={tileStyle}
       className="group artwork-frame relative overflow-hidden bg-card"
     >
       <div style={frameStyle} />

@@ -1377,6 +1377,58 @@
         ]
       }
     },
+    "/artist/faq": {
+      "get": {
+        "operationId": "artistFaq",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistFaqDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Questions and answers for the site artist",
+        "tags": [
+          "artists"
+        ]
+      },
+      "put": {
+        "operationId": "updateArtistFaq",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArtistFaqDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistFaqDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Replace your questions and answers",
+        "tags": [
+          "artists"
+        ]
+      }
+    },
     "/admin/profiles": {
       "get": {
         "operationId": "adminListProfiles",
@@ -1937,7 +1989,7 @@
             "name": "query",
             "required": false,
             "in": "query",
-            "description": "Match against filename or tags",
+            "description": "Match against filename, title or tags",
             "schema": {
               "type": "string"
             }
@@ -6414,19 +6466,12 @@
           "body": {
             "type": "string",
             "description": "Markdown"
-          },
-          "facts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "required": [
           "headline",
           "intro",
-          "body",
-          "facts"
+          "body"
         ]
       },
       "UpdateArtistAboutDto": {
@@ -6444,20 +6489,59 @@
             "type": "string",
             "maxLength": 10000,
             "description": "Markdown"
-          },
-          "facts": {
-            "maxItems": 12,
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "required": [
           "headline",
           "intro",
-          "body",
-          "facts"
+          "body"
+        ]
+      },
+      "FaqItemDto": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "answer": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Markdown"
+          }
+        },
+        "required": [
+          "question",
+          "answer"
+        ]
+      },
+      "ArtistFaqDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaqItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "UpdateArtistFaqDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaqItemDto"
+            }
+          }
+        },
+        "required": [
+          "items"
         ]
       },
       "AdminProfileDto": {

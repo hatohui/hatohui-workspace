@@ -13,11 +13,13 @@
     }
   },
   "site": {
+    "backToTop": "返回顶部",
     "title": "Art",
     "nav": {
       "gallery": "画廊",
       "commission": "委托绘画",
       "queue": "队列",
+      "faq": "问答",
       "projects": "项目",
       "workspace": "工作区"
     }
@@ -60,16 +62,15 @@
       "uploading": "正在上传…"
     }
   },
+  "faq": {
+    "title": "常见问题",
+    "intro": "关于委托的常见问题解答。",
+    "empty": "暂无问题。"
+  },
   "gallery": {
     "title": "画廊",
     "subtitle": "已完成作品、参考图和交付成果的合集。",
-    "searchPlaceholder": "按标签搜索",
-    "sort": {
-      "newest": "最新",
-      "oldest": "最旧",
-      "size": "文件大小",
-      "alphabetical": "A-Z"
-    },
+    "searchPlaceholder": "按名称或标签搜索",
     "tagAll": "全部标签",
     "empty": "暂无内容。",
     "loadMore": "加载更多",
@@ -176,7 +177,8 @@
       "editTitle": "编辑作品",
       "tagsLabel": "标签"
     },
-    "viewLarge": "查看大图"
+    "viewLarge": "查看大图",
+    "count_other": "共 {{count}} 件作品"
   },
   "queue": {
     "title": "队列",
@@ -619,7 +621,8 @@
       "groups": "群组",
       "configure": "设置",
       "dashboard": "主页",
-      "about": "关于页面"
+      "about": "关于页面",
+      "faq": "问答"
     },
     "commissions": {
       "title": "委托",
@@ -713,11 +716,24 @@
       "intro": "简介",
       "body": "关于我",
       "bodyHint": "支持 Markdown。",
-      "facts": "趣味小事",
-      "factsHint": "每行一条，以浮动标签显示。",
       "save": "保存",
       "saved": "关于页面已保存",
       "saveFailed": "无法保存关于页面"
+    },
+    "faq": {
+      "title": "问答页面",
+      "description": "访客在问答页面看到的问题和解答。",
+      "viewPage": "查看页面",
+      "question": "问题",
+      "answer": "解答（支持 Markdown）",
+      "add": "添加问题",
+      "remove": "删除问题",
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "empty": "暂无问题，添加第一个吧。",
+      "save": "保存",
+      "saved": "问答已保存",
+      "saveFailed": "无法保存问答"
     }
   },
   "imageViewer": {
@@ -727,7 +743,10 @@
     "close": "关闭",
     "download": "下载原图",
     "toggleCaption": "显示或隐藏详情",
-    "image": "图片"
+    "openDetails": "查看作品详情",
+    "image": "图片",
+    "previous": "上一张",
+    "next": "下一张"
   },
   "comments": {
     "you": "你",

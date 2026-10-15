@@ -1,9 +1,8 @@
 'use client';
 
 import type { ProjectArtworkDto } from '@hatohui/models';
-import { JustifiedRows } from '@/components/shared/JustifiedRows';
+import { MosaicGrid } from '@/components/shared/MosaicGrid';
 import { useStaggerReveal } from '@/hooks/useStaggerReveal';
-import { GALLERY_ROW_HEIGHT_CLASS } from '@/constants/gallery';
 import { ProjectArtworkTile } from './ProjectArtworkTile';
 
 export function ProjectArtworkGrid({
@@ -23,10 +22,9 @@ export function ProjectArtworkGrid({
 
   return (
     <div ref={gridRef}>
-      <JustifiedRows
+      <MosaicGrid
         items={artworks}
         getKey={(artwork) => artwork.assetId ?? artwork.fullUrl}
-        className={`gap-2 sm:gap-3 ${GALLERY_ROW_HEIGHT_CLASS}`}
         renderItem={(artwork) => (
           <ProjectArtworkTile
             key={artwork.assetId ?? artwork.fullUrl}

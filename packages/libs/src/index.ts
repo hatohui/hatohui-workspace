@@ -24,3 +24,5 @@ export * from './theme/themeConstants';
 export { useTheme } from './theme/useTheme';
 export { ThemeToggle } from './theme/ThemeToggle';
 export { ThemeSelect } from './theme/ThemeSelect';
+export * from './socials/socialLinkData';
+export { SocialLinks } from './socials/SocialLinks';

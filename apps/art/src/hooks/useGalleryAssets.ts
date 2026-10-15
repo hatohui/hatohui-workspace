@@ -2,12 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import {
-  assets,
-  getAssetsQueryKey,
-  type AssetDto,
-  type AssetsSort,
-} from '@hatohui/models';
+import { assets, getAssetsQueryKey, type AssetDto } from '@hatohui/models';
 import { useDebouncedValue } from '@hatohui/libs';
 import {
   GALLERY_PAGE_SIZE,
@@ -25,21 +20,16 @@ export function useGalleryAssets(
 ) {
   const [query, setQuery] = useState('');
   const [tag, setTag] = useState<string | undefined>(undefined);
-  const [sort, setSort] = useState<AssetsSort>('newest');
   const [hidePrivate, setHidePrivate] = useState(false);
 
   const debouncedQuery = useDebouncedValue(query, GALLERY_SEARCH_DEBOUNCE_MS);
   const isDefaultFilters =
-    debouncedQuery === '' &&
-    tag === undefined &&
-    sort === 'newest' &&
-    !hidePrivate;
+    debouncedQuery === '' && tag === undefined && !hidePrivate;
   const params = {
     query: debouncedQuery || undefined,
     tag,
     uploadedById: artistId,
     hidePrivate: hidePrivate || undefined,
-    sort,
     pageSize: GALLERY_PAGE_SIZE,
   };
 
@@ -93,8 +83,6 @@ export function useGalleryAssets(
     setQuery,
     tag,
     setTag,
-    sort,
-    setSort,
     hidePrivate,
     setHidePrivate,
   };

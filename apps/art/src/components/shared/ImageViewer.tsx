@@ -9,12 +9,18 @@ export function ImageViewer({
   alt,
   caption = {},
   originalUrl = null,
+  detailsUrl = null,
+  onPrevious,
+  onNext,
   onClose,
 }: {
   src: string | null;
   alt: string;
   caption?: ImageViewerCaption;
   originalUrl?: string | null;
+  detailsUrl?: string | null;
+  onPrevious?: () => void;
+  onNext?: () => void;
   onClose: () => void;
 }) {
   return (
@@ -32,6 +38,9 @@ export function ImageViewer({
             alt={alt}
             caption={caption}
             originalUrl={originalUrl}
+            detailsUrl={detailsUrl}
+            onPrevious={onPrevious}
+            onNext={onNext}
             onClose={onClose}
           />
         )}

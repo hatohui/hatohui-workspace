@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { themeInitScript } from '@hatohui/libs/theme-init';
 import { Providers } from '@/components/layout/Providers';
+import { BackToTopButton } from '@/components/layout/BackToTopButton';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import './globals.css';
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Providers>
           <SiteHeader />
           {children}
+          <BackToTopButton />
         </Providers>
       </body>
     </html>

@@ -9,7 +9,7 @@ import type { AssetsSort } from './assetsSort';
 
 export type AssetsParams = {
 /**
- * Match against filename or tags
+ * Match against filename, title or tags
  */
 query?: string;
 /**

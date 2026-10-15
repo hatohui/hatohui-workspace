@@ -21,7 +21,7 @@ function playIntro() {
       {
         yPercent: 120,
         opacity: 0,
-        rotation: () => gsap.utils.random(-25, 25),
+        rotation: () => gsap.utils.random(-10, 10),
         stagger: LANDING_MOTION.letterStagger,
         duration: 0.6,
         ease: 'back.out(2)',
@@ -32,17 +32,6 @@ function playIntro() {
       target('fade'),
       { y: 24, opacity: 0, stagger: 0.1, duration: 0.6 },
       '-=0.3',
-    )
-    .from(
-      target('fact'),
-      {
-        scale: 0,
-        opacity: 0,
-        stagger: 0.08,
-        duration: 0.7,
-        ease: 'elastic.out(1, 0.6)',
-      },
-      '-=0.2',
     );
 }
 

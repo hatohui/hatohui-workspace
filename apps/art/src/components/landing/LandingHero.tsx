@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useTranslation } from '@hatohui/i18n';
 import type { ArtistAboutDto, PublicUserDto } from '@hatohui/models';
+import { SocialLinks } from '@hatohui/libs';
 import { Avatar, Button } from '@hatohui/ui';
 import { COMMISSION_ROUTE, GALLERY_ROUTE } from '@/constants/navigation';
 import { LandingCommissionStatus } from './LandingCommissionStatus';
@@ -61,6 +62,9 @@ export function LandingHero({
         <Button asChild variant="outline">
           <Link href={COMMISSION_ROUTE}>{t('landing.commission')}</Link>
         </Button>
+      </div>
+      <div data-landing="fade">
+        <SocialLinks />
       </div>
     </section>
   );

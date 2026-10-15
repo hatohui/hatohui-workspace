@@ -13,11 +13,13 @@
     }
   },
   "site": {
+    "backToTop": "Back to top",
     "title": "Art",
     "nav": {
       "gallery": "Gallery",
       "commission": "Commission",
       "queue": "Queue",
+      "faq": "Q&A",
       "projects": "Projects",
       "workspace": "Workspace"
     }
@@ -62,15 +64,14 @@
       "uploading": "Uploading…"
     }
   },
+  "faq": {
+    "title": "Questions and answers",
+    "intro": "Answers to common questions about commissions.",
+    "empty": "No questions yet."
+  },
   "gallery": {
     "title": "Gallery",
-    "searchPlaceholder": "Search by tag",
-    "sort": {
-      "newest": "Newest",
-      "oldest": "Oldest",
-      "size": "File size",
-      "alphabetical": "A-Z"
-    },
+    "searchPlaceholder": "Search by name or tag",
     "tagAll": "All tags",
     "empty": "No assets yet.",
     "loadMore": "Load more",
@@ -185,7 +186,9 @@
       "editTitle": "Edit artwork",
       "tagsLabel": "Tags"
     },
-    "viewLarge": "View full size"
+    "viewLarge": "View full size",
+    "count_one": "{{count}} artwork",
+    "count_other": "{{count}} artworks"
   },
   "queue": {
     "title": "Queue",
@@ -724,7 +727,8 @@
       "projects": "Projects",
       "groups": "Groups",
       "configure": "Configure",
-      "about": "About page"
+      "about": "About page",
+      "faq": "Q&A"
     },
     "commissionSettings": {
       "title": "Commission settings",
@@ -931,11 +935,24 @@
       "intro": "Intro",
       "body": "About me",
       "bodyHint": "Markdown is supported.",
-      "facts": "Fun facts",
-      "factsHint": "One per line. Shown as floating chips.",
       "save": "Save",
       "saved": "About page saved",
       "saveFailed": "Couldn't save the About page"
+    },
+    "faq": {
+      "title": "Q&A page",
+      "description": "The questions and answers visitors see on the Q&A page.",
+      "viewPage": "View page",
+      "question": "Question",
+      "answer": "Answer (Markdown supported)",
+      "add": "Add question",
+      "remove": "Remove question",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "empty": "No questions yet. Add the first one.",
+      "save": "Save",
+      "saved": "Q&A saved",
+      "saveFailed": "Couldn't save the Q&A"
     }
   },
   "imageViewer": {
@@ -945,7 +962,10 @@
     "close": "Close",
     "download": "Download original",
     "toggleCaption": "Show or hide details",
-    "image": "Image"
+    "openDetails": "View artwork details",
+    "image": "Image",
+    "previous": "Previous image",
+    "next": "Next image"
   },
   "comments": {
     "you": "You",

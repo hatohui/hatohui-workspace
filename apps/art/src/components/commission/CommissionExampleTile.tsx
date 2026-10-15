@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import type { AssetDto } from '@hatohui/models';
 import { useGalleryTile } from '@/hooks/useGalleryTile';
-import type { ImageViewerCaption } from '@/hooks/useImageViewer';
 import { AssetHoverDetails } from '@/components/shared/AssetHoverDetails';
 
 export function CommissionExampleTile({
@@ -11,11 +10,7 @@ export function CommissionExampleTile({
   onView,
 }: {
   asset: AssetDto;
-  onView: (
-    src: string,
-    caption: ImageViewerCaption,
-    originalUrl: string,
-  ) => void;
+  onView: () => void;
 }) {
   const { tileStyle, frameStyle, sizes } = useGalleryTile(asset);
 
@@ -24,13 +19,7 @@ export function CommissionExampleTile({
       type="button"
       style={tileStyle}
       className="group relative block w-full overflow-hidden rounded-lg bg-card focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
-      onClick={() =>
-        onView(
-          asset.previewUrl ?? asset.publicUrl,
-          { title: asset.title, description: asset.description },
-          asset.publicUrl,
-        )
-      }
+      onClick={onView}
     >
       <div style={frameStyle} />
       <Image

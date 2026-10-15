@@ -1,6 +1,3 @@
-import { AssetsSort } from '@hatohui/models';
-
-export const GALLERY_SORT_OPTIONS = Object.values(AssetsSort);
 export const GALLERY_PAGE_SIZE = 24;
 
 export const GALLERY_TILE_ASPECT_FALLBACK = 1;
@@ -13,8 +10,23 @@ export const GALLERY_FULL_ROW_BASIS_SLACK = 0.999;
 export const ASSET_SUMMARY_TAG_LIMIT = 3;
 export const ASSET_TITLE_MAX_LENGTH = 120;
 export const ASSET_DESCRIPTION_MAX_LENGTH = 2000;
-export const GALLERY_ROW_HEIGHT_CLASS =
-  '[--gallery-row:120px] sm:[--gallery-row:200px] lg:[--gallery-row:260px]';
+export const GALLERY_MOSAIC_SIZES = '(min-width: 1024px) 50vw, 100vw';
+export const GALLERY_MOSAIC_PATTERNS = [
+  [1, 2],
+  [2, 1],
+  [1, 2, 1],
+  [2, 2],
+  [1],
+  [2, 1, 2],
+  [1, 1],
+];
+export const GALLERY_MOSAIC_GAP_PX = 8;
+export const GALLERY_MOSAIC_GAP_SM_PX = 12;
+export const GALLERY_MOSAIC_SM_BREAKPOINT = 640;
+export const GALLERY_MOSAIC_MIN_TILE_WIDTH_PX = 100;
+export const GALLERY_MOSAIC_MIN_TILE_HEIGHT_PX = 90;
+export const GALLERY_MOSAIC_MIN_HEIGHT_RATIO = 0.22;
+export const GALLERY_MOSAIC_MAX_HEIGHT_RATIO = 0.75;
 export const ARTWORK_FALLBACK_DIMENSION_PX = 1200;
 export const WORKSPACE_GALLERY_ROUTE = '/app/gallery';
 export const GALLERY_SECTION_PARAM = 'section';

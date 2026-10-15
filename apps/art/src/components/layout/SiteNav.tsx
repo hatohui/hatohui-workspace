@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { LoaderCircle } from 'lucide-react';
 import { cn } from '@hatohui/ui';
 import { useSiteNav } from '@/hooks/useSiteNav';
 
@@ -10,26 +11,37 @@ export function SiteNav({ className }: { className?: string }) {
   return (
     <nav
       className={cn(
-        'grid grid-cols-3 gap-1 text-sm md:flex md:items-center',
+        'grid grid-cols-4 gap-1 text-sm md:flex md:items-center',
         className,
       )}
     >
-      {items.map(({ key, icon: Icon, href, label, isActive }) => (
-        <Link
-          key={key}
-          href={href}
-          aria-current={isActive ? 'page' : undefined}
-          className={cn(
-            'flex min-h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-xs transition-colors duration-200 md:min-h-9 md:flex-row md:gap-2 md:px-3 md:text-sm',
-            isActive
-              ? 'bg-accent font-medium text-accent-foreground'
-              : 'text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground',
-          )}
-        >
-          <Icon className="size-4 shrink-0" aria-hidden />
-          <span className="truncate">{label}</span>
-        </Link>
-      ))}
+      {items.map(
+        ({ key, icon: Icon, href, label, isActive, isPending, onNavigate }) => (
+          <Link
+            key={key}
+            href={href}
+            onClick={onNavigate}
+            aria-busy={isPending || undefined}
+            aria-current={isActive ? 'page' : undefined}
+            className={cn(
+              'flex min-h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-xs transition-colors duration-200 md:min-h-9 md:flex-row md:gap-2 md:px-3 md:text-sm',
+              isActive
+                ? 'bg-accent font-medium text-accent-foreground'
+                : 'text-foreground/75 hover:bg-accent/50 hover:text-accent-foreground',
+            )}
+          >
+            {isPending ? (
+              <LoaderCircle
+                className="size-4 shrink-0 animate-spin"
+                aria-hidden
+              />
+            ) : (
+              <Icon className="size-4 shrink-0" aria-hidden />
+            )}
+            <span className="truncate">{label}</span>
+          </Link>
+        ),
+      )}
     </nav>
   );
 }

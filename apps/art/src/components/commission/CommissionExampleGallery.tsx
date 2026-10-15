@@ -7,6 +7,7 @@ import { COMMISSION_GALLERY_ROW_HEIGHT_CLASS } from '@/constants/commission';
 import { ImageViewer } from '@/components/shared/ImageViewer';
 import { JustifiedRows } from '@/components/shared/JustifiedRows';
 import { GalleryLoadMore } from '@/components/gallery/GalleryLoadMore';
+import { CommissionExampleSkeleton } from './CommissionExampleSkeleton';
 import { CommissionExampleTile } from './CommissionExampleTile';
 
 export function CommissionExampleGallery({
@@ -28,7 +29,9 @@ export function CommissionExampleGallery({
       <p className="text-sm font-medium">{gallery.title}</p>
       <div className="relative flex-1">
         <div className="absolute inset-0 overflow-y-auto rounded-md">
-          {gallery.isEmpty ? (
+          {gallery.isLoading ? (
+            <CommissionExampleSkeleton />
+          ) : gallery.isEmpty ? (
             <p className="flex h-full items-center justify-center rounded-md bg-secondary text-sm text-muted-foreground">
               {t('commission.gallery.empty')}
             </p>
@@ -43,7 +46,12 @@ export function CommissionExampleGallery({
                   <CommissionExampleTile
                     key={asset.id}
                     asset={asset}
-                    onView={gallery.viewer.open}
+                    onView={() =>
+                      gallery.viewer.openAssets(
+                        gallery.items,
+                        gallery.items.indexOf(asset),
+                      )
+                    }
                   />
                 )}
               />
@@ -61,6 +69,8 @@ export function CommissionExampleGallery({
         alt={gallery.title}
         caption={gallery.viewer.caption}
         originalUrl={gallery.viewer.originalUrl}
+        onPrevious={gallery.viewer.previous ?? undefined}
+        onNext={gallery.viewer.next ?? undefined}
         onClose={gallery.viewer.close}
       />
     </div>

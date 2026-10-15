@@ -17,11 +17,13 @@ export function GalleryHidePrivateToggle({
     <Button
       type="button"
       variant={hidePrivate ? 'secondary' : 'outline'}
+      size="icon"
+      aria-label={t('gallery.hidePrivate')}
+      title={t('gallery.hidePrivate')}
       aria-pressed={hidePrivate}
       onClick={() => onChange(!hidePrivate)}
     >
       {hidePrivate ? <EyeOff /> : <Eye />}
-      {t('gallery.hidePrivate')}
     </Button>
   );
 }
