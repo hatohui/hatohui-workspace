@@ -7,7 +7,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
-import { coordinatesFromMapsUrl } from '@/common/utils/maps-coordinates';
+import { travelPlaceData } from '@/modules/travel-recommendations/utils/travel-place-data';
 import {
   CreateTravelRecommendationDto,
   UpdateTravelRecommendationDto,
@@ -186,15 +186,15 @@ export class TravelRecommendationsService {
       if (!place) throw new NotFoundException('Place not found');
       return place.id;
     }
-    const name = dto.placeName?.trim();
-    if (!name) throw new BadRequestException('Provide placeId or placeName');
+    const name = dto.place?.name.trim();
+    if (!dto.place || !name) {
+      throw new BadRequestException('Provide placeId or place');
+    }
 
-    const mapsUrl = dto.placeMapsUrl?.trim() || null;
     const created = await this.db.travelPlace.create({
       data: {
+        ...(await travelPlaceData(dto.place)),
         name,
-        mapsUrl,
-        ...(mapsUrl ? coordinatesFromMapsUrl(mapsUrl) : null),
         createdById: userId,
       },
     });

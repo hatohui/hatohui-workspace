@@ -5805,6 +5805,38 @@
           "travel"
         ]
       }
+    },
+    "/travel/places/link-preview": {
+      "post": {
+        "operationId": "travelMapsLinkPreview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapsLinkPreviewRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapsLinkPreviewDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Coordinates and place name from a Google Maps link",
+        "tags": [
+          "travel"
+        ]
+      }
     }
   },
   "info": {
@@ -11593,6 +11625,41 @@
           "createdAt"
         ]
       },
+      "TravelPlaceInputDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "CreateTravelRecommendationDto": {
         "type": "object",
         "properties": {
@@ -11617,14 +11684,13 @@
             "type": "string",
             "description": "An existing place"
           },
-          "placeName": {
-            "type": "string",
-            "maxLength": 120,
-            "description": "Place name, created when placeId is absent"
-          },
-          "placeMapsUrl": {
-            "type": "string",
-            "maxLength": 2000
+          "place": {
+            "description": "A new place, created when placeId is absent",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceInputDto"
+              }
+            ]
           },
           "note": {
             "type": "string",
@@ -12064,7 +12130,7 @@
           "mapsUrl": {
             "type": "string",
             "maxLength": 2000,
-            "description": "Google Maps link; coordinates are read from it when present"
+            "description": "Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given"
           },
           "latitude": {
             "type": "number"
@@ -12078,6 +12144,42 @@
           }
         },
         "required": [
+          "name"
+        ]
+      },
+      "MapsLinkPreviewRequestDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "example": "https://maps.app.goo.gl/abc123"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "MapsLinkPreviewDto": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Place name read from the link, when it names one"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude",
           "name"
         ]
       },
@@ -12099,7 +12201,7 @@
           "mapsUrl": {
             "type": "string",
             "maxLength": 2000,
-            "description": "Google Maps link; coordinates are read from it when present"
+            "description": "Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given"
           },
           "latitude": {
             "type": "number"

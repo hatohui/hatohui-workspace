@@ -28,6 +28,8 @@ import type {
   CreateTravelDishDto,
   CreateTravelPlaceDto,
   CreateTravelRecommendationDto,
+  MapsLinkPreviewDto,
+  MapsLinkPreviewRequestDto,
   TravelCuisineDto,
   TravelDishDetailDto,
   TravelDishDto,
@@ -1575,4 +1577,86 @@ export const useDeleteTravelPlace = <TError = unknown,
         TContext
       > => {
       return useMutation(getDeleteTravelPlaceMutationOptions(options), queryClient);
+    }
+    export type travelMapsLinkPreviewResponse200 = {
+  data: MapsLinkPreviewDto
+  status: 200
+}
+
+export type travelMapsLinkPreviewResponseSuccess = (travelMapsLinkPreviewResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelMapsLinkPreviewResponse = (travelMapsLinkPreviewResponseSuccess)
+
+export const getTravelMapsLinkPreviewUrl = () => {
+
+
+
+
+  return `/travel/places/link-preview`
+}
+
+/**
+ * @summary Coordinates and place name from a Google Maps link
+ */
+export const travelMapsLinkPreview = async (mapsLinkPreviewRequestDto: MapsLinkPreviewRequestDto, options?: RequestInit): Promise<travelMapsLinkPreviewResponse> => {
+
+  return customFetch<travelMapsLinkPreviewResponse>(getTravelMapsLinkPreviewUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(mapsLinkPreviewRequestDto)
+  }
+);}
+
+
+
+
+
+export const getTravelMapsLinkPreviewMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof travelMapsLinkPreview>>, TError,{data: MapsLinkPreviewRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof travelMapsLinkPreview>>, TError,{data: MapsLinkPreviewRequestDto}, TContext> => {
+
+const mutationKey = ['travelMapsLinkPreview'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof travelMapsLinkPreview>>, {data: MapsLinkPreviewRequestDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  travelMapsLinkPreview(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TravelMapsLinkPreviewMutationResult = NonNullable<Awaited<ReturnType<typeof travelMapsLinkPreview>>>
+    export type TravelMapsLinkPreviewMutationBody = MapsLinkPreviewRequestDto
+    export type TravelMapsLinkPreviewMutationError = unknown
+
+    /**
+ * @summary Coordinates and place name from a Google Maps link
+ */
+export const useTravelMapsLinkPreview = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof travelMapsLinkPreview>>, TError,{data: MapsLinkPreviewRequestDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof travelMapsLinkPreview>>,
+        TError,
+        {data: MapsLinkPreviewRequestDto},
+        TContext
+      > => {
+      return useMutation(getTravelMapsLinkPreviewMutationOptions(options), queryClient);
     }

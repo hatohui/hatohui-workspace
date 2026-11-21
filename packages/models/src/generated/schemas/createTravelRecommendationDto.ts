@@ -8,6 +8,7 @@
 import type { CreateTravelRecommendationDtoCurrency } from './createTravelRecommendationDtoCurrency';
 import type { TravelAllergenTag } from './travelAllergenTag';
 import type { TravelDietTag } from './travelDietTag';
+import type { TravelPlaceInputDto } from './travelPlaceInputDto';
 import type { TravelPriceLevel } from './travelPriceLevel';
 
 export interface CreateTravelRecommendationDto {
@@ -25,13 +26,8 @@ export interface CreateTravelRecommendationDto {
   cuisines?: string[];
   /** An existing place */
   placeId?: string;
-  /**
-     * Place name, created when placeId is absent
-     * @maxLength 120
-     */
-  placeName?: string;
-  /** @maxLength 2000 */
-  placeMapsUrl?: string;
+  /** A new place, created when placeId is absent */
+  place?: TravelPlaceInputDto;
   /** @maxLength 2000 */
   note?: string;
   /**

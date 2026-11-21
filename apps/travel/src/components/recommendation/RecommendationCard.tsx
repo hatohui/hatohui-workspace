@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import type { TravelRecommendationDto } from '@hatohui/models';
-import { MapPin } from 'lucide-react';
 import routes from '../../constants/routes';
+import PlaceMapsChip from '../maps/PlaceMapsChip';
 import CreatorBadge from '../shared/CreatorBadge';
 import CuisineChips from '../shared/CuisineChips';
 import AllergenNote from './AllergenNote';
@@ -31,13 +31,7 @@ function RecommendationCard({ recommendation: rec }: Props) {
               {rec.dish.name}
             </Link>
           </h2>
-          <Link
-            to={routes.place(rec.place.id)}
-            className="inline-flex max-w-full items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-sm hover:bg-card-hover"
-          >
-            <MapPin className="size-3.5 shrink-0" aria-hidden />
-            <span className="truncate">{rec.place.name}</span>
-          </Link>
+          <PlaceMapsChip place={rec.place} />
         </div>
         <RecommendationActions recommendation={rec} />
       </div>
