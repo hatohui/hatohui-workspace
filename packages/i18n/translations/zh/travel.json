@@ -3,7 +3,8 @@
   "nav": {
     "food": "美食",
     "dishes": "菜品",
-    "places": "地点"
+    "places": "地点",
+    "admin": "管理"
   },
   "catalog": {
     "title": "美食目录",
@@ -144,5 +145,57 @@
     "gluten": "麸质",
     "soy": "大豆",
     "sesame": "芝麻"
+  },
+  "location": {
+    "pick": "选择国家和地区",
+    "everywhere": "所有地方",
+    "country": "国家",
+    "area": "地区",
+    "allCountries": "所有国家",
+    "allAreas": "所有地区",
+    "newPlaceIn": "新地点将归入{{area}}。",
+    "noAreaPicked": "在页面顶部选择地区，新地点会归入该地区。"
+  },
+  "filters": {
+    "title": "筛选",
+    "taste": "口味",
+    "addedBy": "添加者",
+    "handlePlaceholder": "用户名"
+  },
+  "admin": {
+    "title": "管理",
+    "subtitle": "目录的主数据。点击单元格即可编辑。",
+    "noAccess": "只有旅行编辑者可以打开此页面。",
+    "add": "添加",
+    "name": "名称",
+    "code": "代码",
+    "areas": "地区",
+    "places": "地点",
+    "dishes": "菜品",
+    "kind": "类型",
+    "uses": "使用次数",
+    "tabs": {
+      "countries": "国家",
+      "areas": "地区",
+      "dishes": "菜品",
+      "cuisines": "菜系",
+      "tags": "标签"
+    },
+    "addCountries": "添加国家，用逗号分隔",
+    "addAreas": "添加地区，用逗号分隔",
+    "addDishes": "添加菜品，用逗号分隔",
+    "addCuisines": "添加菜系，用逗号分隔",
+    "addTags": "添加标签，用逗号分隔",
+    "bulkResult": "已添加 {{created}}，跳过 {{skipped}}",
+    "deleteTitle": "删除 {{name}}？",
+    "deleteCountry": "其地区也会被删除。地点会保留，但没有地区。",
+    "deleteArea": "该地区的地点会保留，但没有地区。",
+    "deleteDish": "这道菜的所有推荐及照片都会被删除。",
+    "deleteCuisine": "菜品将失去这个菜系标签。",
+    "deleteTag": "推荐将失去这个标签。",
+    "kinds": {
+      "DIET": "饮食",
+      "ALLERGEN": "过敏原"
+    }
   }
 }

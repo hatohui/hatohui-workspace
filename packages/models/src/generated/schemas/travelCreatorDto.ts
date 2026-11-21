@@ -12,4 +12,6 @@ export interface TravelCreatorDto {
   name: string;
   /** @nullable */
   avatarUrl: string | null;
+  /** @nullable */
+  handle: string | null;
 }

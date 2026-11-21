@@ -15,17 +15,13 @@ import { Type } from 'class-transformer';
 import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel-place-input.dto';
 import type { TravelPriceLevel } from '@prisma/client';
 import {
-  TRAVEL_ALLERGEN_TAGS,
   TRAVEL_CURRENCIES,
-  TRAVEL_DIET_TAGS,
   TRAVEL_MAX_CUISINES,
   TRAVEL_MAX_IMAGES,
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
   TRAVEL_PRICE_LEVELS,
-  type TravelAllergenTag,
   type TravelCurrency,
-  type TravelDietTag,
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 export class CreateTravelRecommendationDto {
@@ -118,25 +114,23 @@ export class CreateTravelRecommendationDto {
 
   @ApiProperty({
     required: false,
-    enum: TRAVEL_DIET_TAGS,
-    enumName: 'TravelDietTag',
-    isArray: true,
+    type: [String],
+    description: 'Diet tag keys',
   })
   @IsOptional()
   @IsArray()
-  @IsIn(TRAVEL_DIET_TAGS, { each: true })
-  diets?: TravelDietTag[];
+  @IsString({ each: true })
+  diets?: string[];
 
   @ApiProperty({
     required: false,
-    enum: TRAVEL_ALLERGEN_TAGS,
-    enumName: 'TravelAllergenTag',
-    isArray: true,
+    type: [String],
+    description: 'Allergen tag keys',
   })
   @IsOptional()
   @IsArray()
-  @IsIn(TRAVEL_ALLERGEN_TAGS, { each: true })
-  allergens?: TravelAllergenTag[];
+  @IsString({ each: true })
+  allergens?: string[];
 
   @ApiProperty({
     type: [String],

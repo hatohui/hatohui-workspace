@@ -5,6 +5,7 @@ export const CACHE_KEYS = {
   userRoles: (userId: string) => `auth:roles:${userId}`,
   systemParametersList: () => 'admin:system-parameters:list',
   imageUploadLimits: () => 'images:upload-limits',
+  travelEditors: () => 'travel:editors',
   birthdaysList: () => 'friends:birthdays:list',
   connectionContext: (userId: string) => `conn:ctx:${userId}`,
   unreadNotifications: (userId: string) => `notif:unread:${userId}`,

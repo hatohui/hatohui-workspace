@@ -9,15 +9,15 @@ import {
   AuthGuard,
   type AuthenticatedRequest,
 } from '@/modules/auth/guards/auth.guard';
-import { AuthService } from '@/modules/auth/services/auth.service';
 import { SessionService } from '@/modules/auth/services/session.service';
+import { TravelAccessService } from '@/modules/travel-access/services/travel-access.service';
 
 @Injectable()
-export class AdminRoleGuard extends AuthGuard implements CanActivate {
+export class TravelEditorGuard extends AuthGuard implements CanActivate {
   constructor(
     session: SessionService,
     db: Database,
-    private readonly auth: AuthService,
+    private readonly access: TravelAccessService,
   ) {
     super(session, db);
   }
@@ -25,8 +25,8 @@ export class AdminRoleGuard extends AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     await super.canActivate(context);
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    if (!(await this.auth.isAdmin(request.user))) {
-      throw new ForbiddenException('Admin access denied');
+    if (!(await this.access.canEdit(request.user))) {
+      throw new ForbiddenException('Travel editor access denied');
     }
     return true;
   }

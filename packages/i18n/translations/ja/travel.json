@@ -3,7 +3,8 @@
   "nav": {
     "food": "グルメ",
     "dishes": "料理",
-    "places": "お店"
+    "places": "お店",
+    "admin": "管理"
   },
   "catalog": {
     "title": "グルメカタログ",
@@ -144,5 +145,57 @@
     "gluten": "グルテン",
     "soy": "大豆",
     "sesame": "ごま"
+  },
+  "location": {
+    "pick": "国とエリアを選択",
+    "everywhere": "すべての場所",
+    "country": "国",
+    "area": "エリア",
+    "allCountries": "すべての国",
+    "allAreas": "すべてのエリア",
+    "newPlaceIn": "新しいお店は{{area}}に登録されます。",
+    "noAreaPicked": "ヘッダーでエリアを選ぶと、新しいお店がそこに登録されます。"
+  },
+  "filters": {
+    "title": "絞り込み",
+    "taste": "味",
+    "addedBy": "追加した人",
+    "handlePlaceholder": "ハンドル"
+  },
+  "admin": {
+    "title": "管理",
+    "subtitle": "カタログのマスターデータ。セルをクリックして編集します。",
+    "noAccess": "トラベル編集者だけがこのページを開けます。",
+    "add": "追加",
+    "name": "名前",
+    "code": "コード",
+    "areas": "エリア",
+    "places": "お店",
+    "dishes": "料理",
+    "kind": "種類",
+    "uses": "使用数",
+    "tabs": {
+      "countries": "国",
+      "areas": "エリア",
+      "dishes": "料理",
+      "cuisines": "ジャンル",
+      "tags": "タグ"
+    },
+    "addCountries": "国を追加（カンマ区切り）",
+    "addAreas": "エリアを追加（カンマ区切り）",
+    "addDishes": "料理を追加（カンマ区切り）",
+    "addCuisines": "ジャンルを追加（カンマ区切り）",
+    "addTags": "タグを追加（カンマ区切り）",
+    "bulkResult": "{{created}} 件追加、{{skipped}} 件スキップ",
+    "deleteTitle": "{{name}} を削除しますか？",
+    "deleteCountry": "エリアも削除されます。お店は残りますが、エリアなしになります。",
+    "deleteArea": "このエリアのお店は残りますが、エリアなしになります。",
+    "deleteDish": "この料理のおすすめと写真がすべて削除されます。",
+    "deleteCuisine": "料理からこのジャンルが外れます。",
+    "deleteTag": "おすすめからこのタグが外れます。",
+    "kinds": {
+      "DIET": "食事制限",
+      "ALLERGEN": "アレルゲン"
+    }
   }
 }

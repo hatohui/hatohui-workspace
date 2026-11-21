@@ -3,7 +3,8 @@
   "nav": {
     "food": "Món ngon",
     "dishes": "Món ăn",
-    "places": "Địa điểm"
+    "places": "Địa điểm",
+    "admin": "Quản trị"
   },
   "catalog": {
     "title": "Danh mục món ngon",
@@ -144,5 +145,57 @@
     "gluten": "Gluten",
     "soy": "Đậu nành",
     "sesame": "Mè"
+  },
+  "location": {
+    "pick": "Chọn quốc gia và khu vực",
+    "everywhere": "Mọi nơi",
+    "country": "Quốc gia",
+    "area": "Khu vực",
+    "allCountries": "Tất cả quốc gia",
+    "allAreas": "Tất cả khu vực",
+    "newPlaceIn": "Địa điểm mới sẽ thuộc {{area}}.",
+    "noAreaPicked": "Chọn khu vực ở đầu trang để xếp địa điểm mới vào đó."
+  },
+  "filters": {
+    "title": "Bộ lọc",
+    "taste": "Hương vị",
+    "addedBy": "Người thêm",
+    "handlePlaceholder": "tên người dùng"
+  },
+  "admin": {
+    "title": "Quản trị",
+    "subtitle": "Dữ liệu gốc của danh mục. Bấm vào ô để sửa.",
+    "noAccess": "Chỉ người biên tập du lịch mới mở được trang này.",
+    "add": "Thêm",
+    "name": "Tên",
+    "code": "Mã",
+    "areas": "Khu vực",
+    "places": "Địa điểm",
+    "dishes": "Món ăn",
+    "kind": "Loại",
+    "uses": "Lượt dùng",
+    "tabs": {
+      "countries": "Quốc gia",
+      "areas": "Khu vực",
+      "dishes": "Món ăn",
+      "cuisines": "Ẩm thực",
+      "tags": "Thẻ"
+    },
+    "addCountries": "Thêm quốc gia, cách nhau bằng dấu phẩy",
+    "addAreas": "Thêm khu vực, cách nhau bằng dấu phẩy",
+    "addDishes": "Thêm món, cách nhau bằng dấu phẩy",
+    "addCuisines": "Thêm ẩm thực, cách nhau bằng dấu phẩy",
+    "addTags": "Thêm thẻ, cách nhau bằng dấu phẩy",
+    "bulkResult": "Đã thêm {{created}}, bỏ qua {{skipped}}",
+    "deleteTitle": "Xóa {{name}}?",
+    "deleteCountry": "Các khu vực cũng bị xóa. Địa điểm vẫn giữ, không có khu vực.",
+    "deleteArea": "Địa điểm trong khu vực vẫn giữ, không có khu vực.",
+    "deleteDish": "Mọi gợi ý cho món này và ảnh của chúng sẽ bị xóa.",
+    "deleteCuisine": "Các món sẽ mất thẻ ẩm thực này.",
+    "deleteTag": "Các gợi ý sẽ mất thẻ này.",
+    "kinds": {
+      "DIET": "Chế độ ăn",
+      "ALLERGEN": "Dị ứng"
+    }
   }
 }

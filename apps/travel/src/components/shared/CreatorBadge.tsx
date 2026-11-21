@@ -5,10 +5,11 @@ import { Avatar } from '@hatohui/ui';
 function CreatorBadge({ creator }: { creator: TravelCreatorDto | null }) {
   const { t } = useTranslation();
   if (!creator) return null;
+  const name = creator.handle ? `@${creator.handle}` : creator.name;
   return (
     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
       <Avatar src={creator.avatarUrl} alt={creator.name} className="size-5" />
-      {t('recommendation.addedBy', { name: creator.name })}
+      {t('recommendation.addedBy', { name })}
     </span>
   );
 }

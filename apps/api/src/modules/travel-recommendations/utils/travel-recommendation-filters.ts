@@ -1,4 +1,6 @@
 import type { Prisma } from '@prisma/client';
+import { travelCreatorFilter } from '@/modules/travel-recommendations/utils/travel-creator';
+import { travelAreaFilter } from '@/modules/travel-recommendations/utils/travel-place-area';
 import type { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
 
 const contains = (value: string) => ({
@@ -16,9 +18,19 @@ export function travelRecommendationWhere(
   if (query.excludeAllergens?.length) {
     and.push({ tags: { none: { key: { in: query.excludeAllergens } } } });
   }
-  if (query.cuisine) {
+  const inArea = travelAreaFilter(query);
+  if (inArea) and.push({ place: inArea });
+  if (query.cuisines?.length) {
     and.push({
-      dish: { cuisines: { some: { name: contains(query.cuisine) } } },
+      dish: {
+        cuisines: {
+          some: {
+            OR: query.cuisines.map((name) => ({
+              name: { equals: name, mode: 'insensitive' as const },
+            })),
+          },
+        },
+      },
     });
   }
 
@@ -26,6 +38,7 @@ export function travelRecommendationWhere(
     dishId: query.dishId,
     placeId: query.placeId,
     spicy: query.spicy || undefined,
+    createdBy: travelCreatorFilter(query.by),
     place: query.city ? { city: contains(query.city) } : undefined,
     AND: and.length ? and : undefined,
     OR: q

@@ -1,37 +1,52 @@
 import { useTranslation } from '@hatohui/i18n';
 import AddRecommendationButton from '../components/catalog/AddRecommendationButton';
-import CatalogToolbar from '../components/catalog/CatalogToolbar';
+import CatalogSidebar from '../components/catalog/CatalogSidebar';
 import ClearFiltersButton from '../components/catalog/ClearFiltersButton';
+import MobileFilterButton from '../components/catalog/MobileFilterButton';
 import RecommendationGrid from '../components/recommendation/RecommendationGrid';
 import PageHeading from '../components/shared/PageHeading';
+import SearchField from '../components/shared/SearchField';
 import { useCatalog } from '../hooks/useCatalog';
 
 function CatalogPage() {
   const { t } = useTranslation();
   const catalog = useCatalog();
+  const { filters } = catalog;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeading
         title={t('catalog.title')}
         subtitle={t('catalog.subtitle')}
         action={<AddRecommendationButton />}
       />
-      <CatalogToolbar filters={catalog.filters} />
-      <RecommendationGrid
-        recommendations={catalog.recommendations}
-        isLoading={catalog.isLoading}
-        isError={catalog.isError}
-        onRetry={() => void catalog.refetch()}
-        emptyMessage={t(
-          catalog.isFiltered ? 'catalog.emptyFiltered' : 'catalog.empty',
-        )}
-        emptyAction={
-          catalog.isFiltered && (
-            <ClearFiltersButton onClick={catalog.clearFilters} />
-          )
-        }
-      />
+      <div className="grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
+        <CatalogSidebar filters={filters} />
+        <div className="space-y-5">
+          <div className="flex items-center gap-2">
+            <SearchField
+              value={filters.search}
+              placeholder={t('catalog.searchPlaceholder')}
+              onChange={filters.setSearch}
+            />
+            <MobileFilterButton filters={filters} />
+          </div>
+          <RecommendationGrid
+            recommendations={catalog.recommendations}
+            isLoading={catalog.isLoading}
+            isError={catalog.isError}
+            onRetry={() => void catalog.refetch()}
+            emptyMessage={t(
+              catalog.isFiltered ? 'catalog.emptyFiltered' : 'catalog.empty',
+            )}
+            emptyAction={
+              catalog.isFiltered && (
+                <ClearFiltersButton onClick={filters.clearFilters} />
+              )
+            }
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -11,4 +11,16 @@ export type TravelPlacesParams = {
  * Match name, address or city
  */
 q?: string;
+/**
+ * Only entries added by this @handle
+ */
+by?: string;
+/**
+ * Only places in this area
+ */
+areaId?: string;
+/**
+ * Only places in this country
+ */
+countryId?: string;
 };

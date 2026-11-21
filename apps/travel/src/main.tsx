@@ -8,6 +8,7 @@ import { ToastProvider, TooltipProvider } from '@hatohui/ui';
 import './index.css';
 import './config/i18n';
 import router from './config/router';
+import TravelLocationProvider from './components/location/TravelLocationProvider';
 
 setApiBaseUrl(import.meta.env.VITE_API_URL);
 
@@ -22,7 +23,9 @@ createRoot(document.getElementById('root')!).render(
       >
         <TooltipProvider>
           <ToastProvider>
-            <RouterProvider router={router} />
+            <TravelLocationProvider>
+              <RouterProvider router={router} />
+            </TravelLocationProvider>
           </ToastProvider>
         </TooltipProvider>
       </AuthProvider>

@@ -9,6 +9,9 @@ import { Storage } from '@/infra/storage';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
 import { travelCuisineNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
+import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
+import { travelAreaFilter } from '@/modules/travel-recommendations/utils/travel-place-area';
+import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names';
 import { UNIQUE_VIOLATION_CODE } from '@/modules/travel-recommendations/travel-recommendations.constants';
 import {
   toTravelCreatorDto,
@@ -48,15 +51,14 @@ export class TravelDishesService {
   async list(query: TravelDishQueryDto): Promise<TravelDishDto[]> {
     const q = query.q?.trim();
     const contains = q ? { contains: q, mode: 'insensitive' as const } : null;
+    const inArea = travelAreaFilter(query);
     const rows = await this.db.travelDish.findMany({
-      where: contains
-        ? {
-            OR: [
-              { name: contains },
-              { cuisines: { some: { name: contains } } },
-            ],
-          }
-        : undefined,
+      where: {
+        recommendations: inArea ? { some: { place: inArea } } : undefined,
+        OR: contains
+          ? [{ name: contains }, { cuisines: { some: { name: contains } } }]
+          : undefined,
+      },
       include: dishInclude,
       orderBy: { name: 'asc' },
     });
@@ -88,6 +90,28 @@ export class TravelDishesService {
       }),
     );
     return this.get(created.id);
+  }
+
+  async bulkCreate(
+    names: string[],
+    userId: string,
+  ): Promise<TravelBulkResultDto> {
+    const wanted = uniqueNames(names);
+    const existing = await this.db.travelDish.findMany({
+      where: {
+        OR: wanted.map((name) => ({
+          name: { equals: name, mode: 'insensitive' as const },
+        })),
+      },
+      select: { name: true },
+    });
+    const taken = new Set(existing.map((row) => row.name.toLowerCase()));
+    const fresh = wanted.filter((name) => !taken.has(name.toLowerCase()));
+    await this.db.travelDish.createMany({
+      data: fresh.map((name) => ({ name, createdById: userId })),
+      skipDuplicates: true,
+    });
+    return { created: fresh.length, skipped: names.length - fresh.length };
   }
 
   async update(

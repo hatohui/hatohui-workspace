@@ -9,6 +9,8 @@
 export interface TravelPlaceInputDto {
   /** @maxLength 120 */
   name: string;
+  /** Area the place is in; empty clears it */
+  areaId?: string;
   /** @maxLength 2000 */
   address?: string;
   /** @maxLength 120 */

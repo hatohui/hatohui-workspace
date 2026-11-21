@@ -1,7 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Label } from '@hatohui/ui';
 import { Flame } from 'lucide-react';
-import { ALLERGEN_TAGS, DIET_ICONS, DIET_TAGS } from '../../constants/travel';
+import { DIET_ICONS } from '../../constants/travel';
+import { useTagOptions } from '../../hooks/useTagOptions';
 import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
 import TagChipGroup from '../shared/TagChipGroup';
 import FilterChip from '../catalog/FilterChip';
@@ -16,6 +17,7 @@ interface Props {
 
 function TagFields({ fields, set, toggle }: Props) {
   const { t } = useTranslation();
+  const tags = useTagOptions();
   return (
     <div className="space-y-4">
       <FilterChip
@@ -28,9 +30,9 @@ function TagFields({ fields, set, toggle }: Props) {
         <Label>{t('form.diets')}</Label>
         <TagChipGroup
           label={t('form.diets')}
-          options={DIET_TAGS}
+          options={tags.dietKeys}
           selected={fields.diets}
-          labelOf={(tag) => t(`diet.${tag}`)}
+          labelOf={tags.labelOf}
           iconOf={(tag) => DIET_ICONS[tag]}
           onToggle={(tag) => toggle('diets', tag)}
         />
@@ -40,9 +42,9 @@ function TagFields({ fields, set, toggle }: Props) {
         <TagChipGroup
           label={t('form.allergens')}
           tone="warning"
-          options={ALLERGEN_TAGS}
+          options={tags.allergenKeys}
           selected={fields.allergens}
-          labelOf={(tag) => t(`allergen.${tag}`)}
+          labelOf={tags.labelOf}
           onToggle={(tag) => toggle('allergens', tag)}
         />
       </div>

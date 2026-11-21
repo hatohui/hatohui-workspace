@@ -50,6 +50,7 @@ export class AdminSystemParametersService {
       await this.cache.invalidate(
         CACHE_KEYS.systemParametersList(),
         CACHE_KEYS.imageUploadLimits(),
+        CACHE_KEYS.travelEditors(),
       );
       return this.toDto(row);
     } catch (error) {
@@ -88,6 +89,7 @@ export class AdminSystemParametersService {
     await this.cache.invalidate(
       CACHE_KEYS.systemParametersList(),
       CACHE_KEYS.imageUploadLimits(),
+      CACHE_KEYS.travelEditors(),
     );
 
     return this.toDto(row);

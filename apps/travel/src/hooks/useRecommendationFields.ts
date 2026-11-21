@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import type {
-  TravelAllergenTag,
-  TravelDietTag,
   TravelPriceLevel,
   TravelRecommendationDto,
 } from '@hatohui/models';
@@ -23,8 +21,8 @@ export interface RecommendationFields {
   currency: Currency;
   note: string;
   spicy: boolean;
-  diets: TravelDietTag[];
-  allergens: TravelAllergenTag[];
+  diets: string[];
+  allergens: string[];
 }
 
 const amount = (value: number | null | undefined) =>

@@ -4,6 +4,8 @@ import { ThemeToggle } from '@hatohui/libs';
 import { Compass } from 'lucide-react';
 import { NAV_ITEMS } from '../../constants/navItems';
 import routes from '../../constants/routes';
+import LocationPicker from '../location/LocationPicker';
+import AdminNavLink from './AdminNavLink';
 import AccountButton from './AccountButton';
 import HeaderNavLink from './HeaderNavLink';
 
@@ -24,6 +26,8 @@ function TravelHeader() {
             <HeaderNavLink key={item.to} item={item} />
           ))}
         </nav>
+        <LocationPicker />
+        <AdminNavLink />
         <ThemeToggle />
         <AccountButton />
       </div>

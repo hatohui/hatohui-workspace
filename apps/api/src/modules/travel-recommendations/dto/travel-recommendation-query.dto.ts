@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsIn, IsOptional, IsString } from 'class-validator';
-import {
-  TRAVEL_ALLERGEN_TAGS,
-  TRAVEL_DIET_TAGS,
-  type TravelAllergenTag,
-  type TravelDietTag,
-} from '@/modules/travel-recommendations/travel-recommendations.constants';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 const toBoolean = ({ value }: { value: unknown }) =>
   value === undefined ? undefined : [true, 'true'].includes(value as string);
@@ -29,15 +23,39 @@ export class TravelRecommendationQueryDto {
   @IsString()
   q?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Only dishes tagged with any of these cuisines',
+  })
   @IsOptional()
-  @IsString()
-  cuisine?: string;
+  @Transform(toList)
+  @IsString({ each: true })
+  cuisines?: string[];
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   city?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Only entries added by this @handle',
+    example: 'hatohui',
+  })
+  @IsOptional()
+  @IsString()
+  by?: string;
+
+  @ApiProperty({ required: false, description: 'Only places in this area' })
+  @IsOptional()
+  @IsString()
+  areaId?: string;
+
+  @ApiProperty({ required: false, description: 'Only places in this country' })
+  @IsOptional()
+  @IsString()
+  countryId?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -57,25 +75,21 @@ export class TravelRecommendationQueryDto {
 
   @ApiProperty({
     required: false,
-    enum: TRAVEL_DIET_TAGS,
-    enumName: 'TravelDietTag',
-    isArray: true,
+    type: [String],
     description: 'Only dishes that meet every listed diet',
   })
   @IsOptional()
   @Transform(toList)
-  @IsIn(TRAVEL_DIET_TAGS, { each: true })
-  diets?: TravelDietTag[];
+  @IsString({ each: true })
+  diets?: string[];
 
   @ApiProperty({
     required: false,
-    enum: TRAVEL_ALLERGEN_TAGS,
-    enumName: 'TravelAllergenTag',
-    isArray: true,
+    type: [String],
     description: 'Hide dishes that contain any of these allergens',
   })
   @IsOptional()
   @Transform(toList)
-  @IsIn(TRAVEL_ALLERGEN_TAGS, { each: true })
-  excludeAllergens?: TravelAllergenTag[];
+  @IsString({ each: true })
+  excludeAllergens?: string[];
 }

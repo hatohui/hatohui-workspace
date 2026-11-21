@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { User } from '@prisma/client';
-import { AdminRoleGuard } from '@/modules/auth/guards/admin-role.guard';
+import { TravelEditorGuard } from '@/modules/travel-access/guards/travel-editor.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import { TravelRecommendationDto } from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
@@ -52,7 +52,7 @@ export class TravelRecommendationsController {
   }
 
   @Post()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({
     operationId: 'createTravelRecommendation',
     summary: 'Recommend a dish at a place, creating either one by name',
@@ -66,7 +66,7 @@ export class TravelRecommendationsController {
   }
 
   @Patch(':id')
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'updateTravelRecommendation' })
   @ApiOkResponse({ type: TravelRecommendationDto })
   update(
@@ -79,7 +79,7 @@ export class TravelRecommendationsController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'deleteTravelRecommendation' })
   @ApiNoContentResponse()
   remove(@Param('id') id: string): Promise<void> {

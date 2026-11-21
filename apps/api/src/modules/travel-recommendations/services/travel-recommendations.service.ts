@@ -65,6 +65,7 @@ export class TravelRecommendationsService {
     dto: CreateTravelRecommendationDto,
     userId: string,
   ): Promise<TravelRecommendationDto> {
+    await this.assertTags(dto);
     const dishId = await this.resolveDish(dto, userId);
     const placeId = await this.resolvePlace(dto, userId);
 
@@ -90,6 +91,7 @@ export class TravelRecommendationsService {
     dto: UpdateTravelRecommendationDto,
     userId: string,
   ): Promise<TravelRecommendationDto> {
+    await this.assertTags(dto);
     const current = await this.get(id);
     const tagKeys = travelTagKeys(dto, [
       ...current.diets.map((key) => ({ key, kind: 'DIET' as const })),
@@ -136,6 +138,30 @@ export class TravelRecommendationsService {
     return toTravelRecommendationDto(row, (key) =>
       this.storage.getPublicUrl(key),
     );
+  }
+
+  private async assertTags(dto: UpdateTravelRecommendationDto) {
+    const wanted = [
+      ...(dto.diets ?? []).map((key) => ({ key, kind: 'DIET' as const })),
+      ...(dto.allergens ?? []).map((key) => ({
+        key,
+        kind: 'ALLERGEN' as const,
+      })),
+    ];
+    if (!wanted.length) return;
+    const found = await this.db.travelTag.findMany({
+      where: { key: { in: wanted.map((tag) => tag.key) } },
+      select: { key: true, kind: true },
+    });
+    const known = new Set(found.map((tag) => `${tag.kind}:${tag.key}`));
+    const unknown = wanted.filter(
+      (tag) => !known.has(`${tag.kind}:${tag.key}`),
+    );
+    if (unknown.length) {
+      throw new BadRequestException(
+        `Unknown tags: ${unknown.map((tag) => tag.key).join(', ')}`,
+      );
+    }
   }
 
   private tagRefs(keys: string[] | undefined) {

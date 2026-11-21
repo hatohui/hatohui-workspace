@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+import { TravelBulkNamesDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel-place-input.dto';
 import {
   TravelCreatorDto,
@@ -35,4 +36,30 @@ export class TravelPlaceQueryDto {
   @IsOptional()
   @IsString()
   q?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Only entries added by this @handle',
+    example: 'hatohui',
+  })
+  @IsOptional()
+  @IsString()
+  by?: string;
+
+  @ApiProperty({ required: false, description: 'Only places in this area' })
+  @IsOptional()
+  @IsString()
+  areaId?: string;
+
+  @ApiProperty({ required: false, description: 'Only places in this country' })
+  @IsOptional()
+  @IsString()
+  countryId?: string;
+}
+
+export class BulkCreateTravelPlacesDto extends TravelBulkNamesDto {
+  @ApiProperty({ required: false, description: 'Area for every new place' })
+  @IsOptional()
+  @IsString()
+  areaId?: string;
 }

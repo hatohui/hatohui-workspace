@@ -11,4 +11,12 @@ export type TravelDishesParams = {
  * Match name or cuisine
  */
 q?: string;
+/**
+ * Only places in this area
+ */
+areaId?: string;
+/**
+ * Only places in this country
+ */
+countryId?: string;
 };

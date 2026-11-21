@@ -35,6 +35,10 @@ import { CommissionFollowersModule } from '@/modules/commission-followers/commis
 import { CommissionGroupsModule } from '@/modules/commission-groups/commission-groups.module';
 import { CommissionAccessModule } from '@/modules/commission-access/commission-access.module';
 import { CommissionAttachmentsModule } from '@/modules/commission-attachments/commission-attachments.module';
+import { TravelAccessModule } from '@/modules/travel-access/travel-access.module';
+import { TravelCountriesModule } from '@/modules/travel-countries/travel-countries.module';
+import { TravelAreasModule } from '@/modules/travel-areas/travel-areas.module';
+import { TravelTagsModule } from '@/modules/travel-tags/travel-tags.module';
 import { TravelCuisinesModule } from '@/modules/travel-cuisines/travel-cuisines.module';
 import { TravelRecommendationsModule } from '@/modules/travel-recommendations/travel-recommendations.module';
 import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module';
@@ -81,6 +85,10 @@ import { TravelPlacesModule } from '@/modules/travel-places/travel-places.module
     CommissionGroupsModule,
     CommissionAccessModule,
     CommissionAttachmentsModule,
+    TravelAccessModule,
+    TravelCountriesModule,
+    TravelAreasModule,
+    TravelTagsModule,
     TravelCuisinesModule,
     TravelRecommendationsModule,
     TravelDishesModule,

@@ -20,6 +20,14 @@ export class TravelPlaceInputDto {
   @MaxLength(TRAVEL_NAME_MAX_LENGTH)
   name!: string;
 
+  @ApiProperty({
+    required: false,
+    description: 'Area the place is in; empty clears it',
+  })
+  @IsOptional()
+  @IsString()
+  areaId?: string;
+
   @ApiProperty({ required: false, maxLength: TRAVEL_NOTE_MAX_LENGTH })
   @IsOptional()
   @IsString()

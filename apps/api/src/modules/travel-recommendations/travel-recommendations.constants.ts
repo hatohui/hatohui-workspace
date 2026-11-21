@@ -11,27 +11,5 @@ export const UNIQUE_VIOLATION_CODE = 'P2002';
 
 export const TRAVEL_PRICE_LEVELS = ['LOW', 'MID', 'HIGH'] as const;
 
-export const TRAVEL_DIET_TAGS = [
-  'vegetarian',
-  'vegan',
-  'pescatarian',
-  'halal',
-  'kosher',
-  'gluten-free',
-  'dairy-free',
-] as const;
-
-export const TRAVEL_ALLERGEN_TAGS = [
-  'peanuts',
-  'tree-nuts',
-  'shellfish',
-  'fish',
-  'egg',
-  'dairy',
-  'gluten',
-  'soy',
-  'sesame',
-] as const;
-
-export type TravelDietTag = (typeof TRAVEL_DIET_TAGS)[number];
-export type TravelAllergenTag = (typeof TRAVEL_ALLERGEN_TAGS)[number];
+export const TRAVEL_BULK_MAX_ITEMS = 50;
+export const TRAVEL_COUNTRY_CODE_PATTERN = /^([A-Za-z]{2})?$/;

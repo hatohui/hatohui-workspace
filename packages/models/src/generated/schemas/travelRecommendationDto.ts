@@ -5,9 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { TravelAllergenTag } from './travelAllergenTag';
 import type { TravelCreatorDto } from './travelCreatorDto';
-import type { TravelDietTag } from './travelDietTag';
 import type { TravelDishSummaryDto } from './travelDishSummaryDto';
 import type { TravelImageDto } from './travelImageDto';
 import type { TravelPlaceSummaryDto } from './travelPlaceSummaryDto';
@@ -33,9 +31,10 @@ export interface TravelRecommendationDto {
   priceLevel: TravelPriceLevel | null;
   currency: string;
   spicy: boolean;
-  diets: TravelDietTag[];
-  /** Allergens the dish contains */
-  allergens: TravelAllergenTag[];
+  /** Diet tag keys, e.g. vegetarian */
+  diets: string[];
+  /** Allergen tag keys the dish contains, e.g. peanuts */
+  allergens: string[];
   images: TravelImageDto[];
   /** @nullable */
   createdBy: TravelCreatorDto | null;
