@@ -28,6 +28,7 @@ function CatalogPage() {
               value={filters.search}
               placeholder={t('catalog.searchPlaceholder')}
               onChange={filters.setSearch}
+              suggestions={catalog.suggestions}
             />
             <MobileFilterButton filters={filters} />
           </div>

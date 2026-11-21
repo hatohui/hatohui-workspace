@@ -17,6 +17,7 @@ function DishesPage() {
         value={list.search}
         placeholder={t('dishes.searchPlaceholder')}
         onChange={list.setSearch}
+        suggestions={list.suggestions}
       />
       <ListState
         isLoading={list.isLoading}

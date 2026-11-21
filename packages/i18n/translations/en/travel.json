@@ -17,6 +17,8 @@
     "empty": "Nothing here yet.",
     "emptyFiltered": "No food matches these filters.",
     "clearFilters": "Clear filters",
+    "searchSuggestions": "Suggestions",
+    "clearSearch": "Clear search",
     "avoidAllergens": "Avoid allergens",
     "avoiding_one": "Avoiding {{count}}",
     "avoiding_other": "Avoiding {{count}}",
@@ -193,6 +195,7 @@
     "deleteDish": "Every recommendation for this dish and its photos are deleted.",
     "deleteCuisine": "Dishes lose this cuisine tag.",
     "deleteTag": "Recommendations lose this tag.",
+    "searchPlaceholder": "Search rows",
     "kinds": {
       "DIET": "Diet",
       "ALLERGEN": "Allergen"

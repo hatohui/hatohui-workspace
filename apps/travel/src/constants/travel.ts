@@ -39,6 +39,7 @@ export const PRICE_MODES = ['range', 'level'] as const;
 export type PriceMode = (typeof PRICE_MODES)[number];
 
 export const SEARCH_DEBOUNCE_MS = 250;
+export const SEARCH_SUGGESTION_LIMIT = 6;
 export const MAX_PHOTOS = 12;
 export const MAX_CUISINES = 6;
 export const ACCEPTED_IMAGE_TYPES =

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTravelRecommendations } from '@hatohui/models';
 import { useDebouncedValue } from '@hatohui/libs';
 import { SEARCH_DEBOUNCE_MS } from '../constants/travel';
 import { useSearchState } from './useSearchState';
+import type { SearchSuggestion } from './useSearchSuggest';
 import { useTravelLocation } from './useTravelLocation';
 
 const toggled = <T>(list: T[], item: T) =>
@@ -46,8 +47,27 @@ export function useCatalog() {
     setBy('');
   };
 
+  const recommendations = useMemo(
+    () => result.data?.data ?? [],
+    [result.data?.data],
+  );
+
+  const suggestions = useMemo<SearchSuggestion[]>(
+    () =>
+      recommendations.map((rec) => ({
+        id: rec.id,
+        label: rec.dish.name,
+        sublabel: [rec.place.name, ...rec.dish.cuisines]
+          .filter(Boolean)
+          .join(' · '),
+        imageUrl: rec.images[0]?.url ?? null,
+      })),
+    [recommendations],
+  );
+
   return {
-    recommendations: result.data?.data ?? [],
+    recommendations,
+    suggestions,
     isLoading: result.isLoading,
     isError: result.isError,
     refetch: result.refetch,

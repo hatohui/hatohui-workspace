@@ -17,6 +17,8 @@
     "empty": "这里还没有内容。",
     "emptyFiltered": "没有符合筛选条件的美食。",
     "clearFilters": "清除筛选",
+    "searchSuggestions": "推荐",
+    "clearSearch": "清除搜索",
     "avoidAllergens": "避开过敏原",
     "avoiding_one": "已避开 {{count}} 项",
     "avoiding_other": "已避开 {{count}} 项",
@@ -193,6 +195,7 @@
     "deleteDish": "这道菜的所有推荐及照片都会被删除。",
     "deleteCuisine": "菜品将失去这个菜系标签。",
     "deleteTag": "推荐将失去这个标签。",
+    "searchPlaceholder": "搜索行",
     "kinds": {
       "DIET": "饮食",
       "ALLERGEN": "过敏原"

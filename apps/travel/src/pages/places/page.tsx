@@ -17,6 +17,7 @@ function PlacesPage() {
         value={list.search}
         placeholder={t('places.searchPlaceholder')}
         onChange={list.setSearch}
+        suggestions={list.suggestions}
       />
       <ListState
         isLoading={list.isLoading}

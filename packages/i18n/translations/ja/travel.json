@@ -17,6 +17,8 @@
     "empty": "まだ何もありません。",
     "emptyFiltered": "条件に合う料理がありません。",
     "clearFilters": "絞り込みを解除",
+    "searchSuggestions": "候補",
+    "clearSearch": "検索をクリア",
     "avoidAllergens": "アレルゲンを除外",
     "avoiding_one": "{{count}} 件を除外中",
     "avoiding_other": "{{count}} 件を除外中",
@@ -193,6 +195,7 @@
     "deleteDish": "この料理のおすすめと写真がすべて削除されます。",
     "deleteCuisine": "料理からこのジャンルが外れます。",
     "deleteTag": "おすすめからこのタグが外れます。",
+    "searchPlaceholder": "行を検索",
     "kinds": {
       "DIET": "食事制限",
       "ALLERGEN": "アレルゲン"

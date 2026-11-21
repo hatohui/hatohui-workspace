@@ -17,6 +17,8 @@
     "empty": "Chưa có gì ở đây.",
     "emptyFiltered": "Không có món nào khớp bộ lọc.",
     "clearFilters": "Xóa bộ lọc",
+    "searchSuggestions": "Gợi ý",
+    "clearSearch": "Xóa tìm kiếm",
     "avoidAllergens": "Tránh chất gây dị ứng",
     "avoiding_one": "Đang tránh {{count}}",
     "avoiding_other": "Đang tránh {{count}}",
@@ -193,6 +195,7 @@
     "deleteDish": "Mọi gợi ý cho món này và ảnh của chúng sẽ bị xóa.",
     "deleteCuisine": "Các món sẽ mất thẻ ẩm thực này.",
     "deleteTag": "Các gợi ý sẽ mất thẻ này.",
+    "searchPlaceholder": "Tìm kiếm hàng",
     "kinds": {
       "DIET": "Chế độ ăn",
       "ALLERGEN": "Dị ứng"
