@@ -14,7 +14,7 @@ export interface CreateTravelPlaceDto {
   /** @maxLength 120 */
   city?: string;
   /**
-     * Google Maps link; coordinates are read from it when present
+     * Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given
      * @maxLength 2000
      */
   mapsUrl?: string;

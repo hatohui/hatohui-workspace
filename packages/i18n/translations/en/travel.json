@@ -78,7 +78,11 @@
     "priceLevelHint": "Use a level when you don't know the exact price.",
     "dropPhotos": "Drop photos here",
     "browsePhotos": "or click to browse",
-    "photosHint": "Up to {{count}} photos. The first one is the cover."
+    "photosHint": "Up to {{count}} photos. The first one is the cover.",
+    "mapsUrlHint": "Paste a Google Maps link. Short share links work too.",
+    "linkNoLocation": "Couldn't find a location in this link.",
+    "useLinkName": "Use \"{{name}}\" as the name",
+    "mapPreview": "Map preview"
   },
   "dishes": {
     "title": "Dishes",
@@ -109,7 +113,8 @@
     "city": "City",
     "note": "Note",
     "deleteTitle": "Delete this place?",
-    "deleteDescription": "{{name}} and every recommendation there will be removed."
+    "deleteDescription": "{{name}} and every recommendation there will be removed.",
+    "mapTitle": "Map of {{name}}"
   },
   "notFound": {
     "title": "Page not found",

@@ -19,6 +19,10 @@ import {
 import type { User } from '@prisma/client';
 import { AdminRoleGuard } from '@/modules/auth/guards/admin-role.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import {
+  MapsLinkPreviewDto,
+  MapsLinkPreviewRequestDto,
+} from '@/modules/travel-places/dto/maps-link-preview.dto';
 import { TravelPlacesService } from '@/modules/travel-places/services/travel-places.service';
 import {
   CreateTravelPlaceDto,
@@ -59,6 +63,20 @@ export class TravelPlacesController {
     @CurrentUser() user: User,
   ): Promise<TravelPlaceDetailDto> {
     return this.places.create(dto, user.id);
+  }
+
+  @Post('link-preview')
+  @HttpCode(200)
+  @UseGuards(AdminRoleGuard)
+  @ApiOperation({
+    operationId: 'travelMapsLinkPreview',
+    summary: 'Coordinates and place name from a Google Maps link',
+  })
+  @ApiOkResponse({ type: MapsLinkPreviewDto })
+  previewLink(
+    @Body() dto: MapsLinkPreviewRequestDto,
+  ): Promise<MapsLinkPreviewDto> {
+    return this.places.previewLink(dto.url);
   }
 
   @Patch(':id')

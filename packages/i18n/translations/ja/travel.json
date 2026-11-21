@@ -78,7 +78,11 @@
     "priceLevelHint": "正確な価格がわからない場合は価格帯を選んでください。",
     "dropPhotos": "ここに写真をドロップ",
     "browsePhotos": "またはクリックして選択",
-    "photosHint": "最大 {{count}} 枚。1 枚目がカバー写真です。"
+    "photosHint": "最大 {{count}} 枚。1 枚目がカバー写真です。",
+    "mapsUrlHint": "Google マップのリンクを貼り付けてください。共有用の短縮リンクも使えます。",
+    "linkNoLocation": "このリンクから場所を見つけられませんでした。",
+    "useLinkName": "「{{name}}」を名前に使う",
+    "mapPreview": "地図のプレビュー"
   },
   "dishes": {
     "title": "料理",
@@ -109,7 +113,8 @@
     "city": "都市",
     "note": "メモ",
     "deleteTitle": "このお店を削除しますか？",
-    "deleteDescription": "{{name}} とそこでのおすすめがすべて削除されます。"
+    "deleteDescription": "{{name}} とそこでのおすすめがすべて削除されます。",
+    "mapTitle": "{{name}} の地図"
   },
   "notFound": {
     "title": "ページが見つかりません",

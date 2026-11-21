@@ -9,7 +9,10 @@ import {
   IsString,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel-place-input.dto';
 import type { TravelPriceLevel } from '@prisma/client';
 import {
   TRAVEL_ALLERGEN_TAGS,
@@ -20,7 +23,6 @@ import {
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
   TRAVEL_PRICE_LEVELS,
-  TRAVEL_URL_MAX_LENGTH,
   type TravelAllergenTag,
   type TravelCurrency,
   type TravelDietTag,
@@ -62,19 +64,13 @@ export class CreateTravelRecommendationDto {
 
   @ApiProperty({
     required: false,
-    maxLength: TRAVEL_NAME_MAX_LENGTH,
-    description: 'Place name, created when placeId is absent',
+    type: TravelPlaceInputDto,
+    description: 'A new place, created when placeId is absent',
   })
   @IsOptional()
-  @IsString()
-  @MaxLength(TRAVEL_NAME_MAX_LENGTH)
-  placeName?: string;
-
-  @ApiProperty({ required: false, maxLength: TRAVEL_URL_MAX_LENGTH })
-  @IsOptional()
-  @IsString()
-  @MaxLength(TRAVEL_URL_MAX_LENGTH)
-  placeMapsUrl?: string;
+  @ValidateNested()
+  @Type(() => TravelPlaceInputDto)
+  place?: TravelPlaceInputDto;
 
   @ApiProperty({ required: false, maxLength: TRAVEL_NOTE_MAX_LENGTH })
   @IsOptional()
@@ -159,7 +155,6 @@ export class UpdateTravelRecommendationDto extends PartialType(
   OmitType(CreateTravelRecommendationDto, [
     'dishName',
     'cuisines',
-    'placeName',
-    'placeMapsUrl',
+    'place',
   ] as const),
 ) {}

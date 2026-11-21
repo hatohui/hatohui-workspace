@@ -1,7 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
 import { useRecommendationForm } from '../../hooks/useRecommendationForm';
-import FormActions from '../shared/FormActions';
+import DialogForm from '../shared/DialogForm';
 import FormSection from '../shared/FormSection';
 import TextField from '../shared/TextField';
 import DishInputs from './DishInputs';
@@ -20,15 +20,26 @@ function RecommendationForm({ recommendation, onClose }: Props) {
   const form = useRecommendationForm(recommendation, onClose);
 
   return (
-    <form onSubmit={form.submit}>
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
-        <div className="space-y-5">
+    <DialogForm
+      title={t(recommendation ? 'form.editTitle' : 'form.createTitle')}
+      onSubmit={form.submit}
+      canSubmit={form.canSubmit}
+      isSaving={form.isSaving}
+      onCancel={onClose}
+    >
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-x-8 lg:[grid-template-areas:'main_media'_'details_media'_'details_note']">
+        <div className="space-y-5 lg:[grid-area:main]">
           <FormSection title={t('form.sectionDish')}>
             <div className="grid gap-4 lg:grid-cols-2">
               <DishInputs form={form} />
               <PlaceInputs form={form} />
             </div>
           </FormSection>
+        </div>
+        <div className="lg:[grid-area:media]">
+          <PhotoField photos={form.photos} />
+        </div>
+        <div className="space-y-5 lg:[grid-area:details]">
           <FormSection title={t('form.sectionPrice')}>
             <PriceField fields={form.fields} set={form.set} />
           </FormSection>
@@ -40,8 +51,7 @@ function RecommendationForm({ recommendation, onClose }: Props) {
             />
           </FormSection>
         </div>
-        <div className="space-y-5 lg:sticky lg:top-0 lg:self-start">
-          <PhotoField photos={form.photos} />
+        <div className="lg:[grid-area:note]">
           <TextField
             id="note"
             multiline
@@ -52,12 +62,7 @@ function RecommendationForm({ recommendation, onClose }: Props) {
           />
         </div>
       </div>
-      <FormActions
-        canSubmit={form.canSubmit}
-        isSaving={form.isSaving}
-        onCancel={onClose}
-      />
-    </form>
+    </DialogForm>
   );
 }
 

@@ -59,8 +59,12 @@ export function useSaveRecommendation(
             dishName: matches.dishId ? undefined : fields.dishName,
             cuisines: matches.dishId ? undefined : fields.cuisines,
             placeId: matches.placeId,
-            placeName: matches.placeId ? undefined : fields.placeName,
-            placeMapsUrl: fields.mapsUrl || undefined,
+            place: matches.placeId
+              ? undefined
+              : {
+                  name: fields.placeName,
+                  mapsUrl: fields.mapsUrl || undefined,
+                },
           },
         });
       }

@@ -2,7 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
-import { coordinatesFromMapsUrl } from '@/common/utils/maps-coordinates';
+import { resolveMapsLocation } from '@/common/utils/maps-coordinates';
+import { MapsLinkPreviewDto } from '@/modules/travel-places/dto/maps-link-preview.dto';
+import { travelPlaceData } from '@/modules/travel-recommendations/utils/travel-place-data';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import {
   toTravelCreatorDto,
@@ -66,12 +68,9 @@ export class TravelPlacesService {
     dto: CreateTravelPlaceDto,
     userId: string,
   ): Promise<TravelPlaceDetailDto> {
+    const data = await travelPlaceData(dto);
     const created = await this.db.travelPlace.create({
-      data: {
-        ...this.fieldsOf(dto),
-        name: dto.name.trim(),
-        createdById: userId,
-      },
+      data: { ...data, name: dto.name.trim(), createdById: userId },
     });
     return this.get(created.id);
   }
@@ -81,11 +80,18 @@ export class TravelPlacesService {
     dto: UpdateTravelPlaceDto,
   ): Promise<TravelPlaceDetailDto> {
     await this.get(id);
-    await this.db.travelPlace.update({
-      where: { id },
-      data: this.fieldsOf(dto),
-    });
+    const data = await travelPlaceData(dto);
+    await this.db.travelPlace.update({ where: { id }, data });
     return this.get(id);
+  }
+
+  async previewLink(url: string): Promise<MapsLinkPreviewDto> {
+    const location = await resolveMapsLocation(url.trim());
+    return {
+      latitude: location.coordinates?.latitude ?? null,
+      longitude: location.coordinates?.longitude ?? null,
+      name: location.name,
+    };
   }
 
   async remove(id: string): Promise<void> {
@@ -94,22 +100,6 @@ export class TravelPlacesService {
       throw new NotFoundException('Place not found');
     });
     await this.recommendations.deleteObjects(keys);
-  }
-
-  private fieldsOf(dto: UpdateTravelPlaceDto) {
-    const optional = (value: string | undefined) =>
-      value === undefined ? undefined : value.trim() || null;
-    const mapsUrl = optional(dto.mapsUrl);
-    const parsed = mapsUrl ? coordinatesFromMapsUrl(mapsUrl) : null;
-    return {
-      name: dto.name?.trim(),
-      address: optional(dto.address),
-      city: optional(dto.city),
-      note: optional(dto.note),
-      mapsUrl,
-      latitude: dto.latitude ?? parsed?.latitude,
-      longitude: dto.longitude ?? parsed?.longitude,
-    };
   }
 
   private toDto(row: PlaceRow): TravelPlaceDto {

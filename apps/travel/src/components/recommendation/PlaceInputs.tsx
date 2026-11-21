@@ -1,6 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { useRecommendationForm } from '../../hooks/useRecommendationForm';
-import TextField from '../shared/TextField';
+import MapsLinkField from '../maps/MapsLinkField';
 import MatchedField from './MatchedField';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 function PlaceInputs({ form }: Props) {
   const { t } = useTranslation();
   const { fields, set, matches, isEditing } = form;
-  const isNew = !isEditing && !matches.place && fields.placeName.trim() !== '';
+  const isNewPlace = !isEditing && !matches.place;
 
   return (
     <div className="space-y-4">
@@ -25,14 +25,13 @@ function PlaceInputs({ form }: Props) {
         disabled={isEditing}
         onChange={(value) => set('placeName', value)}
       />
-      {isNew && (
-        <TextField
+      {isNewPlace && (
+        <MapsLinkField
           id="mapsUrl"
-          type="url"
-          label={t('form.mapsUrl')}
-          placeholder={t('form.mapsUrlPlaceholder')}
-          value={fields.mapsUrl}
-          onChange={(value) => set('mapsUrl', value)}
+          url={fields.mapsUrl}
+          placeName={fields.placeName}
+          onUrlChange={(value) => set('mapsUrl', value)}
+          onUseName={(name) => set('placeName', name)}
         />
       )}
     </div>

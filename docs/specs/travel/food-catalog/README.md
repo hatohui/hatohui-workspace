@@ -73,8 +73,24 @@ kept, and anything left out is deleted. The first image is the cover.
 
 ## Locations
 
-A place stores a Google Maps link plus `latitude`/`longitude`. Coordinates are
-read from the link when it contains them (`@lat,lng`, `!3d…!4d…`, `?q=lat,lng`);
-short `maps.app.goo.gl` links don't contain them and are left without
-coordinates. The coordinates exist so a later trip planner (including an AI
-one) can group and order places by distance.
+A place stores a Google Maps link plus `latitude`/`longitude`. There is no
+Google Maps Platform key: the link is the only input, and maps are shown with
+Google's keyless embed (`maps.google.com/maps?q=…&output=embed`), so nothing is
+billed.
+
+- **Coordinates come from the link.** The exact pin (`!3d…!4d…`) wins over the
+  map viewport (`@lat,lng`), then `?q=lat,lng`. Short share links
+  (`maps.app.goo.gl`) carry none, so the API follows their redirects to the full
+  URL first. It only ever requests `goo.gl` hosts over https and stops at the
+  first hop outside `goo.gl`/`google.*`, so the endpoint can't be used to fetch
+  arbitrary URLs; it times out after 5 seconds and falls back to no
+  coordinates.
+- **Changing the link re-reads the coordinates**, and clears them when the new
+  link has none, so a place never keeps the pin of a link it no longer has.
+- **The form previews the link** through `POST /travel/places/link-preview`
+  (admin only), which returns the coordinates and the place name from the
+  link. The preview falls back to searching the typed place name, and offers
+  the link's name when it differs from what was typed.
+
+The coordinates also exist so a later trip planner (including an AI one) can
+group and order places by distance.

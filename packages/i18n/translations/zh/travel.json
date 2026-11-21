@@ -78,7 +78,11 @@
     "priceLevelHint": "不知道确切价格时，选择价位。",
     "dropPhotos": "将照片拖到这里",
     "browsePhotos": "或点击选择",
-    "photosHint": "最多 {{count}} 张照片，第一张为封面。"
+    "photosHint": "最多 {{count}} 张照片，第一张为封面。",
+    "mapsUrlHint": "粘贴 Google 地图链接，分享的短链接也可以。",
+    "linkNoLocation": "无法从此链接中找到位置。",
+    "useLinkName": "使用“{{name}}”作为名称",
+    "mapPreview": "地图预览"
   },
   "dishes": {
     "title": "菜品",
@@ -109,7 +113,8 @@
     "city": "城市",
     "note": "备注",
     "deleteTitle": "删除这个地点？",
-    "deleteDescription": "{{name}} 及其所有推荐将被删除。"
+    "deleteDescription": "{{name}} 及其所有推荐将被删除。",
+    "mapTitle": "{{name}} 的地图"
   },
   "notFound": {
     "title": "页面不存在",
