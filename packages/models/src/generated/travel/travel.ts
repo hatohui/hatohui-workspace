@@ -28,6 +28,7 @@ import type {
   CreateTravelDishDto,
   CreateTravelPlaceDto,
   CreateTravelRecommendationDto,
+  TravelCuisineDto,
   TravelDishDetailDto,
   TravelDishDto,
   TravelDishesParams,
@@ -63,6 +64,118 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
+export type travelCuisinesResponse200 = {
+  data: TravelCuisineDto[]
+  status: 200
+}
+
+export type travelCuisinesResponseSuccess = (travelCuisinesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelCuisinesResponse = (travelCuisinesResponseSuccess)
+
+export const getTravelCuisinesUrl = () => {
+
+
+
+
+  return `/travel/cuisines`
+}
+
+/**
+ * @summary Every cuisine tag, for suggestions and filters
+ */
+export const travelCuisines = async ( options?: RequestInit): Promise<travelCuisinesResponse> => {
+
+  return customFetch<travelCuisinesResponse>(getTravelCuisinesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelCuisinesQueryKey = () => {
+    return [
+    `/travel/cuisines`
+    ] as const;
+    }
+
+
+export const getTravelCuisinesQueryOptions = <TData = Awaited<ReturnType<typeof travelCuisines>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCuisines>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelCuisinesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelCuisines>>> = ({ signal }) => travelCuisines({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelCuisines>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelCuisinesQueryResult = NonNullable<Awaited<ReturnType<typeof travelCuisines>>>
+export type TravelCuisinesQueryError = unknown
+
+
+export function useTravelCuisines<TData = Awaited<ReturnType<typeof travelCuisines>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCuisines>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelCuisines>>,
+          TError,
+          Awaited<ReturnType<typeof travelCuisines>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelCuisines<TData = Awaited<ReturnType<typeof travelCuisines>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCuisines>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelCuisines>>,
+          TError,
+          Awaited<ReturnType<typeof travelCuisines>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelCuisines<TData = Awaited<ReturnType<typeof travelCuisines>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCuisines>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Every cuisine tag, for suggestions and filters
+ */
+
+export function useTravelCuisines<TData = Awaited<ReturnType<typeof travelCuisines>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCuisines>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelCuisinesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 export type travelRecommendationsResponse200 = {
   data: TravelRecommendationDto[]
   status: 200
@@ -79,6 +192,14 @@ export const getTravelRecommendationsUrl = (params?: TravelRecommendationsParams
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    const explodeParameters = ["diets","excludeAllergens"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : String(v));
+      });
+      return;
+    }
 
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : String(value))

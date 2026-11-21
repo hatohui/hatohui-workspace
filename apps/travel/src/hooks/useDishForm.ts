@@ -6,7 +6,7 @@ export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
   return useEntityForm(
     {
       name: dish.name,
-      cuisine: dish.cuisine ?? '',
+      cuisines: dish.cuisines,
       description: dish.description ?? '',
     },
     (data) => update.mutateAsync({ id: dish.id, data }),

@@ -9,6 +9,5 @@
 export interface TravelDishSummaryDto {
   id: string;
   name: string;
-  /** @nullable */
-  cuisine: string | null;
+  cuisines: string[];
 }

@@ -5,6 +5,9 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { TravelAllergenTag } from './travelAllergenTag';
+import type { TravelDietTag } from './travelDietTag';
+import type { TravelPriceLevel } from './travelPriceLevel';
 import type { UpdateTravelRecommendationDtoCurrency } from './updateTravelRecommendationDtoCurrency';
 
 export interface UpdateTravelRecommendationDto {
@@ -18,10 +21,18 @@ export interface UpdateTravelRecommendationDto {
      * @minimum 0
      * @nullable
      */
-  estimate?: number | null;
+  priceMin?: number | null;
+  /**
+     * Leave equal to priceMin, or empty, for a single price
+     * @minimum 0
+     * @nullable
+     */
+  priceMax?: number | null;
+  priceLevel?: TravelPriceLevel | null;
   currency?: UpdateTravelRecommendationDtoCurrency;
   spicy?: boolean;
-  vegetarian?: boolean;
+  diets?: TravelDietTag[];
+  allergens?: TravelAllergenTag[];
   /**
      * Ordered image keys: staged uploads or ones already attached
      * @maxItems 12

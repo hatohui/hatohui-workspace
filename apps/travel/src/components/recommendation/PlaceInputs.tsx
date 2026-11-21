@@ -13,7 +13,7 @@ function PlaceInputs({ form }: Props) {
   const isNew = !isEditing && !matches.place && fields.placeName.trim() !== '';
 
   return (
-    <>
+    <div className="space-y-4">
       <MatchedField
         id="place"
         label={t('form.place')}
@@ -35,7 +35,7 @@ function PlaceInputs({ form }: Props) {
           onChange={(value) => set('mapsUrl', value)}
         />
       )}
-    </>
+    </div>
   );
 }
 

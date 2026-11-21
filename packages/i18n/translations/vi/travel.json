@@ -10,16 +10,18 @@
     "subtitle": "Những món đáng để đi, và nên ăn ở đâu.",
     "searchPlaceholder": "Tìm món, quán, ghi chú",
     "spicy": "Cay",
-    "vegetarian": "Chay",
     "add": "Thêm món",
     "count_one": "{{count}} gợi ý",
     "count_other": "{{count}} gợi ý",
     "empty": "Chưa có gì ở đây.",
     "emptyFiltered": "Không có món nào khớp bộ lọc.",
-    "clearFilters": "Xóa bộ lọc"
+    "clearFilters": "Xóa bộ lọc",
+    "avoidAllergens": "Tránh chất gây dị ứng",
+    "avoiding_one": "Đang tránh {{count}}",
+    "avoiding_other": "Đang tránh {{count}}",
+    "avoidHint": "Ẩn món có chứa:"
   },
   "recommendation": {
-    "estimate": "Khoảng {{price}}",
     "noEstimate": "Chưa có giá",
     "addedBy": "Thêm bởi {{name}}",
     "photos_one": "{{count}} ảnh",
@@ -30,7 +32,10 @@
     "deleteTitle": "Xóa gợi ý này?",
     "deleteDescription": "{{dish}} tại {{place}} và ảnh của nó sẽ bị xóa. Món ăn và địa điểm vẫn được giữ lại.",
     "previousPhoto": "Ảnh trước",
-    "nextPhoto": "Ảnh sau"
+    "nextPhoto": "Ảnh sau",
+    "priceSingle": "Khoảng {{price}}",
+    "priceRange": "{{min}} – {{max}}",
+    "contains": "Có chứa {{list}}"
   },
   "form": {
     "createTitle": "Thêm món",
@@ -38,18 +43,14 @@
     "dish": "Món ăn",
     "dishPlaceholder": "Cà phê trứng",
     "dishHint": "Chọn từ danh sách hoặc nhập tên mới.",
-    "cuisine": "Ẩm thực",
-    "cuisinePlaceholder": "Việt Nam",
     "place": "Địa điểm",
     "placePlaceholder": "21Grams Vegetarian",
     "placeHint": "Chọn địa điểm đã lưu hoặc nhập địa điểm mới.",
     "mapsUrl": "Link Google Maps",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "estimate": "Giá ước tính",
     "currency": "Tiền tệ",
     "note": "Ghi chú",
     "notePlaceholder": "Nên gọi gì, đi lúc nào, điều gì làm nó ngon",
-    "flags": "Thẻ",
     "photos": "Ảnh",
     "addPhotos": "Thêm ảnh",
     "removePhoto": "Xóa ảnh",
@@ -60,7 +61,24 @@
     "saving": "Đang lưu...",
     "existing": "Đã lưu",
     "new": "Mới",
-    "duplicate": "Địa điểm này đã có gợi ý cho món đó."
+    "duplicate": "Địa điểm này đã có gợi ý cho món đó.",
+    "cuisines": "Ẩm thực",
+    "cuisinesPlaceholder": "Thêm ẩm thực",
+    "cuisineCreate": "Thêm \"{{tag}}\"",
+    "cuisineRemove": "Xóa {{tag}}",
+    "sectionDish": "Món và địa điểm",
+    "sectionPrice": "Giá",
+    "sectionTags": "Thẻ",
+    "diets": "Chế độ ăn",
+    "allergens": "Chất gây dị ứng",
+    "priceRange": "Số tiền",
+    "priceLevel": "Mức giá",
+    "priceFrom": "Từ",
+    "priceTo": "Đến (không bắt buộc)",
+    "priceLevelHint": "Dùng mức giá khi bạn không biết giá chính xác.",
+    "dropPhotos": "Thả ảnh vào đây",
+    "browsePhotos": "hoặc bấm để chọn",
+    "photosHint": "Tối đa {{count}} ảnh. Ảnh đầu tiên là ảnh bìa."
   },
   "dishes": {
     "title": "Món ăn",
@@ -96,5 +114,30 @@
   "notFound": {
     "title": "Không tìm thấy trang",
     "back": "Về danh mục món ngon"
+  },
+  "priceLevel": {
+    "LOW": "Giá rẻ",
+    "MID": "Giá vừa",
+    "HIGH": "Giá cao"
+  },
+  "diet": {
+    "vegetarian": "Chay",
+    "vegan": "Thuần chay",
+    "pescatarian": "Chay có cá",
+    "halal": "Halal",
+    "kosher": "Kosher",
+    "gluten-free": "Không gluten",
+    "dairy-free": "Không sữa"
+  },
+  "allergen": {
+    "peanuts": "Đậu phộng",
+    "tree-nuts": "Các loại hạt",
+    "shellfish": "Hải sản có vỏ",
+    "fish": "Cá",
+    "egg": "Trứng",
+    "dairy": "Sữa",
+    "gluten": "Gluten",
+    "soy": "Đậu nành",
+    "sesame": "Mè"
   }
 }

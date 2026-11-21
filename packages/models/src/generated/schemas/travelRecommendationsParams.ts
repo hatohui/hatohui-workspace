@@ -5,6 +5,8 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { TravelAllergenTag } from './travelAllergenTag';
+import type { TravelDietTag } from './travelDietTag';
 
 export type TravelRecommendationsParams = {
 /**
@@ -16,5 +18,12 @@ city?: string;
 dishId?: string;
 placeId?: string;
 spicy?: boolean;
-vegetarian?: boolean;
+/**
+ * Only dishes that meet every listed diet
+ */
+diets?: TravelDietTag[];
+/**
+ * Hide dishes that contain any of these allergens
+ */
+excludeAllergens?: TravelAllergenTag[];
 };

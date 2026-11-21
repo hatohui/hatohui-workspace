@@ -1,6 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { useRecommendationForm } from '../../hooks/useRecommendationForm';
-import TextField from '../shared/TextField';
+import CuisineField from '../shared/CuisineField';
 import MatchedField from './MatchedField';
 
 interface Props {
@@ -13,7 +13,7 @@ function DishInputs({ form }: Props) {
   const isNew = !isEditing && !matches.dish && fields.dishName.trim() !== '';
 
   return (
-    <>
+    <div className="space-y-4">
       <MatchedField
         id="dish"
         label={t('form.dish')}
@@ -26,15 +26,13 @@ function DishInputs({ form }: Props) {
         onChange={(value) => set('dishName', value)}
       />
       {isNew && (
-        <TextField
-          id="cuisine"
-          label={t('form.cuisine')}
-          placeholder={t('form.cuisinePlaceholder')}
-          value={fields.cuisine}
-          onChange={(value) => set('cuisine', value)}
+        <CuisineField
+          id="cuisines"
+          value={fields.cuisines}
+          onChange={(value) => set('cuisines', value)}
         />
       )}
-    </>
+    </div>
   );
 }
 

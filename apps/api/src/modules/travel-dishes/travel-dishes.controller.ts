@@ -68,8 +68,9 @@ export class TravelDishesController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateTravelDishDto,
+    @CurrentUser() user: User,
   ): Promise<TravelDishDetailDto> {
-    return this.dishes.update(id, dto);
+    return this.dishes.update(id, dto, user.id);
   }
 
   @Delete(':id')

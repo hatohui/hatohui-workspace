@@ -5,10 +5,13 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { TravelAllergenTag } from './travelAllergenTag';
 import type { TravelCreatorDto } from './travelCreatorDto';
+import type { TravelDietTag } from './travelDietTag';
 import type { TravelDishSummaryDto } from './travelDishSummaryDto';
 import type { TravelImageDto } from './travelImageDto';
 import type { TravelPlaceSummaryDto } from './travelPlaceSummaryDto';
+import type { TravelPriceLevel } from './travelPriceLevel';
 
 export interface TravelRecommendationDto {
   id: string;
@@ -17,13 +20,22 @@ export interface TravelRecommendationDto {
   /** @nullable */
   note: string | null;
   /**
-     * Rough price per person, in currency units
+     * Lowest price per person, in currency units
      * @nullable
      */
-  estimate: number | null;
+  priceMin: number | null;
+  /**
+     * Highest price per person; equal to priceMin for one price
+     * @nullable
+     */
+  priceMax: number | null;
+  /** Rough price level when no amount is known */
+  priceLevel: TravelPriceLevel | null;
   currency: string;
   spicy: boolean;
-  vegetarian: boolean;
+  diets: TravelDietTag[];
+  /** Allergens the dish contains */
+  allergens: TravelAllergenTag[];
   images: TravelImageDto[];
   /** @nullable */
   createdBy: TravelCreatorDto | null;

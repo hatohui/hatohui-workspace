@@ -3,10 +3,12 @@ import type { TravelRecommendationDto } from '@hatohui/models';
 import { MapPin } from 'lucide-react';
 import routes from '../../constants/routes';
 import CreatorBadge from '../shared/CreatorBadge';
-import EstimateLabel from './EstimateLabel';
+import CuisineChips from '../shared/CuisineChips';
+import AllergenNote from './AllergenNote';
 import PhotoCarousel from './PhotoCarousel';
+import PriceLabel from './PriceLabel';
 import RecommendationActions from './RecommendationActions';
-import RecommendationFlags from './RecommendationFlags';
+import RecommendationTags from './RecommendationTags';
 
 interface Props {
   recommendation: TravelRecommendationDto;
@@ -21,17 +23,13 @@ function RecommendationCard({ recommendation: rec }: Props) {
       />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 space-y-1.5">
-          <h2 className="flex items-center gap-2 text-lg font-medium tracking-tight">
+          <h2 className="text-lg font-medium tracking-tight">
             <Link
               to={routes.dish(rec.dish.id)}
-              className="truncate hover:underline"
+              className="line-clamp-1 hover:underline"
             >
               {rec.dish.name}
             </Link>
-            <RecommendationFlags
-              spicy={rec.spicy}
-              vegetarian={rec.vegetarian}
-            />
           </h2>
           <Link
             to={routes.place(rec.place.id)}
@@ -43,7 +41,10 @@ function RecommendationCard({ recommendation: rec }: Props) {
         </div>
         <RecommendationActions recommendation={rec} />
       </div>
-      <EstimateLabel estimate={rec.estimate} currency={rec.currency} />
+      <PriceLabel price={rec} />
+      <CuisineChips cuisines={rec.dish.cuisines} />
+      <RecommendationTags tags={rec} />
+      <AllergenNote allergens={rec.allergens} />
       {rec.note && (
         <p className="text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
           {rec.note}

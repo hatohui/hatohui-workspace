@@ -12,13 +12,19 @@ import {
   CreateTravelRecommendationDto,
   UpdateTravelRecommendationDto,
 } from '@/modules/travel-recommendations/dto/travel-recommendation-input.dto';
-import { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
+import type { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
 import { TravelRecommendationDto } from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
 import {
   TRAVEL_CATALOG_LIMIT,
   UNIQUE_VIOLATION_CODE,
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
 import { TravelRecommendationImagesService } from '@/modules/travel-recommendations/services/travel-recommendation-images.service';
+import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
+import { travelRecommendationWhere } from '@/modules/travel-recommendations/utils/travel-recommendation-filters';
+import {
+  travelRecommendationDetails,
+  travelTagKeys,
+} from '@/modules/travel-recommendations/utils/travel-recommendation-details';
 import {
   type TravelRecommendationRow,
   toTravelRecommendationDto,
@@ -31,13 +37,14 @@ export class TravelRecommendationsService {
     private readonly db: Database,
     private readonly storage: Storage,
     private readonly images: TravelRecommendationImagesService,
+    private readonly cuisines: TravelCuisinesService,
   ) {}
 
   async list(
     query: TravelRecommendationQueryDto,
   ): Promise<TravelRecommendationDto[]> {
     const rows = await this.db.travelRecommendation.findMany({
-      where: this.whereOf(query),
+      where: travelRecommendationWhere(query),
       include: travelRecommendationInclude,
       orderBy: { createdAt: 'desc' },
       take: TRAVEL_CATALOG_LIMIT,
@@ -66,7 +73,8 @@ export class TravelRecommendationsService {
         data: {
           dishId,
           placeId,
-          ...this.detailsOf(dto),
+          ...travelRecommendationDetails(dto),
+          tags: { connect: this.tagRefs(travelTagKeys(dto, [])) },
           createdById: userId,
         },
       }),
@@ -82,14 +90,19 @@ export class TravelRecommendationsService {
     dto: UpdateTravelRecommendationDto,
     userId: string,
   ): Promise<TravelRecommendationDto> {
-    await this.get(id);
+    const current = await this.get(id);
+    const tagKeys = travelTagKeys(dto, [
+      ...current.diets.map((key) => ({ key, kind: 'DIET' as const })),
+      ...current.allergens.map((key) => ({ key, kind: 'ALLERGEN' as const })),
+    ]);
     await this.guardUnique(() =>
       this.db.travelRecommendation.update({
         where: { id },
         data: {
           dishId: dto.dishId,
           placeId: dto.placeId,
-          ...this.detailsOf(dto),
+          ...travelRecommendationDetails(dto),
+          tags: tagKeys ? { set: this.tagRefs(tagKeys) } : undefined,
         },
       }),
     );
@@ -125,41 +138,8 @@ export class TravelRecommendationsService {
     );
   }
 
-  private detailsOf(dto: UpdateTravelRecommendationDto) {
-    return {
-      note: dto.note === undefined ? undefined : dto.note.trim() || null,
-      estimate: dto.estimate,
-      currency: dto.currency,
-      spicy: dto.spicy,
-      vegetarian: dto.vegetarian,
-    };
-  }
-
-  private whereOf(
-    query: TravelRecommendationQueryDto,
-  ): Prisma.TravelRecommendationWhereInput {
-    const contains = (value: string) => ({
-      contains: value,
-      mode: 'insensitive' as const,
-    });
-    const q = query.q?.trim();
-    return {
-      dishId: query.dishId,
-      placeId: query.placeId,
-      spicy: query.spicy,
-      vegetarian: query.vegetarian,
-      dish: query.cuisine ? { cuisine: contains(query.cuisine) } : undefined,
-      place: query.city ? { city: contains(query.city) } : undefined,
-      OR: q
-        ? [
-            { note: contains(q) },
-            { dish: { name: contains(q) } },
-            { dish: { cuisine: contains(q) } },
-            { place: { name: contains(q) } },
-            { place: { address: contains(q) } },
-          ]
-        : undefined,
-    };
+  private tagRefs(keys: string[] | undefined) {
+    return (keys ?? []).map((key) => ({ key }));
   }
 
   private async resolveDish(
@@ -181,8 +161,16 @@ export class TravelRecommendationsService {
     });
     if (existing) return existing.id;
 
+    const cuisineIds = await this.cuisines.resolveIds(
+      dto.cuisines ?? [],
+      userId,
+    );
     const created = await this.db.travelDish.create({
-      data: { name, cuisine: dto.cuisine?.trim() || null, createdById: userId },
+      data: {
+        name,
+        createdById: userId,
+        cuisines: { connect: cuisineIds.map((id) => ({ id })) },
+      },
     });
     return created.id;
   }

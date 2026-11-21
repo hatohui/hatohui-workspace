@@ -1,4 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import type { TravelPriceLevel } from '@prisma/client';
+import {
+  TRAVEL_ALLERGEN_TAGS,
+  TRAVEL_DIET_TAGS,
+  TRAVEL_PRICE_LEVELS,
+  type TravelAllergenTag,
+  type TravelDietTag,
+} from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 export class TravelImageDto {
   @ApiProperty({ description: 'Storage key; send it back to keep the image' })
@@ -33,8 +41,8 @@ export class TravelDishSummaryDto {
   @ApiProperty({ example: 'Egg coffee' })
   name!: string;
 
-  @ApiProperty({ nullable: true, type: String, example: 'Vietnamese' })
-  cuisine!: string | null;
+  @ApiProperty({ type: [String], example: ['Vietnamese'] })
+  cuisines!: string[];
 }
 
 export class TravelPlaceSummaryDto {
@@ -76,9 +84,24 @@ export class TravelRecommendationDto {
   @ApiProperty({
     nullable: true,
     type: Number,
-    description: 'Rough price per person, in currency units',
+    description: 'Lowest price per person, in currency units',
   })
-  estimate!: number | null;
+  priceMin!: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: Number,
+    description: 'Highest price per person; equal to priceMin for one price',
+  })
+  priceMax!: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    enum: TRAVEL_PRICE_LEVELS,
+    enumName: 'TravelPriceLevel',
+    description: 'Rough price level when no amount is known',
+  })
+  priceLevel!: TravelPriceLevel | null;
 
   @ApiProperty({ example: 'VND' })
   currency!: string;
@@ -86,8 +109,20 @@ export class TravelRecommendationDto {
   @ApiProperty()
   spicy!: boolean;
 
-  @ApiProperty()
-  vegetarian!: boolean;
+  @ApiProperty({
+    enum: TRAVEL_DIET_TAGS,
+    enumName: 'TravelDietTag',
+    isArray: true,
+  })
+  diets!: TravelDietTag[];
+
+  @ApiProperty({
+    enum: TRAVEL_ALLERGEN_TAGS,
+    enumName: 'TravelAllergenTag',
+    isArray: true,
+    description: 'Allergens the dish contains',
+  })
+  allergens!: TravelAllergenTag[];
 
   @ApiProperty({ type: TravelImageDto, isArray: true })
   images!: TravelImageDto[];

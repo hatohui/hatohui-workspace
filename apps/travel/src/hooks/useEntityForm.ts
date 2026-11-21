@@ -3,7 +3,7 @@ import { useToast } from '@hatohui/ui';
 import { useErrorMessage } from './useErrorMessage';
 import { useInvalidateTravel } from './useInvalidateTravel';
 
-export function useEntityForm<T extends Record<string, string>>(
+export function useEntityForm<T extends object>(
   initial: T,
   persist: (values: T) => Promise<unknown>,
   onSaved: () => void,
@@ -14,7 +14,7 @@ export function useEntityForm<T extends Record<string, string>>(
   const toast = useToast();
   const errorMessage = useErrorMessage();
 
-  const set = (key: keyof T, value: string) =>
+  const set = <K extends keyof T>(key: K, value: T[K]) =>
     setValues((current) => ({ ...current, [key]: value }));
 
   const submit = async (event: FormEvent) => {

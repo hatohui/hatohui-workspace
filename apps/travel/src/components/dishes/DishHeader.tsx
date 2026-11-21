@@ -2,6 +2,7 @@ import { useTranslation } from '@hatohui/i18n';
 import type { TravelDishDetailDto } from '@hatohui/models';
 import type { useConfirmedDelete } from '../../hooks/useConfirmedDelete';
 import { useDialogState } from '../../hooks/useDialogState';
+import CuisineChips from '../shared/CuisineChips';
 import CreatorBadge from '../shared/CreatorBadge';
 import EntityActions from '../shared/EntityActions';
 import DishDialog from './DishDialog';
@@ -17,12 +18,8 @@ function DishHeader({ dish, deletion }: Props) {
 
   return (
     <header className="space-y-3 border-b border-border/60 pb-6">
-      {dish.cuisine && (
-        <p className="text-xs tracking-widest text-muted-foreground uppercase">
-          {dish.cuisine}
-        </p>
-      )}
       <h1 className="text-3xl font-medium tracking-tight">{dish.name}</h1>
+      <CuisineChips cuisines={dish.cuisines} />
       {dish.description && (
         <p className="max-w-prose leading-relaxed text-muted-foreground">
           {dish.description}
