@@ -2,12 +2,10 @@ import { useMemo } from 'react';
 import { useTravelDishes } from '@hatohui/models';
 import { useSearchState } from './useSearchState';
 import type { SearchSuggestion } from './useSearchSuggest';
-import { useTravelLocation } from './useTravelLocation';
 
 export function useDishList() {
   const { search, setSearch, query } = useSearchState();
-  const location = useTravelLocation();
-  const result = useTravelDishes({ q: query, ...location.filter });
+  const result = useTravelDishes({ q: query });
   const dishes = useMemo(() => result.data?.data ?? [], [result.data?.data]);
   const suggestions = useMemo<SearchSuggestion[]>(
     () =>
