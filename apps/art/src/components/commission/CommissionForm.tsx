@@ -23,9 +23,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-serif text-3xl">{t('commission.form.title')}</h1>
-      </div>
+      <h1 className="sr-only">{t('commission.form.title')}</h1>
 
       {form.isDraftRestored && (
         <p className="rounded-md bg-secondary px-3 py-2 text-sm text-muted-foreground">
@@ -35,7 +33,7 @@ export function CommissionForm({ artistId }: { artistId: string }) {
 
       <form
         ref={formRef}
-        className="space-y-4"
+        className="space-y-6"
         noValidate
         onSubmit={(event) => {
           event.preventDefault();

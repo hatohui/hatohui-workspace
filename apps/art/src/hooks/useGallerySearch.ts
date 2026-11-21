@@ -19,7 +19,7 @@ export function useGallerySearch(gallery: Gallery) {
 
   const needle = gallery.query.trim().toLowerCase();
   const suggestions = (tagsQuery.data?.data ?? [])
-    .filter((tag) => tag.name !== gallery.tag)
+    .filter((tag) => !gallery.tags.includes(tag.name))
     .filter((tag) => tag.name.toLowerCase().includes(needle))
     .slice(0, GALLERY_TAG_SUGGESTION_LIMIT)
     .map((tag) => ({
@@ -29,7 +29,7 @@ export function useGallerySearch(gallery: Gallery) {
     }));
 
   const pick = (name: string) => {
-    gallery.setTag(name);
+    gallery.addTag(name);
     gallery.setQuery('');
     setIsOpen(false);
     setHighlighted(0);
@@ -51,7 +51,7 @@ export function useGallerySearch(gallery: Gallery) {
     } else if (event.key === 'Escape') {
       setIsOpen(false);
     } else if (event.key === 'Backspace' && gallery.query === '') {
-      gallery.setTag(undefined);
+      gallery.removeLastTag();
     }
   };
 
@@ -68,6 +68,6 @@ export function useGallerySearch(gallery: Gallery) {
       setIsOpen(true);
       setHighlighted(0);
     },
-    clearTag: () => gallery.setTag(undefined),
+    clearTag: gallery.removeTag,
   };
 }

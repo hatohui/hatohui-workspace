@@ -1,4 +1,6 @@
 export const GALLERY_PAGE_SIZE = 24;
+export const GALLERY_EAGER_PAGES = 2;
+export const GALLERY_PREFETCH_MARGIN = '2400px';
 
 export const GALLERY_TILE_ASPECT_FALLBACK = 1;
 export const GALLERY_TILE_ASPECT_MIN = 0.5;
@@ -11,22 +13,17 @@ export const ASSET_SUMMARY_TAG_LIMIT = 3;
 export const ASSET_TITLE_MAX_LENGTH = 120;
 export const ASSET_DESCRIPTION_MAX_LENGTH = 2000;
 export const GALLERY_MOSAIC_SIZES = '(min-width: 1024px) 50vw, 100vw';
-export const GALLERY_MOSAIC_PATTERNS = [
-  [1, 2],
-  [2, 1],
-  [1, 2, 1],
-  [2, 2],
-  [1],
-  [2, 1, 2],
-  [1, 1],
-];
-export const GALLERY_MOSAIC_GAP_PX = 8;
-export const GALLERY_MOSAIC_GAP_SM_PX = 12;
-export const GALLERY_MOSAIC_SM_BREAKPOINT = 640;
-export const GALLERY_MOSAIC_MIN_TILE_WIDTH_PX = 100;
-export const GALLERY_MOSAIC_MIN_TILE_HEIGHT_PX = 90;
-export const GALLERY_MOSAIC_MIN_HEIGHT_RATIO = 0.22;
-export const GALLERY_MOSAIC_MAX_HEIGHT_RATIO = 0.75;
+export const GALLERY_MOSAIC_FEATURE_CHANCE = 0.2;
+export const GALLERY_MOSAIC_FEATURE_MAX_ASPECT = 1.1;
+export const GALLERY_MOSAIC_FEATURE_MIN_ASPECT = 0.9;
+export const GALLERY_MOSAIC_LANDSCAPE_MIN_ASPECT = 1.25;
+export const GALLERY_MOSAIC_FOCUS_POSITION = '50% 30%';
+export const GALLERY_MOSAIC_WIDE_QUERY = '(min-width: 640px)';
+export const GALLERY_MOSAIC_COLUMNS_NARROW = 2;
+export const GALLERY_MOSAIC_COLUMNS_WIDE = 4;
+export const GALLERY_MOSAIC_GAP_NARROW_PX = 8;
+export const GALLERY_MOSAIC_GAP_WIDE_PX = 12;
+export const GALLERY_MOSAIC_LEVEL_TOLERANCE = 0.2;
 export const ARTWORK_FALLBACK_DIMENSION_PX = 1200;
 export const WORKSPACE_GALLERY_ROUTE = '/app/gallery';
 export const GALLERY_SECTION_PARAM = 'section';
@@ -37,3 +34,4 @@ export const BYTES_PER_MEGABYTE = 1024 * 1024;
 export const ASSET_DELETION_QUERY_PREFIXES = ['/assets', '/projects'] as const;
 export const GALLERY_SEARCH_DEBOUNCE_MS = 300;
 export const GALLERY_TAG_SUGGESTION_LIMIT = 8;
+export const PROCESS_LABEL_MAX_LENGTH = 40;

@@ -4,6 +4,7 @@ import { themeInitScript } from '@hatohui/libs/theme-init';
 import { Providers } from '@/components/layout/Providers';
 import { BackToTopButton } from '@/components/layout/BackToTopButton';
 import { SiteHeader } from '@/components/layout/SiteHeader';
+import { FONTS_STYLESHEET } from '@/constants/fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -16,6 +17,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="stylesheet" href={FONTS_STYLESHEET} />
       </head>
       <body>
         <Providers>

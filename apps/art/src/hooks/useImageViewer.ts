@@ -61,6 +61,19 @@ export function useImageViewer() {
         entries: [{ src, caption, originalUrl, detailsUrl }],
         index: 0,
       }),
+    openImages: (
+      images: { src: string; caption?: ImageViewerCaption }[],
+      index: number,
+    ) =>
+      setState({
+        entries: images.map(({ src, caption = {} }) => ({
+          src,
+          caption,
+          originalUrl: src,
+          detailsUrl: null,
+        })),
+        index,
+      }),
     openAssets: (
       assets: AssetDto[],
       index: number,

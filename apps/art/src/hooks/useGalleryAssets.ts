@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { assets, getAssetsQueryKey, type AssetDto } from '@hatohui/models';
 import { useDebouncedValue } from '@hatohui/libs';
 import {
+  GALLERY_EAGER_PAGES,
   GALLERY_PAGE_SIZE,
   GALLERY_SEARCH_DEBOUNCE_MS,
 } from '@/constants/gallery';
@@ -19,15 +20,15 @@ export function useGalleryAssets(
   initialData?: GalleryInitialData,
 ) {
   const [query, setQuery] = useState('');
-  const [tag, setTag] = useState<string | undefined>(undefined);
+  const [tags, setTags] = useState<string[]>([]);
   const [hidePrivate, setHidePrivate] = useState(false);
 
   const debouncedQuery = useDebouncedValue(query, GALLERY_SEARCH_DEBOUNCE_MS);
   const isDefaultFilters =
-    debouncedQuery === '' && tag === undefined && !hidePrivate;
+    debouncedQuery === '' && tags.length === 0 && !hidePrivate;
   const params = {
     query: debouncedQuery || undefined,
-    tag,
+    tags: tags.length > 0 ? tags : undefined,
     uploadedById: artistId,
     hidePrivate: hidePrivate || undefined,
     pageSize: GALLERY_PAGE_SIZE,
@@ -60,6 +61,20 @@ export function useGalleryAssets(
         : undefined,
   });
 
+  const loadedPages = assetsQuery.data?.pages.length ?? 0;
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = assetsQuery;
+
+  useEffect(() => {
+    if (
+      loadedPages > 0 &&
+      loadedPages < GALLERY_EAGER_PAGES &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      void fetchNextPage();
+    }
+  }, [loadedPages, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   const items = useMemo(
     () => assetsQuery.data?.pages.flatMap((page) => page.data.items) ?? [],
     [assetsQuery.data],
@@ -81,8 +96,14 @@ export function useGalleryAssets(
     artistId,
     query,
     setQuery,
-    tag,
-    setTag,
+    tags,
+    addTag: (name: string) =>
+      setTags((current) =>
+        current.includes(name) ? current : [...current, name],
+      ),
+    removeTag: (name: string) =>
+      setTags((current) => current.filter((tag) => tag !== name)),
+    removeLastTag: () => setTags((current) => current.slice(0, -1)),
     hidePrivate,
     setHidePrivate,
   };

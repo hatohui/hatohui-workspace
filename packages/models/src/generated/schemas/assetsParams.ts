@@ -17,6 +17,10 @@ query?: string;
  */
 tag?: string;
 /**
+ * Filter to assets carrying every one of these tags
+ */
+tags?: string[];
+/**
  * Filter to one artist's uploads (storefront gallery)
  */
 uploadedById?: string;
