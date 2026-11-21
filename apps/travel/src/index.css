@@ -1,5 +1,16 @@
 @import '@hatohui/ui/globals.css';
 
+@theme {
+  --font-sans:
+    'Inter', 'Be Vietnam Pro', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+}
+
+:root:lang(vi) body,
+:root:lang(vi) .font-sans {
+  font-family: 'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
+}
+
 html {
   scrollbar-gutter: stable;
 }
