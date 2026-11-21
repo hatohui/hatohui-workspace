@@ -1,34 +1,49 @@
 import { useState } from 'react';
-import {
-  useTravelRecommendations,
-  type TravelAllergenTag,
-  type TravelDietTag,
-} from '@hatohui/models';
+import { useTravelRecommendations } from '@hatohui/models';
+import { useDebouncedValue } from '@hatohui/libs';
+import { SEARCH_DEBOUNCE_MS } from '../constants/travel';
 import { useSearchState } from './useSearchState';
+import { useTravelLocation } from './useTravelLocation';
 
 const toggled = <T>(list: T[], item: T) =>
   list.includes(item) ? list.filter((x) => x !== item) : [...list, item];
 
+const listOrUndefined = <T>(list: T[]) => (list.length ? list : undefined);
+
 export function useCatalog() {
   const { search, setSearch, query } = useSearchState();
+  const location = useTravelLocation();
   const [spicy, setSpicy] = useState(false);
-  const [diets, setDiets] = useState<TravelDietTag[]>([]);
-  const [avoid, setAvoid] = useState<TravelAllergenTag[]>([]);
+  const [diets, setDiets] = useState<string[]>([]);
+  const [avoid, setAvoid] = useState<string[]>([]);
+  const [cuisines, setCuisines] = useState<string[]>([]);
+  const [by, setBy] = useState('');
+  const debouncedBy = useDebouncedValue(by.trim(), SEARCH_DEBOUNCE_MS);
 
   const result = useTravelRecommendations({
     q: query,
     spicy: spicy || undefined,
-    diets: diets.length ? diets : undefined,
-    excludeAllergens: avoid.length ? avoid : undefined,
+    diets: listOrUndefined(diets),
+    excludeAllergens: listOrUndefined(avoid),
+    cuisines: listOrUndefined(cuisines),
+    by: debouncedBy || undefined,
+    ...location.filter,
   });
 
-  const isFiltered =
-    Boolean(query) || spicy || diets.length > 0 || avoid.length > 0;
+  const activeCount =
+    Number(spicy) +
+    diets.length +
+    avoid.length +
+    cuisines.length +
+    Number(Boolean(by.trim()));
+
   const clearFilters = () => {
     setSearch('');
     setSpicy(false);
     setDiets([]);
     setAvoid([]);
+    setCuisines([]);
+    setBy('');
   };
 
   return {
@@ -42,13 +57,18 @@ export function useCatalog() {
       spicy,
       setSpicy,
       diets,
-      toggleDiet: (tag: TravelDietTag) =>
-        setDiets((list) => toggled(list, tag)),
+      toggleDiet: (tag: string) => setDiets((l) => toggled(l, tag)),
       avoid,
-      toggleAvoid: (tag: TravelAllergenTag) =>
-        setAvoid((list) => toggled(list, tag)),
+      toggleAvoid: (tag: string) => setAvoid((l) => toggled(l, tag)),
+      cuisines,
+      toggleCuisine: (name: string) => setCuisines((l) => toggled(l, name)),
+      by,
+      setBy,
+      activeCount,
+      clearFilters,
     },
-    isFiltered,
-    clearFilters,
+    isFiltered: Boolean(query) || activeCount > 0,
   };
 }
+
+export type CatalogFilters = ReturnType<typeof useCatalog>['filters'];

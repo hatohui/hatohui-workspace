@@ -1,13 +1,13 @@
 import type { Prisma } from '@prisma/client';
 import type { TravelRecommendationDto } from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
-import type {
-  TravelAllergenTag,
-  TravelDietTag,
-} from '@/modules/travel-recommendations/travel-recommendations.constants';
 import {
   toTravelCreatorDto,
   travelCreatorSelect,
 } from '@/modules/travel-recommendations/utils/travel-creator';
+import {
+  toTravelPlaceAreaDto,
+  travelPlaceAreaSelect,
+} from '@/modules/travel-recommendations/utils/travel-place-area';
 
 export const travelCuisineNamesSelect = {
   orderBy: { name: 'asc' },
@@ -22,6 +22,7 @@ export const travelRecommendationInclude = {
     select: {
       id: true,
       name: true,
+      area: travelPlaceAreaSelect,
       address: true,
       city: true,
       mapsUrl: true,
@@ -58,15 +59,15 @@ export function toTravelRecommendationDto(
       name: row.dish.name,
       cuisines: row.dish.cuisines.map((cuisine) => cuisine.name),
     },
-    place: row.place,
+    place: { ...row.place, area: toTravelPlaceAreaDto(row.place.area) },
     note: row.note,
     priceMin: row.priceMin,
     priceMax: row.priceMax,
     priceLevel: row.priceLevel,
     currency: row.currency,
     spicy: row.spicy,
-    diets: tagsOf('DIET') as TravelDietTag[],
-    allergens: tagsOf('ALLERGEN') as TravelAllergenTag[],
+    diets: tagsOf('DIET'),
+    allergens: tagsOf('ALLERGEN'),
     images: row.images.map(({ key, createdById }) => ({
       key,
       url: publicUrlOf(key),

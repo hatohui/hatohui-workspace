@@ -2,6 +2,7 @@ import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
 import { Flame } from 'lucide-react';
 import { DIET_ICONS } from '../../constants/travel';
+import { useTagOptions } from '../../hooks/useTagOptions';
 import TagChipIcon from '../shared/TagChipIcon';
 
 type Tags = Pick<TravelRecommendationDto, 'spicy' | 'diets'>;
@@ -11,6 +12,7 @@ const chipClass =
 
 function RecommendationTags({ tags }: { tags: Tags }) {
   const { t } = useTranslation();
+  const { labelOf } = useTagOptions();
   if (!tags.spicy && !tags.diets.length) return null;
 
   return (
@@ -29,7 +31,7 @@ function RecommendationTags({ tags }: { tags: Tags }) {
           className={`${chipClass} bg-green-600/10 text-green-800 dark:text-green-300`}
         >
           <TagChipIcon icon={DIET_ICONS[diet]} />
-          {t(`diet.${diet}`)}
+          {labelOf(diet)}
         </li>
       ))}
     </ul>

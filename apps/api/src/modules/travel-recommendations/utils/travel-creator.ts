@@ -4,10 +4,17 @@ import type { TravelCreatorDto } from '@/modules/travel-recommendations/dto/trav
 export const travelCreatorSelect = {
   id: true,
   name: true,
-  profile: { select: { displayName: true, avatarUrl: true } },
+  profile: { select: { displayName: true, avatarUrl: true, handle: true } },
 } satisfies Prisma.UserSelect;
 
 type CreatorRow = Prisma.UserGetPayload<{ select: typeof travelCreatorSelect }>;
+
+export function travelCreatorFilter(
+  handle: string | undefined,
+): Prisma.UserWhereInput | undefined {
+  const clean = handle?.trim().replace(/^@/, '').toLowerCase();
+  return clean ? { profile: { handle: clean } } : undefined;
+}
 
 export function toTravelCreatorDto(
   row: CreatorRow | null,
@@ -17,5 +24,6 @@ export function toTravelCreatorDto(
     id: row.id,
     name: row.profile?.displayName || row.name,
     avatarUrl: row.profile?.avatarUrl ?? null,
+    handle: row.profile?.handle ?? null,
   };
 }

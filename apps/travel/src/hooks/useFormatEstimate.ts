@@ -8,7 +8,8 @@ export function useFormatEstimate() {
       new Intl.NumberFormat(i18n.language, {
         style: 'currency',
         currency,
-        maximumFractionDigits: 0,
+        notation: 'compact',
+        maximumFractionDigits: 1,
       }).format(amount),
     [i18n.language],
   );

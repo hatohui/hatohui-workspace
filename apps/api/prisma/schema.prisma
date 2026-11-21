@@ -71,6 +71,8 @@ model User {
   commissionStatusChanges CommissionStatusHistory[]   @relation("CommissionStatusChangedBy")
   travelDishes            TravelDish[]                @relation("TravelDishCreator")
   travelCuisines          TravelCuisine[]             @relation("TravelCuisineCreator")
+  travelCountries         TravelCountry[]             @relation("TravelCountryCreator")
+  travelAreas             TravelArea[]                @relation("TravelAreaCreator")
   travelPlaces            TravelPlace[]               @relation("TravelPlaceCreator")
   travelRecommendations   TravelRecommendation[]      @relation("TravelRecommendationCreator")
   travelImages            TravelRecommendationImage[] @relation("TravelImageUploader")
@@ -854,8 +856,10 @@ model TravelCuisine {
 }
 
 model TravelPlace {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   name        String
+  areaId      String?
+  area        TravelArea? @relation(fields: [areaId], references: [id], onDelete: SetNull)
   address     String?
   city        String?
   mapsUrl     String?
@@ -863,13 +867,39 @@ model TravelPlace {
   longitude   Float?
   note        String?
   createdById String?
-  createdBy   User?    @relation("TravelPlaceCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdBy   User?       @relation("TravelPlaceCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   recommendations TravelRecommendation[]
 
   @@index([city])
+  @@index([areaId])
+}
+
+model TravelCountry {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String?
+  createdById String?
+  createdBy   User?    @relation("TravelCountryCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  areas TravelArea[]
+}
+
+model TravelArea {
+  id          String        @id @default(cuid())
+  countryId   String
+  country     TravelCountry @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  name        String
+  createdById String?
+  createdBy   User?         @relation("TravelAreaCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime      @default(now())
+
+  places TravelPlace[]
+
+  @@unique([countryId, name])
 }
 
 enum TravelTagKind {
@@ -880,6 +910,7 @@ enum TravelTagKind {
 model TravelTag {
   id       String        @id @default(cuid())
   key      String        @unique
+  name     String?
   kind     TravelTagKind
   position Int
 

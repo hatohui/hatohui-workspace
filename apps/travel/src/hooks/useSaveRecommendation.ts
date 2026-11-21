@@ -7,6 +7,7 @@ import { useToast } from '@hatohui/ui';
 import type { RecommendationFields } from './useRecommendationFields';
 import { useErrorMessage } from './useErrorMessage';
 import { useInvalidateTravel } from './useInvalidateTravel';
+import { useTravelLocation } from './useTravelLocation';
 
 interface Matches {
   dishId?: string;
@@ -34,6 +35,7 @@ export function useSaveRecommendation(
   existing: TravelRecommendationDto | undefined,
   onSaved: () => void,
 ) {
+  const location = useTravelLocation();
   const create = useCreateTravelRecommendation();
   const update = useUpdateTravelRecommendation();
   const invalidate = useInvalidateTravel();
@@ -64,6 +66,7 @@ export function useSaveRecommendation(
               : {
                   name: fields.placeName,
                   mapsUrl: fields.mapsUrl || undefined,
+                  areaId: location.area?.id,
                 },
           },
         });

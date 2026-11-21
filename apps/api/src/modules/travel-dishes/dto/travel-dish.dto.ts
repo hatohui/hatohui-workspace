@@ -79,4 +79,14 @@ export class TravelDishQueryDto {
   @IsOptional()
   @IsString()
   q?: string;
+
+  @ApiProperty({ required: false, description: 'Only places in this area' })
+  @IsOptional()
+  @IsString()
+  areaId?: string;
+
+  @ApiProperty({ required: false, description: 'Only places in this country' })
+  @IsOptional()
+  @IsString()
+  countryId?: string;
 }

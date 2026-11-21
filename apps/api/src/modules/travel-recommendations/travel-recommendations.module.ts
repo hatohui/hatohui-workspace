@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from '@/modules/auth/auth.module';
+import { TravelAccessModule } from '@/modules/travel-access/travel-access.module';
 import { TravelCuisinesModule } from '@/modules/travel-cuisines/travel-cuisines.module';
 import { TravelRecommendationsController } from '@/modules/travel-recommendations/travel-recommendations.controller';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import { TravelRecommendationImagesService } from '@/modules/travel-recommendations/services/travel-recommendation-images.service';
 
 @Module({
-  imports: [AuthModule, TravelCuisinesModule],
+  imports: [TravelAccessModule, TravelCuisinesModule],
   controllers: [TravelRecommendationsController],
   providers: [TravelRecommendationsService, TravelRecommendationImagesService],
   exports: [TravelRecommendationsService],

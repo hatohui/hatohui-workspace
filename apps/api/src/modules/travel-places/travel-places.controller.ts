@@ -17,14 +17,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { User } from '@prisma/client';
-import { AdminRoleGuard } from '@/modules/auth/guards/admin-role.guard';
+import { TravelEditorGuard } from '@/modules/travel-access/guards/travel-editor.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import {
   MapsLinkPreviewDto,
   MapsLinkPreviewRequestDto,
 } from '@/modules/travel-places/dto/maps-link-preview.dto';
+import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { TravelPlacesService } from '@/modules/travel-places/services/travel-places.service';
 import {
+  BulkCreateTravelPlacesDto,
   CreateTravelPlaceDto,
   TravelPlaceDetailDto,
   TravelPlaceDto,
@@ -54,8 +56,23 @@ export class TravelPlacesController {
     return this.places.get(id);
   }
 
+  @Post('bulk')
+  @HttpCode(200)
+  @UseGuards(TravelEditorGuard)
+  @ApiOperation({
+    operationId: 'bulkCreateTravelPlaces',
+    summary: 'Add several places by name or Google Maps link',
+  })
+  @ApiOkResponse({ type: TravelBulkResultDto })
+  bulkCreate(
+    @Body() dto: BulkCreateTravelPlacesDto,
+    @CurrentUser() user: User,
+  ): Promise<TravelBulkResultDto> {
+    return this.places.bulkCreate(dto.names, dto.areaId, user.id);
+  }
+
   @Post()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'createTravelPlace' })
   @ApiOkResponse({ type: TravelPlaceDetailDto })
   create(
@@ -67,7 +84,7 @@ export class TravelPlacesController {
 
   @Post('link-preview')
   @HttpCode(200)
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({
     operationId: 'travelMapsLinkPreview',
     summary: 'Coordinates and place name from a Google Maps link',
@@ -80,7 +97,7 @@ export class TravelPlacesController {
   }
 
   @Patch(':id')
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'updateTravelPlace' })
   @ApiOkResponse({ type: TravelPlaceDetailDto })
   update(
@@ -92,7 +109,7 @@ export class TravelPlacesController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({
     operationId: 'deleteTravelPlace',
     summary: 'Delete a place and its recommendations',

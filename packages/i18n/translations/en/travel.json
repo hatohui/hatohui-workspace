@@ -3,7 +3,8 @@
   "nav": {
     "food": "Food",
     "dishes": "Dishes",
-    "places": "Places"
+    "places": "Places",
+    "admin": "Admin"
   },
   "catalog": {
     "title": "Food catalog",
@@ -144,5 +145,57 @@
     "gluten": "Gluten",
     "soy": "Soy",
     "sesame": "Sesame"
+  },
+  "location": {
+    "pick": "Choose a country and area",
+    "everywhere": "Everywhere",
+    "country": "Country",
+    "area": "Area",
+    "allCountries": "All countries",
+    "allAreas": "All areas",
+    "newPlaceIn": "New places go in {{area}}.",
+    "noAreaPicked": "Pick an area in the header to file new places under it."
+  },
+  "filters": {
+    "title": "Filters",
+    "taste": "Taste",
+    "addedBy": "Added by",
+    "handlePlaceholder": "handle"
+  },
+  "admin": {
+    "title": "Admin",
+    "subtitle": "Master data for the catalog. Click a cell to edit it.",
+    "noAccess": "Only travel editors can open this page.",
+    "add": "Add",
+    "name": "Name",
+    "code": "Code",
+    "areas": "Areas",
+    "places": "Places",
+    "dishes": "Dishes",
+    "kind": "Kind",
+    "uses": "Uses",
+    "tabs": {
+      "countries": "Countries",
+      "areas": "Areas",
+      "dishes": "Dishes",
+      "cuisines": "Cuisines",
+      "tags": "Tags"
+    },
+    "addCountries": "Add countries, separated by commas",
+    "addAreas": "Add areas, separated by commas",
+    "addDishes": "Add dishes, separated by commas",
+    "addCuisines": "Add cuisines, separated by commas",
+    "addTags": "Add tags, separated by commas",
+    "bulkResult": "Added {{created}}, skipped {{skipped}}",
+    "deleteTitle": "Delete {{name}}?",
+    "deleteCountry": "Its areas are deleted too. Places stay, without an area.",
+    "deleteArea": "Places in this area stay, without an area.",
+    "deleteDish": "Every recommendation for this dish and its photos are deleted.",
+    "deleteCuisine": "Dishes lose this cuisine tag.",
+    "deleteTag": "Recommendations lose this tag.",
+    "kinds": {
+      "DIET": "Diet",
+      "ALLERGEN": "Allergen"
+    }
   }
 }

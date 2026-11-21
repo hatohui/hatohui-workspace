@@ -4,9 +4,18 @@ import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { resolveMapsLocation } from '@/common/utils/maps-coordinates';
 import { MapsLinkPreviewDto } from '@/modules/travel-places/dto/maps-link-preview.dto';
+import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
+import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names';
+import { MAPS_LINK_ENTRY } from '@/modules/travel-places/travel-places.constants';
+import {
+  toTravelPlaceAreaDto,
+  travelAreaFilter,
+  travelPlaceAreaSelect,
+} from '@/modules/travel-recommendations/utils/travel-place-area';
 import { travelPlaceData } from '@/modules/travel-recommendations/utils/travel-place-data';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import {
+  travelCreatorFilter,
   toTravelCreatorDto,
   travelCreatorSelect,
 } from '@/modules/travel-recommendations/utils/travel-creator';
@@ -19,6 +28,7 @@ import {
 } from '@/modules/travel-places/dto/travel-place.dto';
 
 const placeInclude = {
+  area: travelPlaceAreaSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
   recommendations: {
@@ -43,11 +53,13 @@ export class TravelPlacesService {
     const q = query.q?.trim();
     const contains = q ? { contains: q, mode: 'insensitive' as const } : null;
     const rows = await this.db.travelPlace.findMany({
-      where: contains
-        ? {
-            OR: [{ name: contains }, { address: contains }, { city: contains }],
-          }
-        : undefined,
+      where: {
+        ...travelAreaFilter(query),
+        createdBy: travelCreatorFilter(query.by),
+        OR: contains
+          ? [{ name: contains }, { address: contains }, { city: contains }]
+          : undefined,
+      },
       include: placeInclude,
       orderBy: { name: 'asc' },
     });
@@ -73,6 +85,55 @@ export class TravelPlacesService {
       data: { ...data, name: dto.name.trim(), createdById: userId },
     });
     return this.get(created.id);
+  }
+
+  async bulkCreate(
+    entries: string[],
+    areaId: string | undefined,
+    userId: string,
+  ): Promise<TravelBulkResultDto> {
+    const places = await Promise.all(
+      uniqueNames(entries).map((entry) => this.placeFromEntry(entry)),
+    );
+    const named = places.filter(
+      (place): place is NonNullable<typeof place> => place !== null,
+    );
+    const existing = await this.db.travelPlace.findMany({
+      where: {
+        OR: named.map(({ name }) => ({
+          name: { equals: name, mode: 'insensitive' as const },
+        })),
+      },
+      select: { name: true },
+    });
+    const taken = new Set(existing.map((row) => row.name.toLowerCase()));
+    const fresh = [
+      ...new Map(
+        named
+          .filter((place) => !taken.has(place.name.toLowerCase()))
+          .map((place) => [place.name.toLowerCase(), place]),
+      ).values(),
+    ];
+    await this.db.travelPlace.createMany({
+      data: fresh.map((place) => ({
+        ...place,
+        areaId: areaId || null,
+        createdById: userId,
+      })),
+    });
+    return { created: fresh.length, skipped: entries.length - fresh.length };
+  }
+
+  private async placeFromEntry(entry: string) {
+    if (!MAPS_LINK_ENTRY.test(entry)) return { name: entry };
+    const location = await resolveMapsLocation(entry);
+    if (!location.name) return null;
+    return {
+      name: location.name,
+      mapsUrl: entry,
+      latitude: location.coordinates?.latitude ?? null,
+      longitude: location.coordinates?.longitude ?? null,
+    };
   }
 
   async update(
@@ -107,6 +168,7 @@ export class TravelPlacesService {
     return {
       id: row.id,
       name: row.name,
+      area: toTravelPlaceAreaDto(row.area),
       address: row.address,
       city: row.city,
       mapsUrl: row.mapsUrl,

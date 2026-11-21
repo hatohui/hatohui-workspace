@@ -25,11 +25,19 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  BulkCreateTravelAreasDto,
+  BulkCreateTravelPlacesDto,
+  BulkCreateTravelTagsDto,
   CreateTravelDishDto,
   CreateTravelPlaceDto,
   CreateTravelRecommendationDto,
   MapsLinkPreviewDto,
   MapsLinkPreviewRequestDto,
+  TravelAccessDto,
+  TravelAreaDto,
+  TravelBulkNamesDto,
+  TravelBulkResultDto,
+  TravelCountryDto,
   TravelCuisineDto,
   TravelDishDetailDto,
   TravelDishDto,
@@ -39,9 +47,14 @@ import type {
   TravelPlacesParams,
   TravelRecommendationDto,
   TravelRecommendationsParams,
+  TravelTagDto,
+  UpdateTravelAreaDto,
+  UpdateTravelCountryDto,
+  UpdateTravelCuisineDto,
   UpdateTravelDishDto,
   UpdateTravelPlaceDto,
-  UpdateTravelRecommendationDto
+  UpdateTravelRecommendationDto,
+  UpdateTravelTagDto
 } from '../schemas';
 
 import { customFetch } from '../../mutator/custom-fetch';
@@ -66,7 +79,1066 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type travelCuisinesResponse200 = {
+export type travelAccessResponse200 = {
+  data: TravelAccessDto
+  status: 200
+}
+
+export type travelAccessResponseSuccess = (travelAccessResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelAccessResponse = (travelAccessResponseSuccess)
+
+export const getTravelAccessUrl = () => {
+
+
+
+
+  return `/travel/access`
+}
+
+/**
+ * @summary What the viewer may do in the travel app
+ */
+export const travelAccess = async ( options?: RequestInit): Promise<travelAccessResponse> => {
+
+  return customFetch<travelAccessResponse>(getTravelAccessUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelAccessQueryKey = () => {
+    return [
+    `/travel/access`
+    ] as const;
+    }
+
+
+export const getTravelAccessQueryOptions = <TData = Awaited<ReturnType<typeof travelAccess>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAccess>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelAccessQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelAccess>>> = ({ signal }) => travelAccess({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelAccess>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelAccessQueryResult = NonNullable<Awaited<ReturnType<typeof travelAccess>>>
+export type TravelAccessQueryError = unknown
+
+
+export function useTravelAccess<TData = Awaited<ReturnType<typeof travelAccess>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAccess>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelAccess>>,
+          TError,
+          Awaited<ReturnType<typeof travelAccess>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelAccess<TData = Awaited<ReturnType<typeof travelAccess>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAccess>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelAccess>>,
+          TError,
+          Awaited<ReturnType<typeof travelAccess>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelAccess<TData = Awaited<ReturnType<typeof travelAccess>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAccess>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary What the viewer may do in the travel app
+ */
+
+export function useTravelAccess<TData = Awaited<ReturnType<typeof travelAccess>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAccess>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelAccessQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type travelCountriesResponse200 = {
+  data: TravelCountryDto[]
+  status: 200
+}
+
+export type travelCountriesResponseSuccess = (travelCountriesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelCountriesResponse = (travelCountriesResponseSuccess)
+
+export const getTravelCountriesUrl = () => {
+
+
+
+
+  return `/travel/countries`
+}
+
+/**
+ * @summary Every country with its areas, for the location picker
+ */
+export const travelCountries = async ( options?: RequestInit): Promise<travelCountriesResponse> => {
+
+  return customFetch<travelCountriesResponse>(getTravelCountriesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelCountriesQueryKey = () => {
+    return [
+    `/travel/countries`
+    ] as const;
+    }
+
+
+export const getTravelCountriesQueryOptions = <TData = Awaited<ReturnType<typeof travelCountries>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCountries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelCountriesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelCountries>>> = ({ signal }) => travelCountries({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelCountries>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelCountriesQueryResult = NonNullable<Awaited<ReturnType<typeof travelCountries>>>
+export type TravelCountriesQueryError = unknown
+
+
+export function useTravelCountries<TData = Awaited<ReturnType<typeof travelCountries>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCountries>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelCountries>>,
+          TError,
+          Awaited<ReturnType<typeof travelCountries>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelCountries<TData = Awaited<ReturnType<typeof travelCountries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCountries>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelCountries>>,
+          TError,
+          Awaited<ReturnType<typeof travelCountries>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelCountries<TData = Awaited<ReturnType<typeof travelCountries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCountries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Every country with its areas, for the location picker
+ */
+
+export function useTravelCountries<TData = Awaited<ReturnType<typeof travelCountries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelCountries>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelCountriesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type bulkCreateTravelCountriesResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelCountriesResponseSuccess = (bulkCreateTravelCountriesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelCountriesResponse = (bulkCreateTravelCountriesResponseSuccess)
+
+export const getBulkCreateTravelCountriesUrl = () => {
+
+
+
+
+  return `/travel/countries/bulk`
+}
+
+/**
+ * @summary Add several countries by name
+ */
+export const bulkCreateTravelCountries = async (travelBulkNamesDto: TravelBulkNamesDto, options?: RequestInit): Promise<bulkCreateTravelCountriesResponse> => {
+
+  return customFetch<bulkCreateTravelCountriesResponse>(getBulkCreateTravelCountriesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(travelBulkNamesDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelCountriesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelCountries>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelCountries>>, TError,{data: TravelBulkNamesDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelCountries'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelCountries>>, {data: TravelBulkNamesDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelCountries(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelCountriesMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelCountries>>>
+    export type BulkCreateTravelCountriesMutationBody = TravelBulkNamesDto
+    export type BulkCreateTravelCountriesMutationError = unknown
+
+    /**
+ * @summary Add several countries by name
+ */
+export const useBulkCreateTravelCountries = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelCountries>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelCountries>>,
+        TError,
+        {data: TravelBulkNamesDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelCountriesMutationOptions(options), queryClient);
+    }
+    export type updateTravelCountryResponse200 = {
+  data: TravelCountryDto
+  status: 200
+}
+
+export type updateTravelCountryResponseSuccess = (updateTravelCountryResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateTravelCountryResponse = (updateTravelCountryResponseSuccess)
+
+export const getUpdateTravelCountryUrl = (id: string,) => {
+
+
+
+
+  return `/travel/countries/${id}`
+}
+
+export const updateTravelCountry = async (id: string,
+    updateTravelCountryDto: UpdateTravelCountryDto, options?: RequestInit): Promise<updateTravelCountryResponse> => {
+
+  return customFetch<updateTravelCountryResponse>(getUpdateTravelCountryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateTravelCountryDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateTravelCountryMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelCountry>>, TError,{id: string;data: UpdateTravelCountryDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTravelCountry>>, TError,{id: string;data: UpdateTravelCountryDto}, TContext> => {
+
+const mutationKey = ['updateTravelCountry'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTravelCountry>>, {id: string;data: UpdateTravelCountryDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTravelCountry(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTravelCountryMutationResult = NonNullable<Awaited<ReturnType<typeof updateTravelCountry>>>
+    export type UpdateTravelCountryMutationBody = UpdateTravelCountryDto
+    export type UpdateTravelCountryMutationError = unknown
+
+    export const useUpdateTravelCountry = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelCountry>>, TError,{id: string;data: UpdateTravelCountryDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTravelCountry>>,
+        TError,
+        {id: string;data: UpdateTravelCountryDto},
+        TContext
+      > => {
+      return useMutation(getUpdateTravelCountryMutationOptions(options), queryClient);
+    }
+    export type deleteTravelCountryResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteTravelCountryResponseSuccess = (deleteTravelCountryResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteTravelCountryResponse = (deleteTravelCountryResponseSuccess)
+
+export const getDeleteTravelCountryUrl = (id: string,) => {
+
+
+
+
+  return `/travel/countries/${id}`
+}
+
+/**
+ * @summary Delete a country and its areas; places keep existing, unassigned
+ */
+export const deleteTravelCountry = async (id: string, options?: RequestInit): Promise<deleteTravelCountryResponse> => {
+
+  return customFetch<deleteTravelCountryResponse>(getDeleteTravelCountryUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTravelCountryMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelCountry>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTravelCountry>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteTravelCountry'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTravelCountry>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTravelCountry(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTravelCountryMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTravelCountry>>>
+
+    export type DeleteTravelCountryMutationError = unknown
+
+    /**
+ * @summary Delete a country and its areas; places keep existing, unassigned
+ */
+export const useDeleteTravelCountry = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelCountry>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTravelCountry>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteTravelCountryMutationOptions(options), queryClient);
+    }
+    export type bulkCreateTravelAreasResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelAreasResponseSuccess = (bulkCreateTravelAreasResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelAreasResponse = (bulkCreateTravelAreasResponseSuccess)
+
+export const getBulkCreateTravelAreasUrl = () => {
+
+
+
+
+  return `/travel/areas/bulk`
+}
+
+/**
+ * @summary Add several areas to a country by name
+ */
+export const bulkCreateTravelAreas = async (bulkCreateTravelAreasDto: BulkCreateTravelAreasDto, options?: RequestInit): Promise<bulkCreateTravelAreasResponse> => {
+
+  return customFetch<bulkCreateTravelAreasResponse>(getBulkCreateTravelAreasUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(bulkCreateTravelAreasDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelAreasMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelAreas>>, TError,{data: BulkCreateTravelAreasDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelAreas>>, TError,{data: BulkCreateTravelAreasDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelAreas'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelAreas>>, {data: BulkCreateTravelAreasDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelAreas(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelAreasMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelAreas>>>
+    export type BulkCreateTravelAreasMutationBody = BulkCreateTravelAreasDto
+    export type BulkCreateTravelAreasMutationError = unknown
+
+    /**
+ * @summary Add several areas to a country by name
+ */
+export const useBulkCreateTravelAreas = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelAreas>>, TError,{data: BulkCreateTravelAreasDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelAreas>>,
+        TError,
+        {data: BulkCreateTravelAreasDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelAreasMutationOptions(options), queryClient);
+    }
+    export type updateTravelAreaResponse200 = {
+  data: TravelAreaDto
+  status: 200
+}
+
+export type updateTravelAreaResponseSuccess = (updateTravelAreaResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateTravelAreaResponse = (updateTravelAreaResponseSuccess)
+
+export const getUpdateTravelAreaUrl = (id: string,) => {
+
+
+
+
+  return `/travel/areas/${id}`
+}
+
+export const updateTravelArea = async (id: string,
+    updateTravelAreaDto: UpdateTravelAreaDto, options?: RequestInit): Promise<updateTravelAreaResponse> => {
+
+  return customFetch<updateTravelAreaResponse>(getUpdateTravelAreaUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateTravelAreaDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateTravelAreaMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelArea>>, TError,{id: string;data: UpdateTravelAreaDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTravelArea>>, TError,{id: string;data: UpdateTravelAreaDto}, TContext> => {
+
+const mutationKey = ['updateTravelArea'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTravelArea>>, {id: string;data: UpdateTravelAreaDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTravelArea(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTravelAreaMutationResult = NonNullable<Awaited<ReturnType<typeof updateTravelArea>>>
+    export type UpdateTravelAreaMutationBody = UpdateTravelAreaDto
+    export type UpdateTravelAreaMutationError = unknown
+
+    export const useUpdateTravelArea = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelArea>>, TError,{id: string;data: UpdateTravelAreaDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTravelArea>>,
+        TError,
+        {id: string;data: UpdateTravelAreaDto},
+        TContext
+      > => {
+      return useMutation(getUpdateTravelAreaMutationOptions(options), queryClient);
+    }
+    export type deleteTravelAreaResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteTravelAreaResponseSuccess = (deleteTravelAreaResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteTravelAreaResponse = (deleteTravelAreaResponseSuccess)
+
+export const getDeleteTravelAreaUrl = (id: string,) => {
+
+
+
+
+  return `/travel/areas/${id}`
+}
+
+/**
+ * @summary Delete an area; its places keep existing, unassigned
+ */
+export const deleteTravelArea = async (id: string, options?: RequestInit): Promise<deleteTravelAreaResponse> => {
+
+  return customFetch<deleteTravelAreaResponse>(getDeleteTravelAreaUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTravelAreaMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelArea>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTravelArea>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteTravelArea'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTravelArea>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTravelArea(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTravelAreaMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTravelArea>>>
+
+    export type DeleteTravelAreaMutationError = unknown
+
+    /**
+ * @summary Delete an area; its places keep existing, unassigned
+ */
+export const useDeleteTravelArea = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelArea>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTravelArea>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteTravelAreaMutationOptions(options), queryClient);
+    }
+    export type travelTagsResponse200 = {
+  data: TravelTagDto[]
+  status: 200
+}
+
+export type travelTagsResponseSuccess = (travelTagsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelTagsResponse = (travelTagsResponseSuccess)
+
+export const getTravelTagsUrl = () => {
+
+
+
+
+  return `/travel/tags`
+}
+
+/**
+ * @summary Diet and allergen tags, in display order
+ */
+export const travelTags = async ( options?: RequestInit): Promise<travelTagsResponse> => {
+
+  return customFetch<travelTagsResponse>(getTravelTagsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelTagsQueryKey = () => {
+    return [
+    `/travel/tags`
+    ] as const;
+    }
+
+
+export const getTravelTagsQueryOptions = <TData = Awaited<ReturnType<typeof travelTags>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelTags>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelTagsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelTags>>> = ({ signal }) => travelTags({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelTags>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelTagsQueryResult = NonNullable<Awaited<ReturnType<typeof travelTags>>>
+export type TravelTagsQueryError = unknown
+
+
+export function useTravelTags<TData = Awaited<ReturnType<typeof travelTags>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelTags>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelTags>>,
+          TError,
+          Awaited<ReturnType<typeof travelTags>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelTags<TData = Awaited<ReturnType<typeof travelTags>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelTags>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelTags>>,
+          TError,
+          Awaited<ReturnType<typeof travelTags>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelTags<TData = Awaited<ReturnType<typeof travelTags>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelTags>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Diet and allergen tags, in display order
+ */
+
+export function useTravelTags<TData = Awaited<ReturnType<typeof travelTags>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelTags>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelTagsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type bulkCreateTravelTagsResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelTagsResponseSuccess = (bulkCreateTravelTagsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelTagsResponse = (bulkCreateTravelTagsResponseSuccess)
+
+export const getBulkCreateTravelTagsUrl = () => {
+
+
+
+
+  return `/travel/tags/bulk`
+}
+
+/**
+ * @summary Add several diet or allergen tags by name
+ */
+export const bulkCreateTravelTags = async (bulkCreateTravelTagsDto: BulkCreateTravelTagsDto, options?: RequestInit): Promise<bulkCreateTravelTagsResponse> => {
+
+  return customFetch<bulkCreateTravelTagsResponse>(getBulkCreateTravelTagsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(bulkCreateTravelTagsDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelTagsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelTags>>, TError,{data: BulkCreateTravelTagsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelTags>>, TError,{data: BulkCreateTravelTagsDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelTags'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelTags>>, {data: BulkCreateTravelTagsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelTags(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelTagsMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelTags>>>
+    export type BulkCreateTravelTagsMutationBody = BulkCreateTravelTagsDto
+    export type BulkCreateTravelTagsMutationError = unknown
+
+    /**
+ * @summary Add several diet or allergen tags by name
+ */
+export const useBulkCreateTravelTags = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelTags>>, TError,{data: BulkCreateTravelTagsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelTags>>,
+        TError,
+        {data: BulkCreateTravelTagsDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelTagsMutationOptions(options), queryClient);
+    }
+    export type updateTravelTagResponse200 = {
+  data: TravelTagDto
+  status: 200
+}
+
+export type updateTravelTagResponseSuccess = (updateTravelTagResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateTravelTagResponse = (updateTravelTagResponseSuccess)
+
+export const getUpdateTravelTagUrl = (id: string,) => {
+
+
+
+
+  return `/travel/tags/${id}`
+}
+
+export const updateTravelTag = async (id: string,
+    updateTravelTagDto: UpdateTravelTagDto, options?: RequestInit): Promise<updateTravelTagResponse> => {
+
+  return customFetch<updateTravelTagResponse>(getUpdateTravelTagUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateTravelTagDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateTravelTagMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelTag>>, TError,{id: string;data: UpdateTravelTagDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTravelTag>>, TError,{id: string;data: UpdateTravelTagDto}, TContext> => {
+
+const mutationKey = ['updateTravelTag'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTravelTag>>, {id: string;data: UpdateTravelTagDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTravelTag(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTravelTagMutationResult = NonNullable<Awaited<ReturnType<typeof updateTravelTag>>>
+    export type UpdateTravelTagMutationBody = UpdateTravelTagDto
+    export type UpdateTravelTagMutationError = unknown
+
+    export const useUpdateTravelTag = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelTag>>, TError,{id: string;data: UpdateTravelTagDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTravelTag>>,
+        TError,
+        {id: string;data: UpdateTravelTagDto},
+        TContext
+      > => {
+      return useMutation(getUpdateTravelTagMutationOptions(options), queryClient);
+    }
+    export type deleteTravelTagResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteTravelTagResponseSuccess = (deleteTravelTagResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteTravelTagResponse = (deleteTravelTagResponseSuccess)
+
+export const getDeleteTravelTagUrl = (id: string,) => {
+
+
+
+
+  return `/travel/tags/${id}`
+}
+
+/**
+ * @summary Delete a tag; recommendations lose it
+ */
+export const deleteTravelTag = async (id: string, options?: RequestInit): Promise<deleteTravelTagResponse> => {
+
+  return customFetch<deleteTravelTagResponse>(getDeleteTravelTagUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTravelTagMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelTag>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTravelTag>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteTravelTag'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTravelTag>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTravelTag(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTravelTagMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTravelTag>>>
+
+    export type DeleteTravelTagMutationError = unknown
+
+    /**
+ * @summary Delete a tag; recommendations lose it
+ */
+export const useDeleteTravelTag = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelTag>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTravelTag>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteTravelTagMutationOptions(options), queryClient);
+    }
+    export type travelCuisinesResponse200 = {
   data: TravelCuisineDto[]
   status: 200
 }
@@ -178,7 +1250,248 @@ export function useTravelCuisines<TData = Awaited<ReturnType<typeof travelCuisin
 
 
 
-export type travelRecommendationsResponse200 = {
+export type bulkCreateTravelCuisinesResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelCuisinesResponseSuccess = (bulkCreateTravelCuisinesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelCuisinesResponse = (bulkCreateTravelCuisinesResponseSuccess)
+
+export const getBulkCreateTravelCuisinesUrl = () => {
+
+
+
+
+  return `/travel/cuisines/bulk`
+}
+
+/**
+ * @summary Add several cuisines by name
+ */
+export const bulkCreateTravelCuisines = async (travelBulkNamesDto: TravelBulkNamesDto, options?: RequestInit): Promise<bulkCreateTravelCuisinesResponse> => {
+
+  return customFetch<bulkCreateTravelCuisinesResponse>(getBulkCreateTravelCuisinesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(travelBulkNamesDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelCuisinesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelCuisines>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelCuisines>>, TError,{data: TravelBulkNamesDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelCuisines'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelCuisines>>, {data: TravelBulkNamesDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelCuisines(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelCuisinesMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelCuisines>>>
+    export type BulkCreateTravelCuisinesMutationBody = TravelBulkNamesDto
+    export type BulkCreateTravelCuisinesMutationError = unknown
+
+    /**
+ * @summary Add several cuisines by name
+ */
+export const useBulkCreateTravelCuisines = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelCuisines>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelCuisines>>,
+        TError,
+        {data: TravelBulkNamesDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelCuisinesMutationOptions(options), queryClient);
+    }
+    export type updateTravelCuisineResponse200 = {
+  data: TravelCuisineDto
+  status: 200
+}
+
+export type updateTravelCuisineResponseSuccess = (updateTravelCuisineResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateTravelCuisineResponse = (updateTravelCuisineResponseSuccess)
+
+export const getUpdateTravelCuisineUrl = (id: string,) => {
+
+
+
+
+  return `/travel/cuisines/${id}`
+}
+
+export const updateTravelCuisine = async (id: string,
+    updateTravelCuisineDto: UpdateTravelCuisineDto, options?: RequestInit): Promise<updateTravelCuisineResponse> => {
+
+  return customFetch<updateTravelCuisineResponse>(getUpdateTravelCuisineUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateTravelCuisineDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateTravelCuisineMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelCuisine>>, TError,{id: string;data: UpdateTravelCuisineDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTravelCuisine>>, TError,{id: string;data: UpdateTravelCuisineDto}, TContext> => {
+
+const mutationKey = ['updateTravelCuisine'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTravelCuisine>>, {id: string;data: UpdateTravelCuisineDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTravelCuisine(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTravelCuisineMutationResult = NonNullable<Awaited<ReturnType<typeof updateTravelCuisine>>>
+    export type UpdateTravelCuisineMutationBody = UpdateTravelCuisineDto
+    export type UpdateTravelCuisineMutationError = unknown
+
+    export const useUpdateTravelCuisine = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelCuisine>>, TError,{id: string;data: UpdateTravelCuisineDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTravelCuisine>>,
+        TError,
+        {id: string;data: UpdateTravelCuisineDto},
+        TContext
+      > => {
+      return useMutation(getUpdateTravelCuisineMutationOptions(options), queryClient);
+    }
+    export type deleteTravelCuisineResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteTravelCuisineResponseSuccess = (deleteTravelCuisineResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteTravelCuisineResponse = (deleteTravelCuisineResponseSuccess)
+
+export const getDeleteTravelCuisineUrl = (id: string,) => {
+
+
+
+
+  return `/travel/cuisines/${id}`
+}
+
+/**
+ * @summary Delete a cuisine tag; dishes keep their other cuisines
+ */
+export const deleteTravelCuisine = async (id: string, options?: RequestInit): Promise<deleteTravelCuisineResponse> => {
+
+  return customFetch<deleteTravelCuisineResponse>(getDeleteTravelCuisineUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTravelCuisineMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelCuisine>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTravelCuisine>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteTravelCuisine'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTravelCuisine>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTravelCuisine(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTravelCuisineMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTravelCuisine>>>
+
+    export type DeleteTravelCuisineMutationError = unknown
+
+    /**
+ * @summary Delete a cuisine tag; dishes keep their other cuisines
+ */
+export const useDeleteTravelCuisine = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelCuisine>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTravelCuisine>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteTravelCuisineMutationOptions(options), queryClient);
+    }
+    export type travelRecommendationsResponse200 = {
   data: TravelRecommendationDto[]
   status: 200
 }
@@ -194,7 +1507,7 @@ export const getTravelRecommendationsUrl = (params?: TravelRecommendationsParams
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    const explodeParameters = ["diets","excludeAllergens"];
+    const explodeParameters = ["cuisines","diets","excludeAllergens"];
 
     if (Array.isArray(value) && explodeParameters.includes(key)) {
       value.forEach((v) => {
@@ -1112,6 +2425,88 @@ export const useDeleteTravelDish = <TError = unknown,
       > => {
       return useMutation(getDeleteTravelDishMutationOptions(options), queryClient);
     }
+    export type bulkCreateTravelDishesResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelDishesResponseSuccess = (bulkCreateTravelDishesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelDishesResponse = (bulkCreateTravelDishesResponseSuccess)
+
+export const getBulkCreateTravelDishesUrl = () => {
+
+
+
+
+  return `/travel/dishes/bulk`
+}
+
+/**
+ * @summary Add several dishes by name
+ */
+export const bulkCreateTravelDishes = async (travelBulkNamesDto: TravelBulkNamesDto, options?: RequestInit): Promise<bulkCreateTravelDishesResponse> => {
+
+  return customFetch<bulkCreateTravelDishesResponse>(getBulkCreateTravelDishesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(travelBulkNamesDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelDishesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelDishes>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelDishes>>, TError,{data: TravelBulkNamesDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelDishes'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelDishes>>, {data: TravelBulkNamesDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelDishes(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelDishesMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelDishes>>>
+    export type BulkCreateTravelDishesMutationBody = TravelBulkNamesDto
+    export type BulkCreateTravelDishesMutationError = unknown
+
+    /**
+ * @summary Add several dishes by name
+ */
+export const useBulkCreateTravelDishes = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelDishes>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelDishes>>,
+        TError,
+        {data: TravelBulkNamesDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelDishesMutationOptions(options), queryClient);
+    }
     export type travelPlacesResponse200 = {
   data: TravelPlaceDto[]
   status: 200
@@ -1577,6 +2972,88 @@ export const useDeleteTravelPlace = <TError = unknown,
         TContext
       > => {
       return useMutation(getDeleteTravelPlaceMutationOptions(options), queryClient);
+    }
+    export type bulkCreateTravelPlacesResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelPlacesResponseSuccess = (bulkCreateTravelPlacesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelPlacesResponse = (bulkCreateTravelPlacesResponseSuccess)
+
+export const getBulkCreateTravelPlacesUrl = () => {
+
+
+
+
+  return `/travel/places/bulk`
+}
+
+/**
+ * @summary Add several places by name or Google Maps link
+ */
+export const bulkCreateTravelPlaces = async (bulkCreateTravelPlacesDto: BulkCreateTravelPlacesDto, options?: RequestInit): Promise<bulkCreateTravelPlacesResponse> => {
+
+  return customFetch<bulkCreateTravelPlacesResponse>(getBulkCreateTravelPlacesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(bulkCreateTravelPlacesDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelPlacesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelPlaces>>, TError,{data: BulkCreateTravelPlacesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelPlaces>>, TError,{data: BulkCreateTravelPlacesDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelPlaces'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelPlaces>>, {data: BulkCreateTravelPlacesDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelPlaces(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelPlacesMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelPlaces>>>
+    export type BulkCreateTravelPlacesMutationBody = BulkCreateTravelPlacesDto
+    export type BulkCreateTravelPlacesMutationError = unknown
+
+    /**
+ * @summary Add several places by name or Google Maps link
+ */
+export const useBulkCreateTravelPlaces = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelPlaces>>, TError,{data: BulkCreateTravelPlacesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelPlaces>>,
+        TError,
+        {data: BulkCreateTravelPlacesDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelPlacesMutationOptions(options), queryClient);
     }
     export type travelMapsLinkPreviewResponse200 = {
   data: MapsLinkPreviewDto

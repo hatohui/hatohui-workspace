@@ -17,8 +17,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { User } from '@prisma/client';
-import { AdminRoleGuard } from '@/modules/auth/guards/admin-role.guard';
+import { TravelEditorGuard } from '@/modules/travel-access/guards/travel-editor.guard';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import {
+  TravelBulkNamesDto,
+  TravelBulkResultDto,
+} from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { TravelDishesService } from '@/modules/travel-dishes/services/travel-dishes.service';
 import {
   CreateTravelDishDto,
@@ -50,8 +54,23 @@ export class TravelDishesController {
     return this.dishes.get(id);
   }
 
+  @Post('bulk')
+  @HttpCode(200)
+  @UseGuards(TravelEditorGuard)
+  @ApiOperation({
+    operationId: 'bulkCreateTravelDishes',
+    summary: 'Add several dishes by name',
+  })
+  @ApiOkResponse({ type: TravelBulkResultDto })
+  bulkCreate(
+    @Body() dto: TravelBulkNamesDto,
+    @CurrentUser() user: User,
+  ): Promise<TravelBulkResultDto> {
+    return this.dishes.bulkCreate(dto.names, user.id);
+  }
+
   @Post()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'createTravelDish' })
   @ApiOkResponse({ type: TravelDishDetailDto })
   create(
@@ -62,7 +81,7 @@ export class TravelDishesController {
   }
 
   @Patch(':id')
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'updateTravelDish' })
   @ApiOkResponse({ type: TravelDishDetailDto })
   update(
@@ -75,7 +94,7 @@ export class TravelDishesController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(TravelEditorGuard)
   @ApiOperation({
     operationId: 'deleteTravelDish',
     summary: 'Delete a dish and its recommendations',

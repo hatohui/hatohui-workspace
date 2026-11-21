@@ -6,10 +6,13 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { TravelCreatorDto } from './travelCreatorDto';
+import type { TravelPlaceAreaDto } from './travelPlaceAreaDto';
 
 export interface TravelPlaceDto {
   id: string;
   name: string;
+  /** @nullable */
+  area: TravelPlaceAreaDto | null;
   /** @nullable */
   address: string | null;
   /** @nullable */

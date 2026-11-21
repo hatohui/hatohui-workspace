@@ -16,26 +16,23 @@ function PriceLabel({ price }: { price: Price }) {
   if (min != null) {
     const text =
       max != null && max !== min
-        ? t('recommendation.priceRange', {
-            min: format(min, currency),
-            max: format(max, currency),
-          })
-        : t('recommendation.priceSingle', { price: format(min, currency) });
+        ? `${format(min, currency)}–${format(max, currency)}`
+        : format(min, currency);
     return <span className="text-sm font-medium tabular-nums">{text}</span>;
   }
   if (priceLevel) {
     return (
-      <span className="inline-flex items-center gap-1.5 text-sm font-medium">
+      <span
+        className="inline-flex text-foreground"
+        role="img"
+        aria-label={t(`priceLevel.${priceLevel}`)}
+        title={t(`priceLevel.${priceLevel}`)}
+      >
         <PriceLevelSymbol level={priceLevel} />
-        {t(`priceLevel.${priceLevel}`)}
       </span>
     );
   }
-  return (
-    <span className="text-sm text-muted-foreground">
-      {t('recommendation.noEstimate')}
-    </span>
-  );
+  return null;
 }
 
 export default PriceLabel;

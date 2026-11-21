@@ -8,6 +8,10 @@ const IMAGE_UPLOAD_DEFAULTS: [type: string, value: string][] = [
   ['images.upload.maxfiles', '10'],
 ];
 
+const TRAVEL_DEFAULTS: [type: string, value: string][] = [
+  ['travel.admin.emails', ''],
+];
+
 const FRIENDS_DEFAULTS: [type: string, value: string][] = [
   ['friends.birthday.reminderdays', '7'],
   ['friends.birthday.dailysendcap', '250'],
@@ -30,6 +34,14 @@ export async function seedSystemParameters(prisma: PrismaClient) {
       value: ADMIN_EMAIL,
     },
   });
+
+  for (const [type, value] of TRAVEL_DEFAULTS) {
+    await prisma.systemParameters.upsert({
+      where: { type_scope: { type, scope: AppScope.TRAVEL } },
+      update: {},
+      create: { type, scope: AppScope.TRAVEL, value },
+    });
+  }
 
   for (const [type, value] of FRIENDS_DEFAULTS) {
     await prisma.systemParameters.upsert({

@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import type { TravelPriceLevel } from '@prisma/client';
-import {
-  TRAVEL_ALLERGEN_TAGS,
-  TRAVEL_DIET_TAGS,
-  TRAVEL_PRICE_LEVELS,
-  type TravelAllergenTag,
-  type TravelDietTag,
-} from '@/modules/travel-recommendations/travel-recommendations.constants';
+import { TRAVEL_PRICE_LEVELS } from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 export class TravelImageDto {
   @ApiProperty({ description: 'Storage key; send it back to keep the image' })
@@ -32,6 +26,9 @@ export class TravelCreatorDto {
 
   @ApiProperty({ nullable: true, type: String })
   avatarUrl!: string | null;
+
+  @ApiProperty({ nullable: true, type: String, example: 'hatohui' })
+  handle!: string | null;
 }
 
 export class TravelDishSummaryDto {
@@ -45,12 +42,29 @@ export class TravelDishSummaryDto {
   cuisines!: string[];
 }
 
+export class TravelPlaceAreaDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty({ example: 'Ho Chi Minh City' })
+  name!: string;
+
+  @ApiProperty()
+  countryId!: string;
+
+  @ApiProperty({ example: 'Vietnam' })
+  countryName!: string;
+}
+
 export class TravelPlaceSummaryDto {
   @ApiProperty()
   id!: string;
 
   @ApiProperty({ example: '21Grams Vegetarian' })
   name!: string;
+
+  @ApiProperty({ type: TravelPlaceAreaDto, nullable: true })
+  area!: TravelPlaceAreaDto | null;
 
   @ApiProperty({ nullable: true, type: String })
   address!: string | null;
@@ -110,19 +124,16 @@ export class TravelRecommendationDto {
   spicy!: boolean;
 
   @ApiProperty({
-    enum: TRAVEL_DIET_TAGS,
-    enumName: 'TravelDietTag',
-    isArray: true,
+    type: [String],
+    description: 'Diet tag keys, e.g. vegetarian',
   })
-  diets!: TravelDietTag[];
+  diets!: string[];
 
   @ApiProperty({
-    enum: TRAVEL_ALLERGEN_TAGS,
-    enumName: 'TravelAllergenTag',
-    isArray: true,
-    description: 'Allergens the dish contains',
+    type: [String],
+    description: 'Allergen tag keys the dish contains, e.g. peanuts',
   })
-  allergens!: TravelAllergenTag[];
+  allergens!: string[];
 
   @ApiProperty({ type: TravelImageDto, isArray: true })
   images!: TravelImageDto[];

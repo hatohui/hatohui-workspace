@@ -6,8 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { CreateTravelRecommendationDtoCurrency } from './createTravelRecommendationDtoCurrency';
-import type { TravelAllergenTag } from './travelAllergenTag';
-import type { TravelDietTag } from './travelDietTag';
 import type { TravelPlaceInputDto } from './travelPlaceInputDto';
 import type { TravelPriceLevel } from './travelPriceLevel';
 
@@ -44,8 +42,10 @@ export interface CreateTravelRecommendationDto {
   priceLevel?: TravelPriceLevel | null;
   currency?: CreateTravelRecommendationDtoCurrency;
   spicy?: boolean;
-  diets?: TravelDietTag[];
-  allergens?: TravelAllergenTag[];
+  /** Diet tag keys */
+  diets?: string[];
+  /** Allergen tag keys */
+  allergens?: string[];
   /**
      * Ordered image keys: staged uploads or ones already attached
      * @maxItems 12

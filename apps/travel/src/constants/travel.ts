@@ -1,7 +1,5 @@
 import {
   CreateTravelRecommendationDtoCurrency,
-  TravelAllergenTag,
-  TravelDietTag,
   TravelPriceLevel,
 } from '@hatohui/models';
 import {
@@ -18,10 +16,12 @@ export type Currency = (typeof CURRENCIES)[number];
 export const DEFAULT_CURRENCY: Currency = 'VND';
 
 export const PRICE_LEVELS = Object.values(TravelPriceLevel);
-export const DIET_TAGS = Object.values(TravelDietTag);
-export const ALLERGEN_TAGS = Object.values(TravelAllergenTag);
+export const TAG_KIND_NAMESPACE = {
+  DIET: 'diet',
+  ALLERGEN: 'allergen',
+} as const;
 
-export const DIET_ICONS: Partial<Record<TravelDietTag, LucideIcon>> = {
+export const DIET_ICONS: Partial<Record<string, LucideIcon>> = {
   vegetarian: Leaf,
   vegan: Sprout,
   pescatarian: Fish,

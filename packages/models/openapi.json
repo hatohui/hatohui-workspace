@@ -5334,6 +5334,363 @@
         ]
       }
     },
+    "/travel/access": {
+      "get": {
+        "operationId": "travelAccess",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelAccessDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "What the viewer may do in the travel app",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/countries": {
+      "get": {
+        "operationId": "travelCountries",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelCountryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every country with its areas, for the location picker",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/countries/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelCountries",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several countries by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/countries/{id}": {
+      "patch": {
+        "operationId": "updateTravelCountry",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelCountryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelCountryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelCountry",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a country and its areas; places keep existing, unassigned",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/areas/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelAreas",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateTravelAreasDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several areas to a country by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/areas/{id}": {
+      "patch": {
+        "operationId": "updateTravelArea",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelAreaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelAreaDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelArea",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete an area; its places keep existing, unassigned",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/tags": {
+      "get": {
+        "operationId": "travelTags",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelTagDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Diet and allergen tags, in display order",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/tags/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelTags",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateTravelTagsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several diet or allergen tags by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/tags/{id}": {
+      "patch": {
+        "operationId": "updateTravelTag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelTagDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelTag",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a tag; recommendations lose it",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/cuisines": {
       "get": {
         "operationId": "travelCuisines",
@@ -5359,6 +5716,101 @@
         ]
       }
     },
+    "/travel/cuisines/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelCuisines",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several cuisines by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/cuisines/{id}": {
+      "patch": {
+        "operationId": "updateTravelCuisine",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelCuisineDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelCuisineDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelCuisine",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a cuisine tag; dishes keep their other cuisines",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/recommendations": {
       "get": {
         "operationId": "travelRecommendations",
@@ -5373,7 +5825,19 @@
             }
           },
           {
-            "name": "cuisine",
+            "name": "cuisines",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these cuisines",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "city",
             "required": false,
             "in": "query",
             "schema": {
@@ -5381,9 +5845,29 @@
             }
           },
           {
-            "name": "city",
+            "name": "by",
             "required": false,
             "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this country",
             "schema": {
               "type": "string"
             }
@@ -5420,7 +5904,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/TravelDietTag"
+                "type": "string"
               }
             }
           },
@@ -5432,7 +5916,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/TravelAllergenTag"
+                "type": "string"
               }
             }
           }
@@ -5592,6 +6076,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this country",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -5737,6 +6239,38 @@
         ]
       }
     },
+    "/travel/dishes/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelDishes",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several dishes by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/places": {
       "get": {
         "operationId": "travelPlaces",
@@ -5746,6 +6280,34 @@
             "required": false,
             "in": "query",
             "description": "Match name, address or city",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "by",
+            "required": false,
+            "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this country",
             "schema": {
               "type": "string"
             }
@@ -5889,6 +6451,38 @@
           }
         },
         "summary": "Delete a place and its recommendations",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/places/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelPlaces",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateTravelPlacesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several places by name or Google Maps link",
         "tags": [
           "travel"
         ]
@@ -11515,6 +12109,234 @@
           }
         }
       },
+      "TravelAccessDto": {
+        "type": "object",
+        "properties": {
+          "canEdit": {
+            "type": "boolean",
+            "description": "Whether the viewer may edit travel data: an admin, or an email listed in the travel.admin.emails system parameter"
+          }
+        },
+        "required": [
+          "canEdit"
+        ]
+      },
+      "TravelAreaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "countryId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ho Chi Minh City"
+          },
+          "placeCount": {
+            "type": "number",
+            "description": "Places in this area"
+          }
+        },
+        "required": [
+          "id",
+          "countryId",
+          "name",
+          "placeCount"
+        ]
+      },
+      "TravelCountryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Vietnam"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "example": "VN"
+          },
+          "placeCount": {
+            "type": "number",
+            "description": "Places across all its areas"
+          },
+          "areas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelAreaDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "placeCount",
+          "areas"
+        ]
+      },
+      "TravelBulkNamesDto": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "maxItems": 50,
+            "description": "Names to add; ones that already exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "names"
+        ]
+      },
+      "TravelBulkResultDto": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "number"
+          },
+          "skipped": {
+            "type": "number",
+            "description": "Already saved or unusable entries"
+          }
+        },
+        "required": [
+          "created",
+          "skipped"
+        ]
+      },
+      "UpdateTravelCountryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "code": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 code; empty clears it",
+            "example": "VN"
+          }
+        }
+      },
+      "BulkCreateTravelAreasDto": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "maxItems": 50,
+            "description": "Names to add; ones that already exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countryId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "names",
+          "countryId"
+        ]
+      },
+      "UpdateTravelAreaDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "countryId": {
+            "type": "string",
+            "description": "Move the area to a country"
+          }
+        }
+      },
+      "TravelTagKind": {
+        "type": "string",
+        "enum": [
+          "DIET",
+          "ALLERGEN"
+        ]
+      },
+      "TravelTagDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "example": "vegetarian"
+          },
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelTagKind"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Display name; preset tags leave it empty and are translated by key"
+          },
+          "usageCount": {
+            "type": "number",
+            "description": "Recommendations using this tag"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "kind",
+          "name",
+          "usageCount"
+        ]
+      },
+      "BulkCreateTravelTagsDto": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "maxItems": 50,
+            "description": "Names to add; ones that already exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelTagKind"
+              }
+            ]
+          }
+        },
+        "required": [
+          "names",
+          "kind"
+        ]
+      },
+      "UpdateTravelTagDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "TravelCuisineDto": {
         "type": "object",
         "properties": {
@@ -11536,30 +12358,16 @@
           "dishCount"
         ]
       },
-      "TravelDietTag": {
-        "type": "string",
-        "enum": [
-          "vegetarian",
-          "vegan",
-          "pescatarian",
-          "halal",
-          "kosher",
-          "gluten-free",
-          "dairy-free"
-        ]
-      },
-      "TravelAllergenTag": {
-        "type": "string",
-        "enum": [
-          "peanuts",
-          "tree-nuts",
-          "shellfish",
-          "fish",
-          "egg",
-          "dairy",
-          "gluten",
-          "soy",
-          "sesame"
+      "UpdateTravelCuisineDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "name"
         ]
       },
       "TravelDishSummaryDto": {
@@ -11588,6 +12396,31 @@
           "cuisines"
         ]
       },
+      "TravelPlaceAreaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ho Chi Minh City"
+          },
+          "countryId": {
+            "type": "string"
+          },
+          "countryName": {
+            "type": "string",
+            "example": "Vietnam"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "countryId",
+          "countryName"
+        ]
+      },
       "TravelPlaceSummaryDto": {
         "type": "object",
         "properties": {
@@ -11597,6 +12430,15 @@
           "name": {
             "type": "string",
             "example": "21Grams Vegetarian"
+          },
+          "area": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceAreaDto"
+              }
+            ]
           },
           "address": {
             "type": "string",
@@ -11622,6 +12464,7 @@
         "required": [
           "id",
           "name",
+          "area",
           "address",
           "city",
           "mapsUrl",
@@ -11673,12 +12516,18 @@
           "avatarUrl": {
             "type": "string",
             "nullable": true
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true,
+            "example": "hatohui"
           }
         },
         "required": [
           "id",
           "name",
-          "avatarUrl"
+          "avatarUrl",
+          "handle"
         ]
       },
       "TravelRecommendationDto": {
@@ -11724,16 +12573,17 @@
             "type": "boolean"
           },
           "diets": {
+            "description": "Diet tag keys, e.g. vegetarian",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TravelDietTag"
+              "type": "string"
             }
           },
           "allergens": {
+            "description": "Allergen tag keys the dish contains, e.g. peanuts",
             "type": "array",
-            "description": "Allergens the dish contains",
             "items": {
-              "$ref": "#/components/schemas/TravelAllergenTag"
+              "type": "string"
             }
           },
           "images": {
@@ -11779,6 +12629,10 @@
           "name": {
             "type": "string",
             "maxLength": 120
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area the place is in; empty clears it"
           },
           "address": {
             "type": "string",
@@ -11877,15 +12731,17 @@
             "type": "boolean"
           },
           "diets": {
+            "description": "Diet tag keys",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TravelDietTag"
+              "type": "string"
             }
           },
           "allergens": {
+            "description": "Allergen tag keys",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TravelAllergenTag"
+              "type": "string"
             }
           },
           "imageKeys": {
@@ -11946,15 +12802,17 @@
             "type": "boolean"
           },
           "diets": {
+            "description": "Diet tag keys",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TravelDietTag"
+              "type": "string"
             }
           },
           "allergens": {
+            "description": "Allergen tag keys",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TravelAllergenTag"
+              "type": "string"
             }
           },
           "imageKeys": {
@@ -12131,6 +12989,15 @@
             "type": "string",
             "example": "21Grams Vegetarian"
           },
+          "area": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceAreaDto"
+              }
+            ]
+          },
           "address": {
             "type": "string",
             "nullable": true
@@ -12176,6 +13043,7 @@
         "required": [
           "id",
           "name",
+          "area",
           "address",
           "city",
           "mapsUrl",
@@ -12196,6 +13064,15 @@
           "name": {
             "type": "string",
             "example": "21Grams Vegetarian"
+          },
+          "area": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceAreaDto"
+              }
+            ]
           },
           "address": {
             "type": "string",
@@ -12248,6 +13125,7 @@
         "required": [
           "id",
           "name",
+          "area",
           "address",
           "city",
           "mapsUrl",
@@ -12260,12 +13138,36 @@
           "recommendations"
         ]
       },
+      "BulkCreateTravelPlacesDto": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "maxItems": 50,
+            "description": "Names to add; ones that already exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area for every new place"
+          }
+        },
+        "required": [
+          "names"
+        ]
+      },
       "CreateTravelPlaceDto": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
             "maxLength": 120
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area the place is in; empty clears it"
           },
           "address": {
             "type": "string",
@@ -12337,6 +13239,10 @@
           "name": {
             "type": "string",
             "maxLength": 120
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area the place is in; empty clears it"
           },
           "address": {
             "type": "string",

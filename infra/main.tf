@@ -84,6 +84,7 @@ module "iam" {
   source = "./modules/iam"
 
   role_name               = "${var.project_name}-api-lambda-exec"
+  aws_region              = var.aws_region
   github_deploy_role_name = "${var.project_name}-api-github-deploy"
   github_repository       = var.github_repository
   ecr_repository_name     = "${var.project_name}-api"

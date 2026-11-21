@@ -28,6 +28,7 @@ export async function travelPlaceData(dto: Partial<TravelPlaceInputDto>) {
 
   return {
     name: dto.name?.trim(),
+    areaId: optional(dto.areaId),
     address: optional(dto.address),
     city: optional(dto.city),
     note: optional(dto.note),

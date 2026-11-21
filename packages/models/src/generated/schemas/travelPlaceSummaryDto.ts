@@ -5,10 +5,13 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { TravelPlaceAreaDto } from './travelPlaceAreaDto';
 
 export interface TravelPlaceSummaryDto {
   id: string;
   name: string;
+  /** @nullable */
+  area: TravelPlaceAreaDto | null;
   /** @nullable */
   address: string | null;
   /** @nullable */
