@@ -9,7 +9,6 @@ import type { CreateTravelRecommendationDtoCurrency } from './createTravelRecomm
 import type { TravelAllergenTag } from './travelAllergenTag';
 import type { TravelDietTag } from './travelDietTag';
 import type { TravelPriceLevel } from './travelPriceLevel';
-import type { TravelSpiceLevel } from './travelSpiceLevel';
 
 export interface CreateTravelRecommendationDto {
   /** An existing dish */
@@ -48,7 +47,7 @@ export interface CreateTravelRecommendationDto {
   priceMax?: number | null;
   priceLevel?: TravelPriceLevel | null;
   currency?: CreateTravelRecommendationDtoCurrency;
-  spiceLevel?: TravelSpiceLevel;
+  spicy?: boolean;
   diets?: TravelDietTag[];
   allergens?: TravelAllergenTag[];
   /**

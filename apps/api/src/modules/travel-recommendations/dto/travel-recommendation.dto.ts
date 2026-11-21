@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type { TravelPriceLevel, TravelSpiceLevel } from '@prisma/client';
+import type { TravelPriceLevel } from '@prisma/client';
 import {
   TRAVEL_ALLERGEN_TAGS,
   TRAVEL_DIET_TAGS,
   TRAVEL_PRICE_LEVELS,
-  TRAVEL_SPICE_LEVELS,
   type TravelAllergenTag,
   type TravelDietTag,
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
@@ -107,8 +106,8 @@ export class TravelRecommendationDto {
   @ApiProperty({ example: 'VND' })
   currency!: string;
 
-  @ApiProperty({ enum: TRAVEL_SPICE_LEVELS, enumName: 'TravelSpiceLevel' })
-  spiceLevel!: TravelSpiceLevel;
+  @ApiProperty()
+  spicy!: boolean;
 
   @ApiProperty({
     enum: TRAVEL_DIET_TAGS,

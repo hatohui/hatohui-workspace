@@ -11458,15 +11458,6 @@
         ],
         "description": "Rough price level when no amount is known"
       },
-      "TravelSpiceLevel": {
-        "type": "string",
-        "enum": [
-          "NONE",
-          "MILD",
-          "MEDIUM",
-          "HOT"
-        ]
-      },
       "TravelImageDto": {
         "type": "object",
         "properties": {
@@ -11549,12 +11540,8 @@
             "type": "string",
             "example": "VND"
           },
-          "spiceLevel": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelSpiceLevel"
-              }
-            ]
+          "spicy": {
+            "type": "boolean"
           },
           "diets": {
             "type": "array",
@@ -11598,7 +11585,7 @@
           "priceMax",
           "priceLevel",
           "currency",
-          "spiceLevel",
+          "spicy",
           "diets",
           "allergens",
           "images",
@@ -11672,12 +11659,8 @@
               "THB"
             ]
           },
-          "spiceLevel": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelSpiceLevel"
-              }
-            ]
+          "spicy": {
+            "type": "boolean"
           },
           "diets": {
             "type": "array",
@@ -11745,12 +11728,8 @@
               "THB"
             ]
           },
-          "spiceLevel": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelSpiceLevel"
-              }
-            ]
+          "spicy": {
+            "type": "boolean"
           },
           "diets": {
             "type": "array",

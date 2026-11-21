@@ -12,7 +12,6 @@ import type { TravelDishSummaryDto } from './travelDishSummaryDto';
 import type { TravelImageDto } from './travelImageDto';
 import type { TravelPlaceSummaryDto } from './travelPlaceSummaryDto';
 import type { TravelPriceLevel } from './travelPriceLevel';
-import type { TravelSpiceLevel } from './travelSpiceLevel';
 
 export interface TravelRecommendationDto {
   id: string;
@@ -33,7 +32,7 @@ export interface TravelRecommendationDto {
   /** Rough price level when no amount is known */
   priceLevel: TravelPriceLevel | null;
   currency: string;
-  spiceLevel: TravelSpiceLevel;
+  spicy: boolean;
   diets: TravelDietTag[];
   /** Allergens the dish contains */
   allergens: TravelAllergenTag[];

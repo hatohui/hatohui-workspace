@@ -35,8 +35,7 @@
     "nextPhoto": "次の写真",
     "priceSingle": "約 {{price}}",
     "priceRange": "{{min}} – {{max}}",
-    "contains": "{{list}} を含む",
-    "spiceLabel": "辛さ：{{level}}"
+    "contains": "{{list}} を含む"
   },
   "form": {
     "createTitle": "料理を追加",
@@ -70,7 +69,6 @@
     "sectionDish": "料理とお店",
     "sectionPrice": "価格",
     "sectionTags": "タグ",
-    "spice": "辛さ",
     "diets": "食事制限",
     "allergens": "含まれるアレルゲン",
     "priceRange": "金額",
@@ -116,12 +114,6 @@
   "notFound": {
     "title": "ページが見つかりません",
     "back": "グルメカタログに戻る"
-  },
-  "spice": {
-    "NONE": "辛くない",
-    "MILD": "少し辛い",
-    "MEDIUM": "辛い",
-    "HOT": "激辛"
   },
   "priceLevel": {
     "LOW": "安い",

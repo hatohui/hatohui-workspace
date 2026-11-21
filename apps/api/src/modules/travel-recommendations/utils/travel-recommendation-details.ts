@@ -19,7 +19,7 @@ export function travelRecommendationDetails(
     ...travelPriceRange(dto),
     priceLevel: dto.priceLevel,
     currency: dto.currency,
-    spiceLevel: dto.spiceLevel,
+    spicy: dto.spicy,
   };
 }
 

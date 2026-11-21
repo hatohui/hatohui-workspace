@@ -3,23 +3,30 @@ import {
   TravelAllergenTag,
   TravelDietTag,
   TravelPriceLevel,
-  TravelSpiceLevel,
 } from '@hatohui/models';
+import {
+  Fish,
+  Leaf,
+  MilkOff,
+  Sprout,
+  WheatOff,
+  type LucideIcon,
+} from 'lucide-react';
 
 export const CURRENCIES = Object.values(CreateTravelRecommendationDtoCurrency);
 export type Currency = (typeof CURRENCIES)[number];
 export const DEFAULT_CURRENCY: Currency = 'VND';
 
-export const SPICE_LEVELS = Object.values(TravelSpiceLevel);
 export const PRICE_LEVELS = Object.values(TravelPriceLevel);
 export const DIET_TAGS = Object.values(TravelDietTag);
 export const ALLERGEN_TAGS = Object.values(TravelAllergenTag);
 
-export const SPICE_FLAMES: Record<TravelSpiceLevel, number> = {
-  NONE: 0,
-  MILD: 1,
-  MEDIUM: 2,
-  HOT: 3,
+export const DIET_ICONS: Partial<Record<TravelDietTag, LucideIcon>> = {
+  vegetarian: Leaf,
+  vegan: Sprout,
+  pescatarian: Fish,
+  'gluten-free': WheatOff,
+  'dairy-free': MilkOff,
 };
 
 export const PRICE_LEVEL_SYMBOLS: Record<TravelPriceLevel, number> = {

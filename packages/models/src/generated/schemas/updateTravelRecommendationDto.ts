@@ -8,7 +8,6 @@
 import type { TravelAllergenTag } from './travelAllergenTag';
 import type { TravelDietTag } from './travelDietTag';
 import type { TravelPriceLevel } from './travelPriceLevel';
-import type { TravelSpiceLevel } from './travelSpiceLevel';
 import type { UpdateTravelRecommendationDtoCurrency } from './updateTravelRecommendationDtoCurrency';
 
 export interface UpdateTravelRecommendationDto {
@@ -31,7 +30,7 @@ export interface UpdateTravelRecommendationDto {
   priceMax?: number | null;
   priceLevel?: TravelPriceLevel | null;
   currency?: UpdateTravelRecommendationDtoCurrency;
-  spiceLevel?: TravelSpiceLevel;
+  spicy?: boolean;
   diets?: TravelDietTag[];
   allergens?: TravelAllergenTag[];
   /**

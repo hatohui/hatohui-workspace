@@ -64,7 +64,7 @@ export function toTravelRecommendationDto(
     priceMax: row.priceMax,
     priceLevel: row.priceLevel,
     currency: row.currency,
-    spiceLevel: row.spiceLevel,
+    spicy: row.spicy,
     diets: tagsOf('DIET') as TravelDietTag[],
     allergens: tagsOf('ALLERGEN') as TravelAllergenTag[],
     images: row.images.map(({ key, createdById }) => ({

@@ -2,6 +2,7 @@ import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayMaxSize,
   IsArray,
+  IsBoolean,
   IsIn,
   IsInt,
   IsOptional,
@@ -9,7 +10,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import type { TravelPriceLevel, TravelSpiceLevel } from '@prisma/client';
+import type { TravelPriceLevel } from '@prisma/client';
 import {
   TRAVEL_ALLERGEN_TAGS,
   TRAVEL_CURRENCIES,
@@ -19,7 +20,6 @@ import {
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
   TRAVEL_PRICE_LEVELS,
-  TRAVEL_SPICE_LEVELS,
   TRAVEL_URL_MAX_LENGTH,
   type TravelAllergenTag,
   type TravelCurrency,
@@ -115,14 +115,10 @@ export class CreateTravelRecommendationDto {
   @IsIn(TRAVEL_CURRENCIES)
   currency?: TravelCurrency;
 
-  @ApiProperty({
-    required: false,
-    enum: TRAVEL_SPICE_LEVELS,
-    enumName: 'TravelSpiceLevel',
-  })
+  @ApiProperty({ required: false })
   @IsOptional()
-  @IsIn(TRAVEL_SPICE_LEVELS)
-  spiceLevel?: TravelSpiceLevel;
+  @IsBoolean()
+  spicy?: boolean;
 
   @ApiProperty({
     required: false,

@@ -35,8 +35,7 @@
     "nextPhoto": "Next photo",
     "priceSingle": "About {{price}}",
     "priceRange": "{{min}} – {{max}}",
-    "contains": "Contains {{list}}",
-    "spiceLabel": "Spice: {{level}}"
+    "contains": "Contains {{list}}"
   },
   "form": {
     "createTitle": "Add food",
@@ -70,7 +69,6 @@
     "sectionDish": "Dish and place",
     "sectionPrice": "Price",
     "sectionTags": "Tags",
-    "spice": "Spice level",
     "diets": "Diet",
     "allergens": "Contains allergens",
     "priceRange": "Amount",
@@ -116,12 +114,6 @@
   "notFound": {
     "title": "Page not found",
     "back": "Back to the food catalog"
-  },
-  "spice": {
-    "NONE": "Not spicy",
-    "MILD": "Mild",
-    "MEDIUM": "Medium",
-    "HOT": "Hot"
   },
   "priceLevel": {
     "LOW": "Low price",

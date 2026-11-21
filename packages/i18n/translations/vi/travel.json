@@ -35,8 +35,7 @@
     "nextPhoto": "Ảnh sau",
     "priceSingle": "Khoảng {{price}}",
     "priceRange": "{{min}} – {{max}}",
-    "contains": "Có chứa {{list}}",
-    "spiceLabel": "Độ cay: {{level}}"
+    "contains": "Có chứa {{list}}"
   },
   "form": {
     "createTitle": "Thêm món",
@@ -70,7 +69,6 @@
     "sectionDish": "Món và địa điểm",
     "sectionPrice": "Giá",
     "sectionTags": "Thẻ",
-    "spice": "Độ cay",
     "diets": "Chế độ ăn",
     "allergens": "Chất gây dị ứng",
     "priceRange": "Số tiền",
@@ -116,12 +114,6 @@
   "notFound": {
     "title": "Không tìm thấy trang",
     "back": "Về danh mục món ngon"
-  },
-  "spice": {
-    "NONE": "Không cay",
-    "MILD": "Cay nhẹ",
-    "MEDIUM": "Cay vừa",
-    "HOT": "Rất cay"
   },
   "priceLevel": {
     "LOW": "Giá rẻ",

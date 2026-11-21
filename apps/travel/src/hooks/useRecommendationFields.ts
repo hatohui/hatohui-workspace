@@ -4,7 +4,6 @@ import type {
   TravelDietTag,
   TravelPriceLevel,
   TravelRecommendationDto,
-  TravelSpiceLevel,
 } from '@hatohui/models';
 import {
   DEFAULT_CURRENCY,
@@ -23,7 +22,7 @@ export interface RecommendationFields {
   priceLevel: TravelPriceLevel | null;
   currency: Currency;
   note: string;
-  spiceLevel: TravelSpiceLevel;
+  spicy: boolean;
   diets: TravelDietTag[];
   allergens: TravelAllergenTag[];
 }
@@ -42,7 +41,7 @@ const fieldsFrom = (rec?: TravelRecommendationDto): RecommendationFields => ({
   priceLevel: rec?.priceLevel ?? null,
   currency: (rec?.currency as Currency | undefined) ?? DEFAULT_CURRENCY,
   note: rec?.note ?? '',
-  spiceLevel: rec?.spiceLevel ?? 'NONE',
+  spicy: rec?.spicy ?? false,
   diets: rec?.diets ?? [],
   allergens: rec?.allergens ?? [],
 });

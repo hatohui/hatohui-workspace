@@ -35,8 +35,7 @@
     "nextPhoto": "下一张",
     "priceSingle": "约 {{price}}",
     "priceRange": "{{min}} – {{max}}",
-    "contains": "含有 {{list}}",
-    "spiceLabel": "辣度：{{level}}"
+    "contains": "含有 {{list}}"
   },
   "form": {
     "createTitle": "添加美食",
@@ -70,7 +69,6 @@
     "sectionDish": "菜品和地点",
     "sectionPrice": "价格",
     "sectionTags": "标签",
-    "spice": "辣度",
     "diets": "饮食",
     "allergens": "含过敏原",
     "priceRange": "金额",
@@ -116,12 +114,6 @@
   "notFound": {
     "title": "页面不存在",
     "back": "返回美食目录"
-  },
-  "spice": {
-    "NONE": "不辣",
-    "MILD": "微辣",
-    "MEDIUM": "中辣",
-    "HOT": "特辣"
   },
   "priceLevel": {
     "LOW": "低价",

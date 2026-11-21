@@ -857,13 +857,6 @@ model TravelPlace {
   @@index([city])
 }
 
-enum TravelSpiceLevel {
-  NONE
-  MILD
-  MEDIUM
-  HOT
-}
-
 enum TravelTagKind {
   DIET
   ALLERGEN
@@ -897,7 +890,7 @@ model TravelRecommendation {
   priceMax    Int?
   priceLevel  TravelPriceLevel?
   currency    String            @default("VND")
-  spiceLevel  TravelSpiceLevel  @default(NONE)
+  spicy       Boolean           @default(false)
   createdById String?
   createdBy   User?             @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime          @default(now())

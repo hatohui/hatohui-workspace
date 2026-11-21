@@ -1,6 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Flame } from 'lucide-react';
-import { DIET_TAGS } from '../../constants/travel';
+import { DIET_ICONS, DIET_TAGS } from '../../constants/travel';
 import type { useCatalog } from '../../hooks/useCatalog';
 import SearchField from '../shared/SearchField';
 import TagChipGroup from '../shared/TagChipGroup';
@@ -38,6 +38,7 @@ function CatalogToolbar({ filters }: Props) {
           options={DIET_TAGS}
           selected={filters.diets}
           labelOf={(tag) => t(`diet.${tag}`)}
+          iconOf={(tag) => DIET_ICONS[tag]}
           onToggle={filters.toggleDiet}
         />
       </div>

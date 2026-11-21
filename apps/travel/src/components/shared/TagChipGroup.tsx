@@ -1,11 +1,13 @@
-import { Check } from 'lucide-react';
+import { Check, type LucideIcon } from 'lucide-react';
 import { cn } from '@hatohui/ui';
+import TagChipIcon from './TagChipIcon';
 
 interface Props<T extends string> {
   label: string;
   options: readonly T[];
   selected: readonly T[];
   labelOf: (value: T) => string;
+  iconOf?: (value: T) => LucideIcon | undefined;
   onToggle: (value: T) => void;
   tone?: 'default' | 'warning';
 }
@@ -15,6 +17,7 @@ function TagChipGroup<T extends string>({
   options,
   selected,
   labelOf,
+  iconOf,
   onToggle,
   tone = 'default',
 }: Props<T>) {
@@ -40,7 +43,7 @@ function TagChipGroup<T extends string>({
                 'border-amber-500/60 bg-amber-500/10 text-amber-800 dark:text-amber-300',
             )}
           >
-            {isOn && <Check className="size-3.5" aria-hidden />}
+            <TagChipIcon icon={isOn ? Check : iconOf?.(option)} />
             {labelOf(option)}
           </button>
         );

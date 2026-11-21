@@ -17,16 +17,16 @@ TravelCuisine >──< TravelDish ──< TravelRecommendation >── TravelPla
   spreadsheet row is neither a dish nor a place: it is the pairing, so it gets
   its own table, `TravelRecommendation`, unique on `(placeId, dishId)`.
 - **Everything that differs per place lives on the recommendation:** the note,
-  the price, the photos, the spice level and the diet and allergen tags. A
+  the price, the photos, the spicy flag and the diet and allergen tags. A
   vegetarian restaurant's version of a dish is vegetarian even when the dish
   usually is not, so none of those can sit on the dish.
 - **Cuisines are their own table**, many-to-many with dishes, so a dish can be
   both "Vietnamese" and "Street food" and the catalog can filter and suggest by
   them. Names are unique and matched case-insensitively, so typing an existing
   cuisine reuses it.
-- **Tags are split by meaning.** Spice is a single level (`NONE`, `MILD`,
-  `MEDIUM`, `HOT`) on the recommendation, not a tag, because a dish has exactly
-  one. Diets (vegetarian, vegan, pescatarian, halal, kosher, gluten-free,
+- **Tags are split by meaning.** Spicy is a plain on/off flag on the
+  recommendation; a finer level was tried and dropped as more detail than the
+  catalog needs. Diets (vegetarian, vegan, pescatarian, halal, kosher, gluten-free,
   dairy-free) and allergens the dish _contains_ (peanuts, tree nuts, shellfish,
   fish, egg, dairy, gluten, soy, sesame) are rows in `TravelTag` with a `kind`,
   seeded by the migration with fixed keys so each language translates them.
@@ -48,8 +48,8 @@ TravelCuisine >──< TravelDish ──< TravelRecommendation >── TravelPla
 
 The `travel_cuisines_tags_price` migration converted the first version's
 columns in place: comma-separated `cuisine` text became cuisine rows, a single
-`estimate` became a one-value range, `spicy` became `MEDIUM`, and `vegetarian`
-became the vegetarian diet tag.
+`estimate` became a one-value range, and `vegetarian` became the vegetarian
+diet tag.
 
 ## Writes
 

@@ -234,7 +234,6 @@ export * from './travelPlaceSummaryDto';
 export * from './travelPriceLevel';
 export * from './travelRecommendationDto';
 export * from './travelRecommendationsParams';
-export * from './travelSpiceLevel';
 export * from './unlockCommissionDto';
 export * from './unlockedCommissionDto';
 export * from './unreadCountDto';

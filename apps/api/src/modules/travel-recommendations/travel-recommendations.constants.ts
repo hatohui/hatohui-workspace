@@ -9,7 +9,6 @@ export const TRAVEL_CURRENCIES = ['VND', 'USD', 'JPY', 'EUR', 'THB'] as const;
 export type TravelCurrency = (typeof TRAVEL_CURRENCIES)[number];
 export const UNIQUE_VIOLATION_CODE = 'P2002';
 
-export const TRAVEL_SPICE_LEVELS = ['NONE', 'MILD', 'MEDIUM', 'HOT'] as const;
 export const TRAVEL_PRICE_LEVELS = ['LOW', 'MID', 'HIGH'] as const;
 
 export const TRAVEL_DIET_TAGS = [

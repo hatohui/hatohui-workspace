@@ -23,7 +23,7 @@ const detailsOf = (fields: RecommendationFields, imageKeys: string[]) => {
     priceMax: isRange ? toAmount(fields.priceMax || fields.priceMin) : null,
     priceLevel: isRange ? null : fields.priceLevel,
     currency: fields.currency,
-    spiceLevel: fields.spiceLevel,
+    spicy: fields.spicy,
     diets: fields.diets,
     allergens: fields.allergens,
     imageKeys,

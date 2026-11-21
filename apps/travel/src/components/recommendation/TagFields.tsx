@@ -1,10 +1,10 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Label } from '@hatohui/ui';
-import { ALLERGEN_TAGS, DIET_TAGS, SPICE_LEVELS } from '../../constants/travel';
+import { Flame } from 'lucide-react';
+import { ALLERGEN_TAGS, DIET_ICONS, DIET_TAGS } from '../../constants/travel';
 import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
-import ChoiceChips from '../shared/ChoiceChips';
 import TagChipGroup from '../shared/TagChipGroup';
-import SpiceFlames from './SpiceFlames';
+import FilterChip from '../catalog/FilterChip';
 
 type FieldsApi = ReturnType<typeof useRecommendationFields>;
 
@@ -18,23 +18,12 @@ function TagFields({ fields, set, toggle }: Props) {
   const { t } = useTranslation();
   return (
     <div className="space-y-4">
-      <div className="space-y-1.5">
-        <Label>{t('form.spice')}</Label>
-        <ChoiceChips
-          label={t('form.spice')}
-          value={fields.spiceLevel}
-          onChange={(level) => set('spiceLevel', level)}
-          options={SPICE_LEVELS.map((level) => ({
-            value: level,
-            label: (
-              <>
-                <SpiceFlames level={level} />
-                {t(`spice.${level}`)}
-              </>
-            ),
-          }))}
-        />
-      </div>
+      <FilterChip
+        icon={Flame}
+        label={t('catalog.spicy')}
+        pressed={fields.spicy}
+        onChange={(spicy) => set('spicy', spicy)}
+      />
       <div className="space-y-1.5">
         <Label>{t('form.diets')}</Label>
         <TagChipGroup
@@ -42,6 +31,7 @@ function TagFields({ fields, set, toggle }: Props) {
           options={DIET_TAGS}
           selected={fields.diets}
           labelOf={(tag) => t(`diet.${tag}`)}
+          iconOf={(tag) => DIET_ICONS[tag]}
           onToggle={(tag) => toggle('diets', tag)}
         />
       </div>

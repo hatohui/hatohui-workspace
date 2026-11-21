@@ -25,7 +25,7 @@ export function travelRecommendationWhere(
   return {
     dishId: query.dishId,
     placeId: query.placeId,
-    spiceLevel: query.spicy ? { not: 'NONE' } : undefined,
+    spicy: query.spicy || undefined,
     place: query.city ? { city: contains(query.city) } : undefined,
     AND: and.length ? and : undefined,
     OR: q
