@@ -13,14 +13,22 @@ interface Matches {
   placeId?: string;
 }
 
-const detailsOf = (fields: RecommendationFields, imageKeys: string[]) => ({
-  note: fields.note,
-  estimate: fields.estimate === '' ? null : Number(fields.estimate),
-  currency: fields.currency,
-  spicy: fields.spicy,
-  vegetarian: fields.vegetarian,
-  imageKeys,
-});
+const toAmount = (value: string) => (value === '' ? null : Number(value));
+
+const detailsOf = (fields: RecommendationFields, imageKeys: string[]) => {
+  const isRange = fields.priceMode === 'range';
+  return {
+    note: fields.note,
+    priceMin: isRange ? toAmount(fields.priceMin) : null,
+    priceMax: isRange ? toAmount(fields.priceMax || fields.priceMin) : null,
+    priceLevel: isRange ? null : fields.priceLevel,
+    currency: fields.currency,
+    spiceLevel: fields.spiceLevel,
+    diets: fields.diets,
+    allergens: fields.allergens,
+    imageKeys,
+  };
+};
 
 export function useSaveRecommendation(
   existing: TravelRecommendationDto | undefined,
@@ -49,7 +57,7 @@ export function useSaveRecommendation(
             ...detailsOf(fields, imageKeys),
             dishId: matches.dishId,
             dishName: matches.dishId ? undefined : fields.dishName,
-            cuisine: fields.cuisine || undefined,
+            cuisines: matches.dishId ? undefined : fields.cuisines,
             placeId: matches.placeId,
             placeName: matches.placeId ? undefined : fields.placeName,
             placeMapsUrl: fields.mapsUrl || undefined,

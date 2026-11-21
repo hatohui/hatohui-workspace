@@ -10,16 +10,18 @@
     "subtitle": "わざわざ行く価値のある料理と、食べられる場所。",
     "searchPlaceholder": "料理、お店、メモを検索",
     "spicy": "辛い",
-    "vegetarian": "ベジタリアン",
     "add": "料理を追加",
     "count_one": "{{count}} 件",
     "count_other": "{{count}} 件",
     "empty": "まだ何もありません。",
     "emptyFiltered": "条件に合う料理がありません。",
-    "clearFilters": "絞り込みを解除"
+    "clearFilters": "絞り込みを解除",
+    "avoidAllergens": "アレルゲンを除外",
+    "avoiding_one": "{{count}} 件を除外中",
+    "avoiding_other": "{{count}} 件を除外中",
+    "avoidHint": "次を含む料理を非表示："
   },
   "recommendation": {
-    "estimate": "約 {{price}}",
     "noEstimate": "価格未登録",
     "addedBy": "{{name}} が追加",
     "photos_one": "写真 {{count}} 枚",
@@ -30,7 +32,11 @@
     "deleteTitle": "このおすすめを削除しますか？",
     "deleteDescription": "{{place}} の {{dish}} とその写真が削除されます。料理とお店は残ります。",
     "previousPhoto": "前の写真",
-    "nextPhoto": "次の写真"
+    "nextPhoto": "次の写真",
+    "priceSingle": "約 {{price}}",
+    "priceRange": "{{min}} – {{max}}",
+    "contains": "{{list}} を含む",
+    "spiceLabel": "辛さ：{{level}}"
   },
   "form": {
     "createTitle": "料理を追加",
@@ -38,18 +44,14 @@
     "dish": "料理",
     "dishPlaceholder": "エッグコーヒー",
     "dishHint": "一覧から選ぶか、新しい名前を入力してください。",
-    "cuisine": "ジャンル",
-    "cuisinePlaceholder": "ベトナム料理",
     "place": "お店",
     "placePlaceholder": "21Grams Vegetarian",
     "placeHint": "保存済みのお店を選ぶか、新しく入力してください。",
     "mapsUrl": "Google マップのリンク",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "estimate": "予算の目安",
     "currency": "通貨",
     "note": "メモ",
     "notePlaceholder": "何を頼むか、いつ行くか、どこが良いか",
-    "flags": "タグ",
     "photos": "写真",
     "addPhotos": "写真を追加",
     "removePhoto": "写真を削除",
@@ -60,7 +62,25 @@
     "saving": "保存中...",
     "existing": "保存済み",
     "new": "新規",
-    "duplicate": "このお店にはその料理のおすすめがすでにあります。"
+    "duplicate": "このお店にはその料理のおすすめがすでにあります。",
+    "cuisines": "ジャンル",
+    "cuisinesPlaceholder": "ジャンルを追加",
+    "cuisineCreate": "「{{tag}}」を追加",
+    "cuisineRemove": "{{tag}} を削除",
+    "sectionDish": "料理とお店",
+    "sectionPrice": "価格",
+    "sectionTags": "タグ",
+    "spice": "辛さ",
+    "diets": "食事制限",
+    "allergens": "含まれるアレルゲン",
+    "priceRange": "金額",
+    "priceLevel": "価格帯",
+    "priceFrom": "から",
+    "priceTo": "まで（任意）",
+    "priceLevelHint": "正確な価格がわからない場合は価格帯を選んでください。",
+    "dropPhotos": "ここに写真をドロップ",
+    "browsePhotos": "またはクリックして選択",
+    "photosHint": "最大 {{count}} 枚。1 枚目がカバー写真です。"
   },
   "dishes": {
     "title": "料理",
@@ -96,5 +116,36 @@
   "notFound": {
     "title": "ページが見つかりません",
     "back": "グルメカタログに戻る"
+  },
+  "spice": {
+    "NONE": "辛くない",
+    "MILD": "少し辛い",
+    "MEDIUM": "辛い",
+    "HOT": "激辛"
+  },
+  "priceLevel": {
+    "LOW": "安い",
+    "MID": "普通",
+    "HIGH": "高い"
+  },
+  "diet": {
+    "vegetarian": "ベジタリアン",
+    "vegan": "ヴィーガン",
+    "pescatarian": "ペスカタリアン",
+    "halal": "ハラール",
+    "kosher": "コーシャ",
+    "gluten-free": "グルテンフリー",
+    "dairy-free": "乳製品不使用"
+  },
+  "allergen": {
+    "peanuts": "落花生",
+    "tree-nuts": "ナッツ類",
+    "shellfish": "甲殻類・貝類",
+    "fish": "魚",
+    "egg": "卵",
+    "dairy": "乳",
+    "gluten": "グルテン",
+    "soy": "大豆",
+    "sesame": "ごま"
   }
 }

@@ -5246,6 +5246,31 @@
         ]
       }
     },
+    "/travel/cuisines": {
+      "get": {
+        "operationId": "travelCuisines",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelCuisineDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every cuisine tag, for suggestions and filters",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/recommendations": {
       "get": {
         "operationId": "travelRecommendations",
@@ -5300,11 +5325,27 @@
             }
           },
           {
-            "name": "vegetarian",
+            "name": "diets",
             "required": false,
             "in": "query",
+            "description": "Only dishes that meet every listed diet",
             "schema": {
-              "type": "boolean"
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TravelDietTag"
+              }
+            }
+          },
+          {
+            "name": "excludeAllergens",
+            "required": false,
+            "in": "query",
+            "description": "Hide dishes that contain any of these allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/TravelAllergenTag"
+              }
             }
           }
         ],
@@ -11294,6 +11335,53 @@
           }
         }
       },
+      "TravelCuisineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Vietnamese"
+          },
+          "dishCount": {
+            "type": "number",
+            "description": "Dishes tagged with this cuisine"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "dishCount"
+        ]
+      },
+      "TravelDietTag": {
+        "type": "string",
+        "enum": [
+          "vegetarian",
+          "vegan",
+          "pescatarian",
+          "halal",
+          "kosher",
+          "gluten-free",
+          "dairy-free"
+        ]
+      },
+      "TravelAllergenTag": {
+        "type": "string",
+        "enum": [
+          "peanuts",
+          "tree-nuts",
+          "shellfish",
+          "fish",
+          "egg",
+          "dairy",
+          "gluten",
+          "soy",
+          "sesame"
+        ]
+      },
       "TravelDishSummaryDto": {
         "type": "object",
         "properties": {
@@ -11304,16 +11392,20 @@
             "type": "string",
             "example": "Egg coffee"
           },
-          "cuisine": {
-            "type": "string",
-            "nullable": true,
-            "example": "Vietnamese"
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
           "id",
           "name",
-          "cuisine"
+          "cuisines"
         ]
       },
       "TravelPlaceSummaryDto": {
@@ -11355,6 +11447,24 @@
           "mapsUrl",
           "latitude",
           "longitude"
+        ]
+      },
+      "TravelPriceLevel": {
+        "type": "string",
+        "enum": [
+          "LOW",
+          "MID",
+          "HIGH"
+        ],
+        "description": "Rough price level when no amount is known"
+      },
+      "TravelSpiceLevel": {
+        "type": "string",
+        "enum": [
+          "NONE",
+          "MILD",
+          "MEDIUM",
+          "HOT"
         ]
       },
       "TravelImageDto": {
@@ -11416,20 +11526,48 @@
             "type": "string",
             "nullable": true
           },
-          "estimate": {
+          "priceMin": {
             "type": "number",
             "nullable": true,
-            "description": "Rough price per person, in currency units"
+            "description": "Lowest price per person, in currency units"
+          },
+          "priceMax": {
+            "type": "number",
+            "nullable": true,
+            "description": "Highest price per person; equal to priceMin for one price"
+          },
+          "priceLevel": {
+            "nullable": true,
+            "description": "Rough price level when no amount is known",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPriceLevel"
+              }
+            ]
           },
           "currency": {
             "type": "string",
             "example": "VND"
           },
-          "spicy": {
-            "type": "boolean"
+          "spiceLevel": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelSpiceLevel"
+              }
+            ]
           },
-          "vegetarian": {
-            "type": "boolean"
+          "diets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelDietTag"
+            }
+          },
+          "allergens": {
+            "type": "array",
+            "description": "Allergens the dish contains",
+            "items": {
+              "$ref": "#/components/schemas/TravelAllergenTag"
+            }
           },
           "images": {
             "type": "array",
@@ -11456,10 +11594,13 @@
           "dish",
           "place",
           "note",
-          "estimate",
+          "priceMin",
+          "priceMax",
+          "priceLevel",
           "currency",
-          "spicy",
-          "vegetarian",
+          "spiceLevel",
+          "diets",
+          "allergens",
           "images",
           "createdBy",
           "createdAt"
@@ -11477,9 +11618,13 @@
             "maxLength": 120,
             "description": "Dish name, found or created when dishId is absent"
           },
-          "cuisine": {
-            "type": "string",
-            "maxLength": 120
+          "cuisines": {
+            "maxItems": 6,
+            "description": "Cuisine tags for a newly created dish, found or created",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "placeId": {
             "type": "string",
@@ -11498,10 +11643,24 @@
             "type": "string",
             "maxLength": 2000
           },
-          "estimate": {
+          "priceMin": {
             "type": "number",
             "nullable": true,
             "minimum": 0
+          },
+          "priceMax": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Leave equal to priceMin, or empty, for a single price"
+          },
+          "priceLevel": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPriceLevel"
+              }
+            ]
           },
           "currency": {
             "type": "string",
@@ -11513,11 +11672,24 @@
               "THB"
             ]
           },
-          "spicy": {
-            "type": "boolean"
+          "spiceLevel": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelSpiceLevel"
+              }
+            ]
           },
-          "vegetarian": {
-            "type": "boolean"
+          "diets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelDietTag"
+            }
+          },
+          "allergens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelAllergenTag"
+            }
           },
           "imageKeys": {
             "maxItems": 12,
@@ -11544,10 +11716,24 @@
             "type": "string",
             "maxLength": 2000
           },
-          "estimate": {
+          "priceMin": {
             "type": "number",
             "nullable": true,
             "minimum": 0
+          },
+          "priceMax": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Leave equal to priceMin, or empty, for a single price"
+          },
+          "priceLevel": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPriceLevel"
+              }
+            ]
           },
           "currency": {
             "type": "string",
@@ -11559,11 +11745,24 @@
               "THB"
             ]
           },
-          "spicy": {
-            "type": "boolean"
+          "spiceLevel": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelSpiceLevel"
+              }
+            ]
           },
-          "vegetarian": {
-            "type": "boolean"
+          "diets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelDietTag"
+            }
+          },
+          "allergens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelAllergenTag"
+            }
           },
           "imageKeys": {
             "maxItems": 12,
@@ -11585,9 +11784,14 @@
             "type": "string",
             "example": "Egg coffee"
           },
-          "cuisine": {
-            "type": "string",
-            "nullable": true
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "description": {
             "type": "string",
@@ -11614,7 +11818,7 @@
         "required": [
           "id",
           "name",
-          "cuisine",
+          "cuisines",
           "description",
           "placeCount",
           "coverImageUrl",
@@ -11631,9 +11835,14 @@
             "type": "string",
             "example": "Egg coffee"
           },
-          "cuisine": {
-            "type": "string",
-            "nullable": true
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "description": {
             "type": "string",
@@ -11666,7 +11875,7 @@
         "required": [
           "id",
           "name",
-          "cuisine",
+          "cuisines",
           "description",
           "placeCount",
           "coverImageUrl",
@@ -11681,9 +11890,13 @@
             "type": "string",
             "maxLength": 120
           },
-          "cuisine": {
-            "type": "string",
-            "maxLength": 120
+          "cuisines": {
+            "maxItems": 6,
+            "description": "Cuisine tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "description": {
             "type": "string",
@@ -11701,9 +11914,13 @@
             "type": "string",
             "maxLength": 120
           },
-          "cuisine": {
-            "type": "string",
-            "maxLength": 120
+          "cuisines": {
+            "maxItems": 6,
+            "description": "Cuisine tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "description": {
             "type": "string",

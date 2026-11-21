@@ -1,9 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional, IsString } from 'class-validator';
+import {
+  TRAVEL_ALLERGEN_TAGS,
+  TRAVEL_DIET_TAGS,
+  type TravelAllergenTag,
+  type TravelDietTag,
+} from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 const toBoolean = ({ value }: { value: unknown }) =>
   value === undefined ? undefined : [true, 'true'].includes(value as string);
+
+const toList = ({ value }: { value: unknown }) =>
+  value === undefined
+    ? undefined
+    : ([] as unknown[])
+        .concat(value)
+        .flatMap((item) => String(item).split(','))
+        .map((item) => item.trim())
+        .filter(Boolean);
 
 export class TravelRecommendationQueryDto {
   @ApiProperty({
@@ -40,9 +55,27 @@ export class TravelRecommendationQueryDto {
   @IsBoolean()
   spicy?: boolean;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    required: false,
+    enum: TRAVEL_DIET_TAGS,
+    enumName: 'TravelDietTag',
+    isArray: true,
+    description: 'Only dishes that meet every listed diet',
+  })
   @IsOptional()
-  @Transform(toBoolean)
-  @IsBoolean()
-  vegetarian?: boolean;
+  @Transform(toList)
+  @IsIn(TRAVEL_DIET_TAGS, { each: true })
+  diets?: TravelDietTag[];
+
+  @ApiProperty({
+    required: false,
+    enum: TRAVEL_ALLERGEN_TAGS,
+    enumName: 'TravelAllergenTag',
+    isArray: true,
+    description: 'Hide dishes that contain any of these allergens',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsIn(TRAVEL_ALLERGEN_TAGS, { each: true })
+  excludeAllergens?: TravelAllergenTag[];
 }

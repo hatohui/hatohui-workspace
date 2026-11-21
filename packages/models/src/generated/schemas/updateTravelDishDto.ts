@@ -9,8 +9,11 @@
 export interface UpdateTravelDishDto {
   /** @maxLength 120 */
   name?: string;
-  /** @maxLength 120 */
-  cuisine?: string;
+  /**
+     * Cuisine tags, found or created by name
+     * @maxItems 6
+     */
+  cuisines?: string[];
   /** @maxLength 2000 */
   description?: string;
 }

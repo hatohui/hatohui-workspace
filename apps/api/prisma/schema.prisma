@@ -70,6 +70,7 @@ model User {
   clientAccount           Client?                     @relation("ClientAccount")
   commissionStatusChanges CommissionStatusHistory[]   @relation("CommissionStatusChangedBy")
   travelDishes            TravelDish[]                @relation("TravelDishCreator")
+  travelCuisines          TravelCuisine[]             @relation("TravelCuisineCreator")
   travelPlaces            TravelPlace[]               @relation("TravelPlaceCreator")
   travelRecommendations   TravelRecommendation[]      @relation("TravelRecommendationCreator")
   travelImages            TravelRecommendationImage[] @relation("TravelImageUploader")
@@ -817,16 +818,24 @@ model CommissionFollower {
 model TravelDish {
   id          String   @id @default(cuid())
   name        String   @unique
-  cuisine     String?
   description String?
   createdById String?
   createdBy   User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  cuisines        TravelCuisine[]
   recommendations TravelRecommendation[]
+}
 
-  @@index([cuisine])
+model TravelCuisine {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  createdById String?
+  createdBy   User?    @relation("TravelCuisineCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  dishes TravelDish[]
 }
 
 model TravelPlace {
@@ -848,23 +857,54 @@ model TravelPlace {
   @@index([city])
 }
 
+enum TravelSpiceLevel {
+  NONE
+  MILD
+  MEDIUM
+  HOT
+}
+
+enum TravelTagKind {
+  DIET
+  ALLERGEN
+}
+
+model TravelTag {
+  id       String        @id @default(cuid())
+  key      String        @unique
+  kind     TravelTagKind
+  position Int
+
+  recommendations TravelRecommendation[]
+
+  @@index([kind, position])
+}
+
+enum TravelPriceLevel {
+  LOW
+  MID
+  HIGH
+}
+
 model TravelRecommendation {
-  id          String      @id @default(cuid())
+  id          String            @id @default(cuid())
   dishId      String
-  dish        TravelDish  @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  dish        TravelDish        @relation(fields: [dishId], references: [id], onDelete: Cascade)
   placeId     String
-  place       TravelPlace @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  place       TravelPlace       @relation(fields: [placeId], references: [id], onDelete: Cascade)
   note        String?
-  estimate    Int?
-  currency    String      @default("VND")
-  spicy       Boolean     @default(false)
-  vegetarian  Boolean     @default(false)
+  priceMin    Int?
+  priceMax    Int?
+  priceLevel  TravelPriceLevel?
+  currency    String            @default("VND")
+  spiceLevel  TravelSpiceLevel  @default(NONE)
   createdById String?
-  createdBy   User?       @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdBy   User?             @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   images TravelRecommendationImage[]
+  tags   TravelTag[]
 
   @@unique([placeId, dishId])
   @@index([dishId])

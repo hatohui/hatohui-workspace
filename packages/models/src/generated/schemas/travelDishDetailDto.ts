@@ -11,8 +11,7 @@ import type { TravelRecommendationDto } from './travelRecommendationDto';
 export interface TravelDishDetailDto {
   id: string;
   name: string;
-  /** @nullable */
-  cuisine: string | null;
+  cuisines: string[];
   /** @nullable */
   description: string | null;
   /** Places recommended for this dish */

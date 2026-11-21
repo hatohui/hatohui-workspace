@@ -1,6 +1,14 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import {
+  ArrayMaxSize,
+  IsArray,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import {
+  TRAVEL_MAX_CUISINES,
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
@@ -16,8 +24,8 @@ export class TravelDishDto {
   @ApiProperty({ example: 'Egg coffee' })
   name!: string;
 
-  @ApiProperty({ nullable: true, type: String })
-  cuisine!: string | null;
+  @ApiProperty({ type: [String], example: ['Vietnamese'] })
+  cuisines!: string[];
 
   @ApiProperty({ nullable: true, type: String })
   description!: string | null;
@@ -44,11 +52,18 @@ export class CreateTravelDishDto {
   @MaxLength(TRAVEL_NAME_MAX_LENGTH)
   name!: string;
 
-  @ApiProperty({ required: false, maxLength: TRAVEL_NAME_MAX_LENGTH })
+  @ApiProperty({
+    type: [String],
+    required: false,
+    maxItems: TRAVEL_MAX_CUISINES,
+    description: 'Cuisine tags, found or created by name',
+  })
   @IsOptional()
-  @IsString()
-  @MaxLength(TRAVEL_NAME_MAX_LENGTH)
-  cuisine?: string;
+  @IsArray()
+  @ArrayMaxSize(TRAVEL_MAX_CUISINES)
+  @IsString({ each: true })
+  @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
+  cuisines?: string[];
 
   @ApiProperty({ required: false, maxLength: TRAVEL_NOTE_MAX_LENGTH })
   @IsOptional()

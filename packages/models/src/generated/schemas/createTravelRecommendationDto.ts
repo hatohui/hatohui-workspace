@@ -6,6 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { CreateTravelRecommendationDtoCurrency } from './createTravelRecommendationDtoCurrency';
+import type { TravelAllergenTag } from './travelAllergenTag';
+import type { TravelDietTag } from './travelDietTag';
+import type { TravelPriceLevel } from './travelPriceLevel';
+import type { TravelSpiceLevel } from './travelSpiceLevel';
 
 export interface CreateTravelRecommendationDto {
   /** An existing dish */
@@ -15,8 +19,11 @@ export interface CreateTravelRecommendationDto {
      * @maxLength 120
      */
   dishName?: string;
-  /** @maxLength 120 */
-  cuisine?: string;
+  /**
+     * Cuisine tags for a newly created dish, found or created
+     * @maxItems 6
+     */
+  cuisines?: string[];
   /** An existing place */
   placeId?: string;
   /**
@@ -32,10 +39,18 @@ export interface CreateTravelRecommendationDto {
      * @minimum 0
      * @nullable
      */
-  estimate?: number | null;
+  priceMin?: number | null;
+  /**
+     * Leave equal to priceMin, or empty, for a single price
+     * @minimum 0
+     * @nullable
+     */
+  priceMax?: number | null;
+  priceLevel?: TravelPriceLevel | null;
   currency?: CreateTravelRecommendationDtoCurrency;
-  spicy?: boolean;
-  vegetarian?: boolean;
+  spiceLevel?: TravelSpiceLevel;
+  diets?: TravelDietTag[];
+  allergens?: TravelAllergenTag[];
   /**
      * Ordered image keys: staged uploads or ones already attached
      * @maxItems 12

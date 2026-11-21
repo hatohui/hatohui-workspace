@@ -13,7 +13,7 @@ function RecommendationDialog({ state, recommendation }: Props) {
   const { t } = useTranslation();
   return (
     <Dialog open={state.open} onOpenChange={state.setOpen}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-xl">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-xl lg:max-w-5xl">
         <DialogHeader>
           <DialogTitle>
             {t(recommendation ? 'form.editTitle' : 'form.createTitle')}

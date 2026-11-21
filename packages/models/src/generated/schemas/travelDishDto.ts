@@ -10,8 +10,7 @@ import type { TravelCreatorDto } from './travelCreatorDto';
 export interface TravelDishDto {
   id: string;
   name: string;
-  /** @nullable */
-  cuisine: string | null;
+  cuisines: string[];
   /** @nullable */
   description: string | null;
   /** Places recommended for this dish */

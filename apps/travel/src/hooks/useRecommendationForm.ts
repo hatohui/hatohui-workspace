@@ -9,7 +9,7 @@ export function useRecommendationForm(
   existing: TravelRecommendationDto | undefined,
   onSaved: () => void,
 ) {
-  const { fields, set } = useRecommendationFields(existing);
+  const { fields, set, toggle } = useRecommendationFields(existing);
   const photos = usePhotoList(existing?.images ?? []);
   const matches = useCatalogMatches(fields.dishName, fields.placeName);
   const { save, isSaving } = useSaveRecommendation(existing, onSaved);
@@ -34,6 +34,7 @@ export function useRecommendationForm(
     isEditing: Boolean(existing),
     fields,
     set,
+    toggle,
     photos,
     matches,
     canSubmit,

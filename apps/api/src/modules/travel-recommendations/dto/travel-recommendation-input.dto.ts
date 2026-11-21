@@ -2,7 +2,6 @@ import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayMaxSize,
   IsArray,
-  IsBoolean,
   IsIn,
   IsInt,
   IsOptional,
@@ -10,13 +9,21 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import type { TravelPriceLevel, TravelSpiceLevel } from '@prisma/client';
 import {
+  TRAVEL_ALLERGEN_TAGS,
   TRAVEL_CURRENCIES,
+  TRAVEL_DIET_TAGS,
+  TRAVEL_MAX_CUISINES,
   TRAVEL_MAX_IMAGES,
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
+  TRAVEL_PRICE_LEVELS,
+  TRAVEL_SPICE_LEVELS,
   TRAVEL_URL_MAX_LENGTH,
+  type TravelAllergenTag,
   type TravelCurrency,
+  type TravelDietTag,
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 export class CreateTravelRecommendationDto {
@@ -35,11 +42,18 @@ export class CreateTravelRecommendationDto {
   @MaxLength(TRAVEL_NAME_MAX_LENGTH)
   dishName?: string;
 
-  @ApiProperty({ required: false, maxLength: TRAVEL_NAME_MAX_LENGTH })
+  @ApiProperty({
+    type: [String],
+    required: false,
+    maxItems: TRAVEL_MAX_CUISINES,
+    description: 'Cuisine tags for a newly created dish, found or created',
+  })
   @IsOptional()
-  @IsString()
-  @MaxLength(TRAVEL_NAME_MAX_LENGTH)
-  cuisine?: string;
+  @IsArray()
+  @ArrayMaxSize(TRAVEL_MAX_CUISINES)
+  @IsString({ each: true })
+  @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
+  cuisines?: string[];
 
   @ApiProperty({ required: false, description: 'An existing place' })
   @IsOptional()
@@ -72,22 +86,65 @@ export class CreateTravelRecommendationDto {
   @IsOptional()
   @IsInt()
   @Min(0)
-  estimate?: number | null;
+  priceMin?: number | null;
+
+  @ApiProperty({
+    required: false,
+    nullable: true,
+    type: Number,
+    minimum: 0,
+    description: 'Leave equal to priceMin, or empty, for a single price',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  priceMax?: number | null;
+
+  @ApiProperty({
+    required: false,
+    nullable: true,
+    enum: TRAVEL_PRICE_LEVELS,
+    enumName: 'TravelPriceLevel',
+  })
+  @IsOptional()
+  @IsIn(TRAVEL_PRICE_LEVELS)
+  priceLevel?: TravelPriceLevel | null;
 
   @ApiProperty({ required: false, enum: TRAVEL_CURRENCIES })
   @IsOptional()
   @IsIn(TRAVEL_CURRENCIES)
   currency?: TravelCurrency;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    required: false,
+    enum: TRAVEL_SPICE_LEVELS,
+    enumName: 'TravelSpiceLevel',
+  })
   @IsOptional()
-  @IsBoolean()
-  spicy?: boolean;
+  @IsIn(TRAVEL_SPICE_LEVELS)
+  spiceLevel?: TravelSpiceLevel;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    required: false,
+    enum: TRAVEL_DIET_TAGS,
+    enumName: 'TravelDietTag',
+    isArray: true,
+  })
   @IsOptional()
-  @IsBoolean()
-  vegetarian?: boolean;
+  @IsArray()
+  @IsIn(TRAVEL_DIET_TAGS, { each: true })
+  diets?: TravelDietTag[];
+
+  @ApiProperty({
+    required: false,
+    enum: TRAVEL_ALLERGEN_TAGS,
+    enumName: 'TravelAllergenTag',
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @IsIn(TRAVEL_ALLERGEN_TAGS, { each: true })
+  allergens?: TravelAllergenTag[];
 
   @ApiProperty({
     type: [String],
@@ -105,7 +162,7 @@ export class CreateTravelRecommendationDto {
 export class UpdateTravelRecommendationDto extends PartialType(
   OmitType(CreateTravelRecommendationDto, [
     'dishName',
-    'cuisine',
+    'cuisines',
     'placeName',
     'placeMapsUrl',
   ] as const),

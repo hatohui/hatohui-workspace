@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelDishDto } from '@hatohui/models';
 import routes from '../../constants/routes';
+import CuisineChips from '../shared/CuisineChips';
 import ImageFrame from '../shared/ImageFrame';
 
 function DishCard({ dish }: { dish: TravelDishDto }) {
@@ -20,9 +21,7 @@ function DishCard({ dish }: { dish: TravelDishDto }) {
           {t('dishes.placeCount', { count: dish.placeCount })}
         </span>
       </div>
-      {dish.cuisine && (
-        <span className="text-sm text-muted-foreground">{dish.cuisine}</span>
-      )}
+      <CuisineChips cuisines={dish.cuisines} />
     </Link>
   );
 }

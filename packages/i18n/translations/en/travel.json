@@ -10,16 +10,18 @@
     "subtitle": "Dishes worth the trip, and where to eat them.",
     "searchPlaceholder": "Search dishes, places, notes",
     "spicy": "Spicy",
-    "vegetarian": "Vegetarian",
     "add": "Add food",
     "count_one": "{{count}} pick",
     "count_other": "{{count}} picks",
     "empty": "Nothing here yet.",
     "emptyFiltered": "No food matches these filters.",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "avoidAllergens": "Avoid allergens",
+    "avoiding_one": "Avoiding {{count}}",
+    "avoiding_other": "Avoiding {{count}}",
+    "avoidHint": "Hide dishes that contain:"
   },
   "recommendation": {
-    "estimate": "About {{price}}",
     "noEstimate": "No price yet",
     "addedBy": "Added by {{name}}",
     "photos_one": "{{count}} photo",
@@ -30,7 +32,11 @@
     "deleteTitle": "Delete this pick?",
     "deleteDescription": "{{dish}} at {{place}} and its photos will be removed. The dish and the place stay.",
     "previousPhoto": "Previous photo",
-    "nextPhoto": "Next photo"
+    "nextPhoto": "Next photo",
+    "priceSingle": "About {{price}}",
+    "priceRange": "{{min}} – {{max}}",
+    "contains": "Contains {{list}}",
+    "spiceLabel": "Spice: {{level}}"
   },
   "form": {
     "createTitle": "Add food",
@@ -38,18 +44,14 @@
     "dish": "Dish",
     "dishPlaceholder": "Egg coffee",
     "dishHint": "Pick one from the list or type a new name.",
-    "cuisine": "Cuisine",
-    "cuisinePlaceholder": "Vietnamese",
     "place": "Place",
     "placePlaceholder": "21Grams Vegetarian",
     "placeHint": "Pick a saved place or type a new one.",
     "mapsUrl": "Google Maps link",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "estimate": "Price estimate",
     "currency": "Currency",
     "note": "Note",
     "notePlaceholder": "What to order, when to go, what makes it good",
-    "flags": "Tags",
     "photos": "Photos",
     "addPhotos": "Add photos",
     "removePhoto": "Remove photo",
@@ -60,7 +62,25 @@
     "saving": "Saving...",
     "existing": "Saved",
     "new": "New",
-    "duplicate": "This place already has a pick for that dish."
+    "duplicate": "This place already has a pick for that dish.",
+    "cuisines": "Cuisines",
+    "cuisinesPlaceholder": "Add a cuisine",
+    "cuisineCreate": "Add \"{{tag}}\"",
+    "cuisineRemove": "Remove {{tag}}",
+    "sectionDish": "Dish and place",
+    "sectionPrice": "Price",
+    "sectionTags": "Tags",
+    "spice": "Spice level",
+    "diets": "Diet",
+    "allergens": "Contains allergens",
+    "priceRange": "Amount",
+    "priceLevel": "Level",
+    "priceFrom": "From",
+    "priceTo": "To (optional)",
+    "priceLevelHint": "Use a level when you don't know the exact price.",
+    "dropPhotos": "Drop photos here",
+    "browsePhotos": "or click to browse",
+    "photosHint": "Up to {{count}} photos. The first one is the cover."
   },
   "dishes": {
     "title": "Dishes",
@@ -96,5 +116,36 @@
   "notFound": {
     "title": "Page not found",
     "back": "Back to the food catalog"
+  },
+  "spice": {
+    "NONE": "Not spicy",
+    "MILD": "Mild",
+    "MEDIUM": "Medium",
+    "HOT": "Hot"
+  },
+  "priceLevel": {
+    "LOW": "Low price",
+    "MID": "Mid price",
+    "HIGH": "High price"
+  },
+  "diet": {
+    "vegetarian": "Vegetarian",
+    "vegan": "Vegan",
+    "pescatarian": "Pescatarian",
+    "halal": "Halal",
+    "kosher": "Kosher",
+    "gluten-free": "Gluten-free",
+    "dairy-free": "Dairy-free"
+  },
+  "allergen": {
+    "peanuts": "Peanuts",
+    "tree-nuts": "Tree nuts",
+    "shellfish": "Shellfish",
+    "fish": "Fish",
+    "egg": "Egg",
+    "dairy": "Dairy",
+    "gluten": "Gluten",
+    "soy": "Soy",
+    "sesame": "Sesame"
   }
 }

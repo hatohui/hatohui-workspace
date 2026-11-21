@@ -1,8 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Label } from '@hatohui/ui';
-import { ImagePlus } from 'lucide-react';
-import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
+import { MAX_PHOTOS } from '../../constants/travel';
 import type { usePhotoList } from '../../hooks/usePhotoList';
+import PhotoDropZone from './PhotoDropZone';
 import PhotoThumb from './PhotoThumb';
 
 interface Props {
@@ -11,36 +11,30 @@ interface Props {
 
 function PhotoField({ photos }: Props) {
   const { t } = useTranslation();
+  const hasPhotos = photos.photos.length > 0;
+  const addFiles = (files: File[]) => void photos.addFiles(files);
+
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <Label>{t('form.photos')}</Label>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-        {photos.photos.map((photo, index) => (
-          <PhotoThumb
-            key={photo.id}
-            photo={photo}
-            isCover={index === 0}
-            onRemove={() => photos.remove(photo.id)}
-            onMakeCover={() => photos.makeCover(photo.id)}
-          />
-        ))}
-        {!photos.isFull && (
-          <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground focus-within:ring-[3px] focus-within:ring-ring/50">
-            <ImagePlus className="size-5" aria-hidden />
-            {t('form.addPhotos')}
-            <input
-              type="file"
-              multiple
-              accept={ACCEPTED_IMAGE_TYPES}
-              className="sr-only"
-              onChange={(event) => {
-                void photos.addFiles(Array.from(event.target.files ?? []));
-                event.target.value = '';
-              }}
+      {!hasPhotos && <PhotoDropZone compact={false} onFiles={addFiles} />}
+      {hasPhotos && (
+        <div className="grid grid-cols-3 gap-2">
+          {photos.photos.map((photo, index) => (
+            <PhotoThumb
+              key={photo.id}
+              photo={photo}
+              isCover={index === 0}
+              onRemove={() => photos.remove(photo.id)}
+              onMakeCover={() => photos.makeCover(photo.id)}
             />
-          </label>
-        )}
-      </div>
+          ))}
+          {!photos.isFull && <PhotoDropZone compact onFiles={addFiles} />}
+        </div>
+      )}
+      <p className="text-xs text-muted-foreground">
+        {t('form.photosHint', { count: MAX_PHOTOS })}
+      </p>
     </div>
   );
 }

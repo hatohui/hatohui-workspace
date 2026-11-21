@@ -7,6 +7,8 @@ import { Prisma } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
+import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
+import { travelCuisineNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
 import { UNIQUE_VIOLATION_CODE } from '@/modules/travel-recommendations/travel-recommendations.constants';
 import {
   toTravelCreatorDto,
@@ -21,6 +23,7 @@ import {
 } from '@/modules/travel-dishes/dto/travel-dish.dto';
 
 const dishInclude = {
+  cuisines: travelCuisineNamesSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
   recommendations: {
@@ -39,6 +42,7 @@ export class TravelDishesService {
     private readonly db: Database,
     private readonly storage: Storage,
     private readonly recommendations: TravelRecommendationsService,
+    private readonly cuisines: TravelCuisinesService,
   ) {}
 
   async list(query: TravelDishQueryDto): Promise<TravelDishDto[]> {
@@ -46,7 +50,12 @@ export class TravelDishesService {
     const contains = q ? { contains: q, mode: 'insensitive' as const } : null;
     const rows = await this.db.travelDish.findMany({
       where: contains
-        ? { OR: [{ name: contains }, { cuisine: contains }] }
+        ? {
+            OR: [
+              { name: contains },
+              { cuisines: { some: { name: contains } } },
+            ],
+          }
         : undefined,
       include: dishInclude,
       orderBy: { name: 'asc' },
@@ -68,9 +77,14 @@ export class TravelDishesService {
     dto: CreateTravelDishDto,
     userId: string,
   ): Promise<TravelDishDetailDto> {
+    const cuisines = await this.cuisineRefs(dto.cuisines, userId);
     const created = await this.guardUnique(() =>
       this.db.travelDish.create({
-        data: { ...this.fieldsOf(dto), createdById: userId },
+        data: {
+          ...this.fieldsOf(dto),
+          cuisines: { connect: cuisines },
+          createdById: userId,
+        },
       }),
     );
     return this.get(created.id);
@@ -79,10 +93,19 @@ export class TravelDishesService {
   async update(
     id: string,
     dto: UpdateTravelDishDto,
+    userId: string,
   ): Promise<TravelDishDetailDto> {
     await this.get(id);
+    const cuisines =
+      dto.cuisines && (await this.cuisineRefs(dto.cuisines, userId));
     await this.guardUnique(() =>
-      this.db.travelDish.update({ where: { id }, data: this.fieldsOf(dto) }),
+      this.db.travelDish.update({
+        where: { id },
+        data: {
+          ...this.fieldsOf(dto),
+          cuisines: cuisines ? { set: cuisines } : undefined,
+        },
+      }),
     );
     return this.get(id);
   }
@@ -95,14 +118,19 @@ export class TravelDishesService {
     await this.recommendations.deleteObjects(keys);
   }
 
+  private async cuisineRefs(names: string[] | undefined, userId: string) {
+    const ids = await this.cuisines.resolveIds(names ?? [], userId);
+    return ids.map((id) => ({ id }));
+  }
+
   private fieldsOf(dto: UpdateTravelDishDto) {
-    const optional = (value: string | undefined) =>
-      value === undefined ? undefined : value.trim() || null;
     return {
       name: dto.name?.trim(),
-      cuisine: optional(dto.cuisine),
-      description: optional(dto.description),
-    } as { name: string; cuisine?: string | null; description?: string | null };
+      description:
+        dto.description === undefined
+          ? undefined
+          : dto.description.trim() || null,
+    } as { name: string; description?: string | null };
   }
 
   private toDto(row: DishRow): TravelDishDto {
@@ -110,7 +138,7 @@ export class TravelDishesService {
     return {
       id: row.id,
       name: row.name,
-      cuisine: row.cuisine,
+      cuisines: row.cuisines.map((cuisine) => cuisine.name),
       description: row.description,
       placeCount: row._count.recommendations,
       coverImageUrl: cover ? this.storage.getPublicUrl(cover.key) : null,
