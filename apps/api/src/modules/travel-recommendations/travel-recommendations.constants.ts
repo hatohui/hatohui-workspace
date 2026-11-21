@@ -1,0 +1,9 @@
+export const TRAVEL_NAME_MAX_LENGTH = 120;
+export const TRAVEL_NOTE_MAX_LENGTH = 2000;
+export const TRAVEL_URL_MAX_LENGTH = 2000;
+export const TRAVEL_MAX_IMAGES = 12;
+export const TRAVEL_CATALOG_LIMIT = 500;
+export const TRAVEL_DEFAULT_CURRENCY = 'VND';
+export const TRAVEL_CURRENCIES = ['VND', 'USD', 'JPY', 'EUR', 'THB'] as const;
+export type TravelCurrency = (typeof TRAVEL_CURRENCIES)[number];
+export const UNIQUE_VIOLATION_CODE = 'P2002';

@@ -10,6 +10,7 @@ export function buildOpenApiDocument(app: INestApplication) {
     .addTag('auth')
     .addTag('friends')
     .addTag('health')
+    .addTag('travel')
     .addTag('images')
     .addTag('platforms')
     .addTag('onboarding')

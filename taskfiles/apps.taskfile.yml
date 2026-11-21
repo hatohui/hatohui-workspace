@@ -21,6 +21,11 @@ tasks:
     dir: apps/art
     cmd: bun run dev
 
+  travel:
+    desc: 'Run the travel app dev server'
+    dir: apps/travel
+    cmd: bun run dev
+
   workspace:
     desc: 'Run the workspace admin console dev server'
     dir: apps/workspace

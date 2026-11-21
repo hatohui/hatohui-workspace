@@ -5245,6 +5245,525 @@
           "commission-access"
         ]
       }
+    },
+    "/travel/recommendations": {
+      "get": {
+        "operationId": "travelRecommendations",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match dish, place, cuisine or note",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cuisine",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dishId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "placeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "spicy",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "vegetarian",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelRecommendationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "The food catalog: each dish a place is recommended for",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelRecommendation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelRecommendationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRecommendationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Recommend a dish at a place, creating either one by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/recommendations/{id}": {
+      "get": {
+        "operationId": "travelRecommendation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRecommendationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelRecommendation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelRecommendationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRecommendationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelRecommendation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/dishes": {
+      "get": {
+        "operationId": "travelDishes",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name or cuisine",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelDishDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every dish",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelDish",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelDishDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/dishes/{id}": {
+      "get": {
+        "operationId": "travelDish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A dish and every place recommended for it",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelDish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelDishDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelDish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a dish and its recommendations",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/places": {
+      "get": {
+        "operationId": "travelPlaces",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name, address or city",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelPlaceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every place",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelPlace",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelPlaceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlaceDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/places/{id}": {
+      "get": {
+        "operationId": "travelPlace",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlaceDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A place and every dish recommended there",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelPlace",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelPlaceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlaceDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelPlace",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a place and its recommendations",
+        "tags": [
+          "travel"
+        ]
+      }
     }
   },
   "info": {
@@ -5268,6 +5787,10 @@
     },
     {
       "name": "health",
+      "description": ""
+    },
+    {
+      "name": "travel",
       "description": ""
     },
     {
@@ -10768,6 +11291,629 @@
           "passcode": {
             "type": "string",
             "description": "Custom passcode; omit to generate one"
+          }
+        }
+      },
+      "TravelDishSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisine": {
+            "type": "string",
+            "nullable": true,
+            "example": "Vietnamese"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisine"
+        ]
+      },
+      "TravelPlaceSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "21Grams Vegetarian"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "address",
+          "city",
+          "mapsUrl",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "TravelImageDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Storage key; send it back to keep the image"
+          },
+          "url": {
+            "type": "string"
+          },
+          "createdById": {
+            "type": "string",
+            "nullable": true,
+            "description": "Uploader user id"
+          }
+        },
+        "required": [
+          "key",
+          "url",
+          "createdById"
+        ]
+      },
+      "TravelCreatorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Profile display name, else the account name"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "avatarUrl"
+        ]
+      },
+      "TravelRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dish": {
+            "$ref": "#/components/schemas/TravelDishSummaryDto"
+          },
+          "place": {
+            "$ref": "#/components/schemas/TravelPlaceSummaryDto"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "estimate": {
+            "type": "number",
+            "nullable": true,
+            "description": "Rough price per person, in currency units"
+          },
+          "currency": {
+            "type": "string",
+            "example": "VND"
+          },
+          "spicy": {
+            "type": "boolean"
+          },
+          "vegetarian": {
+            "type": "boolean"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelImageDto"
+            }
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "dish",
+          "place",
+          "note",
+          "estimate",
+          "currency",
+          "spicy",
+          "vegetarian",
+          "images",
+          "createdBy",
+          "createdAt"
+        ]
+      },
+      "CreateTravelRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "dishId": {
+            "type": "string",
+            "description": "An existing dish"
+          },
+          "dishName": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Dish name, found or created when dishId is absent"
+          },
+          "cuisine": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "placeId": {
+            "type": "string",
+            "description": "An existing place"
+          },
+          "placeName": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Place name, created when placeId is absent"
+          },
+          "placeMapsUrl": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "estimate": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "VND",
+              "USD",
+              "JPY",
+              "EUR",
+              "THB"
+            ]
+          },
+          "spicy": {
+            "type": "boolean"
+          },
+          "vegetarian": {
+            "type": "boolean"
+          },
+          "imageKeys": {
+            "maxItems": 12,
+            "description": "Ordered image keys: staged uploads or ones already attached",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateTravelRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "dishId": {
+            "type": "string",
+            "description": "An existing dish"
+          },
+          "placeId": {
+            "type": "string",
+            "description": "An existing place"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "estimate": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "VND",
+              "USD",
+              "JPY",
+              "EUR",
+              "THB"
+            ]
+          },
+          "spicy": {
+            "type": "boolean"
+          },
+          "vegetarian": {
+            "type": "boolean"
+          },
+          "imageKeys": {
+            "maxItems": 12,
+            "description": "Ordered image keys: staged uploads or ones already attached",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TravelDishDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisine": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "placeCount": {
+            "type": "number",
+            "description": "Places recommended for this dish"
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisine",
+          "description",
+          "placeCount",
+          "coverImageUrl",
+          "createdBy"
+        ]
+      },
+      "TravelDishDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisine": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "placeCount": {
+            "type": "number",
+            "description": "Places recommended for this dish"
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisine",
+          "description",
+          "placeCount",
+          "coverImageUrl",
+          "createdBy",
+          "recommendations"
+        ]
+      },
+      "CreateTravelDishDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "cuisine": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTravelDishDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "cuisine": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      },
+      "TravelPlaceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "21Grams Vegetarian"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "dishCount": {
+            "type": "number",
+            "description": "Dishes recommended here"
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "address",
+          "city",
+          "mapsUrl",
+          "latitude",
+          "longitude",
+          "note",
+          "dishCount",
+          "coverImageUrl",
+          "createdBy"
+        ]
+      },
+      "TravelPlaceDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "21Grams Vegetarian"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "dishCount": {
+            "type": "number",
+            "description": "Dishes recommended here"
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "address",
+          "city",
+          "mapsUrl",
+          "latitude",
+          "longitude",
+          "note",
+          "dishCount",
+          "coverImageUrl",
+          "createdBy",
+          "recommendations"
+        ]
+      },
+      "CreateTravelPlaceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Google Maps link; coordinates are read from it when present"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTravelPlaceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Google Maps link; coordinates are read from it when present"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
           }
         }
       }

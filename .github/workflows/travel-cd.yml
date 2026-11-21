@@ -1,0 +1,28 @@
+name: travel-cd
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'apps/travel/**'
+      - 'packages/**'
+      - '.github/workflows/travel-cd.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Deploy Travel
+        uses: hatohui/publish-cloudflare-pages@v2
+        with:
+          dist: apps/travel/dist
+          package: apps/travel/package.json
+          project_name: travel
+          cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          build_environments: |
+            VITE_API_URL=${{ vars.API_URL }}
+            VITE_GOOGLE_OAUTH_CLIENT_ID=${{ vars.GOOGLE_OAUTH_CLIENT_ID }}
