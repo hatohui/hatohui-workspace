@@ -8,6 +8,7 @@ import {
 import { ArrowDown, ArrowUp, ChevronsUpDown, Trash2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EditableCell, type EditableCellOption } from './editable-cell';
+import type { TagSuggestion } from './use-tag-input';
 
 export interface EditableColumn<T> {
   key: keyof T & string;
@@ -15,6 +16,10 @@ export interface EditableColumn<T> {
   editable?: boolean | ((row: T) => boolean);
   toggle?: boolean;
   options?: EditableCellOption[];
+  suggestions?: TagSuggestion[];
+  maxTags?: number;
+  createLabel?: (tag: string) => string;
+  removeLabel?: (tag: string) => string;
   render?: (row: T) => string;
   size?: number;
   selectPlaceholder?: string;
@@ -283,6 +288,10 @@ export function EditableDataTable<T extends { id: string }>({
                         }
                         toggle={column.toggle}
                         options={column.options}
+                        suggestions={column.suggestions}
+                        maxTags={column.maxTags}
+                        createLabel={column.createLabel}
+                        removeLabel={column.removeLabel}
                         selectPlaceholder={column.selectPlaceholder}
                         searchPlaceholder={column.searchPlaceholder}
                         emptyLabel={column.emptyLabel}

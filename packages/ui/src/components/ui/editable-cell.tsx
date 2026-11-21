@@ -2,6 +2,8 @@ import * as React from 'react';
 import { cn } from '../../lib/utils';
 import { SearchableSelect } from './searchable-select';
 import { Switch } from './switch';
+import { TagInput } from './tag-input';
+import type { TagSuggestion } from './use-tag-input';
 
 export interface EditableCellOption {
   label: string;
@@ -16,6 +18,10 @@ export interface EditableCellProps {
    * commits immediately on toggle, instead of a click-to-edit control. */
   toggle?: boolean;
   options?: EditableCellOption[];
+  suggestions?: TagSuggestion[];
+  maxTags?: number;
+  createLabel?: (tag: string) => string;
+  removeLabel?: (tag: string) => string;
   selectPlaceholder?: string;
   searchPlaceholder?: string;
   emptyLabel?: string;
@@ -29,6 +35,10 @@ export function EditableCell({
   editable = true,
   toggle,
   options,
+  suggestions,
+  maxTags,
+  createLabel,
+  removeLabel,
   selectPlaceholder = 'Select...',
   searchPlaceholder = 'Search...',
   emptyLabel = 'No matches.',
@@ -38,10 +48,27 @@ export function EditableCell({
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(value);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const tagWrapperRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (editing) inputRef.current?.focus();
-  }, [editing]);
+    if (!editing) return;
+    if (suggestions) {
+      tagWrapperRef.current?.querySelector('input')?.focus();
+      const handlePointerDown = (event: PointerEvent) => {
+        const target = event.target;
+        if (!(target instanceof Node)) return;
+        if (tagWrapperRef.current?.contains(target)) return;
+        if (target instanceof Element && target.closest('[role="listbox"]')) {
+          return;
+        }
+        setEditing(false);
+      };
+      document.addEventListener('pointerdown', handlePointerDown);
+      return () =>
+        document.removeEventListener('pointerdown', handlePointerDown);
+    }
+    inputRef.current?.focus();
+  }, [editing, suggestions]);
 
   if (toggle) {
     return (
@@ -97,6 +124,34 @@ export function EditableCell({
       >
         {displayValue ?? (value || ' ')}
       </button>
+    );
+  }
+
+  if (suggestions) {
+    const tags = value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+    return (
+      <div
+        ref={tagWrapperRef}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') setEditing(false);
+        }}
+      >
+        <TagInput
+          value={tags}
+          onChange={(next) => {
+            const limited = maxTags ? next.slice(0, maxTags) : next;
+            onCommit(limited.join(', '));
+          }}
+          suggestions={suggestions}
+          placeholder={selectPlaceholder}
+          createLabel={createLabel ?? ((tag) => `Add "${tag}"`)}
+          removeLabel={removeLabel ?? ((tag) => `Remove ${tag}`)}
+          className="rounded-none border-0 shadow-none ring-2 ring-ring"
+        />
+      </div>
     );
   }
 

@@ -9,7 +9,9 @@ import {
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
 import { CUISINE_LIST_SEPARATOR } from '../constants/admin';
+import { MAX_CUISINES } from '../constants/travel';
 import { useAdminAction } from './useAdminAction';
+import { useCuisineSuggestions } from './useCuisineSuggestions';
 import { useRowDeletion } from './useRowDeletion';
 
 export interface DishRow {
@@ -32,6 +34,7 @@ export function useAdminDishes() {
   const update = useUpdateTravelDish();
   const remove = useDeleteTravelDish();
   const bulk = useBulkCreateTravelDishes();
+  const suggestions = useCuisineSuggestions();
   const { run, runBulk } = useAdminAction();
 
   const rows: DishRow[] = (query.data?.data ?? []).map((dish) => ({
@@ -44,7 +47,17 @@ export function useAdminDishes() {
 
   const columns: EditableColumn<DishRow>[] = [
     { key: 'name', label: t('admin.name'), editable: true, size: 200 },
-    { key: 'cuisines', label: t('form.cuisines'), editable: true, size: 200 },
+    {
+      key: 'cuisines',
+      label: t('form.cuisines'),
+      editable: true,
+      suggestions,
+      maxTags: MAX_CUISINES,
+      selectPlaceholder: t('form.cuisinesPlaceholder'),
+      createLabel: (tag) => t('form.cuisineCreate', { tag }),
+      removeLabel: (tag) => t('form.cuisineRemove', { tag }),
+      size: 200,
+    },
     {
       key: 'description',
       label: t('dishes.description'),
