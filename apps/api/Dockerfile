@@ -5,6 +5,7 @@ COPY package.json bun.lock ./
 COPY apps/api/package.json apps/api/package.json
 COPY apps/art/package.json apps/art/package.json
 COPY apps/friends/package.json apps/friends/package.json
+COPY apps/travel/package.json apps/travel/package.json
 COPY apps/www/package.json apps/www/package.json
 COPY apps/workspace/package.json apps/workspace/package.json
 COPY packages/assets/package.json packages/assets/package.json
