@@ -43,6 +43,7 @@ import { TravelCuisinesModule } from '@/modules/travel-cuisines/travel-cuisines.
 import { TravelRecommendationsModule } from '@/modules/travel-recommendations/travel-recommendations.module';
 import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module';
 import { TravelPlacesModule } from '@/modules/travel-places/travel-places.module';
+import { AiModule } from '@/modules/ai/ai.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { TravelPlacesModule } from '@/modules/travel-places/travel-places.module
     TravelRecommendationsModule,
     TravelDishesModule,
     TravelPlacesModule,
+    AiModule,
   ],
 })
 export class AppModule {}

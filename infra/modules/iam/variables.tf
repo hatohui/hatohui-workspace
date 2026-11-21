@@ -3,6 +3,11 @@ variable "role_name" {
   type        = string
 }
 
+variable "aws_region" {
+  description = "The AWS region for Bedrock inference profiles"
+  type        = string
+}
+
 variable "github_repository" {
   description = "The GitHub repository allowed to assume the deploy role, as \"owner/repo\""
   type        = string

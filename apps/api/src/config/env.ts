@@ -27,6 +27,12 @@ const envSchema = z.object({
 
   EMAIL_API_KEY: z.string(),
   ADMIN_API_KEY: z.string().min(16),
+
+  AWS_REGION: z.string().optional(),
+  BEDROCK_REGION: z.string().optional(),
+  BEDROCK_MODEL_ID: z.string().optional(),
+  AI_FALLBACK_MODEL_ID: z.string().optional(),
+  AI_PRIMARY_RPM: z.coerce.number().int().positive().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
