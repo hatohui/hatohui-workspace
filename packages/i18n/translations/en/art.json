@@ -188,7 +188,23 @@
     },
     "viewLarge": "View full size",
     "count_one": "{{count}} artwork",
-    "count_other": "{{count}} artworks"
+    "count_other": "{{count}} artworks",
+    "process": {
+      "title": "Process",
+      "hint": "Sketch, lineart, flats... add the stages that led to this piece. Visitors see them as a strip from sketch to final.",
+      "final": "Final",
+      "add": "Add images",
+      "uploading": "Uploading...",
+      "labelPlaceholder": "e.g. Sketch",
+      "moveUp": "Move earlier",
+      "moveDown": "Move later",
+      "remove": "Remove",
+      "save": "Save process",
+      "saving": "Saving...",
+      "saveFailed": "Couldn't save the process images. Try again.",
+      "empty": "No process images yet.",
+      "stepAlt": "{{label}} stage"
+    }
   },
   "queue": {
     "title": "Queue",
@@ -409,6 +425,18 @@
       "ANIMATION": {
         "label": "Animation",
         "description": "A short animated clip or looping GIF."
+      },
+      "HALF_BODY": {
+        "label": "Half Body",
+        "description": "From the waist up, with more detail than an icon."
+      },
+      "FULL_BODY": {
+        "label": "Full Body",
+        "description": "The full character from head to toe."
+      },
+      "SKETCH_PAGE": {
+        "label": "Sketch Page",
+        "description": "A page of multiple rough sketches/poses of one subject."
       }
     },
     "status": {

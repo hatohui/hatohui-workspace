@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react';
 
+const DEFAULT_ROOT_MARGIN = '200px';
+
 export function useIntersectionObserver(
   onIntersect: () => void,
   enabled: boolean,
+  rootMargin = DEFAULT_ROOT_MARGIN,
 ) {
   const targetRef = useRef<HTMLDivElement | null>(null);
   const onIntersectRef = useRef(onIntersect);
@@ -16,11 +19,11 @@ export function useIntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) onIntersectRef.current();
       },
-      { rootMargin: '200px' },
+      { rootMargin },
     );
     observer.observe(target);
     return () => observer.disconnect();
-  }, [enabled]);
+  }, [enabled, rootMargin]);
 
   return targetRef;
 }

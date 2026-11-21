@@ -2,7 +2,10 @@
 
 import Image from 'next/image';
 import type { AssetDto } from '@hatohui/models';
-import { useMosaicTile } from '@/hooks/useMosaicTile';
+import {
+  GALLERY_MOSAIC_FOCUS_POSITION,
+  GALLERY_MOSAIC_SIZES,
+} from '@/constants/gallery';
 import { GalleryCardActions } from './GalleryCardActions';
 import { GalleryCardSelectToggle } from './GalleryCardSelectToggle';
 import { GalleryCardPrivateBadge } from './GalleryCardPrivateBadge';
@@ -23,13 +26,13 @@ export function GalleryCard({
   onView: () => void;
   selection?: { selected: boolean; onToggle: () => void };
 }) {
-  const { frameStyle, sizes } = useMosaicTile(asset);
   const image = (
     <Image
       src={asset.thumbnailUrl ?? asset.publicUrl}
       alt={asset.title ?? asset.filename}
       fill
-      sizes={sizes}
+      sizes={GALLERY_MOSAIC_SIZES}
+      style={{ objectPosition: GALLERY_MOSAIC_FOCUS_POSITION }}
       className="object-cover transition-transform group-hover:scale-105"
     />
   );
@@ -37,9 +40,8 @@ export function GalleryCard({
   return (
     <div
       data-reveal
-      className="group artwork-frame relative overflow-hidden bg-card"
+      className="group artwork-frame relative h-full overflow-hidden bg-card"
     >
-      <div style={frameStyle} />
       {selection ? (
         <>
           {image}

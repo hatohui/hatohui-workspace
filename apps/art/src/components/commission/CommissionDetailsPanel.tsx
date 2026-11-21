@@ -22,6 +22,7 @@ export function CommissionDetailsPanel({
   return (
     <CommissionFormPanel
       icon={Palette}
+      tone="coral"
       title={t('commission.form.panels.details')}
       description={t('commission.form.panels.detailsHint')}
     >

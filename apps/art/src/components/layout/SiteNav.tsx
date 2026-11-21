@@ -26,7 +26,7 @@ export function SiteNav({ className }: { className?: string }) {
             className={cn(
               'flex min-h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-xs transition-colors duration-200 md:min-h-9 md:flex-row md:gap-2 md:px-3 md:text-sm',
               isActive
-                ? 'bg-accent font-medium text-accent-foreground'
+                ? 'bg-primary font-medium text-primary-foreground shadow-soft'
                 : 'text-foreground/75 hover:bg-accent/50 hover:text-accent-foreground',
             )}
           >

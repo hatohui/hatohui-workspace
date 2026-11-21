@@ -67,7 +67,7 @@ export class AssetsService {
 
   async list(
     query: string | undefined,
-    tag: string | undefined,
+    tags: string[],
     sort: AssetSortOption,
     page: number,
     pageSize: number,
@@ -93,7 +93,7 @@ export class AssetsService {
               ],
             }
           : {},
-        tag ? { tags: { some: { tag: { name: tag } } } } : {},
+        ...tags.map((name) => ({ tags: { some: { tag: { name } } } })),
         uploadedById ? { uploadedById } : {},
         hidePrivate ? publicOnly : {},
         visibility,
@@ -398,11 +398,20 @@ export class AssetsService {
     return { updatedIds: existing.map((asset) => asset.id) };
   }
 
-  async remove(id: string, actor: User): Promise<void> {
+  async assertEditable(id: string, actor: User): Promise<Asset> {
     const existing = await this.findOrThrow(id);
     await this.assertOwnerOrAdmin(existing, actor);
+    return existing;
+  }
+
+  async remove(id: string, actor: User): Promise<void> {
+    await this.assertEditable(id, actor);
+    const processKeys = await this.processKeysOf([id]);
     const deleted = await this.db.asset.delete({ where: { id } });
     await this.cleanUpDeleted(deleted);
+    await Promise.all(
+      processKeys.map((key) => this.storageCleanup.delete(key)),
+    );
   }
 
   async removeMany(
@@ -416,9 +425,21 @@ export class AssetsService {
       await this.assertAdmin(actor);
     }
     const deletedIds = existing.map((asset) => asset.id);
+    const processKeys = await this.processKeysOf(deletedIds);
     await this.db.asset.deleteMany({ where: { id: { in: deletedIds } } });
     await Promise.all(existing.map((asset) => this.cleanUpDeleted(asset)));
+    await Promise.all(
+      processKeys.map((key) => this.storageCleanup.delete(key)),
+    );
     return { deletedIds };
+  }
+
+  private async processKeysOf(assetIds: string[]): Promise<string[]> {
+    const steps = await this.db.assetProcessStep.findMany({
+      where: { assetId: { in: assetIds } },
+      select: { key: true },
+    });
+    return steps.map((step) => step.key);
   }
 
   private async cleanUpDeleted(asset: Asset): Promise<void> {

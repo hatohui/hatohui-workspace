@@ -9,6 +9,8 @@ import { ArtworkImage } from './ArtworkImage';
 import { ArtworkHeading } from './ArtworkHeading';
 import { ArtworkDetailsEditor } from './ArtworkDetailsEditor';
 import { ArtworkPrivacyToggle } from './ArtworkPrivacyToggle';
+import { ArtworkProcessEditor } from './ArtworkProcessEditor';
+import { ArtworkProcessStrip } from './ArtworkProcessStrip';
 
 export function ArtworkDetail({
   asset,
@@ -46,9 +48,13 @@ export function ArtworkDetail({
         <>
           <ArtworkDetailsEditor asset={asset} />
           <ArtworkPrivacyToggle asset={asset} />
+          <ArtworkProcessEditor assetId={asset.id} />
         </>
       ) : (
-        <ArtworkHeading asset={asset} />
+        <>
+          <ArtworkHeading asset={asset} />
+          <ArtworkProcessStrip asset={asset} />
+        </>
       )}
       <ArtworkDetailList asset={asset} />
     </div>

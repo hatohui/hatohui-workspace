@@ -12,10 +12,12 @@ import { useTranslation, detectLocale } from '@hatohui/i18n';
 import '@/lib/api';
 import '@/config/i18n';
 import { SUPPORTED_LOCALES } from '@/config/i18n';
+import { useDocumentLang } from '@/hooks/useDocumentLang';
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
   const { i18n } = useTranslation();
+  useDocumentLang();
 
   useEffect(() => {
     const locale = detectLocale(SUPPORTED_LOCALES, 'en');
