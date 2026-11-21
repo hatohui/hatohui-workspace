@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TravelTagKind } from '@prisma/client';
-import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { TravelBulkNamesDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { TRAVEL_NAME_MAX_LENGTH } from '@/modules/travel-recommendations/travel-recommendations.constants';
 
@@ -33,9 +39,19 @@ export class BulkCreateTravelTagsDto extends TravelBulkNamesDto {
 }
 
 export class UpdateTravelTagDto {
-  @ApiProperty({ maxLength: TRAVEL_NAME_MAX_LENGTH })
+  @ApiProperty({ required: false, maxLength: TRAVEL_NAME_MAX_LENGTH })
+  @IsOptional()
   @IsString()
   @MinLength(1)
   @MaxLength(TRAVEL_NAME_MAX_LENGTH)
-  name!: string;
+  name?: string;
+
+  @ApiProperty({
+    required: false,
+    enum: TravelTagKind,
+    enumName: 'TravelTagKind',
+  })
+  @IsOptional()
+  @IsEnum(TravelTagKind)
+  kind?: TravelTagKind;
 }

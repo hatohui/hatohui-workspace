@@ -7,6 +7,7 @@ import {
   type TravelTagKind,
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
+import { TAG_KINDS } from '../constants/admin';
 import { useAdminAction } from './useAdminAction';
 import { useRowDeletion } from './useRowDeletion';
 import { useTagOptions } from './useTagOptions';
@@ -41,6 +42,11 @@ export function useAdminTags() {
     {
       key: 'kind',
       label: t('admin.kind'),
+      editable: true,
+      options: TAG_KINDS.map((option) => ({
+        value: option,
+        label: t(`admin.kinds.${option}`),
+      })),
       render: (row) => t(`admin.kinds.${row.kind}`),
       size: 120,
     },
@@ -60,8 +66,14 @@ export function useAdminTags() {
     setKind,
     isLoading: tags.tags.length === 0,
     deletion,
-    commit: (id: string, _key: keyof TagRow, value: string) =>
-      void run(() => update.mutateAsync({ id, data: { name: value } })),
+    commit: (id: string, key: keyof TagRow, value: string) =>
+      void run(() =>
+        update.mutateAsync({
+          id,
+          data:
+            key === 'kind' ? { kind: value as TravelTagKind } : { name: value },
+        }),
+      ),
     add: (names: string[]) =>
       runBulk(() => bulk.mutateAsync({ data: { kind, names } })),
   };

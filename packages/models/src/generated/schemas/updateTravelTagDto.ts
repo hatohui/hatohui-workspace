@@ -5,8 +5,10 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { TravelTagKind } from './travelTagKind';
 
 export interface UpdateTravelTagDto {
   /** @maxLength 120 */
-  name: string;
+  name?: string;
+  kind?: TravelTagKind;
 }

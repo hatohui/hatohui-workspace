@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import type { Prisma, TravelTagKind } from '@prisma/client';
 import { Database } from '@/infra/db';
-import { TravelTagDto } from '@/modules/travel-tags/dto/travel-tag.dto';
+import {
+  TravelTagDto,
+  UpdateTravelTagDto,
+} from '@/modules/travel-tags/dto/travel-tag.dto';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { translatePrismaError } from '@/modules/travel-recommendations/utils/prisma-errors';
 import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names';
@@ -61,11 +64,14 @@ export class TravelTagsService {
     return { created: fresh.length, skipped: names.length - fresh.length };
   }
 
-  async rename(id: string, name: string): Promise<TravelTagDto> {
+  async update(id: string, dto: UpdateTravelTagDto): Promise<TravelTagDto> {
     try {
       const row = await this.db.travelTag.update({
         where: { id },
-        data: { name: name.trim() },
+        data: {
+          ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+          ...(dto.kind !== undefined ? { kind: dto.kind } : {}),
+        },
         select: tagSelect,
       });
       return this.toDto(row);

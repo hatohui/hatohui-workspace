@@ -14,9 +14,9 @@ export const AI_LOCALE_LEGEND = AI_SUPPORTED_LOCALES.map(
 ).join(', ');
 
 export const AI_DEFAULT_REGION = 'ap-southeast-1';
-export const AI_DEFAULT_MODEL_ID =
+export const AI_DEFAULT_MODEL_ID = 'global.amazon.nova-2-lite-v1:0';
+export const AI_DEFAULT_FALLBACK_MODEL_ID =
   'global.anthropic.claude-haiku-4-5-20251001-v1:0';
-export const AI_DEFAULT_FALLBACK_MODEL_ID = 'global.amazon.nova-2-lite-v1:0';
 export const AI_DEFAULT_PRIMARY_RPM = 9;
 
 export const AI_TOOL_NAME = 'submit';

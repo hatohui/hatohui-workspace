@@ -190,6 +190,8 @@ describe('AiService', () => {
     expect(result).toEqual({ ok: true });
     expect(sendMock).toHaveBeenCalledTimes(1);
     const command = sendMock.mock.calls[0][0];
-    expect(command.input.modelId).toBe('global.amazon.nova-2-lite-v1:0');
+    expect(command.input.modelId).toBe(
+      'global.anthropic.claude-haiku-4-5-20251001-v1:0',
+    );
   });
 });

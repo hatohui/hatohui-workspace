@@ -12183,11 +12183,15 @@
           "name": {
             "type": "string",
             "maxLength": 120
+          },
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelTagKind"
+              }
+            ]
           }
-        },
-        "required": [
-          "name"
-        ]
+        }
       },
       "TravelCuisineDto": {
         "type": "object",

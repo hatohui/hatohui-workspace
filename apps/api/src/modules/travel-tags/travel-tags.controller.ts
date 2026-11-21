@@ -57,11 +57,11 @@ export class TravelTagsController {
   @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'updateTravelTag' })
   @ApiOkResponse({ type: TravelTagDto })
-  rename(
+  update(
     @Param('id') id: string,
     @Body() dto: UpdateTravelTagDto,
   ): Promise<TravelTagDto> {
-    return this.tags.rename(id, dto.name);
+    return this.tags.update(id, dto);
   }
 
   @Delete(':id')
