@@ -30,6 +30,18 @@ export class AssetQueryDto {
 
   @ApiProperty({
     required: false,
+    type: [String],
+    description: 'Filter to assets carrying every one of these tags',
+  })
+  @IsOptional()
+  @Transform(({ value }: { value: unknown }) =>
+    Array.isArray(value) ? (value as unknown[]) : [value],
+  )
+  @IsString({ each: true })
+  tags?: string[];
+
+  @ApiProperty({
+    required: false,
     description: "Filter to one artist's uploads (storefront gallery)",
   })
   @IsOptional()

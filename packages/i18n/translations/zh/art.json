@@ -178,7 +178,23 @@
       "tagsLabel": "标签"
     },
     "viewLarge": "查看大图",
-    "count_other": "共 {{count}} 件作品"
+    "count_other": "共 {{count}} 件作品",
+    "process": {
+      "title": "创作过程",
+      "hint": "草图、线稿、铺色……添加这幅作品的各个阶段。访客会看到从草图到成品的一条过程展示。",
+      "final": "成品",
+      "add": "添加图片",
+      "uploading": "上传中...",
+      "labelPlaceholder": "例如：草图",
+      "moveUp": "前移",
+      "moveDown": "后移",
+      "remove": "删除",
+      "save": "保存过程",
+      "saving": "保存中...",
+      "saveFailed": "无法保存过程图片，请重试。",
+      "empty": "还没有过程图片。",
+      "stepAlt": "{{label}}阶段"
+    }
   },
   "queue": {
     "title": "队列",

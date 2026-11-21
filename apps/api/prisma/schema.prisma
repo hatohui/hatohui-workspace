@@ -307,7 +307,22 @@ model Asset {
   commissionId String?
   commission   Commission? @relation(fields: [commissionId], references: [id], onDelete: SetNull)
 
+  processSteps AssetProcessStep[]
+
   @@index([commissionId])
+}
+
+model AssetProcessStep {
+  id        String   @id @default(cuid())
+  assetId   String
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  key       String   @unique
+  imageUrl  String
+  label     String?
+  position  Int
+  createdAt DateTime @default(now())
+
+  @@index([assetId, position])
 }
 
 enum ProcessType {

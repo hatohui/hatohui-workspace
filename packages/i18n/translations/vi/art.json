@@ -177,7 +177,23 @@
       "tagsLabel": "Thẻ"
     },
     "viewLarge": "Xem kích thước đầy đủ",
-    "count_other": "{{count}} tác phẩm"
+    "count_other": "{{count}} tác phẩm",
+    "process": {
+      "title": "Quá trình",
+      "hint": "Phác thảo, lineart, tô màu nền... thêm các giai đoạn tạo nên tác phẩm này. Người xem sẽ thấy chúng thành một dải từ phác thảo đến bản hoàn thiện.",
+      "final": "Hoàn thiện",
+      "add": "Thêm ảnh",
+      "uploading": "Đang tải lên...",
+      "labelPlaceholder": "vd. Phác thảo",
+      "moveUp": "Đưa lên trước",
+      "moveDown": "Đưa xuống sau",
+      "remove": "Xoá",
+      "save": "Lưu quá trình",
+      "saving": "Đang lưu...",
+      "saveFailed": "Không lưu được ảnh quá trình. Hãy thử lại.",
+      "empty": "Chưa có ảnh quá trình.",
+      "stepAlt": "Giai đoạn {{label}}"
+    }
   },
   "queue": {
     "title": "Hàng đợi",
@@ -398,6 +414,18 @@
       "ANIMATION": {
         "label": "Hoạt hình",
         "description": "Một đoạn clip hoạt hình ngắn hoặc GIF lặp."
+      },
+      "HALF_BODY": {
+        "label": "Nửa người",
+        "description": "Từ eo trở lên, chi tiết hơn icon."
+      },
+      "FULL_BODY": {
+        "label": "Toàn thân",
+        "description": "Toàn bộ nhân vật từ đầu đến chân."
+      },
+      "SKETCH_PAGE": {
+        "label": "Trang phác thảo",
+        "description": "Một trang gồm nhiều phác thảo/dáng của một nhân vật."
       }
     },
     "status": {

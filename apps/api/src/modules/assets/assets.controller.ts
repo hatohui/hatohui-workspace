@@ -57,7 +57,7 @@ export class AssetsController {
   ): Promise<PaginatedAssetsDto> {
     return this.assetsService.list(
       query.query,
-      query.tag,
+      [...(query.tags ?? []), ...(query.tag ? [query.tag] : [])],
       query.sort ?? 'newest',
       query.page ?? 1,
       query.pageSize ?? 24,

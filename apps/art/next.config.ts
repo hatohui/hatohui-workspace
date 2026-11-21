@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const IMAGE_QUALITY = 90;
+const PRODUCTION_ASSET_HOSTNAME = 'assets.hatohui.com';
 const assetPublicUrl = process.env.NEXT_PUBLIC_ASSET_URL;
 
 if (!assetPublicUrl && process.env.NODE_ENV === 'production') {
@@ -37,16 +38,19 @@ const nextConfig: NextConfig = {
   images: {
     qualities: [IMAGE_QUALITY],
     dangerouslyAllowLocalIP: parsedAssetUrl?.hostname === 'localhost',
-    remotePatterns: parsedAssetUrl
-      ? [
-          {
-            protocol: parsedAssetUrl.protocol.replace(':', '') as
-              'http' | 'https',
-            hostname: parsedAssetUrl.hostname,
-            port: parsedAssetUrl.port || undefined,
-          },
-        ]
-      : undefined,
+    remotePatterns: [
+      { protocol: 'https', hostname: PRODUCTION_ASSET_HOSTNAME },
+      ...(parsedAssetUrl
+        ? [
+            {
+              protocol: parsedAssetUrl.protocol.replace(':', '') as
+                'http' | 'https',
+              hostname: parsedAssetUrl.hostname,
+              port: parsedAssetUrl.port || undefined,
+            },
+          ]
+        : []),
+    ],
   },
 };
 
