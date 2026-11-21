@@ -185,6 +185,14 @@ module "pages_www" {
   domain_name           = "www.${var.cloudflare_zone_name}"
 }
 
+module "pages_travel" {
+  source = "./modules/pages"
+
+  cloudflare_account_id = var.cloudflare_account_id
+  project_name          = "travel"
+  domain_name           = "travel.${var.cloudflare_zone_name}"
+}
+
 module "pages_workspace" {
   source = "./modules/pages"
 
@@ -208,6 +216,12 @@ module "dns_pages" {
       name    = "www.${var.cloudflare_zone_name}"
       type    = "CNAME"
       content = module.pages_www.pages_dev_domain
+      proxied = true
+    }
+    "travel.${var.cloudflare_zone_name}" = {
+      name    = "travel.${var.cloudflare_zone_name}"
+      type    = "CNAME"
+      content = module.pages_travel.pages_dev_domain
       proxied = true
     }
     "workspace.${var.cloudflare_zone_name}" = {

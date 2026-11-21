@@ -18,6 +18,7 @@
 ///   art/<artist>/previews/<uuid>-<name>.webp    gallery viewer previews
 ///   art/commissions/<userId>/<uuid>.<ext>   delivered commission artwork
 ///   art/references/<userId>/<uuid>.<ext>    client-supplied reference images
+///   travel/recommendations/<id>/<uuid>.<ext>  photos of a place's dish
 ///
 /// Avatars key off the *profile* id, not the user id, because a profile can
 /// exist unclaimed with no account behind it, and AvatarVersion.ownerId is
@@ -37,6 +38,7 @@ export const GALLERY_SEGMENT = 'gallery';
 export const THUMBNAILS_SEGMENT = 'thumbnails';
 export const PREVIEWS_SEGMENT = 'previews';
 export const UNASSIGNED_ARTIST_SEGMENT = 'unassigned';
+export const TRAVEL_RECOMMENDATIONS_PREFIX = 'travel/recommendations';
 
 /// Where a freshly signed upload goes before its owning record exists.
 export function stagedUploadKey(owner: string, extension: string): string {
@@ -76,6 +78,13 @@ export function referenceAssetKeyFor(
   sourceKey: string,
 ): string {
   return `${REFERENCES_PREFIX}/${userId}/${fileNameOf(sourceKey)}`;
+}
+
+export function travelRecommendationImageKeyFor(
+  recommendationId: string,
+  sourceKey: string,
+): string {
+  return `${TRAVEL_RECOMMENDATIONS_PREFIX}/${recommendationId}/${fileNameOf(sourceKey)}`;
 }
 
 export function galleryAssetKeyFor(artist: string, sourceKey: string): string {
