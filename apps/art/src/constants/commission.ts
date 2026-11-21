@@ -153,3 +153,19 @@ export const REFERENCE_LINK_PROTOCOLS = ['http:', 'https:'];
 export const URL_PROTOCOL_PATTERN = /^[a-z][a-z\d+.-]*:\/\//i;
 
 export const COMMISSION_MIN_DEADLINE_DAYS = 3;
+
+export type PanelTone = 'coral' | 'teal';
+
+export const PANEL_TONE_CLASSES: Record<
+  PanelTone,
+  { chip: string; rule: string }
+> = {
+  coral: {
+    chip: 'bg-tint-coral text-tint-coral-foreground',
+    rule: 'bg-gradient-to-r from-tint-coral-foreground/70 via-tint-coral-foreground/20 to-transparent',
+  },
+  teal: {
+    chip: 'bg-tint-teal text-tint-teal-foreground',
+    rule: 'bg-gradient-to-r from-tint-teal-foreground/70 via-tint-teal-foreground/20 to-transparent',
+  },
+};

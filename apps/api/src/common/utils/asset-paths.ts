@@ -16,6 +16,7 @@
 ///   art/<artist>/gallery/<uuid>.<ext>       an artist's gallery uploads
 ///   art/<artist>/thumbnails/<uuid>-<name>.webp  gallery thumbnails
 ///   art/<artist>/previews/<uuid>-<name>.webp    gallery viewer previews
+///   art/<artist>/process/<uuid>.<ext>       sketch-to-final process images
 ///   art/commissions/<userId>/<uuid>.<ext>   delivered commission artwork
 ///   art/references/<userId>/<uuid>.<ext>    client-supplied reference images
 ///
@@ -36,6 +37,7 @@ export const ART_PREFIX = 'art';
 export const GALLERY_SEGMENT = 'gallery';
 export const THUMBNAILS_SEGMENT = 'thumbnails';
 export const PREVIEWS_SEGMENT = 'previews';
+export const PROCESS_SEGMENT = 'process';
 export const UNASSIGNED_ARTIST_SEGMENT = 'unassigned';
 
 /// Where a freshly signed upload goes before its owning record exists.
@@ -80,6 +82,10 @@ export function referenceAssetKeyFor(
 
 export function galleryAssetKeyFor(artist: string, sourceKey: string): string {
   return `${ART_PREFIX}/${artist}/${GALLERY_SEGMENT}/${fileNameOf(sourceKey)}`;
+}
+
+export function processImageKeyFor(artist: string, sourceKey: string): string {
+  return `${ART_PREFIX}/${artist}/${PROCESS_SEGMENT}/${fileNameOf(sourceKey)}`;
 }
 
 export function assetThumbnailKeyFor(

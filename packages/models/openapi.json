@@ -2004,6 +2004,18 @@
             }
           },
           {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Filter to assets carrying every one of these tags",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "uploadedById",
             "required": false,
             "in": "query",
@@ -2399,6 +2411,82 @@
         "summary": "Artist uploads an image for a comment or update; deleted later unless claimed",
         "tags": [
           "commission-attachments"
+        ]
+      }
+    },
+    "/assets/{id}/process": {
+      "get": {
+        "operationId": "assetProcess",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetProcessStepDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "An artwork's sketch-to-final process images, in order",
+        "tags": [
+          "assets"
+        ]
+      },
+      "put": {
+        "operationId": "replaceAssetProcess",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceAssetProcessDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetProcessStepDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Replace an artwork's process images with this ordered list",
+        "tags": [
+          "assets"
         ]
       }
     },
@@ -7328,6 +7416,66 @@
             "description": "Hide this piece from everyone but you"
           }
         }
+      },
+      "AssetProcessStepDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "description": "Storage key; send it back to keep this step"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "imageUrl",
+          "label",
+          "position"
+        ]
+      },
+      "ProcessStepInputDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Key from POST /images/sign for a new image, or the key of a step this artwork already has"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "key"
+        ]
+      },
+      "ReplaceAssetProcessDto": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "description": "The full ordered list; steps left out are deleted",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcessStepInputDto"
+            }
+          }
+        },
+        "required": [
+          "steps"
+        ]
       },
       "SubmitCommissionDto": {
         "type": "object",

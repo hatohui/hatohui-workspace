@@ -24,6 +24,7 @@ export function CommissionRequestPanel({
   return (
     <CommissionFormPanel
       icon={NotebookPen}
+      tone="teal"
       title={t('commission.form.panels.request')}
       description={t('commission.form.panels.requestHint')}
     >

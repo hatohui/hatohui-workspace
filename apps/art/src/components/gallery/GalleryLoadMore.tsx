@@ -3,6 +3,7 @@
 import { useIntersectionObserver } from '@hatohui/libs';
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
+import { GALLERY_PREFETCH_MARGIN } from '@/constants/gallery';
 
 export function GalleryLoadMore({
   hasMore,
@@ -17,6 +18,7 @@ export function GalleryLoadMore({
   const sentinelRef = useIntersectionObserver(
     onLoadMore,
     hasMore && !isFetchingMore,
+    GALLERY_PREFETCH_MARGIN,
   );
 
   if (!hasMore && !isFetchingMore) return null;

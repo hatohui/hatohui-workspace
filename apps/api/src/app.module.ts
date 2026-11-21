@@ -23,6 +23,7 @@ import { ConnectionsModule } from '@/modules/connections/connections.module';
 import { CronModule } from '@/modules/cron/cron.module';
 import { NotificationsModule } from '@/modules/notifications/notifications.module';
 import { AssetsModule } from '@/modules/assets/assets.module';
+import { AssetProcessModule } from '@/modules/asset-process/asset-process.module';
 import { CommissionsModule } from '@/modules/commissions/commissions.module';
 import { CommissionTypesModule } from '@/modules/commission-types/commission-types.module';
 import { CommissionPricingModule } from '@/modules/commission-pricing/commission-pricing.module';
@@ -65,6 +66,7 @@ import { CommissionAttachmentsModule } from '@/modules/commission-attachments/co
     CronModule,
     NotificationsModule,
     AssetsModule,
+    AssetProcessModule,
     CommissionsModule,
     CommissionTypesModule,
     CommissionPricingModule,

@@ -5,7 +5,10 @@ import { X } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import type { ProjectArtworkDto } from '@hatohui/models';
 import { Button } from '@hatohui/ui';
-import { useMosaicTile } from '@/hooks/useMosaicTile';
+import {
+  GALLERY_MOSAIC_FOCUS_POSITION,
+  GALLERY_MOSAIC_SIZES,
+} from '@/constants/gallery';
 
 export function ProjectArtworkTile({
   artwork,
@@ -19,14 +22,12 @@ export function ProjectArtworkTile({
   onRemove?: () => void;
 }) {
   const { t } = useTranslation('art');
-  const { frameStyle, sizes } = useMosaicTile(artwork);
 
   return (
     <div
       data-reveal
-      className="group artwork-frame relative overflow-hidden bg-card"
+      className="group artwork-frame relative h-full overflow-hidden bg-card"
     >
-      <div style={frameStyle} />
       <button
         type="button"
         className="absolute inset-0 cursor-zoom-in focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
@@ -37,7 +38,8 @@ export function ProjectArtworkTile({
           src={artwork.thumbnailUrl}
           alt={artwork.title ?? alt}
           fill
-          sizes={sizes}
+          sizes={GALLERY_MOSAIC_SIZES}
+          style={{ objectPosition: GALLERY_MOSAIC_FOCUS_POSITION }}
           className="object-cover transition-transform group-hover:scale-105"
         />
       </button>

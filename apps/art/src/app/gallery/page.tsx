@@ -1,6 +1,8 @@
 import { assets } from '@hatohui/models';
 import '@/lib/api';
 import { GalleryGrid } from '@/components/gallery/GalleryGrid';
+import { DoodleBackdrop } from '@/components/decor/DoodleBackdrop';
+import { GALLERY_DOODLE_FIELD } from '@/constants/decor';
 import {
   GALLERY_PAGE_SIZE,
   GALLERY_PROJECTS_SECTION,
@@ -27,19 +29,22 @@ export default async function GalleryPage({
   );
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
-      <GalleryGrid
-        artistId={artist.id}
-        galleryBasePath={GALLERY_ROUTE}
-        projectBasePath={PROJECTS_ROUTE}
-        initialSection={
-          section === GALLERY_PROJECTS_SECTION ? 'projects' : 'assets'
-        }
-        initialData={{
-          items: response.data.items,
-          total: response.data.total,
-        }}
-      />
-    </main>
+    <div className="relative isolate">
+      <DoodleBackdrop field={GALLERY_DOODLE_FIELD} />
+      <main className="mx-auto max-w-6xl px-6 py-10">
+        <GalleryGrid
+          artistId={artist.id}
+          galleryBasePath={GALLERY_ROUTE}
+          projectBasePath={PROJECTS_ROUTE}
+          initialSection={
+            section === GALLERY_PROJECTS_SECTION ? 'projects' : 'assets'
+          }
+          initialData={{
+            items: response.data.items,
+            total: response.data.total,
+          }}
+        />
+      </main>
+    </div>
   );
 }

@@ -26,6 +26,7 @@ import type {
 
 import type {
   AssetDto,
+  AssetProcessStepDto,
   AssetsParams,
   BulkDeleteAssetsDto,
   BulkDeleteAssetsResultDto,
@@ -34,6 +35,7 @@ import type {
   CreateAssetDto,
   GalleryTagsParams,
   PaginatedAssetsDto,
+  ReplaceAssetProcessDto,
   TagSuggestionDto,
   UpdateAssetDto
 } from '../schemas';
@@ -76,6 +78,14 @@ export const getAssetsUrl = (params?: AssetsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    const explodeParameters = ["tags"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : String(v));
+      });
+      return;
+    }
 
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : String(value))
@@ -932,4 +942,199 @@ export const useBulkTagAssets = <TError = unknown,
         TContext
       > => {
       return useMutation(getBulkTagAssetsMutationOptions(options), queryClient);
+    }
+    export type assetProcessResponse200 = {
+  data: AssetProcessStepDto[]
+  status: 200
+}
+
+export type assetProcessResponseSuccess = (assetProcessResponse200) & {
+  headers: Headers;
+};
+;
+
+export type assetProcessResponse = (assetProcessResponseSuccess)
+
+export const getAssetProcessUrl = (id: string,) => {
+
+
+
+
+  return `/assets/${id}/process`
+}
+
+/**
+ * @summary An artwork's sketch-to-final process images, in order
+ */
+export const assetProcess = async (id: string, options?: RequestInit): Promise<assetProcessResponse> => {
+
+  return customFetch<assetProcessResponse>(getAssetProcessUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getAssetProcessQueryKey = (id: string,) => {
+    return [
+    `/assets/${id}/process`
+    ] as const;
+    }
+
+
+export const getAssetProcessQueryOptions = <TData = Awaited<ReturnType<typeof assetProcess>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetProcess>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getAssetProcessQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof assetProcess>>> = ({ signal }) => assetProcess(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof assetProcess>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AssetProcessQueryResult = NonNullable<Awaited<ReturnType<typeof assetProcess>>>
+export type AssetProcessQueryError = unknown
+
+
+export function useAssetProcess<TData = Awaited<ReturnType<typeof assetProcess>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetProcess>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof assetProcess>>,
+          TError,
+          Awaited<ReturnType<typeof assetProcess>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAssetProcess<TData = Awaited<ReturnType<typeof assetProcess>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetProcess>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof assetProcess>>,
+          TError,
+          Awaited<ReturnType<typeof assetProcess>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAssetProcess<TData = Awaited<ReturnType<typeof assetProcess>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetProcess>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary An artwork's sketch-to-final process images, in order
+ */
+
+export function useAssetProcess<TData = Awaited<ReturnType<typeof assetProcess>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof assetProcess>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getAssetProcessQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type replaceAssetProcessResponse200 = {
+  data: AssetProcessStepDto[]
+  status: 200
+}
+
+export type replaceAssetProcessResponseSuccess = (replaceAssetProcessResponse200) & {
+  headers: Headers;
+};
+;
+
+export type replaceAssetProcessResponse = (replaceAssetProcessResponseSuccess)
+
+export const getReplaceAssetProcessUrl = (id: string,) => {
+
+
+
+
+  return `/assets/${id}/process`
+}
+
+/**
+ * @summary Replace an artwork's process images with this ordered list
+ */
+export const replaceAssetProcess = async (id: string,
+    replaceAssetProcessDto: ReplaceAssetProcessDto, options?: RequestInit): Promise<replaceAssetProcessResponse> => {
+
+  return customFetch<replaceAssetProcessResponse>(getReplaceAssetProcessUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(replaceAssetProcessDto)
+  }
+);}
+
+
+
+
+
+export const getReplaceAssetProcessMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof replaceAssetProcess>>, TError,{id: string;data: ReplaceAssetProcessDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof replaceAssetProcess>>, TError,{id: string;data: ReplaceAssetProcessDto}, TContext> => {
+
+const mutationKey = ['replaceAssetProcess'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof replaceAssetProcess>>, {id: string;data: ReplaceAssetProcessDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  replaceAssetProcess(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReplaceAssetProcessMutationResult = NonNullable<Awaited<ReturnType<typeof replaceAssetProcess>>>
+    export type ReplaceAssetProcessMutationBody = ReplaceAssetProcessDto
+    export type ReplaceAssetProcessMutationError = unknown
+
+    /**
+ * @summary Replace an artwork's process images with this ordered list
+ */
+export const useReplaceAssetProcess = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof replaceAssetProcess>>, TError,{id: string;data: ReplaceAssetProcessDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof replaceAssetProcess>>,
+        TError,
+        {id: string;data: ReplaceAssetProcessDto},
+        TContext
+      > => {
+      return useMutation(getReplaceAssetProcessMutationOptions(options), queryClient);
     }

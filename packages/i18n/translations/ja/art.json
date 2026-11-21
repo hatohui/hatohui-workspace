@@ -178,7 +178,23 @@
       "tagsLabel": "タグ"
     },
     "viewLarge": "大きく表示",
-    "count_other": "作品 {{count}} 点"
+    "count_other": "作品 {{count}} 点",
+    "process": {
+      "title": "制作過程",
+      "hint": "ラフ、線画、下塗りなど、この作品ができるまでの段階を追加しましょう。閲覧者にはラフから完成までの流れとして表示されます。",
+      "final": "完成",
+      "add": "画像を追加",
+      "uploading": "アップロード中...",
+      "labelPlaceholder": "例：ラフ",
+      "moveUp": "前へ移動",
+      "moveDown": "後ろへ移動",
+      "remove": "削除",
+      "save": "制作過程を保存",
+      "saving": "保存中...",
+      "saveFailed": "制作過程の画像を保存できませんでした。もう一度お試しください。",
+      "empty": "制作過程の画像はまだありません。",
+      "stepAlt": "{{label}}の段階"
+    }
   },
   "queue": {
     "title": "キュー",
@@ -399,6 +415,18 @@
       "ANIMATION": {
         "label": "アニメーション",
         "description": "短いアニメクリップまたはループGIF。"
+      },
+      "HALF_BODY": {
+        "label": "半身",
+        "description": "腰から上、アイコンより詳細。"
+      },
+      "FULL_BODY": {
+        "label": "全身",
+        "description": "頭からつま先まで全身。"
+      },
+      "SKETCH_PAGE": {
+        "label": "ラフページ",
+        "description": "同じキャラクターの複数のラフ/ポーズをまとめたページ。"
       }
     },
     "status": {
