@@ -36,6 +36,10 @@ import { CommissionFollowersModule } from '@/modules/commission-followers/commis
 import { CommissionGroupsModule } from '@/modules/commission-groups/commission-groups.module';
 import { CommissionAccessModule } from '@/modules/commission-access/commission-access.module';
 import { CommissionAttachmentsModule } from '@/modules/commission-attachments/commission-attachments.module';
+import { TravelCuisinesModule } from '@/modules/travel-cuisines/travel-cuisines.module';
+import { TravelRecommendationsModule } from '@/modules/travel-recommendations/travel-recommendations.module';
+import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module';
+import { TravelPlacesModule } from '@/modules/travel-places/travel-places.module';
 
 @Module({
   imports: [
@@ -79,6 +83,10 @@ import { CommissionAttachmentsModule } from '@/modules/commission-attachments/co
     CommissionGroupsModule,
     CommissionAccessModule,
     CommissionAttachmentsModule,
+    TravelCuisinesModule,
+    TravelRecommendationsModule,
+    TravelDishesModule,
+    TravelPlacesModule,
   ],
 })
 export class AppModule {}

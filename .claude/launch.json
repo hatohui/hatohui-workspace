@@ -4,32 +4,62 @@
     {
       "name": "api",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["--cwd=apps/api", "run", "start:dev"],
+      "runtimeArgs": [
+        "--cwd=apps/api",
+        "run",
+        "start:dev"
+      ],
       "port": 4310,
       "autoPort": true
     },
     {
       "name": "art",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["--cwd=apps/art", "run", "dev"],
+      "runtimeArgs": [
+        "--cwd=apps/art",
+        "run",
+        "dev"
+      ],
       "port": 5175
     },
     {
       "name": "friends",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["--cwd=apps/friends", "run", "dev"],
+      "runtimeArgs": [
+        "--cwd=apps/friends",
+        "run",
+        "dev"
+      ],
       "port": 5174
+    },
+    {
+      "name": "travel",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "--cwd=apps/travel",
+        "run",
+        "dev"
+      ],
+      "port": 5176
     },
     {
       "name": "www",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["--cwd=apps/www", "run", "dev"],
+      "runtimeArgs": [
+        "--cwd=apps/www",
+        "run",
+        "dev"
+      ],
       "port": 5173
     },
     {
       "name": "workspace",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["--cwd=apps/workspace", "run", "dev"],
+      "runtimeArgs": [
+        "--cwd=apps/workspace",
+        "run",
+        "dev"
+      ],
       "port": 5177
     }
   ]

@@ -49,26 +49,31 @@ model User {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  profile                 Profile?                  @relation("ProfileOwner")
-  addedProfiles           Profile[]                 @relation("AddedBy")
-  sentConnections         Connection[]              @relation("ConnectionRequester")
-  receivedConnections     Connection[]              @relation("ConnectionAddressee")
-  notifications           Notification[]            @relation("NotificationRecipient")
-  actedNotifications      Notification[]            @relation("NotificationActor")
+  profile                 Profile?                    @relation("ProfileOwner")
+  addedProfiles           Profile[]                   @relation("AddedBy")
+  sentConnections         Connection[]                @relation("ConnectionRequester")
+  receivedConnections     Connection[]                @relation("ConnectionAddressee")
+  notifications           Notification[]              @relation("NotificationRecipient")
+  actedNotifications      Notification[]              @relation("NotificationActor")
   uploadedAssets          Asset[]
   roles                   UserRole[]
   settings                UserSetting[]
-  queuedEmails            EmailOutbox[]             @relation("EmailOutboxRecipient")
-  commissions             Commission[]              @relation("CommissionArtist")
-  commissionOpenings      CommissionOpening[]       @relation("ArtistCommissionOpenings")
-  commissionGroups        CommissionGroup[]         @relation("ArtistCommissionGroups")
-  projects                Project[]                 @relation("ArtistProjects")
-  commissionTypes         ArtistCommissionType[]    @relation("ArtistCommissionTypes")
-  commissionOptions       CommissionOption[]        @relation("ArtistCommissionOptions")
-  commissionAddons        CommissionAddon[]         @relation("ArtistCommissionAddons")
-  commissionFollowers     CommissionFollower[]      @relation("ArtistFollowers")
-  clientAccount           Client?                   @relation("ClientAccount")
-  commissionStatusChanges CommissionStatusHistory[] @relation("CommissionStatusChangedBy")
+  queuedEmails            EmailOutbox[]               @relation("EmailOutboxRecipient")
+  commissions             Commission[]                @relation("CommissionArtist")
+  commissionOpenings      CommissionOpening[]         @relation("ArtistCommissionOpenings")
+  commissionGroups        CommissionGroup[]           @relation("ArtistCommissionGroups")
+  projects                Project[]                   @relation("ArtistProjects")
+  commissionTypes         ArtistCommissionType[]      @relation("ArtistCommissionTypes")
+  commissionOptions       CommissionOption[]          @relation("ArtistCommissionOptions")
+  commissionAddons        CommissionAddon[]           @relation("ArtistCommissionAddons")
+  commissionFollowers     CommissionFollower[]        @relation("ArtistFollowers")
+  clientAccount           Client?                     @relation("ClientAccount")
+  commissionStatusChanges CommissionStatusHistory[]   @relation("CommissionStatusChangedBy")
+  travelDishes            TravelDish[]                @relation("TravelDishCreator")
+  travelCuisines          TravelCuisine[]             @relation("TravelCuisineCreator")
+  travelPlaces            TravelPlace[]               @relation("TravelPlaceCreator")
+  travelRecommendations   TravelRecommendation[]      @relation("TravelRecommendationCreator")
+  travelImages            TravelRecommendationImage[] @relation("TravelImageUploader")
 }
 
 enum AppScope {
@@ -823,4 +828,105 @@ model CommissionFollower {
   updatedAt        DateTime @updatedAt
 
   @@unique([artistId, email])
+}
+
+model TravelDish {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdById String?
+  createdBy   User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cuisines        TravelCuisine[]
+  recommendations TravelRecommendation[]
+}
+
+model TravelCuisine {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  createdById String?
+  createdBy   User?    @relation("TravelCuisineCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  dishes TravelDish[]
+}
+
+model TravelPlace {
+  id          String   @id @default(cuid())
+  name        String
+  address     String?
+  city        String?
+  mapsUrl     String?
+  latitude    Float?
+  longitude   Float?
+  note        String?
+  createdById String?
+  createdBy   User?    @relation("TravelPlaceCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  recommendations TravelRecommendation[]
+
+  @@index([city])
+}
+
+enum TravelTagKind {
+  DIET
+  ALLERGEN
+}
+
+model TravelTag {
+  id       String        @id @default(cuid())
+  key      String        @unique
+  kind     TravelTagKind
+  position Int
+
+  recommendations TravelRecommendation[]
+
+  @@index([kind, position])
+}
+
+enum TravelPriceLevel {
+  LOW
+  MID
+  HIGH
+}
+
+model TravelRecommendation {
+  id          String            @id @default(cuid())
+  dishId      String
+  dish        TravelDish        @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  placeId     String
+  place       TravelPlace       @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  note        String?
+  priceMin    Int?
+  priceMax    Int?
+  priceLevel  TravelPriceLevel?
+  currency    String            @default("VND")
+  spicy       Boolean           @default(false)
+  createdById String?
+  createdBy   User?             @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  images TravelRecommendationImage[]
+  tags   TravelTag[]
+
+  @@unique([placeId, dishId])
+  @@index([dishId])
+}
+
+model TravelRecommendationImage {
+  id               String               @id @default(cuid())
+  recommendationId String
+  recommendation   TravelRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+  key              String
+  position         Int
+  createdById      String?
+  createdBy        User?                @relation("TravelImageUploader", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt        DateTime             @default(now())
+
+  @@index([recommendationId, position])
 }
