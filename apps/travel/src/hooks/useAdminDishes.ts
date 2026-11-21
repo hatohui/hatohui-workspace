@@ -1,9 +1,11 @@
 import { useTranslation } from '@hatohui/i18n';
 import {
+  getTravelDishesQueryKey,
   useBulkCreateTravelDishes,
   useDeleteTravelDish,
   useTravelDishes,
   useUpdateTravelDish,
+  type TravelDishDto,
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
 import { CUISINE_LIST_SEPARATOR } from '../constants/admin';
@@ -52,19 +54,45 @@ export function useAdminDishes() {
     { key: 'placeCount', label: t('admin.places'), size: 90 },
   ];
 
+  const dishesQueryKey = getTravelDishesQueryKey();
+
   const commit = (id: string, key: keyof DishRow, value: string) =>
-    void run(() =>
-      update.mutateAsync({
-        id,
-        data:
-          key === 'cuisines'
-            ? { cuisines: toCuisineList(value) }
-            : { [key]: value },
-      }),
+    void run<{ data: TravelDishDto[] }>(
+      () =>
+        update.mutateAsync({
+          id,
+          data:
+            key === 'cuisines'
+              ? { cuisines: toCuisineList(value) }
+              : { [key]: value },
+        }),
+      {
+        queryKey: dishesQueryKey,
+        apply: (current) => ({
+          ...current,
+          data: current.data.map((dish) =>
+            dish.id === id
+              ? {
+                  ...dish,
+                  ...(key === 'cuisines'
+                    ? { cuisines: toCuisineList(value) }
+                    : { [key]: value }),
+                }
+              : dish,
+          ),
+        }),
+      },
     );
 
   const deletion = useRowDeletion<DishRow>(
-    (row) => run(() => remove.mutateAsync({ id: row.id })),
+    (row) =>
+      run<{ data: TravelDishDto[] }>(() => remove.mutateAsync({ id: row.id }), {
+        queryKey: dishesQueryKey,
+        apply: (current) => ({
+          ...current,
+          data: current.data.filter((dish) => dish.id !== row.id),
+        }),
+      }),
     (row) => row.placeCount > 0,
   );
 

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import {
+  getTravelTagsQueryKey,
   useBulkCreateTravelTags,
   useDeleteTravelTag,
   useUpdateTravelTag,
+  type TravelTagDto,
   type TravelTagKind,
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
@@ -54,8 +56,17 @@ export function useAdminTags() {
     { key: 'usageCount', label: t('admin.uses'), size: 90 },
   ];
 
+  const tagsQueryKey = getTravelTagsQueryKey();
+
   const deletion = useRowDeletion<TagRow>(
-    (row) => run(() => remove.mutateAsync({ id: row.id })),
+    (row) =>
+      run<{ data: TravelTagDto[] }>(() => remove.mutateAsync({ id: row.id }), {
+        queryKey: tagsQueryKey,
+        apply: (current) => ({
+          ...current,
+          data: current.data.filter((item) => item.id !== row.id),
+        }),
+      }),
     (row) => row.usageCount > 0,
   );
 
@@ -67,12 +78,31 @@ export function useAdminTags() {
     isLoading: tags.tags.length === 0,
     deletion,
     commit: (id: string, key: keyof TagRow, value: string) =>
-      void run(() =>
-        update.mutateAsync({
-          id,
-          data:
-            key === 'kind' ? { kind: value as TravelTagKind } : { name: value },
-        }),
+      void run<{ data: TravelTagDto[] }>(
+        () =>
+          update.mutateAsync({
+            id,
+            data:
+              key === 'kind'
+                ? { kind: value as TravelTagKind }
+                : { name: value },
+          }),
+        {
+          queryKey: tagsQueryKey,
+          apply: (current) => ({
+            ...current,
+            data: current.data.map((item) =>
+              item.id === id
+                ? {
+                    ...item,
+                    ...(key === 'kind'
+                      ? { kind: value as TravelTagKind }
+                      : { name: value }),
+                  }
+                : item,
+            ),
+          }),
+        },
       ),
     add: (names: string[]) =>
       runBulk(() => bulk.mutateAsync({ data: { kind, names } })),

@@ -1,9 +1,11 @@
 import { useTranslation } from '@hatohui/i18n';
 import {
+  getTravelCountriesQueryKey,
   useBulkCreateTravelCountries,
   useDeleteTravelCountry,
   useTravelCountries,
   useUpdateTravelCountry,
+  type TravelCountryDto,
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
 import { useAdminAction } from './useAdminAction';
@@ -40,8 +42,20 @@ export function useAdminCountries() {
     { key: 'placeCount', label: t('admin.places'), size: 100 },
   ];
 
+  const countriesQueryKey = getTravelCountriesQueryKey();
+
   const deletion = useRowDeletion<CountryRow>(
-    (row) => run(() => remove.mutateAsync({ id: row.id })),
+    (row) =>
+      run<{ data: TravelCountryDto[] }>(
+        () => remove.mutateAsync({ id: row.id }),
+        {
+          queryKey: countriesQueryKey,
+          apply: (current) => ({
+            ...current,
+            data: current.data.filter((item) => item.id !== row.id),
+          }),
+        },
+      ),
     (row) => row.areaCount > 0 || row.placeCount > 0,
   );
 
@@ -51,7 +65,18 @@ export function useAdminCountries() {
     isLoading: query.isLoading,
     deletion,
     commit: (id: string, key: keyof CountryRow, value: string) =>
-      void run(() => update.mutateAsync({ id, data: { [key]: value } })),
+      void run<{ data: TravelCountryDto[] }>(
+        () => update.mutateAsync({ id, data: { [key]: value } }),
+        {
+          queryKey: countriesQueryKey,
+          apply: (current) => ({
+            ...current,
+            data: current.data.map((item) =>
+              item.id === id ? { ...item, [key]: value } : item,
+            ),
+          }),
+        },
+      ),
     add: (names: string[]) =>
       runBulk(() => bulk.mutateAsync({ data: { names } })),
   };
