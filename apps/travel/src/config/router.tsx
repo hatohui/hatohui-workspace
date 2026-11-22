@@ -11,7 +11,8 @@
 //   pages/**/{not-found,error}.tsx -> nearest-ancestor error boundary for that subtree
 //   pages/not-found.tsx           -> global catch-all (404 / uncaught error)
 
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Outlet, type RouteObject } from 'react-router';
+import { ROUTE_PRELOAD_DELAY_MS } from '../constants/routes';
 import type { ComponentType } from 'react';
 
 type PageModule = { default: ComponentType<Record<string, unknown>> };
@@ -59,118 +60,90 @@ const getRoutePath = (filename: string) => {
   return `/${name}`;
 };
 
-const routes = Object.keys(pageLoaders).map((pageKey) => {
-  const path = getRoutePath(pageKey);
+const normalize = (key: string) => key.replace(/\\/g, '/');
+const dirOf = (key: string) => normalize(key).replace(/[^/]+\.tsx$/, '');
+const layoutKeys = Object.keys(layoutLoaders);
+const errorKeys = Object.keys(errorLoaders);
 
-  return {
-    path,
-    lazy: async () => {
-      const pageMod = await loadChunk(pageLoaders[pageKey]);
-      let PageComponent = pageMod.default;
+const closest = (keys: string[], fileKey: string, exclude?: string) =>
+  keys
+    .filter(
+      (key) => key !== exclude && normalize(fileKey).startsWith(dirOf(key)),
+    )
+    .sort((a, b) => dirOf(b).length - dirOf(a).length)[0] ?? null;
 
-      const matches: string[] = [];
-      const normalizedPageKey = pageKey.replace(/\\/g, '/');
-
-      for (const layoutKey of Object.keys(layoutLoaders)) {
-        const normalizedLayoutKey = layoutKey.replace(/\\/g, '/');
-        const layoutDir = normalizedLayoutKey
-          .replace(/\/layout\.tsx$/, '/')
-          .replace(/\\/g, '/');
-        if (normalizedPageKey.startsWith(layoutDir)) {
-          matches.push(layoutKey);
-        }
-      }
-
-      matches.sort((a, b) => b.length - a.length);
-
-      const Layouts: React.ComponentType<Record<string, unknown>>[] = [];
-
-      for (const layoutKey of matches) {
-        const layoutMod = await loadChunk(layoutLoaders[layoutKey]);
-        const Layout = layoutMod.default;
-        Layouts.push(Layout);
-        const Prev = PageComponent;
-        PageComponent = () => (
-          <Layout>
-            <Prev />
-          </Layout>
-        );
-      }
-
-      const errorMatches: string[] = [];
-      for (const errorKey of Object.keys(errorLoaders)) {
-        const normalizedErrorKey = errorKey.replace(/\\/g, '/');
-        const errorDir = normalizedErrorKey
-          .replace(/\/(not-found|error)\.tsx$/, '/')
-          .replace(/\\/g, '/');
-        if (normalizedPageKey.startsWith(errorDir)) {
-          errorMatches.push(errorKey);
-        }
-      }
-
-      errorMatches.sort((a, b) => b.length - a.length);
-
-      if (errorMatches.length > 0) {
-        const errorMod = await loadChunk(errorLoaders[errorMatches[0]]);
-        const ErrorComponent = errorMod.default;
-        let ErrorElement: React.ReactNode = <ErrorComponent />;
-
-        for (const Layout of Layouts) {
-          ErrorElement = <Layout>{ErrorElement}</Layout>;
-        }
-
-        return { Component: PageComponent, errorElement: ErrorElement };
-      }
-
-      return { Component: PageComponent };
-    },
-  };
+const pageRoute = (pageKey: string): RouteObject => ({
+  path: getRoutePath(pageKey),
+  lazy: async () => {
+    const pageMod = await loadChunk(pageLoaders[pageKey]);
+    const errorKey = closest(errorKeys, pageKey);
+    if (!errorKey) return { Component: pageMod.default };
+    const errorMod = await loadChunk(errorLoaders[errorKey]);
+    return { Component: pageMod.default, ErrorBoundary: errorMod.default };
+  },
 });
 
-const globalNotFoundKey = Object.keys(errorLoaders).find(
-  (k) =>
-    k.replace(/\\/g, '/') === '../pages/not-found.tsx' ||
-    k.replace(/\\/g, '/') === '../pages/error.tsx',
+const globalNotFoundKey = errorKeys.find(
+  (key) =>
+    normalize(key) === '../pages/not-found.tsx' ||
+    normalize(key) === '../pages/error.tsx',
 );
 
-if (globalNotFoundKey) {
-  routes.push({
-    path: '*',
-    lazy: async () => {
-      const mod = await loadChunk(errorLoaders[globalNotFoundKey]);
-      let Component = mod.default;
+const notFoundRoute = (key: string): RouteObject => ({
+  path: '*',
+  lazy: async () => ({
+    Component: (await loadChunk(errorLoaders[key])).default,
+  }),
+});
 
-      const normalizedKey = globalNotFoundKey.replace(/\\/g, '/');
-      const matches: string[] = [];
-      for (const layoutKey of Object.keys(layoutLoaders)) {
-        const normalizedLayoutKey = layoutKey.replace(/\\/g, '/');
-        const layoutDir = normalizedLayoutKey
-          .replace(/\/layout\.tsx$/, '/')
-          .replace(/\\/g, '/');
-        if (normalizedKey.startsWith(layoutDir)) {
-          matches.push(layoutKey);
-        }
-      }
-      matches.sort((a, b) => b.length - a.length);
-
-      for (const layoutKey of matches) {
-        const layoutMod = await loadChunk(layoutLoaders[layoutKey]);
-        const Layout = layoutMod.default;
-        const Prev = Component;
-        Component = () => (
-          <Layout>
-            <Prev />
-          </Layout>
-        );
-      }
-
-      return { Component };
-    },
-  });
+function childRoutes(parent: string | null): RouteObject[] {
+  const layouts = layoutKeys
+    .filter((key) => closest(layoutKeys, key, key) === parent)
+    .map<RouteObject>((key) => ({
+      id: normalize(key),
+      lazy: async () => {
+        const Layout = (await loadChunk(layoutLoaders[key])).default;
+        return {
+          Component: () => (
+            <Layout>
+              <Outlet />
+            </Layout>
+          ),
+        };
+      },
+      children: childRoutes(key),
+    }));
+  const pages = Object.keys(pageLoaders)
+    .filter((key) => closest(layoutKeys, key) === parent)
+    .map(pageRoute);
+  const notFound =
+    globalNotFoundKey && closest(layoutKeys, globalNotFoundKey) === parent
+      ? [notFoundRoute(globalNotFoundKey)]
+      : [];
+  return [...layouts, ...pages, ...notFound];
 }
 
-const router = createBrowserRouter(routes, {
+const router = createBrowserRouter(childRoutes(null), {
   future: { v7_startTransition: true },
 });
+
+const preloadRoutes = () => {
+  for (const load of [
+    ...Object.values(layoutLoaders),
+    ...Object.values(pageLoaders),
+  ]) {
+    void load().catch(() => undefined);
+  }
+};
+
+if (typeof window !== 'undefined') {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(preloadRoutes, {
+      timeout: ROUTE_PRELOAD_DELAY_MS,
+    });
+  } else {
+    setTimeout(preloadRoutes, ROUTE_PRELOAD_DELAY_MS);
+  }
+}
 
 export default router;
