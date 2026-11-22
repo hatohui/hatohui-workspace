@@ -12,7 +12,7 @@ function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-dvh bg-background">
-      <TravelHeader wide={isWide} />
+      <TravelHeader />
       <main
         className={cn(
           isWide
