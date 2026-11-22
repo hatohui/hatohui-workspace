@@ -95,6 +95,9 @@
     "savingItem": "Đang lưu {{name}}…",
     "savedItem": "Đã lưu {{name}}",
     "mapsUrlHint": "Dán link Google Maps. Link chia sẻ rút gọn cũng được.",
+    "area": "Thành phố / khu vực",
+    "areaPlaceholder": "Chọn thành phố hoặc khu vực",
+    "areaNone": "Chưa chọn khu vực",
     "linkNoLocation": "Không tìm thấy vị trí trong link này.",
     "useLinkName": "Dùng \"{{name}}\" làm tên",
     "mapPreview": "Xem trước bản đồ"

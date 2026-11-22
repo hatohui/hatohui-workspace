@@ -40,4 +40,6 @@ export interface UpdateTravelRecommendationDto {
      * @maxItems 12
      */
   imageKeys?: string[];
+  /** Area for the recommendation's place; empty clears it */
+  placeAreaId?: string;
 }

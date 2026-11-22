@@ -39,16 +39,6 @@ const dishInclude = {
   cuisines: travelCuisineNamesSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
-  recommendations: {
-    orderBy: { createdAt: 'desc' },
-    select: {
-      images: {
-        orderBy: { position: 'asc' },
-        take: 1,
-        select: { key: true, thumbnailKey: true },
-      },
-    },
-  },
 } satisfies Prisma.TravelDishInclude;
 
 type DishRow = Prisma.TravelDishGetPayload<{ include: typeof dishInclude }>;
@@ -301,9 +291,6 @@ export class TravelDishesService {
     const previewUrl = row.previewKey
       ? this.storage.getPublicUrl(row.previewKey)
       : imageUrl;
-    const recCover = row.recommendations.find((r) => r.images.length)
-      ?.images[0];
-    const recCoverKey = recCover?.thumbnailKey ?? recCover?.key;
     return {
       id: row.id,
       name: row.name,
@@ -314,9 +301,7 @@ export class TravelDishesService {
       imageUrl,
       thumbnailUrl,
       previewUrl,
-      coverImageUrl:
-        thumbnailUrl ??
-        (recCoverKey ? this.storage.getPublicUrl(recCoverKey) : null),
+      coverImageUrl: thumbnailUrl,
       createdBy: toTravelCreatorDto(row.createdBy),
       createdAt: row.createdAt,
     };

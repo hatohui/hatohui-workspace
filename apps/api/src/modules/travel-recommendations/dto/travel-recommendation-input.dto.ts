@@ -161,4 +161,12 @@ export class UpdateTravelRecommendationDto extends PartialType(
     'cuisines',
     'place',
   ] as const),
-) {}
+) {
+  @ApiProperty({
+    required: false,
+    description: "Area for the recommendation's place; empty clears it",
+  })
+  @IsOptional()
+  @IsString()
+  placeAreaId?: string;
+}

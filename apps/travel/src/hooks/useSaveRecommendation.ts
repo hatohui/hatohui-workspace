@@ -6,6 +6,7 @@ import {
   getTravelRecommendationsQueryKey,
   updateTravelRecommendation,
   type TravelDishDto,
+  type TravelPlaceAreaDto,
   type TravelPlaceDto,
   type TravelRecommendationDto,
 } from '@hatohui/models';
@@ -77,12 +78,29 @@ export function useSaveRecommendation(
     const dishLabel = matches.dish?.name ?? fields.dishName.trim();
     const tempId = existing?.id ?? createOptimisticId();
 
+    let resolvedArea: TravelPlaceAreaDto | null = null;
+    if (fields.areaId) {
+      for (const country of location.countries) {
+        const found = country.areas.find((a) => a.id === fields.areaId);
+        if (found) {
+          resolvedArea = {
+            id: found.id,
+            name: found.name,
+            countryId: country.id,
+            countryName: country.name,
+          };
+          break;
+        }
+      }
+    }
+
     const optimistic = buildOptimisticRecommendation({
       id: tempId,
       existing,
       fields,
       dish: matches.dish,
       place: matches.place,
+      area: resolvedArea,
       photos,
     });
 
@@ -145,10 +163,10 @@ export function useSaveRecommendation(
         });
 
         const response = existing
-          ? await updateTravelRecommendation(
-              existing.id,
-              detailsOf(fields, imageKeys),
-            )
+          ? await updateTravelRecommendation(existing.id, {
+              ...detailsOf(fields, imageKeys),
+              placeAreaId: fields.areaId,
+            })
           : await createTravelRecommendation({
               ...detailsOf(fields, imageKeys),
               dishId: matches.dish?.id,
@@ -160,7 +178,7 @@ export function useSaveRecommendation(
                 : {
                     name: fields.placeName,
                     mapsUrl: fields.mapsUrl || undefined,
-                    areaId: location.area?.id,
+                    areaId: fields.areaId || undefined,
                   },
             });
 

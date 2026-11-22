@@ -6,6 +6,7 @@ export function usePlaceForm(place: TravelPlaceDto, onSaved: () => void) {
   return useEntityForm(
     {
       name: place.name,
+      areaId: place.area?.id ?? '',
       address: place.address ?? '',
       city: place.city ?? '',
       mapsUrl: place.mapsUrl ?? '',

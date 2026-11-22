@@ -9446,6 +9446,10 @@
             "items": {
               "type": "string"
             }
+          },
+          "placeAreaId": {
+            "type": "string",
+            "description": "Area for the recommendation's place; empty clears it"
           }
         }
       },

@@ -2,6 +2,7 @@ import { useTranslation } from '@hatohui/i18n';
 import type { TravelPlaceDto } from '@hatohui/models';
 import { PLACE_TEXT_FIELDS } from '../../constants/placeFields';
 import { usePlaceForm } from '../../hooks/usePlaceForm';
+import AreaSelect from '../location/AreaSelect';
 import MapsLinkField from '../maps/MapsLinkField';
 import DialogForm from '../shared/DialogForm';
 import TextField from '../shared/TextField';
@@ -34,6 +35,11 @@ function PlaceForm({ place, onClose }: Props) {
             onChange={(value) => form.set(field.key, value)}
           />
         ))}
+        <AreaSelect
+          id="place-area"
+          value={form.values.areaId}
+          onChange={(value) => form.set('areaId', value)}
+        />
         <MapsLinkField
           id="place-mapsUrl"
           url={form.values.mapsUrl}

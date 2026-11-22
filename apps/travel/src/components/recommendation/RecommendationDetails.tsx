@@ -31,6 +31,11 @@ function RecommendationDetails({ recommendation: rec }: Props) {
           </Link>
           <div className="flex flex-wrap items-center gap-2">
             <PlaceMapsChip place={rec.place} />
+            {rec.place.area && (
+              <span className="inline-flex items-center rounded-full border border-border/70 px-2.5 py-0.5 text-xs text-muted-foreground">
+                {rec.place.area.name}
+              </span>
+            )}
           </div>
         </div>
         <RecommendationActions recommendation={rec} />

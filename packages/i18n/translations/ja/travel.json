@@ -95,6 +95,9 @@
     "savingItem": "{{name}} を保存中…",
     "savedItem": "{{name}} を保存しました",
     "mapsUrlHint": "Google マップのリンクを貼り付けてください。共有用の短縮リンクも使えます。",
+    "area": "都市・エリア",
+    "areaPlaceholder": "都市・エリアを選択",
+    "areaNone": "エリアなし",
     "linkNoLocation": "このリンクから場所を見つけられませんでした。",
     "useLinkName": "「{{name}}」を名前に使う",
     "mapPreview": "地図のプレビュー"

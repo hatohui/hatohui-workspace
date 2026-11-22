@@ -95,6 +95,9 @@
     "savingItem": "Saving {{name}}…",
     "savedItem": "Saved {{name}}",
     "mapsUrlHint": "Paste a Google Maps link. Short share links work too.",
+    "area": "City / area",
+    "areaPlaceholder": "Select a city or area",
+    "areaNone": "No area",
     "linkNoLocation": "Couldn't find a location in this link.",
     "useLinkName": "Use \"{{name}}\" as the name",
     "mapPreview": "Map preview"

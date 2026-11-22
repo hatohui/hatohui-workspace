@@ -1,6 +1,7 @@
 import type {
   TravelDishDto,
   TravelImageDto,
+  TravelPlaceAreaDto,
   TravelPlaceDto,
   TravelRecommendationDto,
   TravelRecommendationsParams,
@@ -30,14 +31,19 @@ export function buildOptimisticRecommendation(params: {
   fields: RecommendationFields;
   dish?: TravelDishDto;
   place?: TravelPlaceDto;
+  area?: TravelPlaceAreaDto | null;
   photos: PhotoItem[];
 }): TravelRecommendationDto {
-  const { id, existing, fields, dish, place, photos } = params;
+  const { id, existing, fields, dish, place, area = null, photos } = params;
   const images = toOptimisticImages(photos);
 
   if (existing) {
     return {
       ...existing,
+      place: {
+        ...existing.place,
+        area,
+      },
       note: fields.note || null,
       spicy: fields.spicy,
       diets: fields.diets,
@@ -80,7 +86,7 @@ export function buildOptimisticRecommendation(params: {
       : {
           id: `${OPTIMISTIC_PREFIX}place`,
           name: fields.placeName.trim(),
-          area: null,
+          area,
           address: null,
           city: null,
           mapsUrl: fields.mapsUrl || null,

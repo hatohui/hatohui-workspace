@@ -13,6 +13,7 @@ export interface RecommendationFields {
   dishName: string;
   cuisines: string[];
   placeName: string;
+  areaId: string;
   mapsUrl: string;
   priceMode: PriceMode;
   priceMin: string;
@@ -29,10 +30,14 @@ export interface RecommendationFields {
 const amount = (value: number | null | undefined) =>
   value == null ? '' : String(value);
 
-const fieldsFrom = (rec?: TravelRecommendationDto): RecommendationFields => ({
+const fieldsFrom = (
+  rec?: TravelRecommendationDto,
+  defaultAreaId?: string,
+): RecommendationFields => ({
   dishName: rec?.dish.name ?? '',
   cuisines: rec?.dish.cuisines ?? [],
   placeName: rec?.place.name ?? '',
+  areaId: rec?.place.area?.id ?? defaultAreaId ?? '',
   mapsUrl: rec?.place.mapsUrl ?? '',
   priceMode: rec?.priceLevel && rec.priceMin == null ? 'level' : 'range',
   priceMin: amount(rec?.priceMin),
@@ -46,8 +51,11 @@ const fieldsFrom = (rec?: TravelRecommendationDto): RecommendationFields => ({
   tags: rec?.tags ?? [],
 });
 
-export function useRecommendationFields(rec?: TravelRecommendationDto) {
-  const [fields, setFields] = useState(() => fieldsFrom(rec));
+export function useRecommendationFields(
+  rec?: TravelRecommendationDto,
+  defaultAreaId?: string,
+) {
+  const [fields, setFields] = useState(() => fieldsFrom(rec, defaultAreaId));
   const set = <K extends keyof RecommendationFields>(
     key: K,
     value: RecommendationFields[K],

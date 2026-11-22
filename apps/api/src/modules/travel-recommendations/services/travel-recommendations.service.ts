@@ -110,6 +110,12 @@ export class TravelRecommendationsService {
         },
       }),
     );
+    if (dto.placeAreaId !== undefined) {
+      await this.db.travelPlace.update({
+        where: { id: dto.placeId ?? current.place.id },
+        data: { areaId: dto.placeAreaId.trim() || null },
+      });
+    }
     if (dto.imageKeys) await this.images.replace(id, dto.imageKeys, userId);
     return this.get(id);
   }
