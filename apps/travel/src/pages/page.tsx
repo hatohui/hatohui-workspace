@@ -1,6 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import AddRecommendationButton from '../components/catalog/AddRecommendationButton';
 import CatalogSidebar from '../components/catalog/CatalogSidebar';
+import FoodCategoryBar from '../components/catalog/FoodCategoryBar';
 import MobileFilterButton from '../components/catalog/MobileFilterButton';
 import DishResults from '../components/food/DishResults';
 import FoodViewSwitch from '../components/food/FoodViewSwitch';
@@ -20,54 +21,60 @@ function FoodPage() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[192px_minmax(0,1fr)]">
+    <div className="space-y-4">
       <h1 className="sr-only">{t('catalog.title')}</h1>
-      <CatalogSidebar filters={filters} view={food.view} />
-      <div className="space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <FoodViewSwitch value={food.view} onChange={food.setView} />
-          <GroupByCategoryToggle
-            active={food.groupByCategory}
-            onToggle={food.toggleGroupByCategory}
-          />
-          <div className="flex min-w-48 flex-1 items-center gap-2">
-            <SearchField
-              value={filters.search}
-              placeholder={t(food.searchKey)}
-              onChange={filters.setSearch}
-              suggestions={active.suggestions}
+      <FoodCategoryBar
+        selected={filters.foodCategories}
+        onToggle={filters.toggleFoodCategory}
+      />
+      <div className="grid gap-6 lg:grid-cols-[192px_minmax(0,1fr)]">
+        <CatalogSidebar filters={filters} />
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <FoodViewSwitch value={food.view} onChange={food.setView} />
+            <GroupByCategoryToggle
+              active={food.groupByCategory}
+              onToggle={food.toggleGroupByCategory}
             />
-            <MobileFilterButton filters={filters} view={food.view} />
+            <div className="flex min-w-48 flex-1 items-center gap-2">
+              <SearchField
+                value={filters.search}
+                placeholder={t(food.searchKey)}
+                onChange={filters.setSearch}
+                suggestions={active.suggestions}
+              />
+              <MobileFilterButton filters={filters} />
+            </div>
+            <AddRecommendationButton />
           </div>
-          <AddRecommendationButton />
+          {!active.isLoading && !active.isError && (
+            <p className="text-xs text-muted-foreground tabular-nums">
+              {t(food.countKey, { count: active.pagination.totalItems })}
+            </p>
+          )}
+          {food.view === 'dishes' ? (
+            <DishResults
+              list={food.dishes}
+              groupByCategory={food.groupByCategory}
+              activeCategories={filters.foodCategories}
+              {...results}
+            />
+          ) : (
+            <PlaceResults
+              list={food.places}
+              groupByCategory={food.groupByCategory}
+              activeCategories={filters.placeCategories}
+              {...results}
+            />
+          )}
+          {!food.groupByCategory && (
+            <PaginationBar
+              page={active.pagination.page}
+              totalPages={active.pagination.totalPages}
+              onPageChange={active.pagination.setPage}
+            />
+          )}
         </div>
-        {!active.isLoading && !active.isError && (
-          <p className="text-xs text-muted-foreground tabular-nums">
-            {t(food.countKey, { count: active.pagination.totalItems })}
-          </p>
-        )}
-        {food.view === 'dishes' ? (
-          <DishResults
-            list={food.dishes}
-            groupByCategory={food.groupByCategory}
-            activeCategories={filters.foodCategories}
-            {...results}
-          />
-        ) : (
-          <PlaceResults
-            list={food.places}
-            groupByCategory={food.groupByCategory}
-            activeCategories={filters.placeCategories}
-            {...results}
-          />
-        )}
-        {!food.groupByCategory && (
-          <PaginationBar
-            page={active.pagination.page}
-            totalPages={active.pagination.totalPages}
-            onPageChange={active.pagination.setPage}
-          />
-        )}
       </div>
     </div>
   );

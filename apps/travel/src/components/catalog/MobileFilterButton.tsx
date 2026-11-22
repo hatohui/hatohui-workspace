@@ -11,17 +11,10 @@ import {
 } from '@hatohui/ui';
 import { SlidersHorizontal } from 'lucide-react';
 import { FIELD_OUTLINE } from '../../constants/chips';
-import type { FoodView } from '../../constants/food';
 import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
 import CatalogFilters from './CatalogFilters';
 
-function MobileFilterButton({
-  filters,
-  view,
-}: {
-  filters: Filters;
-  view?: FoodView;
-}) {
+function MobileFilterButton({ filters }: { filters: Filters }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
@@ -50,7 +43,7 @@ function MobileFilterButton({
             <SheetTitle>{t('filters.title')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
-            <CatalogFilters filters={filters} view={view} />
+            <CatalogFilters filters={filters} />
           </SheetBody>
         </SheetContent>
       </Sheet>
