@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDebouncedValue } from '@hatohui/libs';
 import { SEARCH_DEBOUNCE_MS } from '../constants/travel';
+import { useMyAllergies } from './useMyAllergies';
 import { useSearchState } from './useSearchState';
 
 const toggled = <T>(list: T[], item: T) =>
@@ -16,6 +17,11 @@ export function useTravelFilterState() {
   const [tags, setTags] = useState<string[]>([]);
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [by, setBy] = useState('');
+  const [hideMine, setHideMine] = useState(false);
+  const mine = useMyAllergies();
+  const excluded = hideMine
+    ? [...new Set([...avoid, ...mine.allergens])]
+    : avoid;
   const debouncedBy = useDebouncedValue(by.trim(), SEARCH_DEBOUNCE_MS);
 
   const activeCount =
@@ -24,7 +30,8 @@ export function useTravelFilterState() {
     avoid.length +
     tags.length +
     cuisines.length +
-    Number(Boolean(by.trim()));
+    Number(Boolean(by.trim())) +
+    Number(hideMine);
 
   const clearFilters = () => {
     setSearch('');
@@ -34,6 +41,7 @@ export function useTravelFilterState() {
     setTags([]);
     setCuisines([]);
     setBy('');
+    setHideMine(false);
   };
 
   return {
@@ -41,7 +49,7 @@ export function useTravelFilterState() {
       q: query,
       spicy: spicy || undefined,
       diets: listOrUndefined(diets),
-      excludeAllergens: listOrUndefined(avoid),
+      excludeAllergens: listOrUndefined(excluded),
       tags: listOrUndefined(tags),
       cuisines: listOrUndefined(cuisines),
       by: debouncedBy || undefined,
@@ -61,9 +69,15 @@ export function useTravelFilterState() {
       toggleCuisine: (name: string) => setCuisines((l) => toggled(l, name)),
       by,
       setBy,
+      hideMine,
+      setHideMine,
+      myAllergenCount: mine.allergens.length,
       activeCount,
       clearFilters,
     },
     isFiltered: Boolean(query) || activeCount > 0,
   };
 }
+
+export type TravelFilterState = ReturnType<typeof useTravelFilterState>;
+export type CatalogFilters = TravelFilterState['filters'];

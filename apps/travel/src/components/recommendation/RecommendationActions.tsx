@@ -1,13 +1,10 @@
 import { useTranslation } from '@hatohui/i18n';
-import {
-  deleteTravelRecommendation,
-  type TravelRecommendationDto,
-} from '@hatohui/models';
-import { Button, ConfirmDialog } from '@hatohui/ui';
-import { Pencil, Trash2 } from 'lucide-react';
+import type { TravelRecommendationDto } from '@hatohui/models';
+import { Button } from '@hatohui/ui';
+import { Pencil } from 'lucide-react';
 import { useCanEdit } from '../../hooks/useCanEdit';
-import { useConfirmedDelete } from '../../hooks/useConfirmedDelete';
 import { useDialogState } from '../../hooks/useDialogState';
+import DeleteRecommendationButton from './DeleteRecommendationButton';
 import RecommendationDialog from './RecommendationDialog';
 
 interface Props {
@@ -18,7 +15,6 @@ function RecommendationActions({ recommendation: rec }: Props) {
   const { t } = useTranslation();
   const canEdit = useCanEdit();
   const editor = useDialogState();
-  const deletion = useConfirmedDelete(() => deleteTravelRecommendation(rec.id));
   if (!canEdit) return null;
 
   return (
@@ -31,30 +27,11 @@ function RecommendationActions({ recommendation: rec }: Props) {
       >
         <Pencil />
       </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        aria-label={t('recommendation.delete')}
-        onClick={deletion.request}
-      >
-        <Trash2 />
-      </Button>
+      <DeleteRecommendationButton recommendation={rec} />
       <RecommendationDialog
         key={editor.version}
         state={editor}
         recommendation={rec}
-      />
-      <ConfirmDialog
-        open={deletion.open}
-        title={t('recommendation.deleteTitle')}
-        description={t('recommendation.deleteDescription', {
-          dish: rec.dish.name,
-          place: rec.place.name,
-        })}
-        cancelLabel={t('form.cancel')}
-        confirmLabel={t('recommendation.delete')}
-        onCancel={() => deletion.setOpen(false)}
-        onConfirm={() => void deletion.confirm()}
       />
     </div>
   );

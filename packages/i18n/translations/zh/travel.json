@@ -2,18 +2,15 @@
   "brand": "旅行",
   "nav": {
     "food": "美食",
-    "dishes": "菜品",
-    "places": "地点",
-    "admin": "管理"
+    "admin": "管理",
+    "quickMenu": "快捷菜单"
   },
   "catalog": {
     "title": "美食目录",
-    "subtitle": "值得专程去吃的菜，以及在哪里吃。",
+    "subtitle": "按菜品找店铺，或按店铺找推荐菜。",
     "searchPlaceholder": "搜索菜品、地点、备注",
     "spicy": "辣",
     "add": "添加美食",
-    "count_one": "{{count}} 个推荐",
-    "count_other": "{{count}} 个推荐",
     "empty": "这里还没有内容。",
     "emptyFiltered": "没有符合筛选条件的美食。",
     "clearFilters": "清除筛选",
@@ -22,7 +19,12 @@
     "avoidAllergens": "避开过敏原",
     "avoiding_one": "已避开 {{count}} 项",
     "avoiding_other": "已避开 {{count}} 项",
-    "avoidHint": "隐藏含有以下成分的菜品："
+    "avoidHint": "隐藏含有以下成分的菜品：",
+    "viewLabel": "浏览方式",
+    "byDish": "按菜品",
+    "byPlace": "按店铺",
+    "vegetarian": "素食",
+    "hideMyAllergens": "隐藏我的过敏原（{{count}}）"
   },
   "recommendation": {
     "noEstimate": "暂无价格",
@@ -78,7 +80,6 @@
     "dietsPlaceholder": "搜索或添加饮食标签…",
     "allergens": "含过敏原",
     "allergensPlaceholder": "搜索或添加过敏原…",
-    "noticeTags": "注意标签",
     "otherTags": "其他标签",
     "otherTagsPlaceholder": "面包、肉类、面条…",
     "tagCreate": "添加“{{tag}}”",
@@ -243,5 +244,18 @@
       "ALLERGEN": "过敏原",
       "GENERAL": "标签"
     }
+  },
+  "settings": {
+    "tabs": {
+      "food": "饮食"
+    },
+    "allergies": {
+      "title": "我的过敏原",
+      "description": "含有这些成分的食物会显示警告标记，你也可以在目录中隐藏它们。"
+    }
+  },
+  "overview": {
+    "browseFoodTitle": "浏览美食与店铺",
+    "browseFoodBody": "按菜品找店铺，或选一家店看看该点什么。"
   }
 }

@@ -15,6 +15,7 @@ type Props = {
   createLabel: (tag: string) => string;
   removeLabel: (tag: string) => string;
   className?: string;
+  showOnEmpty?: boolean;
 };
 
 function TagInput({
@@ -26,8 +27,9 @@ function TagInput({
   createLabel,
   removeLabel,
   className,
+  showOnEmpty,
 }: Props) {
-  const tags = useTagInput({ value, onChange, suggestions });
+  const tags = useTagInput({ value, onChange, suggestions, showOnEmpty });
   const anchorRef = useRef<HTMLDivElement>(null);
   const listId = id ? `${id}-suggestions` : undefined;
 
@@ -82,7 +84,7 @@ function TagInput({
         id={listId}
         role="listbox"
         align="start"
-        className="max-h-56 w-(--radix-popover-trigger-width) overflow-y-auto p-1"
+        className="w-(--radix-popover-trigger-width) overflow-hidden p-0"
         onOpenAutoFocus={(event) => event.preventDefault()}
         onInteractOutside={(event) => {
           if (
@@ -93,42 +95,44 @@ function TagInput({
           }
         }}
       >
-        {tags.options.map((option, index) => (
-          <Fragment key={`${option.isNew ? 'new' : 'tag'}-${option.value}`}>
-            {option.group &&
-              option.group !== tags.options[index - 1]?.group && (
-                <div
-                  role="presentation"
-                  className="px-2 pt-2 pb-1 text-xs font-medium text-muted-foreground first:pt-1"
-                >
-                  {option.group}
-                </div>
-              )}
-            <button
-              type="button"
-              role="option"
-              aria-selected={index === tags.highlighted}
-              onMouseDown={(event) => event.preventDefault()}
-              onMouseEnter={() => tags.setHighlighted(index)}
-              onClick={() => tags.add(option.value)}
-              className={cn(
-                'flex w-full cursor-pointer items-center justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm',
-                index === tags.highlighted &&
-                  'bg-accent text-accent-foreground',
-              )}
-            >
-              <span className="flex items-center gap-1.5">
-                {option.isNew && <Plus className="size-3.5" />}
-                {option.isNew ? createLabel(option.value) : option.value}
-              </span>
-              {option.hint && (
-                <span className="text-xs text-muted-foreground">
-                  {option.hint}
+        <div className="max-h-56 overflow-y-auto p-1 [scrollbar-width:thin]">
+          {tags.options.map((option, index) => (
+            <Fragment key={`${option.isNew ? 'new' : 'tag'}-${option.value}`}>
+              {option.group &&
+                option.group !== tags.options[index - 1]?.group && (
+                  <div
+                    role="presentation"
+                    className="px-2 pt-2 pb-1 text-xs font-medium text-muted-foreground first:pt-1"
+                  >
+                    {option.group}
+                  </div>
+                )}
+              <button
+                type="button"
+                role="option"
+                aria-selected={index === tags.highlighted}
+                onMouseDown={(event) => event.preventDefault()}
+                onMouseEnter={() => tags.setHighlighted(index)}
+                onClick={() => tags.add(option.value)}
+                className={cn(
+                  'flex w-full cursor-pointer items-center justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm',
+                  index === tags.highlighted &&
+                    'bg-accent text-accent-foreground',
+                )}
+              >
+                <span className="flex items-center gap-1.5">
+                  {option.isNew && <Plus className="size-3.5" />}
+                  {option.isNew ? createLabel(option.value) : option.value}
                 </span>
-              )}
-            </button>
-          </Fragment>
-        ))}
+                {option.hint && (
+                  <span className="text-xs text-muted-foreground">
+                    {option.hint}
+                  </span>
+                )}
+              </button>
+            </Fragment>
+          ))}
+        </div>
       </PopoverContent>
     </Popover>
   );

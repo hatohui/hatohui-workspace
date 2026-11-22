@@ -28,7 +28,6 @@ function MatchedField(props: Props) {
     value: props.value,
     onChange: props.onChange,
     suggestions: props.options,
-    showOnEmpty: true,
   });
 
   return (
@@ -65,60 +64,61 @@ function MatchedField(props: Props) {
             suggest.setOpen(true);
             suggest.setActive(-1);
           }}
-          onFocus={() => suggest.setOpen(true)}
           onBlur={() => suggest.setOpen(false)}
           onKeyDown={suggest.onKeyDown}
         />
         {!props.disabled && suggest.shown && (
-          <ul
-            id={suggest.listId}
-            role="listbox"
-            className="absolute inset-x-0 top-full z-40 mt-1.5 max-h-64 overflow-y-auto rounded-xl border border-border bg-popover p-1 text-popover-foreground shadow-lg"
-          >
-            {suggest.matches.map((item, index) => (
-              <li
-                key={item.id}
-                role="option"
-                aria-selected={index === suggest.active}
-                onMouseDown={(event) => {
-                  event.preventDefault();
-                  suggest.pick(item);
-                }}
-                onMouseEnter={() => suggest.setActive(index)}
-                className={cn(
-                  'flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition-colors',
-                  index === suggest.active
-                    ? 'bg-accent text-accent-foreground'
-                    : 'hover:bg-accent/60',
-                )}
-              >
-                {item.imageUrl ? (
-                  <img
-                    src={item.imageUrl}
-                    alt=""
-                    className="size-9 shrink-0 rounded-md object-cover"
-                  />
-                ) : (
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-                    <FallbackIcon className="size-4" aria-hidden />
-                  </span>
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium">
-                    <SearchHighlight text={item.label} query={props.value} />
-                  </p>
-                  {item.sublabel && (
-                    <p className="truncate text-xs text-muted-foreground">
-                      <SearchHighlight
-                        text={item.sublabel}
-                        query={props.value}
-                      />
-                    </p>
+          <div className="absolute inset-x-0 top-full z-40 mt-1.5 overflow-hidden rounded-xl border border-border bg-popover text-popover-foreground shadow-lg">
+            <ul
+              id={suggest.listId}
+              role="listbox"
+              className="max-h-64 overflow-y-auto p-1 [scrollbar-width:thin]"
+            >
+              {suggest.matches.map((item, index) => (
+                <li
+                  key={item.id}
+                  role="option"
+                  aria-selected={index === suggest.active}
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    suggest.pick(item);
+                  }}
+                  onMouseEnter={() => suggest.setActive(index)}
+                  className={cn(
+                    'flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition-colors',
+                    index === suggest.active
+                      ? 'bg-accent text-accent-foreground'
+                      : 'hover:bg-accent/60',
                   )}
-                </div>
-              </li>
-            ))}
-          </ul>
+                >
+                  {item.imageUrl ? (
+                    <img
+                      src={item.imageUrl}
+                      alt=""
+                      className="size-9 shrink-0 rounded-md object-cover"
+                    />
+                  ) : (
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                      <FallbackIcon className="size-4" aria-hidden />
+                    </span>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">
+                      <SearchHighlight text={item.label} query={props.value} />
+                    </p>
+                    {item.sublabel && (
+                      <p className="truncate text-xs text-muted-foreground">
+                        <SearchHighlight
+                          text={item.sublabel}
+                          query={props.value}
+                        />
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
       {!props.disabled && (

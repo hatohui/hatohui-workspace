@@ -1,15 +1,13 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { ThemeToggle } from '@hatohui/libs';
 import { Compass } from 'lucide-react';
 import { NAV_ITEMS } from '../../constants/navItems';
 import routes from '../../constants/routes';
 import LocationPicker from '../location/LocationPicker';
 import AccountButton from './AccountButton';
-import AdminNavLink from './AdminNavLink';
 import HeaderNavLink from './HeaderNavLink';
 import NotificationsBell from './NotificationsBell';
-import SettingsNavLink from './SettingsNavLink';
+import QuickMenu from './QuickMenu';
 
 function TravelHeader() {
   const { t } = useTranslation();
@@ -29,12 +27,8 @@ function TravelHeader() {
           ))}
         </nav>
         <LocationPicker />
-        <div className="hidden md:flex">
-          <AdminNavLink />
-        </div>
         <NotificationsBell />
-        <SettingsNavLink />
-        <ThemeToggle />
+        <QuickMenu />
         <AccountButton />
       </div>
     </header>

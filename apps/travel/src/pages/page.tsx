@@ -1,18 +1,23 @@
 import { useTranslation } from '@hatohui/i18n';
 import AddRecommendationButton from '../components/catalog/AddRecommendationButton';
 import CatalogSidebar from '../components/catalog/CatalogSidebar';
-import ClearFiltersButton from '../components/catalog/ClearFiltersButton';
 import MobileFilterButton from '../components/catalog/MobileFilterButton';
-import RecommendationGrid from '../components/recommendation/RecommendationGrid';
+import DishResults from '../components/food/DishResults';
+import FoodViewSwitch from '../components/food/FoodViewSwitch';
+import PlaceResults from '../components/food/PlaceResults';
 import PageHeading from '../components/shared/PageHeading';
 import PaginationBar from '../components/shared/PaginationBar';
 import SearchField from '../components/shared/SearchField';
-import { useCatalog } from '../hooks/useCatalog';
+import { useFoodBrowse } from '../hooks/useFoodBrowse';
 
-function CatalogPage() {
+function FoodPage() {
   const { t } = useTranslation();
-  const catalog = useCatalog();
-  const { filters } = catalog;
+  const food = useFoodBrowse();
+  const { filters, active } = food;
+  const results = {
+    isFiltered: food.isFiltered,
+    onClearFilters: filters.clearFilters,
+  };
 
   return (
     <div className="space-y-6">
@@ -24,36 +29,30 @@ function CatalogPage() {
       <div className="grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
         <CatalogSidebar filters={filters} />
         <div className="space-y-5">
-          <div className="flex items-center gap-2">
-            <SearchField
-              value={filters.search}
-              placeholder={t('catalog.searchPlaceholder')}
-              onChange={filters.setSearch}
-              suggestions={catalog.suggestions}
-            />
-            <MobileFilterButton filters={filters} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <FoodViewSwitch value={food.view} onChange={food.setView} />
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <SearchField
+                value={filters.search}
+                placeholder={t(food.searchKey)}
+                onChange={filters.setSearch}
+                suggestions={active.suggestions}
+              />
+              <MobileFilterButton filters={filters} />
+            </div>
           </div>
-          <RecommendationGrid
-            recommendations={catalog.recommendations}
-            isLoading={catalog.isLoading}
-            isError={catalog.isError}
-            onRetry={() => void catalog.refetch()}
-            emptyMessage={t(
-              catalog.isFiltered ? 'catalog.emptyFiltered' : 'catalog.empty',
-            )}
-            emptyAction={
-              catalog.isFiltered && (
-                <ClearFiltersButton onClick={filters.clearFilters} />
-              )
-            }
-          />
+          {food.view === 'dishes' ? (
+            <DishResults list={food.dishes} {...results} />
+          ) : (
+            <PlaceResults list={food.places} {...results} />
+          )}
           <PaginationBar
-            page={catalog.pagination.page}
-            pageSize={catalog.pagination.pageSize}
-            totalItems={catalog.pagination.totalItems}
-            totalPages={catalog.pagination.totalPages}
-            onPageChange={catalog.pagination.setPage}
-            onPageSizeChange={catalog.pagination.setPageSize}
+            page={active.pagination.page}
+            pageSize={active.pagination.pageSize}
+            totalItems={active.pagination.totalItems}
+            totalPages={active.pagination.totalPages}
+            onPageChange={active.pagination.setPage}
+            onPageSizeChange={active.pagination.setPageSize}
           />
         </div>
       </div>
@@ -61,4 +60,4 @@ function CatalogPage() {
   );
 }
 
-export default CatalogPage;
+export default FoodPage;

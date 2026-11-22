@@ -13,6 +13,11 @@ import {
   travelPlaceAreaSelect,
 } from '@/modules/travel-recommendations/utils/travel-place-area';
 import { travelPlaceData } from '@/modules/travel-recommendations/utils/travel-place-data';
+import {
+  travelAllergenTagsSelect,
+  uniqueAllergenKeys,
+} from '@/modules/travel-recommendations/utils/travel-allergen-keys';
+import { travelRecommendationWhere } from '@/modules/travel-recommendations/utils/travel-recommendation-filters';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import {
   travelCreatorFilter,
@@ -34,6 +39,7 @@ const placeInclude = {
   recommendations: {
     orderBy: { createdAt: 'desc' },
     select: {
+      tags: travelAllergenTagsSelect,
       images: {
         orderBy: { position: 'asc' },
         take: 1,
@@ -60,6 +66,7 @@ export class TravelPlacesService {
       where: {
         ...travelAreaFilter(query),
         createdBy: travelCreatorFilter(query.by),
+        recommendations: this.servesMatchingFood(query),
         OR: contains
           ? [{ name: contains }, { address: contains }, { city: contains }]
           : undefined,
@@ -68,6 +75,25 @@ export class TravelPlacesService {
       orderBy: { name: 'asc' },
     });
     return rows.map((row) => this.toDto(row));
+  }
+
+  private servesMatchingFood(
+    query: TravelPlaceQueryDto,
+  ): Prisma.TravelRecommendationListRelationFilter | undefined {
+    const { spicy, diets, tags, excludeAllergens, cuisines } = query;
+    const isFiltered =
+      spicy ||
+      [diets, tags, excludeAllergens, cuisines].some((list) => list?.length);
+    if (!isFiltered) return undefined;
+    return {
+      some: travelRecommendationWhere({
+        spicy,
+        diets,
+        tags,
+        excludeAllergens,
+        cuisines,
+      }),
+    };
   }
 
   async get(id: string): Promise<TravelPlaceDetailDto> {
@@ -180,6 +206,7 @@ export class TravelPlacesService {
       latitude: row.latitude,
       longitude: row.longitude,
       note: row.note,
+      allergens: uniqueAllergenKeys(row.recommendations),
       dishCount: row._count.recommendations,
       coverImageUrl: coverKey ? this.storage.getPublicUrl(coverKey) : null,
       createdBy: toTravelCreatorDto(row.createdBy),

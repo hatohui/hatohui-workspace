@@ -51,6 +51,7 @@ import type {
   TravelActivityDto,
   TravelAdminGroupsResponseDto,
   TravelAdminStatsDto,
+  TravelAllergiesDto,
   TravelAreaDto,
   TravelBulkNamesDto,
   TravelBulkResultDto,
@@ -87,6 +88,7 @@ import type {
   TravelTagDto,
   TravelWorkScheduleDto,
   UpdateTravelActivityDto,
+  UpdateTravelAllergiesDto,
   UpdateTravelAreaDto,
   UpdateTravelCountryDto,
   UpdateTravelCountrySettingDto,
@@ -4389,6 +4391,14 @@ export const getTravelPlacesUrl = (params?: TravelPlacesParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+    const explodeParameters = ["cuisines","diets","excludeAllergens","tags"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : String(v));
+      });
+      return;
+    }
 
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : String(value))
@@ -6807,6 +6817,194 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getAdminDeleteTravelJobProfileMutationOptions(options), queryClient);
+    }
+    export type travelAllergiesResponse200 = {
+  data: TravelAllergiesDto
+  status: 200
+}
+
+export type travelAllergiesResponseSuccess = (travelAllergiesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelAllergiesResponse = (travelAllergiesResponseSuccess)
+
+export const getTravelAllergiesUrl = () => {
+
+
+
+
+  return `/travel/allergies`
+}
+
+/**
+ * @summary Allergens the signed-in user avoids
+ */
+export const travelAllergies = async ( options?: RequestInit): Promise<travelAllergiesResponse> => {
+
+  return customFetch<travelAllergiesResponse>(getTravelAllergiesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelAllergiesQueryKey = () => {
+    return [
+    `/travel/allergies`
+    ] as const;
+    }
+
+
+export const getTravelAllergiesQueryOptions = <TData = Awaited<ReturnType<typeof travelAllergies>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAllergies>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelAllergiesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelAllergies>>> = ({ signal }) => travelAllergies({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelAllergies>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelAllergiesQueryResult = NonNullable<Awaited<ReturnType<typeof travelAllergies>>>
+export type TravelAllergiesQueryError = unknown
+
+
+export function useTravelAllergies<TData = Awaited<ReturnType<typeof travelAllergies>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAllergies>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelAllergies>>,
+          TError,
+          Awaited<ReturnType<typeof travelAllergies>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelAllergies<TData = Awaited<ReturnType<typeof travelAllergies>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAllergies>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelAllergies>>,
+          TError,
+          Awaited<ReturnType<typeof travelAllergies>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelAllergies<TData = Awaited<ReturnType<typeof travelAllergies>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAllergies>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Allergens the signed-in user avoids
+ */
+
+export function useTravelAllergies<TData = Awaited<ReturnType<typeof travelAllergies>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelAllergies>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelAllergiesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type updateTravelAllergiesResponse200 = {
+  data: TravelAllergiesDto
+  status: 200
+}
+
+export type updateTravelAllergiesResponseSuccess = (updateTravelAllergiesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateTravelAllergiesResponse = (updateTravelAllergiesResponseSuccess)
+
+export const getUpdateTravelAllergiesUrl = () => {
+
+
+
+
+  return `/travel/allergies`
+}
+
+export const updateTravelAllergies = async (updateTravelAllergiesDto: UpdateTravelAllergiesDto, options?: RequestInit): Promise<updateTravelAllergiesResponse> => {
+
+  return customFetch<updateTravelAllergiesResponse>(getUpdateTravelAllergiesUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateTravelAllergiesDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateTravelAllergiesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelAllergies>>, TError,{data: UpdateTravelAllergiesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTravelAllergies>>, TError,{data: UpdateTravelAllergiesDto}, TContext> => {
+
+const mutationKey = ['updateTravelAllergies'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTravelAllergies>>, {data: UpdateTravelAllergiesDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateTravelAllergies(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTravelAllergiesMutationResult = NonNullable<Awaited<ReturnType<typeof updateTravelAllergies>>>
+    export type UpdateTravelAllergiesMutationBody = UpdateTravelAllergiesDto
+    export type UpdateTravelAllergiesMutationError = unknown
+
+    export const useUpdateTravelAllergies = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelAllergies>>, TError,{data: UpdateTravelAllergiesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTravelAllergies>>,
+        TError,
+        {data: UpdateTravelAllergiesDto},
+        TContext
+      > => {
+      return useMutation(getUpdateTravelAllergiesMutationOptions(options), queryClient);
     }
     export type myTravelParticipationsResponse200 = {
   data: TravelParticipationDto[]

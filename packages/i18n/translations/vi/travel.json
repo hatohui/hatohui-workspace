@@ -2,18 +2,15 @@
   "brand": "Du lịch",
   "nav": {
     "food": "Món ngon",
-    "dishes": "Món ăn",
-    "places": "Địa điểm",
-    "admin": "Quản trị"
+    "admin": "Quản trị",
+    "quickMenu": "Menu nhanh"
   },
   "catalog": {
     "title": "Danh mục món ngon",
-    "subtitle": "Những món đáng để đi, và nên ăn ở đâu.",
+    "subtitle": "Tìm món và nơi ăn, hoặc tìm quán và món nên gọi.",
     "searchPlaceholder": "Tìm món, quán, ghi chú",
     "spicy": "Cay",
     "add": "Thêm món",
-    "count_one": "{{count}} gợi ý",
-    "count_other": "{{count}} gợi ý",
     "empty": "Chưa có gì ở đây.",
     "emptyFiltered": "Không có món nào khớp bộ lọc.",
     "clearFilters": "Xóa bộ lọc",
@@ -22,7 +19,12 @@
     "avoidAllergens": "Tránh chất gây dị ứng",
     "avoiding_one": "Đang tránh {{count}}",
     "avoiding_other": "Đang tránh {{count}}",
-    "avoidHint": "Ẩn món có chứa:"
+    "avoidHint": "Ẩn món có chứa:",
+    "viewLabel": "Xem theo",
+    "byDish": "Theo món",
+    "byPlace": "Theo quán",
+    "vegetarian": "Chay",
+    "hideMyAllergens": "Ẩn món tôi dị ứng ({{count}})"
   },
   "recommendation": {
     "noEstimate": "Chưa có giá",
@@ -78,7 +80,6 @@
     "dietsPlaceholder": "Tìm hoặc thêm chế độ ăn…",
     "allergens": "Chất gây dị ứng",
     "allergensPlaceholder": "Tìm hoặc thêm chất gây dị ứng…",
-    "noticeTags": "Lưu ý",
     "otherTags": "Thẻ khác",
     "otherTagsPlaceholder": "Bánh mì, thịt, bún…",
     "tagCreate": "Thêm \"{{tag}}\"",
@@ -243,5 +244,18 @@
       "ALLERGEN": "Dị ứng",
       "GENERAL": "Thẻ"
     }
+  },
+  "settings": {
+    "tabs": {
+      "food": "Ăn uống"
+    },
+    "allergies": {
+      "title": "Dị ứng của tôi",
+      "description": "Món có chứa các thành phần này sẽ có nhãn cảnh báo, và bạn có thể ẩn chúng khỏi danh mục."
+    }
+  },
+  "overview": {
+    "browseFoodTitle": "Khám phá món ăn và quán",
+    "browseFoodBody": "Tìm món và nơi ăn, hoặc chọn quán để xem nên gọi món gì."
   }
 }

@@ -16,10 +16,12 @@ export function useTagInput({
   value,
   onChange,
   suggestions,
+  showOnEmpty = true,
 }: {
   value: string[];
   onChange: (value: string[]) => void;
   suggestions: TagSuggestion[];
+  showOnEmpty?: boolean;
 }) {
   const [draft, setDraft] = useState('');
   const [open, setOpen] = useState(false);
@@ -103,7 +105,7 @@ export function useTagInput({
 
   return {
     draft,
-    open: open && options.length > 0,
+    open: open && (showOnEmpty || needle !== '') && options.length > 0,
     setOpen,
     options,
     highlighted,

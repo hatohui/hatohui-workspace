@@ -1,6 +1,11 @@
 import { NavLink } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { Briefcase, CalendarDays, Palmtree } from 'lucide-react';
+import {
+  Briefcase,
+  CalendarDays,
+  Palmtree,
+  UtensilsCrossed,
+} from 'lucide-react';
 import routes from '../../constants/routes';
 
 const ITEMS = [
@@ -18,6 +23,11 @@ const ITEMS = [
     to: routes.settingsHolidays,
     labelKey: 'settings.tabs.holidays',
     icon: Palmtree,
+  },
+  {
+    to: routes.settingsFood,
+    labelKey: 'settings.tabs.food',
+    icon: UtensilsCrossed,
   },
 ] as const;
 

@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { useTravelPlaces } from '@hatohui/models';
 import { usePagination } from './usePagination';
-import { useSearchState } from './useSearchState';
 import type { SearchSuggestion } from './useSearchSuggest';
+import type { TravelFilterState } from './useTravelFilterState';
 import { useTravelLocation } from './useTravelLocation';
 
-export function usePlaceList() {
-  const { search, setSearch, query } = useSearchState();
+export function usePlaceList(state: TravelFilterState, enabled: boolean) {
   const location = useTravelLocation();
-  const result = useTravelPlaces({ q: query, ...location.filter });
+  const params = { ...state.queryParams, ...location.filter };
+  const result = useTravelPlaces(params, { query: { enabled } });
   const places = useMemo(() => result.data?.data ?? [], [result.data?.data]);
   const suggestions = useMemo<SearchSuggestion[]>(
     () =>
@@ -20,8 +20,7 @@ export function usePlaceList() {
       })),
     [places],
   );
-  const resetKey = JSON.stringify({ q: query, ...location.filter });
-  const pagination = usePagination(places, resetKey);
+  const pagination = usePagination(places, JSON.stringify(params));
   return {
     places: pagination.pagedItems,
     pagination,
@@ -29,7 +28,5 @@ export function usePlaceList() {
     isLoading: result.isLoading,
     isError: result.isError,
     refetch: result.refetch,
-    search,
-    setSearch,
   };
 }

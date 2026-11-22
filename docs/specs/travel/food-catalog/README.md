@@ -51,6 +51,32 @@ columns in place: comma-separated `cuisine` text became cuisine rows, a single
 `estimate` became a one-value range, and `vegetarian` became the vegetarian
 diet tag.
 
+## Browsing
+
+One route (`/`) answers both questions people bring: "where can I get this
+dish?" and "what is good at this place?". A `By dish | By place` switch, kept in
+`?view=`, swaps the grid; the old `/dishes` and `/places` list routes redirect
+there. Recommendations are not listed on their own: they are the rows on a dish
+or place detail page.
+
+- **Both views take the same filters.** `GET /travel/places` accepts the
+  dish filters (spicy, diets, tags, cuisines, allergens) and keeps a place when
+  at least one of its recommendations matches all of them. For places an
+  allergen filter hides only the matching dishes, not the whole place.
+- **The form only shows Spicy and Vegetarian.** Other diet tags stay in the
+  table for existing data but are no longer offered in the form or filters.
+- **Dish and place suggestions are searched on the server** as you type
+  (`?q=`), so the form never preloads the whole catalog.
+
+## Personal allergies
+
+A signed-in user can save the allergens they avoid (`GET/PUT
+/travel/allergies`, a many-to-many between `User` and allergen `TravelTag`
+rows). Dish and place list items carry `allergens`, the union of allergen tags
+across their recommendations. Cards whose allergens overlap the user's get a
+warning ring and a "Contains …" badge, and a "Hide my allergens" filter adds
+the saved list to `excludeAllergens`.
+
 ## Writes
 
 Only users with the `admin` role can write (`AdminRoleGuard`: session plus role,

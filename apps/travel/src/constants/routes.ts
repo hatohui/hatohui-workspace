@@ -1,8 +1,8 @@
 const routes = {
   catalog: '/',
   overview: '/overview',
-  dishes: '/dishes',
-  places: '/places',
+  dishes: '/?view=dishes',
+  places: '/?view=places',
   events: '/events',
   eventNew: '/events/new',
   eventEdit: (id: string) => `/events/${id}/edit`,
@@ -15,6 +15,7 @@ const routes = {
   settingsLeave: '/settings/leave',
   settingsSchedule: '/settings/schedule',
   settingsHolidays: '/settings/holidays',
+  settingsFood: '/settings/food',
   admin: '/admin',
   dish: (id: string) => `/dishes/${id}`,
   place: (id: string) => `/places/${id}`,

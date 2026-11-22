@@ -1,4 +1,5 @@
 import { useTranslation } from '@hatohui/i18n';
+import { cn } from '@hatohui/ui';
 import { MapPin } from 'lucide-react';
 import type { useRecommendationForm } from '../../hooks/useRecommendationForm';
 import AreaSelect from '../location/AreaSelect';
@@ -16,7 +17,12 @@ function PlaceInputs({ form }: Props) {
   const showArea = isNewPlace || isEditing;
 
   return (
-    <div className="space-y-4">
+    <div
+      className={cn(
+        'grid gap-4',
+        showArea && 'sm:grid-cols-[minmax(0,1fr)_220px]',
+      )}
+    >
       <MatchedField
         id="place"
         label={t('form.place')}
@@ -37,13 +43,15 @@ function PlaceInputs({ form }: Props) {
         />
       )}
       {isNewPlace && (
-        <MapsLinkField
-          id="mapsUrl"
-          url={fields.mapsUrl}
-          placeName={fields.placeName}
-          onUrlChange={(value) => set('mapsUrl', value)}
-          onUseName={(name) => set('placeName', name)}
-        />
+        <div className="sm:col-span-2">
+          <MapsLinkField
+            id="mapsUrl"
+            url={fields.mapsUrl}
+            placeName={fields.placeName}
+            onUrlChange={(value) => set('mapsUrl', value)}
+            onUseName={(name) => set('placeName', name)}
+          />
+        </div>
       )}
     </div>
   );

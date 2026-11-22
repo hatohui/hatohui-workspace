@@ -1,9 +1,10 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
-import { Flame } from 'lucide-react';
-import { ALLERGEN_ICONS, DIET_ICONS } from '../../constants/travel';
+import { Flame, Leaf, ShieldAlert } from 'lucide-react';
+import { VEGETARIAN_TAG } from '../../constants/food';
+import { ALLERGEN_ICONS } from '../../constants/travel';
 import { useTagOptions } from '../../hooks/useTagOptions';
-import type { CatalogFilters as Filters } from '../../hooks/useCatalog';
+import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
 import { useCuisineNames } from '../../hooks/useCuisineNames';
 import TagChipGroup from '../shared/TagChipGroup';
 import CreatorFilter from './CreatorFilter';
@@ -19,26 +20,20 @@ function CatalogFilters({ filters }: { filters: Filters }) {
   return (
     <div className="space-y-6">
       <FilterSection title={t('filters.taste')}>
-        <FilterChip
-          icon={Flame}
-          label={t('catalog.spicy')}
-          pressed={filters.spicy}
-          onChange={filters.setSpicy}
-        />
-      </FilterSection>
-      <FilterSection title={t('form.diets')}>
-        {tags.isLoading ? (
-          <FilterChipsSkeleton />
-        ) : (
-          <TagChipGroup
-            label={t('form.diets')}
-            options={tags.dietKeys}
-            selected={filters.diets}
-            labelOf={tags.labelOf}
-            iconOf={(tag) => DIET_ICONS[tag]}
-            onToggle={filters.toggleDiet}
+        <div className="flex flex-wrap gap-2">
+          <FilterChip
+            icon={Flame}
+            label={t('catalog.spicy')}
+            pressed={filters.spicy}
+            onChange={filters.setSpicy}
           />
-        )}
+          <FilterChip
+            icon={Leaf}
+            label={t('catalog.vegetarian')}
+            pressed={filters.diets.includes(VEGETARIAN_TAG)}
+            onChange={() => filters.toggleDiet(VEGETARIAN_TAG)}
+          />
+        </div>
       </FilterSection>
       {cuisines.isLoading && (
         <FilterSection title={t('form.cuisines')}>
@@ -68,6 +63,16 @@ function CatalogFilters({ filters }: { filters: Filters }) {
         </FilterSection>
       )}
       <FilterSection title={t('catalog.avoidAllergens')}>
+        {filters.myAllergenCount > 0 && (
+          <FilterChip
+            icon={ShieldAlert}
+            label={t('catalog.hideMyAllergens', {
+              count: filters.myAllergenCount,
+            })}
+            pressed={filters.hideMine}
+            onChange={filters.setHideMine}
+          />
+        )}
         {tags.isLoading ? (
           <FilterChipsSkeleton />
         ) : (

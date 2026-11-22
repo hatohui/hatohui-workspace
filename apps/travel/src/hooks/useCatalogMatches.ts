@@ -1,22 +1,34 @@
 import { useMemo } from 'react';
+import { keepPreviousData } from '@tanstack/react-query';
+import { useDebouncedValue } from '@hatohui/libs';
 import { useTravelDishes, useTravelPlaces } from '@hatohui/models';
+import { SEARCH_DEBOUNCE_MS } from '../constants/travel';
 import type { SearchSuggestion } from './useSearchSuggest';
 import { useTravelLocation } from './useTravelLocation';
 
 const normalize = (value: string) => value.trim().toLowerCase();
 
 export function useCatalogMatches(dishName: string, placeName: string) {
-  const dishesQuery = useTravelDishes();
   const location = useTravelLocation();
-  const placesQuery = useTravelPlaces(location.filter);
+  const dishQ = useDebouncedValue(dishName.trim(), SEARCH_DEBOUNCE_MS);
+  const placeQ = useDebouncedValue(placeName.trim(), SEARCH_DEBOUNCE_MS);
+
+  const dishesQuery = useTravelDishes(
+    { q: dishQ },
+    { query: { enabled: dishQ !== '', placeholderData: keepPreviousData } },
+  );
+  const placesQuery = useTravelPlaces(
+    { q: placeQ, ...location.filter },
+    { query: { enabled: placeQ !== '', placeholderData: keepPreviousData } },
+  );
 
   const dishes = useMemo(
-    () => dishesQuery.data?.data ?? [],
-    [dishesQuery.data?.data],
+    () => (dishQ ? (dishesQuery.data?.data ?? []) : []),
+    [dishQ, dishesQuery.data?.data],
   );
   const places = useMemo(
-    () => placesQuery.data?.data ?? [],
-    [placesQuery.data?.data],
+    () => (placeQ ? (placesQuery.data?.data ?? []) : []),
+    [placeQ, placesQuery.data?.data],
   );
 
   const dish = dishes.find((d) => normalize(d.name) === normalize(dishName));
@@ -44,10 +56,5 @@ export function useCatalogMatches(dishName: string, placeName: string) {
     [places],
   );
 
-  return {
-    dishSuggestions,
-    placeSuggestions,
-    dish,
-    place,
-  };
+  return { dishSuggestions, placeSuggestions, dish, place };
 }

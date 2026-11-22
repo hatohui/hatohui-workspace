@@ -1,7 +1,8 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { TravelBulkNamesDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel-place-input.dto';
+import { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
 import {
   TravelCreatorDto,
   TravelPlaceSummaryDto,
@@ -11,6 +12,12 @@ import {
 export class TravelPlaceDto extends TravelPlaceSummaryDto {
   @ApiProperty({ nullable: true, type: String })
   note!: string | null;
+
+  @ApiProperty({
+    type: [String],
+    description: 'Allergen tag keys found in any dish recommended here',
+  })
+  allergens!: string[];
 
   @ApiProperty({ description: 'Dishes recommended here' })
   dishCount!: number;
@@ -31,30 +38,23 @@ export class CreateTravelPlaceDto extends TravelPlaceInputDto {}
 
 export class UpdateTravelPlaceDto extends PartialType(CreateTravelPlaceDto) {}
 
-export class TravelPlaceQueryDto {
+export class TravelPlaceQueryDto extends PickType(
+  TravelRecommendationQueryDto,
+  [
+    'by',
+    'areaId',
+    'countryId',
+    'cuisines',
+    'spicy',
+    'diets',
+    'excludeAllergens',
+    'tags',
+  ] as const,
+) {
   @ApiProperty({ required: false, description: 'Match name, address or city' })
   @IsOptional()
   @IsString()
   q?: string;
-
-  @ApiProperty({
-    required: false,
-    description: 'Only entries added by this @handle',
-    example: 'hatohui',
-  })
-  @IsOptional()
-  @IsString()
-  by?: string;
-
-  @ApiProperty({ required: false, description: 'Only places in this area' })
-  @IsOptional()
-  @IsString()
-  areaId?: string;
-
-  @ApiProperty({ required: false, description: 'Only places in this country' })
-  @IsOptional()
-  @IsString()
-  countryId?: string;
 }
 
 export class BulkCreateTravelPlacesDto extends TravelBulkNamesDto {

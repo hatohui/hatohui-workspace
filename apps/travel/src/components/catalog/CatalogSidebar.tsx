@@ -1,4 +1,4 @@
-import type { CatalogFilters as Filters } from '../../hooks/useCatalog';
+import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
 import CatalogFilters from './CatalogFilters';
 
 function CatalogSidebar({ filters }: { filters: Filters }) {

@@ -1,18 +1,23 @@
 import { cn } from '@hatohui/ui';
 import { ImageOff } from 'lucide-react';
+import CautionBadge from './CautionBadge';
 
 interface Props {
   src: string | null;
   alt: string;
   square?: boolean;
+  caution?: string[];
 }
 
-function ImageFrame({ src, alt, square = false }: Props) {
+function ImageFrame({ src, alt, square = false, caution = [] }: Props) {
+  const isCaution = caution.length > 0;
   return (
     <div
       className={cn(
-        'w-full overflow-hidden rounded-xl bg-card',
+        'relative w-full overflow-hidden rounded-xl bg-card',
         square ? 'aspect-square' : 'aspect-[4/3]',
+        isCaution &&
+          'ring-2 ring-amber-500 ring-offset-2 ring-offset-background',
       )}
     >
       {src ? (
@@ -27,6 +32,7 @@ function ImageFrame({ src, alt, square = false }: Props) {
           <ImageOff className="size-6" aria-hidden />
         </div>
       )}
+      <CautionBadge allergens={caution} />
     </div>
   );
 }

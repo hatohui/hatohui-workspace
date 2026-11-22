@@ -3,6 +3,7 @@ import { useTranslation } from '@hatohui/i18n';
 import type { TravelPlaceDto } from '@hatohui/models';
 import { MapPin } from 'lucide-react';
 import routes from '../../constants/routes';
+import { useMyAllergies } from '../../hooks/useMyAllergies';
 import {
   formatPlaceLocation,
   hasPlaceCoordinates,
@@ -11,6 +12,7 @@ import ImageFrame from '../shared/ImageFrame';
 
 function PlaceCard({ place }: { place: TravelPlaceDto }) {
   const { t } = useTranslation();
+  const { cautionFor } = useMyAllergies();
   const location = formatPlaceLocation(place);
   const fallback = hasPlaceCoordinates(place)
     ? t('places.pinnedOnMap')
@@ -21,7 +23,11 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
       to={routes.place(place.id)}
       className="group flex flex-col gap-2 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
-      <ImageFrame src={place.coverImageUrl} alt={place.name} />
+      <ImageFrame
+        src={place.coverImageUrl}
+        alt={place.name}
+        caution={cautionFor(place.allergens)}
+      />
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="truncate text-lg font-medium tracking-tight group-hover:underline">
           {place.name}
