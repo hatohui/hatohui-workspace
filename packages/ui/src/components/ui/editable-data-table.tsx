@@ -22,6 +22,8 @@ export interface EditableColumn<T> {
   createLabel?: (tag: string) => string;
   removeLabel?: (tag: string) => string;
   render?: (row: T) => string;
+  renderCell?: (row: T) => React.ReactNode;
+  fixed?: boolean;
   size?: number;
   selectPlaceholder?: string;
   searchPlaceholder?: string;
@@ -46,8 +48,23 @@ export interface EditableDataTableProps<T extends { id: string }> {
 
 const DEFAULT_COLUMN_WIDTH = 160;
 const MIN_COLUMN_WIDTH = 80;
+const MIN_FIXED_COLUMN_WIDTH = 56;
 const TOGGLE_COLUMN_WIDTH = 96;
 const DELETE_COLUMN_WIDTH = 40;
+
+function isFixedColumn<T>(
+  column: Pick<EditableColumn<T>, 'toggle' | 'fixed'> | undefined,
+): boolean {
+  return Boolean(column?.toggle || column?.fixed);
+}
+
+function fixedColumnWidth<T>(
+  column: Pick<EditableColumn<T>, 'toggle' | 'size'>,
+): number {
+  return (
+    column.size ?? (column.toggle ? TOGGLE_COLUMN_WIDTH : MIN_COLUMN_WIDTH)
+  );
+}
 
 function loadStoredSizing(storageKey: string | undefined): ColumnSizingState {
   if (!storageKey || typeof window === 'undefined') return {};
@@ -103,7 +120,11 @@ export function EditableDataTable<T extends { id: string }>({
         size:
           column.size ??
           (column.toggle ? TOGGLE_COLUMN_WIDTH : DEFAULT_COLUMN_WIDTH),
-        minSize: column.toggle ? TOGGLE_COLUMN_WIDTH : MIN_COLUMN_WIDTH,
+        minSize: column.fixed
+          ? (column.size ?? MIN_FIXED_COLUMN_WIDTH)
+          : column.toggle
+            ? TOGGLE_COLUMN_WIDTH
+            : MIN_COLUMN_WIDTH,
       })),
     [columns],
   );
@@ -129,11 +150,13 @@ export function EditableDataTable<T extends { id: string }>({
   });
 
   const fixedColumnsSize =
-    columns.filter((column) => column.toggle).length * TOGGLE_COLUMN_WIDTH +
+    columns
+      .filter((column) => isFixedColumn(column))
+      .reduce((sum, column) => sum + fixedColumnWidth(column), 0) +
     (onDeleteRow ? DELETE_COLUMN_WIDTH : 0);
 
   const rawFlexSize = columns
-    .filter((column) => !column.toggle)
+    .filter((column) => !isFixedColumn(column))
     .reduce(
       (sum, column) => sum + (table.getColumn(column.key)?.getSize() ?? 0),
       0,
@@ -144,10 +167,12 @@ export function EditableDataTable<T extends { id: string }>({
   const flexScale =
     rawFlexSize > 0 && flexAvailable > 0 ? flexAvailable / rawFlexSize : 1;
 
-  const getColumnWidth = (columnId: string, rawSize: number) =>
-    columnsByKey.get(columnId as keyof T & string)?.toggle
-      ? TOGGLE_COLUMN_WIDTH
+  const getColumnWidth = (columnId: string, rawSize: number) => {
+    const column = columnsByKey.get(columnId as keyof T & string);
+    return column && isFixedColumn(column)
+      ? fixedColumnWidth(column)
       : Math.max(MIN_COLUMN_WIDTH, Math.round(rawSize * flexScale));
+  };
 
   const tableWidth = containerWidth
     ? columns.reduce(
@@ -231,7 +256,7 @@ export function EditableDataTable<T extends { id: string }>({
                       ) : (
                         (header.column.columnDef.header as string)
                       )}
-                      {!column?.toggle && (
+                      {!isFixedColumn(column) && (
                         <div
                           onPointerDown={header.getResizeHandler()}
                           onTouchStart={header.getResizeHandler()}
@@ -279,34 +304,38 @@ export function EditableDataTable<T extends { id: string }>({
                       }}
                       className="border-r border-border p-0 last:border-r-0"
                     >
-                      <EditableCell
-                        value={String(row.original[column.key] ?? '')}
-                        displayValue={column.render?.(row.original)}
-                        editable={
-                          typeof column.editable === 'function'
-                            ? column.editable(row.original)
-                            : column.editable
-                        }
-                        toggle={column.toggle}
-                        options={column.options}
-                        suggestions={column.suggestions}
-                        maxTags={column.maxTags}
-                        allowCreate={column.allowCreate}
-                        createLabel={column.createLabel}
-                        removeLabel={column.removeLabel}
-                        selectPlaceholder={column.selectPlaceholder}
-                        searchPlaceholder={column.searchPlaceholder}
-                        emptyLabel={column.emptyLabel}
-                        onCommit={(value) =>
-                          onCommit(row.original.id, column.key, value)
-                        }
-                        onNavigate={(direction) => {
-                          if (direction === 'down')
-                            focusCell(rowIndex + 1, colIndex);
-                          if (direction === 'right')
-                            focusCell(rowIndex, colIndex + 1);
-                        }}
-                      />
+                      {column.renderCell ? (
+                        column.renderCell(row.original)
+                      ) : (
+                        <EditableCell
+                          value={String(row.original[column.key] ?? '')}
+                          displayValue={column.render?.(row.original)}
+                          editable={
+                            typeof column.editable === 'function'
+                              ? column.editable(row.original)
+                              : column.editable
+                          }
+                          toggle={column.toggle}
+                          options={column.options}
+                          suggestions={column.suggestions}
+                          maxTags={column.maxTags}
+                          allowCreate={column.allowCreate}
+                          createLabel={column.createLabel}
+                          removeLabel={column.removeLabel}
+                          selectPlaceholder={column.selectPlaceholder}
+                          searchPlaceholder={column.searchPlaceholder}
+                          emptyLabel={column.emptyLabel}
+                          onCommit={(value) =>
+                            onCommit(row.original.id, column.key, value)
+                          }
+                          onNavigate={(direction) => {
+                            if (direction === 'down')
+                              focusCell(rowIndex + 1, colIndex);
+                            if (direction === 'right')
+                              focusCell(rowIndex, colIndex + 1);
+                          }}
+                        />
+                      )}
                     </td>
                   );
                 })}
@@ -374,21 +403,27 @@ export function EditableDataTable<T extends { id: string }>({
                     {column.label}
                   </dt>
                   <dd className="min-w-0 flex-1">
-                    <EditableCell
-                      value={String(row[column.key] ?? '')}
-                      displayValue={column.render?.(row)}
-                      editable={
-                        typeof column.editable === 'function'
-                          ? column.editable(row)
-                          : column.editable
-                      }
-                      toggle={column.toggle}
-                      options={column.options}
-                      selectPlaceholder={column.selectPlaceholder}
-                      searchPlaceholder={column.searchPlaceholder}
-                      emptyLabel={column.emptyLabel}
-                      onCommit={(value) => onCommit(row.id, column.key, value)}
-                    />
+                    {column.renderCell ? (
+                      column.renderCell(row)
+                    ) : (
+                      <EditableCell
+                        value={String(row[column.key] ?? '')}
+                        displayValue={column.render?.(row)}
+                        editable={
+                          typeof column.editable === 'function'
+                            ? column.editable(row)
+                            : column.editable
+                        }
+                        toggle={column.toggle}
+                        options={column.options}
+                        selectPlaceholder={column.selectPlaceholder}
+                        searchPlaceholder={column.searchPlaceholder}
+                        emptyLabel={column.emptyLabel}
+                        onCommit={(value) =>
+                          onCommit(row.id, column.key, value)
+                        }
+                      />
+                    )}
                   </dd>
                 </div>
               ))}
