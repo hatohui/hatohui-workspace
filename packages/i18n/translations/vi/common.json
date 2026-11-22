@@ -36,7 +36,8 @@
     "cropCancel": "Hủy",
     "cropApply": "Áp dụng",
     "cropZoom": "Phóng to",
-    "cropReset": "Đặt lại"
+    "cropReset": "Đặt lại",
+    "cropFit": "Hiện toàn bộ ảnh"
   },
   "onboarding": {
     "title": "Chào mừng",

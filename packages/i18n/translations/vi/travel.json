@@ -98,7 +98,7 @@
     "photosHint": "Tối đa {{count}} ảnh. Dán, kéo thả hoặc bấm để chọn. Ảnh đầu tiên là ảnh bìa.",
     "cover": "Ảnh bìa",
     "cropPhoto": "Cắt ảnh",
-    "cropHint": "Kéo để di chuyển, cuộn hoặc dùng thanh trượt để phóng to.",
+    "cropHint": "Kéo để di chuyển, cuộn hoặc dùng thanh trượt để phóng to. Thu nhỏ để hiện toàn bộ ảnh.",
     "cropApply": "Áp dụng",
     "cropZoom": "Phóng to",
     "cropReset": "Đặt lại",
@@ -115,7 +115,8 @@
     "areaNone": "Chưa chọn khu vực",
     "linkNoLocation": "Không tìm thấy vị trí trong link này.",
     "useLinkName": "Dùng \"{{name}}\" làm tên",
-    "mapPreview": "Xem trước bản đồ"
+    "mapPreview": "Xem trước bản đồ",
+    "cropFit": "Hiện toàn bộ ảnh"
   },
   "dishes": {
     "back": "Tất cả món ăn",
@@ -135,8 +136,8 @@
     "deleteDescription": "{{name}} và mọi gợi ý cho món này sẽ bị xóa.",
     "placesHere_one": "{{count}} quán ở đây",
     "placesHere_other": "{{count}} quán ở đây",
-    "notFoundHere": "Chưa có ở đây",
-    "noPlacesYet": "Chưa có quán",
+    "notFoundHere": "Chưa có quán được gợi ý",
+    "noPlacesYet": "Chưa có quán được gợi ý",
     "noPlacesBody": "Chưa ai thêm quán cho món này.",
     "addPlace": "Thêm quán"
   },

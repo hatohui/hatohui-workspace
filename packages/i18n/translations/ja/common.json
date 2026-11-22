@@ -36,7 +36,8 @@
     "cropCancel": "キャンセル",
     "cropApply": "トリミングを適用",
     "cropZoom": "ズーム",
-    "cropReset": "リセット"
+    "cropReset": "リセット",
+    "cropFit": "写真全体を表示"
   },
   "onboarding": {
     "title": "ようこそ",

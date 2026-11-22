@@ -64,6 +64,7 @@ function PhotoField({ photos }: Props) {
         confirmLabel={t('form.cropApply')}
         zoomLabel={t('form.cropZoom')}
         resetLabel={t('form.cropReset')}
+        fitLabel={t('form.cropFit')}
         onCancel={() => setCroppingId(null)}
         onConfirm={(cropped) => {
           if (croppingId) photos.replaceFile(croppingId, cropped);

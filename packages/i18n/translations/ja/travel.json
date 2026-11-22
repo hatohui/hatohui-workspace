@@ -98,7 +98,7 @@
     "photosHint": "最大 {{count}} 枚。貼り付け・ドロップ・クリックで追加。1 枚目がカバー写真です。",
     "cover": "カバー",
     "cropPhoto": "写真をトリミング",
-    "cropHint": "ドラッグで位置調整、スクロールまたはスライダーで拡大縮小できます。",
+    "cropHint": "ドラッグで位置を調整、スクロールかスライダーで拡大縮小。縮小すると写真全体が収まります。",
     "cropApply": "トリミングを適用",
     "cropZoom": "ズーム",
     "cropReset": "リセット",
@@ -115,7 +115,8 @@
     "areaNone": "エリアなし",
     "linkNoLocation": "このリンクから場所を見つけられませんでした。",
     "useLinkName": "「{{name}}」を名前に使う",
-    "mapPreview": "地図のプレビュー"
+    "mapPreview": "地図のプレビュー",
+    "cropFit": "写真全体を表示"
   },
   "dishes": {
     "back": "料理一覧",
@@ -135,8 +136,8 @@
     "deleteDescription": "{{name}} とそのおすすめがすべて削除されます。",
     "placesHere_one": "ここに {{count}} 店",
     "placesHere_other": "ここに {{count}} 店",
-    "notFoundHere": "このエリアではまだ見つかっていません",
-    "noPlacesYet": "まだお店がありません",
+    "notFoundHere": "おすすめのお店はまだありません",
+    "noPlacesYet": "おすすめのお店はまだありません",
     "noPlacesBody": "この料理を出すお店はまだ登録されていません。",
     "addPlace": "お店を追加"
   },
