@@ -23,6 +23,13 @@ type Props = {
   className?: string;
 };
 
+const fold = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .toLowerCase();
+
 function SearchableSelect({
   id,
   value,
@@ -38,9 +45,12 @@ function SearchableSelect({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const needle = search.trim().toLowerCase();
-  const filtered = needle
-    ? options.filter((option) => option.label.toLowerCase().includes(needle))
+  const tokens = fold(search).trim().split(/\s+/).filter(Boolean);
+  const filtered = tokens.length
+    ? options.filter((option) => {
+        const label = fold(option.label);
+        return tokens.every((token) => label.includes(token));
+      })
     : options;
 
   const selected = options.find((option) => option.value === value);

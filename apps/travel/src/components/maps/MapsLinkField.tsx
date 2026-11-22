@@ -16,7 +16,6 @@ interface Props {
 function MapsLinkField({ id, url, placeName, onUrlChange, onUseName }: Props) {
   const { t } = useTranslation();
   const preview = useMapsLinkPreview(url, placeName);
-  const suggestName = preview.linkName && preview.linkName !== placeName.trim();
 
   return (
     <div className="space-y-2">
@@ -26,14 +25,23 @@ function MapsLinkField({ id, url, placeName, onUrlChange, onUseName }: Props) {
         label={t('form.mapsUrl')}
         placeholder={t('form.mapsUrlPlaceholder')}
         value={url}
-        onChange={onUrlChange}
+        onChange={(next) => {
+          if (next.trim() !== url.trim()) preview.clearAppliedName();
+          onUrlChange(next);
+        }}
       />
       <p className="flex items-center gap-2 text-xs text-muted-foreground">
         {preview.isLoading && <Spinner />}
         {preview.notFound ? t('form.linkNoLocation') : t('form.mapsUrlHint')}
       </p>
-      {suggestName && preview.linkName && (
-        <UseLinkNameButton name={preview.linkName} onUse={onUseName} />
+      {preview.suggestedName && (
+        <UseLinkNameButton
+          name={preview.suggestedName}
+          onUse={(name) => {
+            preview.markNameApplied();
+            onUseName(name);
+          }}
+        />
       )}
       <MapFrame target={preview.target} title={t('form.mapPreview')} />
     </div>

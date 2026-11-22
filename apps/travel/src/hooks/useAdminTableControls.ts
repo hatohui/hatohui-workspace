@@ -45,11 +45,16 @@ export function useAdminTableControls<T extends SortableRow>(
   defaultSort?: { key: keyof T & string; direction: SortDirection },
 ) {
   const tableSearch = useAdminTableSearch(rows, columns);
+  const resolvedDefaultSort =
+    defaultSort ??
+    (columns.some((c) => c.key === 'createdAt')
+      ? { key: 'createdAt' as keyof T & string, direction: 'desc' as const }
+      : undefined);
   const [sortBy, setSortBy] = useState<(keyof T & string) | undefined>(
-    defaultSort?.key,
+    resolvedDefaultSort?.key,
   );
   const [sortDirection, setSortDirection] = useState<SortDirection>(
-    defaultSort?.direction ?? 'asc',
+    resolvedDefaultSort?.direction ?? 'asc',
   );
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_ADMIN_PAGE_SIZE);
@@ -57,7 +62,16 @@ export function useAdminTableControls<T extends SortableRow>(
   const onSortChange = (key: keyof T & string) => {
     setPage(1);
     if (sortBy === key) {
-      setSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
+      if (
+        resolvedDefaultSort &&
+        key !== resolvedDefaultSort.key &&
+        sortDirection === 'desc'
+      ) {
+        setSortBy(resolvedDefaultSort.key);
+        setSortDirection(resolvedDefaultSort.direction);
+      } else {
+        setSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
+      }
     } else {
       setSortBy(key);
       setSortDirection(key === 'createdAt' ? 'desc' : 'asc');
@@ -77,11 +91,15 @@ export function useAdminTableControls<T extends SortableRow>(
   const sortedRows = useMemo(() => {
     const column = sortBy ? columns.find((c) => c.key === sortBy) : undefined;
     if (!column) return tableSearch.filteredRows;
+    const dir = sortDirection === 'asc' ? 1 : -1;
     return [...tableSearch.filteredRows].sort((a, b) => {
       if (Boolean(a.isDraft) !== Boolean(b.isDraft)) {
         return a.isDraft ? 1 : -1;
       }
-      return compareValues(a, b, column, sortDirection);
+      return (
+        compareValues(a, b, column, sortDirection) ||
+        a.id.localeCompare(b.id) * dir
+      );
     });
   }, [columns, sortBy, sortDirection, tableSearch.filteredRows]);
 

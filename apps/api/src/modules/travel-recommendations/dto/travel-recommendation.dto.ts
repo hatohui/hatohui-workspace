@@ -47,6 +47,9 @@ export class TravelDishSummaryDto {
   @ApiProperty({ type: [String], example: ['Vietnamese'] })
   cuisines!: string[];
 
+  @ApiProperty({ type: [String], example: ['Coffee'] })
+  categories!: string[];
+
   @ApiProperty({ nullable: true, type: String })
   imageUrl!: string | null;
 
@@ -80,6 +83,9 @@ export class TravelPlaceSummaryDto {
 
   @ApiProperty({ type: TravelPlaceAreaDto, nullable: true })
   area!: TravelPlaceAreaDto | null;
+
+  @ApiProperty({ type: [String], example: ['Buffet'] })
+  categories!: string[];
 
   @ApiProperty({ nullable: true, type: String })
   address!: string | null;
@@ -132,11 +138,11 @@ export class TravelRecommendationDto {
   @ApiProperty({ example: 'VND' })
   currency!: string;
 
-  @ApiProperty()
-  spicy!: boolean;
-
-  @ApiProperty()
-  vegetarian!: boolean;
+  @ApiProperty({
+    type: [String],
+    description: 'Special tag keys, e.g. spicy, vegetarian, michelin',
+  })
+  specials!: string[];
 
   @ApiProperty({
     type: [String],

@@ -18,6 +18,7 @@ export interface EditableColumn<T> {
   options?: EditableCellOption[];
   suggestions?: TagSuggestion[];
   maxTags?: number;
+  allowCreate?: boolean;
   createLabel?: (tag: string) => string;
   removeLabel?: (tag: string) => string;
   render?: (row: T) => string;
@@ -290,6 +291,7 @@ export function EditableDataTable<T extends { id: string }>({
                         options={column.options}
                         suggestions={column.suggestions}
                         maxTags={column.maxTags}
+                        allowCreate={column.allowCreate}
                         createLabel={column.createLabel}
                         removeLabel={column.removeLabel}
                         selectPlaceholder={column.selectPlaceholder}

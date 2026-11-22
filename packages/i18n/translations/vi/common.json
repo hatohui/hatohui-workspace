@@ -75,5 +75,17 @@
       "system": "Theo hệ thống"
     }
   },
-  "preferences": "Tùy chọn"
+  "preferences": "Tùy chọn",
+  "imageViewer": {
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ",
+    "reset": "Đặt lại thu phóng",
+    "close": "Đóng",
+    "download": "Tải ảnh gốc",
+    "toggleCaption": "Hiện hoặc ẩn chi tiết",
+    "openDetails": "Xem chi tiết",
+    "openFull": "Xem ảnh đầy đủ",
+    "previous": "Ảnh trước",
+    "next": "Ảnh tiếp theo"
+  }
 }

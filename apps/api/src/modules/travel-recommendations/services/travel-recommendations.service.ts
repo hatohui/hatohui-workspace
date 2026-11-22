@@ -7,6 +7,7 @@ import {
 import { Prisma, type TravelTagKind } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
+import { matchesSearch } from '@/common/utils/text-search';
 import { tagKeyOf } from '@/modules/travel-tags/utils/tag-key';
 import { travelPlaceData } from '@/modules/travel-recommendations/utils/travel-place-data';
 import {
@@ -21,6 +22,8 @@ import {
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
 import { TravelRecommendationImagesService } from '@/modules/travel-recommendations/services/travel-recommendation-images.service';
 import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
+import { TravelFoodCategoriesService } from '@/modules/travel-food-categories/services/travel-food-categories.service';
+import { TravelPlaceCategoriesService } from '@/modules/travel-place-categories/services/travel-place-categories.service';
 import { travelRecommendationWhere } from '@/modules/travel-recommendations/utils/travel-recommendation-filters';
 import {
   travelRecommendationDetails,
@@ -39,18 +42,37 @@ export class TravelRecommendationsService {
     private readonly storage: Storage,
     private readonly images: TravelRecommendationImagesService,
     private readonly cuisines: TravelCuisinesService,
+    private readonly foodCategories: TravelFoodCategoriesService,
+    private readonly placeCategories: TravelPlaceCategoriesService,
   ) {}
 
   async list(
     query: TravelRecommendationQueryDto,
   ): Promise<TravelRecommendationDto[]> {
+    const q = query.q?.trim() ?? '';
     const rows = await this.db.travelRecommendation.findMany({
       where: travelRecommendationWhere(query),
       include: travelRecommendationInclude,
       orderBy: { createdAt: 'desc' },
-      take: TRAVEL_CATALOG_LIMIT,
+      ...(q ? {} : { take: TRAVEL_CATALOG_LIMIT }),
     });
-    return rows.map((row) => this.toDto(row));
+    const matched = q
+      ? rows
+          .filter((row) =>
+            matchesSearch(q, [
+              row.note,
+              row.dish.name,
+              ...row.dish.cuisines.map((c) => c.name),
+              ...row.dish.categories.map((c) => c.name),
+              row.place.name,
+              ...row.place.categories.map((c) => c.name),
+              row.place.address,
+              row.place.area?.name,
+            ]),
+          )
+          .slice(0, TRAVEL_CATALOG_LIMIT)
+      : rows;
+    return matched.map((row) => this.toDto(row));
   }
 
   async get(id: string): Promise<TravelRecommendationDto> {
@@ -96,6 +118,7 @@ export class TravelRecommendationsService {
     const current = await this.get(id);
     const tagKeys = travelTagKeys(resolvedTags, [
       ...current.allergens.map((key) => ({ key, kind: 'ALLERGEN' as const })),
+      ...current.specials.map((key) => ({ key, kind: 'SPECIAL' as const })),
       ...current.tags.map((key) => ({ key, kind: 'GENERAL' as const })),
     ]);
     await this.guardUnique(() =>
@@ -156,11 +179,15 @@ export class TravelRecommendationsService {
       dto.allergens === undefined
         ? undefined
         : await this.resolveTagsOfKind('ALLERGEN', dto.allergens);
+    const specials =
+      dto.specials === undefined
+        ? undefined
+        : await this.resolveTagsOfKind('SPECIAL', dto.specials);
     const tags =
       dto.tags === undefined
         ? undefined
         : await this.resolveTagsOfKind('GENERAL', dto.tags);
-    return { allergens, tags };
+    return { allergens, specials, tags };
   }
 
   private async resolveTagsOfKind(
@@ -242,11 +269,16 @@ export class TravelRecommendationsService {
       dto.cuisines ?? [],
       userId,
     );
+    const categoryIds = await this.foodCategories.resolveIds(
+      dto.foodCategories ?? [],
+      userId,
+    );
     const created = await this.db.travelDish.create({
       data: {
         name,
         createdById: userId,
         cuisines: { connect: cuisineIds.map((id) => ({ id })) },
+        categories: { connect: categoryIds.map((id) => ({ id })) },
       },
     });
     return created.id;
@@ -268,10 +300,15 @@ export class TravelRecommendationsService {
       throw new BadRequestException('Provide placeId or place');
     }
 
+    const categoryIds = await this.placeCategories.resolveIds(
+      dto.place.categories ?? [],
+      userId,
+    );
     const created = await this.db.travelPlace.create({
       data: {
         ...(await travelPlaceData(dto.place)),
         name,
+        categories: { connect: categoryIds.map((id) => ({ id })) },
         createdById: userId,
       },
     });

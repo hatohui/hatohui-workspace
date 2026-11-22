@@ -1,6 +1,8 @@
-import type { ImageViewerCaption as Caption } from '@/hooks/useImageViewer';
+'use client';
 
-export function ImageViewerCaption({ caption }: { caption: Caption }) {
+import type { ImageViewerCaption as Caption } from './image-viewer-types';
+
+function ImageViewerCaption({ caption }: { caption: Caption }) {
   if (!caption.title && !caption.description) return null;
 
   return (
@@ -14,3 +16,5 @@ export function ImageViewerCaption({ caption }: { caption: Caption }) {
     </div>
   );
 }
+
+export { ImageViewerCaption };

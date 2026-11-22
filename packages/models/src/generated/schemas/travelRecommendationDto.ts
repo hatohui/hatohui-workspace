@@ -30,8 +30,8 @@ export interface TravelRecommendationDto {
   /** Rough price level when no amount is known */
   priceLevel: TravelPriceLevel | null;
   currency: string;
-  spicy: boolean;
-  vegetarian: boolean;
+  /** Special tag keys, e.g. spicy, vegetarian, michelin */
+  specials: string[];
   /** Allergen tag keys the dish contains, e.g. peanuts */
   allergens: string[];
   /** General tag keys, e.g. bread, meat */

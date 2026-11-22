@@ -32,7 +32,7 @@ function MatchedField(props: Props) {
 
   return (
     <div className="space-y-1.5">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex h-3.5 items-center justify-between gap-2">
         <Label htmlFor={props.id}>{props.label}</Label>
         {hasValue && !props.disabled && (
           <span
@@ -40,7 +40,7 @@ function MatchedField(props: Props) {
               'rounded-full px-2 py-0.5 text-xs',
               props.isMatched
                 ? 'bg-secondary text-muted-foreground'
-                : 'bg-primary/15 text-primary',
+                : 'bg-primary/15 text-[#8f4429] dark:bg-primary/25 dark:text-[#e9a487]',
             )}
           >
             {t(props.isMatched ? 'form.existing' : 'form.new')}

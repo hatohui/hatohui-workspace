@@ -9,10 +9,17 @@ import {
   SheetTitle,
 } from '@hatohui/ui';
 import { SlidersHorizontal } from 'lucide-react';
+import type { FoodView } from '../../constants/food';
 import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
 import CatalogFilters from './CatalogFilters';
 
-function MobileFilterButton({ filters }: { filters: Filters }) {
+function MobileFilterButton({
+  filters,
+  view,
+}: {
+  filters: Filters;
+  view?: FoodView;
+}) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
@@ -21,7 +28,7 @@ function MobileFilterButton({ filters }: { filters: Filters }) {
       <Button
         variant="outline"
         size="sm"
-        className="h-9 shrink-0 rounded-full text-xs sm:h-8 lg:hidden"
+        className="h-9 shrink-0 lg:hidden"
         onClick={() => setOpen(true)}
       >
         <SlidersHorizontal />
@@ -38,7 +45,7 @@ function MobileFilterButton({ filters }: { filters: Filters }) {
             <SheetTitle>{t('filters.title')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
-            <CatalogFilters filters={filters} />
+            <CatalogFilters filters={filters} view={view} />
           </SheetBody>
         </SheetContent>
       </Sheet>

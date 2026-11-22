@@ -10,20 +10,29 @@ interface ToastRecord {
   id: number;
   message: string;
   variant: ToastVariant;
+  progress?: number;
 }
 
 interface ToastApi {
   success: (message: string) => number;
   error: (message: string) => number;
   info: (message: string) => number;
-  loading: (message: string) => number;
-  update: (id: number, message: string, variant?: ToastVariant) => void;
+  loading: (message: string, progress?: number) => number;
+  update: (
+    id: number,
+    message: string,
+    variant?: ToastVariant,
+    progress?: number,
+  ) => void;
   dismiss: (id: number) => void;
 }
 
 const ToastContext = React.createContext<ToastApi | null>(null);
 
 const AUTO_DISMISS_MS = 4000;
+
+const clampProgress = (value?: number) =>
+  value === undefined ? undefined : Math.min(1, Math.max(0, value));
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = React.useState<ToastRecord[]>([]);
@@ -51,9 +60,14 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 
   const push = React.useCallback(
-    (message: string, variant: ToastVariant) => {
+    (message: string, variant: ToastVariant, progress?: number) => {
       const id = Date.now() + Math.random();
-      setToasts((current) => [...current, { id, message, variant }]);
+      const nextProgress =
+        variant === 'loading' ? clampProgress(progress) : undefined;
+      setToasts((current) => [
+        ...current,
+        { id, message, variant, progress: nextProgress },
+      ]);
       if (variant !== 'loading') {
         scheduleDismiss(id);
       }
@@ -63,13 +77,29 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 
   const update = React.useCallback(
-    (id: number, message: string, variant?: ToastVariant) => {
+    (
+      id: number,
+      message: string,
+      variant?: ToastVariant,
+      progress?: number,
+    ) => {
       setToasts((current) =>
-        current.map((toast) =>
-          toast.id === id
-            ? { ...toast, message, variant: variant ?? toast.variant }
-            : toast,
-        ),
+        current.map((toast) => {
+          if (toast.id !== id) return toast;
+          const nextVariant = variant ?? toast.variant;
+          const nextProgress =
+            nextVariant === 'loading'
+              ? progress !== undefined
+                ? clampProgress(progress)
+                : toast.progress
+              : undefined;
+          return {
+            ...toast,
+            message,
+            variant: nextVariant,
+            progress: nextProgress,
+          };
+        }),
       );
       if (variant && variant !== 'loading') {
         scheduleDismiss(id);
@@ -88,7 +118,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       success: (message) => push(message, 'success'),
       error: (message) => push(message, 'error'),
       info: (message) => push(message, 'info'),
-      loading: (message) => push(message, 'loading'),
+      loading: (message, progress) => push(message, 'loading', progress),
       update,
       dismiss,
     }),
@@ -126,11 +156,13 @@ function ToastItem({
   onDismiss: (id: number) => void;
 }) {
   const Icon = VARIANT_ICON[toast.variant];
+  const percent =
+    toast.progress !== undefined ? Math.round(toast.progress * 100) : undefined;
   return (
     <div
       role={toast.variant === 'error' ? 'alert' : 'status'}
       className={cn(
-        'pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-lg border border-border bg-popover px-4 py-3 text-sm text-popover-foreground shadow-md',
+        'pointer-events-auto relative flex w-full max-w-sm items-start gap-3 overflow-hidden rounded-lg border border-border bg-popover px-4 py-3 text-sm text-popover-foreground shadow-md',
         'motion-safe:animate-in motion-safe:slide-in-from-bottom-2 motion-safe:fade-in motion-safe:duration-200',
       )}
     >
@@ -154,6 +186,20 @@ function ToastItem({
       >
         <X className="size-4" />
       </button>
+      {toast.variant === 'loading' && percent !== undefined && (
+        <div
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={percent}
+          className="absolute inset-x-0 bottom-0 h-1 bg-primary/15"
+        >
+          <div
+            className="h-full bg-primary transition-[width] duration-300 ease-out motion-reduce:transition-none"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+      )}
     </div>
   );
 }

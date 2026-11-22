@@ -28,8 +28,8 @@ export interface UpdateTravelRecommendationDto {
   priceMax?: number | null;
   priceLevel?: TravelPriceLevel | null;
   currency?: UpdateTravelRecommendationDtoCurrency;
-  spicy?: boolean;
-  vegetarian?: boolean;
+  /** Special tag keys or names (e.g. spicy, vegetarian, michelin) */
+  specials?: string[];
   /** Allergen tag keys or names */
   allergens?: string[];
   /** General tag keys or names (e.g. bread, meat) */

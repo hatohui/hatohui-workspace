@@ -103,8 +103,9 @@ export class TravelPlacesController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateTravelPlaceDto,
+    @CurrentUser() user: User,
   ): Promise<TravelPlaceDetailDto> {
-    return this.places.update(id, dto);
+    return this.places.update(id, dto, user.id);
   }
 
   @Delete(':id')

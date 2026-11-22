@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, ImageCropDialog } from '@hatohui/ui';
+import { Button, ImageCropDialog, cn } from '@hatohui/ui';
 import { Crop, ImagePlus, Loader2, X } from 'lucide-react';
 import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
 import type { useDishPhoto } from '../../hooks/useDishPhoto';
 import { useImagePaste } from '../../hooks/useImagePaste';
+import { usePhotoDrop } from '../../hooks/usePhotoDrop';
 import FieldLabel from '../shared/FieldLabel';
 
 interface Props {
@@ -13,8 +14,10 @@ interface Props {
 
 function DishPhotoField({ photo }: Props) {
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [cropFile, setCropFile] = useState<File | null>(null);
+  const { isDragging, handlers } = usePhotoDrop((files) => {
+    if (!photo.isUploading && files[0]) setCropFile(files[0]);
+  });
 
   useImagePaste((files) => {
     if (files[0]) setCropFile(files[0]);
@@ -23,17 +26,6 @@ function DishPhotoField({ photo }: Props) {
   return (
     <div className="space-y-1.5">
       <FieldLabel optional>{t('dishes.photo')}</FieldLabel>
-      <input
-        ref={inputRef}
-        type="file"
-        accept={ACCEPTED_IMAGE_TYPES}
-        className="hidden"
-        onChange={(event) => {
-          const file = event.target.files?.[0];
-          event.target.value = '';
-          if (file) setCropFile(file);
-        }}
-      />
       {photo.previewUrl ? (
         <div className="relative aspect-[4/3] w-48 overflow-hidden rounded-lg border border-border bg-muted">
           <img
@@ -70,16 +62,33 @@ function DishPhotoField({ photo }: Props) {
           </div>
         </div>
       ) : (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => inputRef.current?.click()}
-          disabled={photo.isUploading}
+        <label
+          {...handlers}
+          className={cn(
+            'flex min-h-28 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed px-4 py-6 text-center text-sm text-muted-foreground transition-colors duration-150 focus-within:ring-[3px] focus-within:ring-ring/50 hover:text-foreground motion-reduce:transition-none',
+            photo.isUploading && 'pointer-events-none opacity-50',
+            isDragging
+              ? 'border-primary bg-primary/5'
+              : 'border-input bg-background/60 hover:border-foreground/40 dark:bg-input/20',
+          )}
         >
-          <ImagePlus className="size-4" aria-hidden />
-          {t('form.addPhotos')}
-        </Button>
+          <ImagePlus className="size-6" aria-hidden />
+          <span className="font-medium">{t('dishes.dropPhoto')}</span>
+          <span className="text-xs">{t('form.browsePhotos')}</span>
+          <input
+            type="file"
+            accept={ACCEPTED_IMAGE_TYPES}
+            disabled={photo.isUploading}
+            className="sr-only"
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = '';
+              if (file) setCropFile(file);
+            }}
+          />
+        </label>
       )}
+      <p className="text-xs text-muted-foreground">{t('dishes.photoHint')}</p>
       <ImageCropDialog
         open={Boolean(cropFile)}
         file={cropFile}

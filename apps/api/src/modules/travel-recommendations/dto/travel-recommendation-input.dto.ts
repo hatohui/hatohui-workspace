@@ -2,7 +2,6 @@ import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import {
   ArrayMaxSize,
   IsArray,
-  IsBoolean,
   IsIn,
   IsInt,
   IsOptional,
@@ -16,6 +15,7 @@ import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel
 import type { TravelPriceLevel } from '@prisma/client';
 import {
   TRAVEL_CURRENCIES,
+  TRAVEL_MAX_CATEGORIES,
   TRAVEL_MAX_CUISINES,
   TRAVEL_MAX_IMAGES,
   TRAVEL_NAME_MAX_LENGTH,
@@ -52,6 +52,20 @@ export class CreateTravelRecommendationDto {
   @IsString({ each: true })
   @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
   cuisines?: string[];
+
+  @ApiProperty({
+    type: [String],
+    required: false,
+    maxItems: TRAVEL_MAX_CATEGORIES,
+    description:
+      'Food category tags for a newly created dish, found or created',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(TRAVEL_MAX_CATEGORIES)
+  @IsString({ each: true })
+  @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
+  foodCategories?: string[];
 
   @ApiProperty({ required: false, description: 'An existing place' })
   @IsOptional()
@@ -107,15 +121,15 @@ export class CreateTravelRecommendationDto {
   @IsIn(TRAVEL_CURRENCIES)
   currency?: TravelCurrency;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Special tag keys or names (e.g. spicy, vegetarian, michelin)',
+  })
   @IsOptional()
-  @IsBoolean()
-  spicy?: boolean;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsBoolean()
-  vegetarian?: boolean;
+  @IsArray()
+  @IsString({ each: true })
+  specials?: string[];
 
   @ApiProperty({
     required: false,
@@ -154,6 +168,7 @@ export class UpdateTravelRecommendationDto extends PartialType(
   OmitType(CreateTravelRecommendationDto, [
     'dishName',
     'cuisines',
+    'foodCategories',
     'place',
   ] as const),
 ) {

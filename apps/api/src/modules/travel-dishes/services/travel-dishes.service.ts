@@ -8,6 +8,7 @@ import {
 import { Prisma, ProcessType } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
+import { matchesSearch, searchMatchRank } from '@/common/utils/text-search';
 import {
   STAGING_PREFIX,
   isStagedKey,
@@ -17,7 +18,11 @@ import { ProcessQueueService } from '@/modules/process-queue/services/process-qu
 import { TravelDishThumbnailExecutor } from '@/modules/travel-dishes/services/travel-dish-thumbnail.executor';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
-import { travelCuisineNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
+import { TravelFoodCategoriesService } from '@/modules/travel-food-categories/services/travel-food-categories.service';
+import {
+  travelCuisineNamesSelect,
+  travelFoodCategoryNamesSelect,
+} from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import {
   travelAllergenTagsSelect,
@@ -40,6 +45,7 @@ import {
 
 const dishInclude = {
   cuisines: travelCuisineNamesSelect,
+  categories: travelFoodCategoryNamesSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
   recommendations: {
@@ -70,13 +76,13 @@ export class TravelDishesService {
     private readonly storage: Storage,
     private readonly recommendations: TravelRecommendationsService,
     private readonly cuisines: TravelCuisinesService,
+    private readonly foodCategories: TravelFoodCategoriesService,
     private readonly processQueue: ProcessQueueService,
     private readonly thumbnailExecutor: TravelDishThumbnailExecutor,
   ) {}
 
   async list(query: TravelDishQueryDto): Promise<TravelDishDto[]> {
-    const q = query.q?.trim();
-    const contains = q ? { contains: q, mode: 'insensitive' as const } : null;
+    const q = query.q?.trim() ?? '';
     const scope = await this.locationScope(query);
     const and: Prisma.TravelDishWhereInput[] = [];
 
@@ -99,17 +105,45 @@ export class TravelDishesService {
         },
       });
     }
+    if (query.foodCategories?.length) {
+      and.push({
+        categories: {
+          some: {
+            OR: query.foodCategories.map((name) => ({
+              name: { equals: name, mode: 'insensitive' as const },
+            })),
+          },
+        },
+      });
+    }
+    if (query.placeCategories?.length) {
+      and.push({
+        recommendations: {
+          some: {
+            place: {
+              categories: {
+                some: {
+                  OR: query.placeCategories.map((name) => ({
+                    name: { equals: name, mode: 'insensitive' as const },
+                  })),
+                },
+              },
+            },
+          },
+        },
+      });
+    }
 
     const requiredTags = query.tags ?? [];
-    const recMatch: Prisma.TravelRecommendationWhereInput = {
-      ...(query.spicy ? { spicy: true } : {}),
-      ...(query.vegetarian ? { vegetarian: true } : {}),
-      ...(requiredTags.length
-        ? { AND: requiredTags.map((key) => ({ tags: { some: { key } } })) }
-        : {}),
-    };
-    if (Object.keys(recMatch).length > 0) {
-      and.push({ recommendations: { some: recMatch } });
+    const excludedTags = query.excludeTags ?? [];
+    const recAnd: Prisma.TravelRecommendationWhereInput[] = [
+      ...requiredTags.map((key) => ({ tags: { some: { key } } })),
+    ];
+    if (excludedTags.length) {
+      recAnd.push({ tags: { none: { key: { in: excludedTags } } } });
+    }
+    if (recAnd.length) {
+      and.push({ recommendations: { some: { AND: recAnd } } });
     }
     if (query.excludeAllergens?.length) {
       and.push({
@@ -123,20 +157,38 @@ export class TravelDishesService {
       where: {
         createdBy: travelCreatorFilter(query.by),
         AND: and.length ? and : undefined,
-        OR: contains
-          ? [{ name: contains }, { cuisines: { some: { name: contains } } }]
-          : undefined,
       },
       include: dishInclude,
-      orderBy: { name: 'asc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     });
-    const dishes = rows.map((row) => this.toDto(row, scope));
-    if (!scope) return dishes;
-    return dishes.sort(
-      (a, b) =>
-        Number((b.localPlaceCount ?? 0) > 0) -
-        Number((a.localPlaceCount ?? 0) > 0),
-    );
+    const matched = q
+      ? rows.filter((row) =>
+          matchesSearch(q, [
+            row.name,
+            ...row.cuisines.map((c) => c.name),
+            ...row.categories.map((c) => c.name),
+          ]),
+        )
+      : rows;
+    const dishes = matched.map((row) => this.toDto(row, scope));
+    if (!scope && !q) return dishes;
+    return dishes.sort((a, b) => {
+      if (scope) {
+        const localDiff =
+          Number((b.localPlaceCount ?? 0) > 0) -
+          Number((a.localPlaceCount ?? 0) > 0);
+        if (localDiff !== 0) return localDiff;
+      }
+      if (q) {
+        const rankDiff =
+          searchMatchRank(q, a.name) - searchMatchRank(q, b.name);
+        if (rankDiff !== 0) return rankDiff;
+      }
+      return (
+        b.createdAt.getTime() - a.createdAt.getTime() ||
+        b.id.localeCompare(a.id)
+      );
+    });
   }
 
   private async locationScope(
@@ -151,7 +203,10 @@ export class TravelDishesService {
       if (!area) throw new NotFoundException('Area not found');
       return {
         cuisines: {
-          OR: [{ areaId }, { countryId: area.countryId, areaId: null }],
+          OR: [
+            { areaId },
+            { areaId: null, countries: { some: { id: area.countryId } } },
+          ],
         },
         where: { areaId },
         contains: (place) => place.areaId === areaId,
@@ -160,7 +215,7 @@ export class TravelDishesService {
     if (query.countryId) {
       const countryId = query.countryId;
       return {
-        cuisines: { countryId },
+        cuisines: { countries: { some: { id: countryId } } },
         where: { area: { countryId } },
         contains: (place) => place.area?.countryId === countryId,
       };
@@ -183,11 +238,13 @@ export class TravelDishesService {
     userId: string,
   ): Promise<TravelDishDetailDto> {
     const cuisines = await this.cuisineRefs(dto.cuisines, userId);
+    const categories = await this.categoryRefs(dto.categories, userId);
     const created = await this.guardUnique(() =>
       this.db.travelDish.create({
         data: {
           ...this.fieldsOf(dto),
           cuisines: { connect: cuisines },
+          categories: { connect: categories },
           createdById: userId,
         },
       }),
@@ -241,7 +298,13 @@ export class TravelDishesService {
     });
     if (!existing) throw new NotFoundException('Dish not found');
     const cuisines =
-      dto.cuisines && (await this.cuisineRefs(dto.cuisines, userId));
+      dto.cuisines !== undefined
+        ? await this.cuisineRefs(dto.cuisines, userId)
+        : undefined;
+    const categories =
+      dto.categories !== undefined
+        ? await this.categoryRefs(dto.categories, userId)
+        : undefined;
     const imageKey =
       dto.imageKey === undefined
         ? undefined
@@ -257,6 +320,7 @@ export class TravelDishesService {
             ? { imageKey, thumbnailKey: null, previewKey: null }
             : {}),
           cuisines: cuisines ? { set: cuisines } : undefined,
+          categories: categories ? { set: categories } : undefined,
         },
       }),
     );
@@ -332,6 +396,11 @@ export class TravelDishesService {
     return ids.map((id) => ({ id }));
   }
 
+  private async categoryRefs(names: string[] | undefined, userId: string) {
+    const ids = await this.foodCategories.resolveIds(names ?? [], userId);
+    return ids.map((id) => ({ id }));
+  }
+
   private fieldsOf(dto: UpdateTravelDishDto) {
     return {
       name: dto.name?.trim(),
@@ -362,6 +431,7 @@ export class TravelDishesService {
       id: row.id,
       name: row.name,
       cuisines: row.cuisines.map((cuisine) => cuisine.name),
+      categories: row.categories.map((category) => category.name),
       description: row.description,
       allergens: uniqueAllergenKeys(row.recommendations),
       placeCount: row._count.recommendations,

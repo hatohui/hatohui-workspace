@@ -1,9 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Flame, Leaf } from 'lucide-react';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
-import FilterChip from '../catalog/FilterChip';
 import FormSection from '../shared/FormSection';
+import SpecialTagsInput from './SpecialTagsInput';
 import TagGroupInput from './TagGroupInput';
 
 type FieldsApi = ReturnType<typeof useRecommendationFields>;
@@ -19,20 +18,11 @@ function TagFields({ fields, set }: Props) {
 
   return (
     <FormSection title={t('form.sectionTags')}>
-      <div className="flex flex-wrap gap-2">
-        <FilterChip
-          icon={Flame}
-          label={t('catalog.spicy')}
-          pressed={fields.spicy}
-          onChange={(spicy) => set('spicy', spicy)}
-        />
-        <FilterChip
-          icon={Leaf}
-          label={t('catalog.vegetarian')}
-          pressed={fields.vegetarian}
-          onChange={(vegetarian) => set('vegetarian', vegetarian)}
-        />
-      </div>
+      <SpecialTagsInput
+        id="rec-specials"
+        value={fields.specials}
+        onChange={(next) => set('specials', next)}
+      />
       <div className="grid gap-4 md:grid-cols-2">
         <TagGroupInput
           id="rec-allergens"

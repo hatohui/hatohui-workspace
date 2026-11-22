@@ -3,9 +3,12 @@ import {
   CalendarRange,
   ChefHat,
   Globe,
+  Layers,
   MapPin,
   Plane,
+  Shapes,
   Soup,
+  Store,
   Tag,
   UtensilsCrossed,
   type LucideIcon,
@@ -21,13 +24,16 @@ export const ADMIN_TABS = [
   'countries',
   'areas',
   'dishes',
+  'foodCategories',
+  'places',
+  'placeCategories',
   'cuisines',
   'tags',
   'events',
   'plans',
   'jobProfiles',
 ] as const;
-export const TAG_KINDS = ['ALLERGEN', 'GENERAL'] as const;
+export const TAG_KINDS = ['ALLERGEN', 'SPECIAL', 'GENERAL'] as const;
 export type AdminTab = (typeof ADMIN_TABS)[number];
 
 export const ADMIN_TAB_ICONS: Record<AdminTab, LucideIcon> = {
@@ -35,6 +41,9 @@ export const ADMIN_TAB_ICONS: Record<AdminTab, LucideIcon> = {
   countries: Globe,
   areas: MapPin,
   dishes: Soup,
+  foodCategories: Layers,
+  places: Store,
+  placeCategories: Shapes,
   cuisines: ChefHat,
   tags: Tag,
   events: CalendarRange,

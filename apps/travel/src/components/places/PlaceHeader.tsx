@@ -7,6 +7,7 @@ import {
   formatPlaceLocation,
   hasPlaceCoordinates,
 } from '../../lib/formatPlaceLocation';
+import CategoryChips from '../shared/CategoryChips';
 import CreatorBadge from '../shared/CreatorBadge';
 import EntityActions from '../shared/EntityActions';
 import MapsLink from '../shared/MapsLink';
@@ -35,6 +36,7 @@ function PlaceHeader({ place, deletion }: Props) {
         )}
         <MapsLink href={place.mapsUrl} />
       </div>
+      <CategoryChips categories={place.categories} />
       {place.note && (
         <p className="max-w-prose leading-relaxed whitespace-pre-line text-muted-foreground">
           {place.note}

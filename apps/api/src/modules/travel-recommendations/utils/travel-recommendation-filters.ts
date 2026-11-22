@@ -3,20 +3,18 @@ import { travelCreatorFilter } from '@/modules/travel-recommendations/utils/trav
 import { travelAreaFilter } from '@/modules/travel-recommendations/utils/travel-place-area';
 import type { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
 
-const contains = (value: string) => ({
-  contains: value,
-  mode: 'insensitive' as const,
-});
-
 export function travelRecommendationWhere(
   query: TravelRecommendationQueryDto,
 ): Prisma.TravelRecommendationWhereInput {
-  const q = query.q?.trim();
   const and: Prisma.TravelRecommendationWhereInput[] = [
     ...(query.tags ?? []).map((key) => ({ tags: { some: { key } } })),
   ];
-  if (query.excludeAllergens?.length) {
-    and.push({ tags: { none: { key: { in: query.excludeAllergens } } } });
+  const excluded = [
+    ...(query.excludeAllergens ?? []),
+    ...(query.excludeTags ?? []),
+  ];
+  if (excluded.length) {
+    and.push({ tags: { none: { key: { in: excluded } } } });
   }
   const inArea = travelAreaFilter(query);
   if (inArea) and.push({ place: inArea });
@@ -33,22 +31,37 @@ export function travelRecommendationWhere(
       },
     });
   }
+  if (query.foodCategories?.length) {
+    and.push({
+      dish: {
+        categories: {
+          some: {
+            OR: query.foodCategories.map((name) => ({
+              name: { equals: name, mode: 'insensitive' as const },
+            })),
+          },
+        },
+      },
+    });
+  }
+  if (query.placeCategories?.length) {
+    and.push({
+      place: {
+        categories: {
+          some: {
+            OR: query.placeCategories.map((name) => ({
+              name: { equals: name, mode: 'insensitive' as const },
+            })),
+          },
+        },
+      },
+    });
+  }
 
   return {
     dishId: query.dishId,
     placeId: query.placeId,
-    spicy: query.spicy || undefined,
-    vegetarian: query.vegetarian || undefined,
     createdBy: travelCreatorFilter(query.by),
     AND: and.length ? and : undefined,
-    OR: q
-      ? [
-          { note: contains(q) },
-          { dish: { name: contains(q) } },
-          { dish: { cuisines: { some: { name: contains(q) } } } },
-          { place: { name: contains(q) } },
-          { place: { address: contains(q) } },
-        ]
-      : undefined,
   };
 }

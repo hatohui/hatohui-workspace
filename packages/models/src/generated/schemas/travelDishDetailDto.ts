@@ -12,6 +12,7 @@ export interface TravelDishDetailDto {
   id: string;
   name: string;
   cuisines: string[];
+  categories: string[];
   /** @nullable */
   description: string | null;
   /** Allergen tag keys found in any recommendation of this dish */

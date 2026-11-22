@@ -2,6 +2,7 @@ import { useTranslation } from '@hatohui/i18n';
 import { UtensilsCrossed } from 'lucide-react';
 import type { useRecommendationForm } from '../../hooks/useRecommendationForm';
 import CuisineField from '../shared/CuisineField';
+import FoodCategoryField from '../shared/FoodCategoryField';
 import MatchedField from './MatchedField';
 
 interface Props {
@@ -28,11 +29,18 @@ function DishInputs({ form }: Props) {
         onChange={(value) => set('dishName', value)}
       />
       {isNew && (
-        <CuisineField
-          id="cuisines"
-          value={fields.cuisines}
-          onChange={(value) => set('cuisines', value)}
-        />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <CuisineField
+            id="cuisines"
+            value={fields.cuisines}
+            onChange={(value) => set('cuisines', value)}
+          />
+          <FoodCategoryField
+            id="foodCategories"
+            value={fields.foodCategories}
+            onChange={(value) => set('foodCategories', value)}
+          />
+        </div>
       )}
     </div>
   );

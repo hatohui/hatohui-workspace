@@ -5,7 +5,7 @@ function CuisineChips({ cuisines }: { cuisines: string[] }) {
       {cuisines.map((cuisine) => (
         <li
           key={cuisine}
-          className="rounded-full bg-foreground/10 px-1.5 py-px text-[11px] text-foreground/80"
+          className="rounded-full border border-border/70 bg-background/75 px-2 py-0.5 text-[11px] text-foreground/80 dark:bg-input/30"
         >
           {cuisine}
         </li>

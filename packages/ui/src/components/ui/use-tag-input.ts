@@ -12,36 +12,47 @@ export type TagOption = TagSuggestion & { isNew: boolean };
 const sameTag = (a: string, b: string) =>
   a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0;
 
+const fold = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .toLowerCase();
+
 export function useTagInput({
   value,
   onChange,
   suggestions,
   showOnEmpty = true,
+  allowCreate = true,
 }: {
   value: string[];
   onChange: (value: string[]) => void;
   suggestions: TagSuggestion[];
   showOnEmpty?: boolean;
+  allowCreate?: boolean;
 }) {
   const [draft, setDraft] = useState('');
   const [open, setOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(0);
 
   const needle = draft.trim();
+  const tokens = fold(needle).split(/\s+/).filter(Boolean);
   const groupOrder = [...new Set(suggestions.map((s) => s.group))];
   const hasTag = (tag: string) => value.some((v) => sameTag(v, tag));
   const matches = suggestions
-    .filter(
-      (s) =>
-        !hasTag(s.value) &&
-        s.value.toLowerCase().includes(needle.toLowerCase()),
-    )
+    .filter((s) => {
+      if (hasTag(s.value)) return false;
+      const target = fold(s.value);
+      return tokens.every((token) => target.includes(token));
+    })
     .sort(
       (a, b) =>
         groupOrder.indexOf(a.group) - groupOrder.indexOf(b.group) ||
         Number(sameTag(b.value, needle)) - Number(sameTag(a.value, needle)),
     );
   const isNew =
+    allowCreate &&
     needle !== '' &&
     !hasTag(needle) &&
     !suggestions.some((s) => sameTag(s.value, needle));
@@ -55,9 +66,11 @@ export function useTagInput({
       .split(',')
       .map((part) => part.trim())
       .filter(Boolean)
-      .map(
-        (tag) => suggestions.find((s) => sameTag(s.value, tag))?.value ?? tag,
-      );
+      .flatMap((tag) => {
+        const matched = suggestions.find((s) => sameTag(s.value, tag))?.value;
+        if (matched) return [matched];
+        return allowCreate ? [tag] : [];
+      });
     const next = [...value];
     for (const tag of tags) {
       if (!next.some((v) => sameTag(v, tag))) next.push(tag);

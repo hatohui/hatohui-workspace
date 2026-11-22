@@ -5,6 +5,7 @@ import { usePlaceForm } from '../../hooks/usePlaceForm';
 import AreaSelect from '../location/AreaSelect';
 import MapsLinkField from '../maps/MapsLinkField';
 import DialogForm from '../shared/DialogForm';
+import PlaceCategoryField from '../shared/PlaceCategoryField';
 import TextField from '../shared/TextField';
 
 interface Props {
@@ -39,6 +40,12 @@ function PlaceForm({ place, onClose }: Props) {
           id="place-area"
           value={form.values.areaId}
           onChange={(value) => form.set('areaId', value)}
+        />
+        <PlaceCategoryField
+          id="place-categories"
+          optional
+          value={form.values.categories}
+          onChange={(value) => form.set('categories', value)}
         />
         <MapsLinkField
           id="place-mapsUrl"

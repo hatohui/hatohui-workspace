@@ -11,11 +11,13 @@ const listOrUndefined = <T>(list: T[]) => (list.length ? list : undefined);
 
 export function useTravelFilterState() {
   const { search, setSearch, query } = useSearchState();
-  const [spicy, setSpicy] = useState(false);
-  const [vegetarian, setVegetarian] = useState(false);
+  const [includeSpecials, setIncludeSpecials] = useState<string[]>([]);
+  const [excludeSpecials, setExcludeSpecials] = useState<string[]>([]);
   const [avoid, setAvoid] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [cuisines, setCuisines] = useState<string[]>([]);
+  const [foodCategories, setFoodCategories] = useState<string[]>([]);
+  const [placeCategories, setPlaceCategories] = useState<string[]>([]);
   const [by, setBy] = useState('');
   const [hideMine, setHideMine] = useState(false);
   const mine = useMyAllergies();
@@ -24,22 +26,37 @@ export function useTravelFilterState() {
     : avoid;
   const debouncedBy = useDebouncedValue(by.trim(), SEARCH_DEBOUNCE_MS);
 
+  const cycleSpecial = (key: string) => {
+    if (includeSpecials.includes(key)) {
+      setIncludeSpecials((l) => l.filter((x) => x !== key));
+      setExcludeSpecials((l) => (l.includes(key) ? l : [...l, key]));
+    } else if (excludeSpecials.includes(key)) {
+      setExcludeSpecials((l) => l.filter((x) => x !== key));
+    } else {
+      setIncludeSpecials((l) => [...l, key]);
+    }
+  };
+
   const activeCount =
-    Number(spicy) +
-    Number(vegetarian) +
+    includeSpecials.length +
+    excludeSpecials.length +
     avoid.length +
     tags.length +
     cuisines.length +
+    foodCategories.length +
+    placeCategories.length +
     Number(Boolean(by.trim())) +
     Number(hideMine);
 
   const clearFilters = () => {
     setSearch('');
-    setSpicy(false);
-    setVegetarian(false);
+    setIncludeSpecials([]);
+    setExcludeSpecials([]);
     setAvoid([]);
     setTags([]);
     setCuisines([]);
+    setFoodCategories([]);
+    setPlaceCategories([]);
     setBy('');
     setHideMine(false);
   };
@@ -47,26 +64,32 @@ export function useTravelFilterState() {
   return {
     queryParams: {
       q: query,
-      spicy: spicy || undefined,
-      vegetarian: vegetarian || undefined,
       excludeAllergens: listOrUndefined(excluded),
-      tags: listOrUndefined(tags),
+      tags: listOrUndefined([...includeSpecials, ...tags]),
+      excludeTags: listOrUndefined(excludeSpecials),
       cuisines: listOrUndefined(cuisines),
+      foodCategories: listOrUndefined(foodCategories),
+      placeCategories: listOrUndefined(placeCategories),
       by: debouncedBy || undefined,
     },
     filters: {
       search,
       setSearch,
-      spicy,
-      setSpicy,
-      vegetarian,
-      setVegetarian,
+      includeSpecials,
+      excludeSpecials,
+      cycleSpecial,
       avoid,
       toggleAvoid: (tag: string) => setAvoid((l) => toggled(l, tag)),
       tags,
       toggleTag: (tag: string) => setTags((l) => toggled(l, tag)),
       cuisines,
       toggleCuisine: (name: string) => setCuisines((l) => toggled(l, name)),
+      foodCategories,
+      toggleFoodCategory: (name: string) =>
+        setFoodCategories((l) => toggled(l, name)),
+      placeCategories,
+      togglePlaceCategory: (name: string) =>
+        setPlaceCategories((l) => toggled(l, name)),
       by,
       setBy,
       hideMine,

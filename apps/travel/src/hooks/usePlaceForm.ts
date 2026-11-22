@@ -9,6 +9,7 @@ export function usePlaceForm(place: TravelPlaceDto, onSaved: () => void) {
     {
       name: place.name,
       areaId: place.area?.id ?? '',
+      categories: place.categories,
       address: place.address ?? '',
       mapsUrl: place.mapsUrl ?? '',
       note: place.note ?? '',

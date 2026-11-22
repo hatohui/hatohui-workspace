@@ -2446,6 +2446,30 @@
             }
           },
           {
+            "name": "foodCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these food categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "placeCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes served at places with any of these categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "by",
             "required": false,
             "in": "query",
@@ -2453,23 +2477,6 @@
             "schema": {
               "example": "hatohui",
               "type": "string"
-            }
-          },
-          {
-            "name": "spicy",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "vegetarian",
-            "required": false,
-            "in": "query",
-            "description": "Only dishes with a vegetarian recommendation",
-            "schema": {
-              "type": "boolean"
             }
           },
           {
@@ -2489,6 +2496,18 @@
             "required": false,
             "in": "query",
             "description": "Only dishes with a recommendation having every listed tag",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeTags",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes with a recommendation having none of these tag keys",
             "schema": {
               "type": "array",
               "items": {
@@ -2738,6 +2757,30 @@
             }
           },
           {
+            "name": "foodCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these food categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "placeCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only places tagged with any of these place categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "by",
             "required": false,
             "in": "query",
@@ -2782,22 +2825,6 @@
             }
           },
           {
-            "name": "spicy",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "vegetarian",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
             "name": "excludeAllergens",
             "required": false,
             "in": "query",
@@ -2813,7 +2840,19 @@
             "name": "tags",
             "required": false,
             "in": "query",
-            "description": "Only dishes with every listed general tag",
+            "description": "Only entries with every listed tag key",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeTags",
+            "required": false,
+            "in": "query",
+            "description": "Hide entries with any of these tag keys",
             "schema": {
               "type": "array",
               "items": {
@@ -3080,6 +3119,246 @@
           }
         },
         "summary": "Delete a cuisine tag; dishes keep their other cuisines",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/food-categories": {
+      "get": {
+        "operationId": "travelFoodCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelFoodCategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every food category, for suggestions and filters",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/food-categories/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelFoodCategories",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several food categories by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/food-categories/{id}": {
+      "patch": {
+        "operationId": "updateTravelFoodCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelFoodCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelFoodCategoryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelFoodCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a food category; dishes keep their other categories",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/place-categories": {
+      "get": {
+        "operationId": "travelPlaceCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelPlaceCategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every place category, for suggestions and filters",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/place-categories/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelPlaceCategories",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several place categories by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/place-categories/{id}": {
+      "patch": {
+        "operationId": "updateTravelPlaceCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelPlaceCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlaceCategoryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelPlaceCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a place category; places keep their other categories",
         "tags": [
           "travel"
         ]
@@ -7114,6 +7393,30 @@
             }
           },
           {
+            "name": "foodCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these food categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "placeCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only places tagged with any of these place categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "by",
             "required": false,
             "in": "query",
@@ -7142,22 +7445,6 @@
             }
           },
           {
-            "name": "spicy",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "vegetarian",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
             "name": "excludeAllergens",
             "required": false,
             "in": "query",
@@ -7173,7 +7460,19 @@
             "name": "tags",
             "required": false,
             "in": "query",
-            "description": "Only dishes with every listed general tag",
+            "description": "Only entries with every listed tag key",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeTags",
+            "required": false,
+            "in": "query",
+            "description": "Hide entries with any of these tag keys",
             "schema": {
               "type": "array",
               "items": {
@@ -10823,6 +11122,15 @@
               "type": "string"
             }
           },
+          "categories": {
+            "example": [
+              "Coffee"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "description": {
             "type": "string",
             "nullable": true
@@ -10881,6 +11189,7 @@
           "id",
           "name",
           "cuisines",
+          "categories",
           "description",
           "allergens",
           "placeCount",
@@ -10913,6 +11222,15 @@
               "type": "string"
             }
           },
+          "categories": {
+            "example": [
+              "Coffee"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "imageUrl": {
             "type": "string",
             "nullable": true
@@ -10930,6 +11248,7 @@
           "id",
           "name",
           "cuisines",
+          "categories",
           "imageUrl",
           "thumbnailUrl",
           "previewUrl"
@@ -10979,6 +11298,15 @@
               }
             ]
           },
+          "categories": {
+            "example": [
+              "Buffet"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "address": {
             "type": "string",
             "nullable": true
@@ -11000,6 +11328,7 @@
           "id",
           "name",
           "area",
+          "categories",
           "address",
           "mapsUrl",
           "latitude",
@@ -11086,11 +11415,12 @@
             "type": "string",
             "example": "VND"
           },
-          "spicy": {
-            "type": "boolean"
-          },
-          "vegetarian": {
-            "type": "boolean"
+          "specials": {
+            "description": "Special tag keys, e.g. spicy, vegetarian, michelin",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "allergens": {
             "description": "Allergen tag keys the dish contains, e.g. peanuts",
@@ -11135,8 +11465,7 @@
           "priceMax",
           "priceLevel",
           "currency",
-          "spicy",
-          "vegetarian",
+          "specials",
           "allergens",
           "tags",
           "images",
@@ -11157,6 +11486,15 @@
           "cuisines": {
             "example": [
               "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categories": {
+            "example": [
+              "Coffee"
             ],
             "type": "array",
             "items": {
@@ -11227,6 +11565,7 @@
           "id",
           "name",
           "cuisines",
+          "categories",
           "description",
           "allergens",
           "placeCount",
@@ -11288,6 +11627,14 @@
               "type": "string"
             }
           },
+          "categories": {
+            "maxItems": 6,
+            "description": "Food category tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "description": {
             "type": "string",
             "maxLength": 2000
@@ -11312,6 +11659,14 @@
           "cuisines": {
             "maxItems": 6,
             "description": "Cuisine tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categories": {
+            "maxItems": 6,
+            "description": "Food category tags, found or created by name",
             "type": "array",
             "items": {
               "type": "string"
@@ -11373,6 +11728,14 @@
           "note": {
             "type": "string",
             "maxLength": 2000
+          },
+          "categories": {
+            "maxItems": 6,
+            "description": "Location category tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -11394,6 +11757,14 @@
           "cuisines": {
             "maxItems": 6,
             "description": "Cuisine tags for a newly created dish, found or created",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "foodCategories": {
+            "maxItems": 6,
+            "description": "Food category tags for a newly created dish, found or created",
             "type": "array",
             "items": {
               "type": "string"
@@ -11444,11 +11815,12 @@
               "THB"
             ]
           },
-          "spicy": {
-            "type": "boolean"
-          },
-          "vegetarian": {
-            "type": "boolean"
+          "specials": {
+            "description": "Special tag keys or names (e.g. spicy, vegetarian, michelin)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "allergens": {
             "description": "Allergen tag keys or names",
@@ -11518,11 +11890,12 @@
               "THB"
             ]
           },
-          "spicy": {
-            "type": "boolean"
-          },
-          "vegetarian": {
-            "type": "boolean"
+          "specials": {
+            "description": "Special tag keys or names (e.g. spicy, vegetarian, michelin)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "allergens": {
             "description": "Allergen tag keys or names",
@@ -11566,10 +11939,12 @@
             "type": "number",
             "description": "Dishes tagged with this cuisine"
           },
-          "countryId": {
-            "type": "string",
-            "nullable": true,
-            "description": "Country this cuisine belongs to; null for styles like cafe"
+          "countryIds": {
+            "description": "Countries this cuisine belongs to; empty for styles like cafe",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "areaId": {
             "type": "string",
@@ -11585,7 +11960,7 @@
           "id",
           "name",
           "dishCount",
-          "countryId",
+          "countryIds",
           "areaId",
           "createdAt"
         ]
@@ -11597,14 +11972,87 @@
             "type": "string",
             "maxLength": 120
           },
-          "countryId": {
-            "type": "string",
-            "nullable": true
+          "countryIds": {
+            "description": "Countries this cuisine belongs to; empty clears them",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "areaId": {
             "type": "string",
             "nullable": true,
-            "description": "Setting an area also sets its country"
+            "description": "Setting an area also includes its country"
+          }
+        }
+      },
+      "TravelFoodCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Coffee"
+          },
+          "dishCount": {
+            "type": "number",
+            "description": "Dishes grouped in this food category"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "dishCount",
+          "createdAt"
+        ]
+      },
+      "UpdateTravelFoodCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          }
+        }
+      },
+      "TravelPlaceCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Buffet"
+          },
+          "placeCount": {
+            "type": "number",
+            "description": "Places grouped in this place category"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "placeCount",
+          "createdAt"
+        ]
+      },
+      "UpdateTravelPlaceCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
           }
         }
       },
@@ -15763,7 +16211,8 @@
         "type": "string",
         "enum": [
           "ALLERGEN",
-          "GENERAL"
+          "GENERAL",
+          "SPECIAL"
         ]
       },
       "TravelTagDto": {
@@ -15865,6 +16314,15 @@
               }
             ]
           },
+          "categories": {
+            "example": [
+              "Buffet"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "address": {
             "type": "string",
             "nullable": true
@@ -15908,12 +16366,17 @@
                 "$ref": "#/components/schemas/TravelCreatorDto"
               }
             ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "required": [
           "id",
           "name",
           "area",
+          "categories",
           "address",
           "mapsUrl",
           "latitude",
@@ -15922,7 +16385,8 @@
           "allergens",
           "dishCount",
           "coverImageUrl",
-          "createdBy"
+          "createdBy",
+          "createdAt"
         ]
       },
       "TravelPlaceDetailDto": {
@@ -15944,6 +16408,15 @@
               }
             ]
           },
+          "categories": {
+            "example": [
+              "Buffet"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "address": {
             "type": "string",
             "nullable": true
@@ -15988,6 +16461,10 @@
               }
             ]
           },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
           "recommendations": {
             "type": "array",
             "items": {
@@ -15999,6 +16476,7 @@
           "id",
           "name",
           "area",
+          "categories",
           "address",
           "mapsUrl",
           "latitude",
@@ -16008,6 +16486,7 @@
           "dishCount",
           "coverImageUrl",
           "createdBy",
+          "createdAt",
           "recommendations"
         ]
       },
@@ -16064,6 +16543,14 @@
           "note": {
             "type": "string",
             "maxLength": 2000
+          },
+          "categories": {
+            "maxItems": 6,
+            "description": "Location category tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -16139,6 +16626,14 @@
           "note": {
             "type": "string",
             "maxLength": 2000
+          },
+          "categories": {
+            "maxItems": 6,
+            "description": "Location category tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

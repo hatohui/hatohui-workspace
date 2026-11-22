@@ -20,16 +20,18 @@ export function travelRecommendationDetails(
     ...travelPriceRange(dto),
     priceLevel: dto.priceLevel,
     currency: dto.currency,
-    spicy: dto.spicy,
-    vegetarian: dto.vegetarian,
   };
 }
 
 export function travelTagKeys(
-  resolved: { allergens?: string[]; tags?: string[] },
+  resolved: { allergens?: string[]; specials?: string[]; tags?: string[] },
   current: { key: string; kind: TravelTagKind }[],
 ): string[] | undefined {
-  if (resolved.allergens === undefined && resolved.tags === undefined) {
+  if (
+    resolved.allergens === undefined &&
+    resolved.specials === undefined &&
+    resolved.tags === undefined
+  ) {
     return undefined;
   }
   const keep = (kind: TravelTagKind) =>
@@ -37,6 +39,7 @@ export function travelTagKeys(
   return [
     ...new Set([
       ...(resolved.allergens ?? keep('ALLERGEN')),
+      ...(resolved.specials ?? keep('SPECIAL')),
       ...(resolved.tags ?? keep('GENERAL')),
     ]),
   ];

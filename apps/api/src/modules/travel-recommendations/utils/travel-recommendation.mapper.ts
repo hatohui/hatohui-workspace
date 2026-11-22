@@ -14,6 +14,16 @@ export const travelCuisineNamesSelect = {
   select: { name: true },
 } satisfies Prisma.TravelDish$cuisinesArgs;
 
+export const travelFoodCategoryNamesSelect = {
+  orderBy: { name: 'asc' },
+  select: { name: true },
+} satisfies Prisma.TravelDish$categoriesArgs;
+
+export const travelPlaceCategoryNamesSelect = {
+  orderBy: { name: 'asc' },
+  select: { name: true },
+} satisfies Prisma.TravelPlace$categoriesArgs;
+
 export const travelRecommendationInclude = {
   dish: {
     select: {
@@ -23,6 +33,7 @@ export const travelRecommendationInclude = {
       thumbnailKey: true,
       previewKey: true,
       cuisines: travelCuisineNamesSelect,
+      categories: travelFoodCategoryNamesSelect,
     },
   },
   place: {
@@ -30,6 +41,7 @@ export const travelRecommendationInclude = {
       id: true,
       name: true,
       area: travelPlaceAreaSelect,
+      categories: travelPlaceCategoryNamesSelect,
       address: true,
       mapsUrl: true,
       latitude: true,
@@ -69,6 +81,7 @@ export function toTravelRecommendationDto(
       id: row.dish.id,
       name: row.dish.name,
       cuisines: row.dish.cuisines.map((cuisine) => cuisine.name),
+      categories: row.dish.categories.map((category) => category.name),
       imageUrl: row.dish.imageKey ? publicUrlOf(row.dish.imageKey) : null,
       thumbnailUrl: row.dish.thumbnailKey
         ? publicUrlOf(row.dish.thumbnailKey)
@@ -81,14 +94,17 @@ export function toTravelRecommendationDto(
           ? publicUrlOf(row.dish.imageKey)
           : null,
     },
-    place: { ...row.place, area: toTravelPlaceAreaDto(row.place.area) },
+    place: {
+      ...row.place,
+      categories: row.place.categories.map((category) => category.name),
+      area: toTravelPlaceAreaDto(row.place.area),
+    },
     note: row.note,
     priceMin: row.priceMin,
     priceMax: row.priceMax,
     priceLevel: row.priceLevel,
     currency: row.currency,
-    spicy: row.spicy,
-    vegetarian: row.vegetarian,
+    specials: tagsOf('SPECIAL'),
     allergens: tagsOf('ALLERGEN'),
     tags: tagsOf('GENERAL'),
     images: row.images.map(

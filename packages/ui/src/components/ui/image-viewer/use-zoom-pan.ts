@@ -7,14 +7,15 @@ import {
   type PointerEvent,
   type WheelEvent,
 } from 'react';
+
 import {
-  IMAGE_VIEWER_BUTTON_STEP,
-  IMAGE_VIEWER_CLICK_TOLERANCE_PX,
-  IMAGE_VIEWER_DOUBLE_CLICK_SCALE,
-  IMAGE_VIEWER_MAX_SCALE,
-  IMAGE_VIEWER_MIN_SCALE,
-  IMAGE_VIEWER_WHEEL_STEP,
-} from '@/constants/imageViewer';
+  ZOOM_BUTTON_STEP,
+  ZOOM_CLICK_TOLERANCE_PX,
+  ZOOM_DOUBLE_CLICK_SCALE,
+  ZOOM_MAX_SCALE,
+  ZOOM_MIN_SCALE,
+  ZOOM_WHEEL_STEP,
+} from './image-viewer-types';
 
 interface View {
   scale: number;
@@ -27,11 +28,11 @@ interface Point {
   y: number;
 }
 
-const RESET: View = { scale: IMAGE_VIEWER_MIN_SCALE, x: 0, y: 0 };
+const RESET: View = { scale: ZOOM_MIN_SCALE, x: 0, y: 0 };
 const CENTER: Point = { x: 0, y: 0 };
 
 const clampScale = (scale: number) =>
-  Math.min(IMAGE_VIEWER_MAX_SCALE, Math.max(IMAGE_VIEWER_MIN_SCALE, scale));
+  Math.min(ZOOM_MAX_SCALE, Math.max(ZOOM_MIN_SCALE, scale));
 
 function fromCenter(element: Element, clientX: number, clientY: number) {
   const rect = element.getBoundingClientRect();
@@ -54,7 +55,7 @@ export function useZoomPan() {
   const zoomTo = (next: (scale: number) => number, at: Point) =>
     setView((current) => {
       const scale = clampScale(next(current.scale));
-      if (scale === IMAGE_VIEWER_MIN_SCALE) return RESET;
+      if (scale === ZOOM_MIN_SCALE) return RESET;
       const ratio = scale / current.scale;
       return {
         scale,
@@ -64,8 +65,7 @@ export function useZoomPan() {
     });
 
   const onWheel = (event: WheelEvent<HTMLElement>) => {
-    const step =
-      event.deltaY < 0 ? IMAGE_VIEWER_WHEEL_STEP : 1 / IMAGE_VIEWER_WHEEL_STEP;
+    const step = event.deltaY < 0 ? ZOOM_WHEEL_STEP : 1 / ZOOM_WHEEL_STEP;
     const at = fromCenter(event.currentTarget, event.clientX, event.clientY);
     zoomTo((scale) => scale * step, at);
   };
@@ -74,9 +74,7 @@ export function useZoomPan() {
     const at = fromCenter(event.currentTarget, event.clientX, event.clientY);
     zoomTo(
       (scale) =>
-        scale > IMAGE_VIEWER_MIN_SCALE
-          ? IMAGE_VIEWER_MIN_SCALE
-          : IMAGE_VIEWER_DOUBLE_CLICK_SCALE,
+        scale > ZOOM_MIN_SCALE ? ZOOM_MIN_SCALE : ZOOM_DOUBLE_CLICK_SCALE,
       at,
     );
   };
@@ -102,7 +100,7 @@ export function useZoomPan() {
       drag.current = null;
       pinch.current = { distance: pinchState().distance, scale: view.scale };
       setIsGesturing(true);
-    } else if (view.scale > IMAGE_VIEWER_MIN_SCALE) {
+    } else if (view.scale > ZOOM_MIN_SCALE) {
       drag.current = {
         start: { x: event.clientX, y: event.clientY },
         origin: { x: view.x, y: view.y },
@@ -117,7 +115,7 @@ export function useZoomPan() {
       Math.hypot(
         event.clientX - downAt.current.x,
         event.clientY - downAt.current.y,
-      ) > IMAGE_VIEWER_CLICK_TOLERANCE_PX
+      ) > ZOOM_CLICK_TOLERANCE_PX
     ) {
       moved.current = true;
     }
@@ -152,11 +150,11 @@ export function useZoomPan() {
   return {
     scale: view.scale,
     transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`,
-    isZoomed: view.scale > IMAGE_VIEWER_MIN_SCALE,
+    isZoomed: view.scale > ZOOM_MIN_SCALE,
     isGesturing,
-    canZoomIn: view.scale < IMAGE_VIEWER_MAX_SCALE,
-    zoomIn: () => zoomTo((scale) => scale * IMAGE_VIEWER_BUTTON_STEP, CENTER),
-    zoomOut: () => zoomTo((scale) => scale / IMAGE_VIEWER_BUTTON_STEP, CENTER),
+    canZoomIn: view.scale < ZOOM_MAX_SCALE,
+    zoomIn: () => zoomTo((scale) => scale * ZOOM_BUTTON_STEP, CENTER),
+    zoomOut: () => zoomTo((scale) => scale / ZOOM_BUTTON_STEP, CENTER),
     reset: () => setView(RESET),
     isBackdropClick: () => pressedBackdrop.current && !moved.current,
     handlers: {

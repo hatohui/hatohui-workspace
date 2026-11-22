@@ -16,6 +16,14 @@ q?: string;
  */
 cuisines?: string[];
 /**
+ * Only dishes tagged with any of these food categories
+ */
+foodCategories?: string[];
+/**
+ * Only places tagged with any of these place categories
+ */
+placeCategories?: string[];
+/**
  * Only entries added by this @handle
  */
 by?: string;
@@ -29,14 +37,16 @@ areaId?: string;
 countryId?: string;
 dishId?: string;
 placeId?: string;
-spicy?: boolean;
-vegetarian?: boolean;
 /**
  * Hide dishes that contain any of these allergens
  */
 excludeAllergens?: string[];
 /**
- * Only dishes with every listed general tag
+ * Only entries with every listed tag key
  */
 tags?: string[];
+/**
+ * Hide entries with any of these tag keys
+ */
+excludeTags?: string[];
 };

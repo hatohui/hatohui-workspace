@@ -20,6 +20,7 @@ export interface EditableCellProps {
   options?: EditableCellOption[];
   suggestions?: TagSuggestion[];
   maxTags?: number;
+  allowCreate?: boolean;
   createLabel?: (tag: string) => string;
   removeLabel?: (tag: string) => string;
   selectPlaceholder?: string;
@@ -37,6 +38,7 @@ export function EditableCell({
   options,
   suggestions,
   maxTags,
+  allowCreate,
   createLabel,
   removeLabel,
   selectPlaceholder = 'Select...',
@@ -146,6 +148,7 @@ export function EditableCell({
             onCommit(limited.join(', '));
           }}
           suggestions={suggestions}
+          allowCreate={allowCreate}
           placeholder={selectPlaceholder}
           createLabel={createLabel ?? ((tag) => `Add "${tag}"`)}
           removeLabel={removeLabel ?? ((tag) => `Remove ${tag}`)}

@@ -1,4 +1,5 @@
 import { useId, useMemo, useState, type KeyboardEvent } from 'react';
+import { matchesSearch, searchMatchRank } from '@hatohui/tools';
 import { SEARCH_SUGGESTION_LIMIT } from '../constants/travel';
 
 export interface SearchSuggestion {
@@ -26,17 +27,22 @@ export function useSearchSuggest({
   const listId = useId();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
-  const query = value.trim().toLowerCase();
+  const hasQuery = value.trim().length > 0;
 
   const matches = useMemo(() => {
-    if (!query && !showOnEmpty) return [];
+    if (!hasQuery && !showOnEmpty) return [];
+    const filtered = suggestions.filter(
+      (item) => !hasQuery || matchesSearch(value, [item.label, item.sublabel]),
+    );
+    const ordered = hasQuery
+      ? [...filtered].sort(
+          (a, b) =>
+            searchMatchRank(value, a.label) - searchMatchRank(value, b.label),
+        )
+      : filtered;
     const seen = new Set<string>();
     const result: SearchSuggestion[] = [];
-    for (const item of suggestions) {
-      if (query) {
-        const hay = `${item.label} ${item.sublabel ?? ''}`.toLowerCase();
-        if (!hay.includes(query)) continue;
-      }
+    for (const item of ordered) {
       const key = item.label.toLowerCase();
       if (seen.has(key)) continue;
       seen.add(key);
@@ -44,9 +50,9 @@ export function useSearchSuggest({
       if (result.length >= SEARCH_SUGGESTION_LIMIT) break;
     }
     return result;
-  }, [query, showOnEmpty, suggestions]);
+  }, [hasQuery, showOnEmpty, suggestions, value]);
 
-  const shown = open && (showOnEmpty || query.length > 0) && matches.length > 0;
+  const shown = open && (showOnEmpty || hasQuery) && matches.length > 0;
 
   const pick = (suggestion: SearchSuggestion) => {
     setOpen(false);

@@ -5,7 +5,8 @@ import { usePlaceList } from './usePlaceList';
 import { useTravelFilterState } from './useTravelFilterState';
 
 export function useFoodBrowse() {
-  const { view, setView } = useFoodView();
+  const { view, setView, groupByCategory, toggleGroupByCategory } =
+    useFoodView();
   const filterState = useTravelFilterState();
   const dishes = useDishList(filterState, view === 'dishes');
   const places = usePlaceList(filterState, view === 'places');
@@ -13,6 +14,8 @@ export function useFoodBrowse() {
   return {
     view,
     setView,
+    groupByCategory,
+    toggleGroupByCategory,
     searchKey: FOOD_VIEW_OPTIONS[view].searchKey,
     countKey: FOOD_VIEW_OPTIONS[view].countKey,
     filters: filterState.filters,

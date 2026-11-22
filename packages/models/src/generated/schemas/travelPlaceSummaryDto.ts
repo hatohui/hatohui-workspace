@@ -12,6 +12,7 @@ export interface TravelPlaceSummaryDto {
   name: string;
   /** @nullable */
   area: TravelPlaceAreaDto | null;
+  categories: string[];
   /** @nullable */
   address: string | null;
   /** @nullable */

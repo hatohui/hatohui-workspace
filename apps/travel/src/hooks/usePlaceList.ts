@@ -15,13 +15,16 @@ export function usePlaceList(state: TravelFilterState, enabled: boolean) {
       places.map((place) => ({
         id: place.id,
         label: place.name,
-        sublabel: place.area?.name ?? null,
+        sublabel:
+          [...place.categories, place.area?.name].filter(Boolean).join(' · ') ||
+          null,
         imageUrl: place.coverImageUrl,
       })),
     [places],
   );
   const pagination = usePagination(places, JSON.stringify(params));
   return {
+    allPlaces: places,
     places: pagination.pagedItems,
     pagination,
     suggestions,

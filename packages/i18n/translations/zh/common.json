@@ -75,5 +75,17 @@
       "system": "跟随系统"
     }
   },
-  "preferences": "偏好设置"
+  "preferences": "偏好设置",
+  "imageViewer": {
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "reset": "重置缩放",
+    "close": "关闭",
+    "download": "下载原图",
+    "toggleCaption": "显示或隐藏详情",
+    "openDetails": "查看详情",
+    "openFull": "查看大图",
+    "previous": "上一张",
+    "next": "下一张"
+  }
 }

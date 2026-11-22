@@ -27,6 +27,9 @@ export class TravelPlaceDto extends TravelPlaceSummaryDto {
 
   @ApiProperty({ type: TravelCreatorDto, nullable: true })
   createdBy!: TravelCreatorDto | null;
+
+  @ApiProperty()
+  createdAt!: Date;
 }
 
 export class TravelPlaceDetailDto extends TravelPlaceDto {
@@ -45,10 +48,11 @@ export class TravelPlaceQueryDto extends PickType(
     'areaId',
     'countryId',
     'cuisines',
-    'spicy',
-    'vegetarian',
+    'foodCategories',
+    'placeCategories',
     'excludeAllergens',
     'tags',
+    'excludeTags',
   ] as const,
 ) {
   @ApiProperty({ required: false, description: 'Match name or address' })

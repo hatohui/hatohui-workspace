@@ -1,19 +1,18 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useTranslation } from '@hatohui/i18n';
-import { Button, cn } from '@hatohui/ui';
+import { cn } from '../../../lib/utils';
+import { Button } from '../button';
 
-export function ImageViewerNavButton({
+function ImageViewerNavButton({
   direction,
+  label,
   onClick,
 }: {
   direction: 'previous' | 'next';
+  label: string;
   onClick: () => void;
 }) {
-  const { t } = useTranslation('art');
-  const label = t(`imageViewer.${direction}`);
-
   return (
     <Button
       type="button"
@@ -31,3 +30,5 @@ export function ImageViewerNavButton({
     </Button>
   );
 }
+
+export { ImageViewerNavButton };

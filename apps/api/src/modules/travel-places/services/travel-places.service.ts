@@ -3,6 +3,7 @@ import type { Prisma } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { resolveMapsLocation } from '@/common/utils/maps-coordinates';
+import { matchesSearch, searchMatchRank } from '@/common/utils/text-search';
 import { MapsLinkPreviewDto } from '@/modules/travel-places/dto/maps-link-preview.dto';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names';
@@ -18,7 +19,9 @@ import {
   uniqueAllergenKeys,
 } from '@/modules/travel-recommendations/utils/travel-allergen-keys';
 import { travelRecommendationWhere } from '@/modules/travel-recommendations/utils/travel-recommendation-filters';
+import { travelPlaceCategoryNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
+import { TravelPlaceCategoriesService } from '@/modules/travel-place-categories/services/travel-place-categories.service';
 import {
   travelCreatorFilter,
   toTravelCreatorDto,
@@ -34,6 +37,7 @@ import {
 
 const placeInclude = {
   area: travelPlaceAreaSelect,
+  categories: travelPlaceCategoryNamesSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
   recommendations: {
@@ -57,40 +61,72 @@ export class TravelPlacesService {
     private readonly db: Database,
     private readonly storage: Storage,
     private readonly recommendations: TravelRecommendationsService,
+    private readonly placeCategories: TravelPlaceCategoriesService,
   ) {}
 
   async list(query: TravelPlaceQueryDto): Promise<TravelPlaceDto[]> {
-    const q = query.q?.trim();
-    const contains = q ? { contains: q, mode: 'insensitive' as const } : null;
+    const q = query.q?.trim() ?? '';
     const rows = await this.db.travelPlace.findMany({
       where: {
         ...travelAreaFilter(query),
+        ...(query.placeCategories?.length
+          ? {
+              categories: {
+                some: {
+                  OR: query.placeCategories.map((name) => ({
+                    name: { equals: name, mode: 'insensitive' as const },
+                  })),
+                },
+              },
+            }
+          : {}),
         createdBy: travelCreatorFilter(query.by),
         recommendations: this.servesMatchingFood(query),
-        OR: contains ? [{ name: contains }, { address: contains }] : undefined,
       },
       include: placeInclude,
-      orderBy: { name: 'asc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     });
-    return rows.map((row) => this.toDto(row));
+    const matched = q
+      ? rows
+          .filter((row) =>
+            matchesSearch(q, [
+              row.name,
+              ...row.categories.map((c) => c.name),
+              row.address,
+              row.area?.name,
+              row.area?.country.name,
+            ]),
+          )
+          .sort(
+            (a, b) =>
+              searchMatchRank(q, a.name) - searchMatchRank(q, b.name) ||
+              b.createdAt.getTime() - a.createdAt.getTime() ||
+              b.id.localeCompare(a.id),
+          )
+      : rows;
+    return matched.map((row) => this.toDto(row));
   }
 
   private servesMatchingFood(
     query: TravelPlaceQueryDto,
   ): Prisma.TravelRecommendationListRelationFilter | undefined {
-    const { spicy, vegetarian, tags, excludeAllergens, cuisines } = query;
-    const isFiltered =
-      spicy ||
-      vegetarian ||
-      [tags, excludeAllergens, cuisines].some((list) => list?.length);
+    const { tags, excludeTags, excludeAllergens, cuisines, foodCategories } =
+      query;
+    const isFiltered = [
+      tags,
+      excludeTags,
+      excludeAllergens,
+      cuisines,
+      foodCategories,
+    ].some((list) => list?.length);
     if (!isFiltered) return undefined;
     return {
       some: travelRecommendationWhere({
-        spicy,
-        vegetarian,
         tags,
+        excludeTags,
         excludeAllergens,
         cuisines,
+        foodCategories,
       }),
     };
   }
@@ -110,8 +146,14 @@ export class TravelPlacesService {
     userId: string,
   ): Promise<TravelPlaceDetailDto> {
     const data = await travelPlaceData(dto);
+    const categories = await this.categoryRefs(dto.categories, userId);
     const created = await this.db.travelPlace.create({
-      data: { ...data, name: dto.name.trim(), createdById: userId },
+      data: {
+        ...data,
+        name: dto.name.trim(),
+        categories: { connect: categories },
+        createdById: userId,
+      },
     });
     return this.get(created.id);
   }
@@ -168,11 +210,27 @@ export class TravelPlacesService {
   async update(
     id: string,
     dto: UpdateTravelPlaceDto,
+    userId: string,
   ): Promise<TravelPlaceDetailDto> {
     await this.get(id);
     const data = await travelPlaceData(dto);
-    await this.db.travelPlace.update({ where: { id }, data });
+    const categories =
+      dto.categories !== undefined
+        ? await this.categoryRefs(dto.categories, userId)
+        : undefined;
+    await this.db.travelPlace.update({
+      where: { id },
+      data: {
+        ...data,
+        categories: categories ? { set: categories } : undefined,
+      },
+    });
     return this.get(id);
+  }
+
+  private async categoryRefs(names: string[] | undefined, userId: string) {
+    const ids = await this.placeCategories.resolveIds(names ?? [], userId);
+    return ids.map((id) => ({ id }));
   }
 
   async previewLink(url: string): Promise<MapsLinkPreviewDto> {
@@ -199,6 +257,7 @@ export class TravelPlacesService {
       id: row.id,
       name: row.name,
       area: toTravelPlaceAreaDto(row.area),
+      categories: row.categories.map((category) => category.name),
       address: row.address,
       mapsUrl: row.mapsUrl,
       latitude: row.latitude,
@@ -208,6 +267,7 @@ export class TravelPlacesService {
       dishCount: row._count.recommendations,
       coverImageUrl: coverKey ? this.storage.getPublicUrl(coverKey) : null,
       createdBy: toTravelCreatorDto(row.createdBy),
+      createdAt: row.createdAt,
     };
   }
 }

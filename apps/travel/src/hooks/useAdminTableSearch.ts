@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { matchesSearch } from '@hatohui/tools';
 import type { EditableColumn } from '@hatohui/ui';
 import type { SearchSuggestion } from './useSearchSuggest';
 
@@ -21,16 +22,16 @@ export function useAdminTableSearch<T extends { id: string; name: string }>(
   columns: EditableColumn<T>[],
 ) {
   const [search, setSearch] = useState('');
-  const query = search.trim().toLowerCase();
 
   const filteredRows = useMemo(() => {
-    if (!query) return rows;
+    if (!search.trim()) return rows;
     return rows.filter((row) =>
-      columns.some((column) =>
-        cellText(row, column).toLowerCase().includes(query),
+      matchesSearch(
+        search,
+        columns.map((column) => cellText(row, column)),
       ),
     );
-  }, [columns, query, rows]);
+  }, [columns, rows, search]);
 
   const suggestions = useMemo<SearchSuggestion[]>(
     () =>

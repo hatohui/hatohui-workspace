@@ -14,6 +14,7 @@ export interface TravelPlaceDetailDto {
   name: string;
   /** @nullable */
   area: TravelPlaceAreaDto | null;
+  categories: string[];
   /** @nullable */
   address: string | null;
   /** @nullable */
@@ -32,5 +33,6 @@ export interface TravelPlaceDetailDto {
   coverImageUrl: string | null;
   /** @nullable */
   createdBy: TravelCreatorDto | null;
+  createdAt: string;
   recommendations: TravelRecommendationDto[];
 }

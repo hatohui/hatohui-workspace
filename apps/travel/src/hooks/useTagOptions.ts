@@ -46,10 +46,12 @@ export function useTagOptions() {
     isLoading: query.isPending,
     labelOf,
     allergenKeys: keysOf('ALLERGEN'),
+    specialKeys: keysOf('SPECIAL'),
     generalKeys: keysOf('GENERAL'),
     suggestionsOf,
     toLabels: (keys: string[]) => keys.map((key) => labelOf(key)),
     toKeys: (labels: string[], kind: TravelTagKind) =>
       labels.map((label) => toKey(label, kind)),
+    toKey,
   };
 }

@@ -63,7 +63,7 @@ function RichTextField({
     <div
       data-slot="rich-text-field"
       className={cn(
-        'w-full rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30',
+        'w-full rounded-md border border-input bg-background shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30',
         'focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50',
         className,
       )}

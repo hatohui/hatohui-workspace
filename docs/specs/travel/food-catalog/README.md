@@ -7,39 +7,49 @@ Cuisine, Location, spicy, vegetarian, Estimate and Note.
 ## Model
 
 ```text
-TravelCountry ──< TravelArea ──< TravelPlace
+TravelCountry ──< TravelArea ──< TravelPlace >──< TravelPlaceCategory
       │               │                │
-      └──< TravelCuisine >┘             │
-              >──< TravelDish ──< TravelRecommendation >──┘
-                                       │        │
-                                       │        └──< TravelRecommendationImage (ordered)
-                                       └──< TravelTag (allergen / general)
+      └──>──< TravelCuisine >┘          │
+TravelFoodCategory >──< TravelDish ──< TravelRecommendation >──┘
+                            │          │        │
+                            │          │        └──< TravelRecommendationImage (ordered)
+                            └────< TravelCuisine
+                                       └──< TravelTag (allergen / special / general)
 ```
 
 - **A dish belongs to many places, and a place serves many dishes.** The
   spreadsheet row is neither a dish nor a place: it is the pairing, so it gets
   its own table, `TravelRecommendation`, unique on `(placeId, dishId)`.
 - **Everything that differs per place lives on the recommendation:** the note,
-  the price, the photos, the spicy and vegetarian flags and the tags. A
+  the price, the photos, and the tags (special, allergen, general). A
   vegetarian restaurant's version of a dish is vegetarian even when the dish
   usually is not, so none of those can sit on the dish.
+- **Food categories and place categories are master-data tables**, both
+  many-to-many with dishes and places respectively (`TravelFoodCategory` with
+  `TravelDish`, `TravelPlaceCategory` with `TravelPlace`). A dish such as Egg
+  Coffee or Vietnamese Coffee can belong to "Coffee", while a place can belong
+  to multiple dining styles at once (for example, both "Buffet" and "Self-pick
+  meals"). Names are unique and matched case-insensitively across inline tag
+  creation and `/travel/food-categories` / `/travel/place-categories` admin
+  endpoints.
 - **Cuisines are their own table**, many-to-many with dishes, so a dish can be
   both "Vietnamese" and "Street food" and the catalog can filter and suggest by
   them. Names are unique and matched case-insensitively, so typing an existing
   cuisine reuses it.
-- **Spicy and vegetarian are on/off flags** on the recommendation; a finer
-  spice level was tried and dropped as more detail than the catalog needs. The
-  other diet tags (vegan, halal, gluten-free and so on) were dropped by
-  `travel_catalog_cleanup`, which turned each vegetarian tag into the flag.
-- **Tags are allergens or general.** Allergens the dish _contains_ (peanuts,
-  tree nuts, shellfish, fish, egg, dairy, gluten, soy, sesame) are seeded
-  `TravelTag` rows with fixed keys so each language translates them; general
-  tags (bread, noodles) are free-form. Allergen filters hide any dish
-  containing one of them.
-- **Cuisines carry the culture.** A cuisine can belong to a country
-  ("Vietnamese" → Vietnam) or, for a regional cuisine, an area, which implies
-  its country. Styles like "Cafe" belong to neither. A dish gets its places in
-  the world through its cuisines, so it is never duplicated per country.
+- **Tags are allergens, specials, or general.** Allergens the dish _contains_
+  (peanuts, tree nuts, shellfish, fish, egg, dairy, gluten, soy, sesame) are
+  seeded `TravelTag` rows with fixed keys so each language translates them;
+  special tags (`spicy`, `vegetarian`, `michelin`, plus custom tags added via
+  Admin or the food editor) carry standout attributes and support tri-state
+  include/exclude filtering (`tags` / `excludeTags`); general tags (bread,
+  noodles) are free-form. Allergen filters hide any dish containing one of
+  them. (`travel_special_tags` replaced the earlier `spicy` and `vegetarian`
+  booleans with `TravelTagKind.SPECIAL`.)
+- **Cuisines carry the culture.** A cuisine can belong to one or more countries
+  ("Vietnamese" → Vietnam; "East and Southeast Asian" → Vietnam, Japan, Thailand…)
+  or a specific area, which includes its country. Styles like "Cafe" belong to
+  none. A dish gets its places in the world through its cuisines, so it is
+  never duplicated per country.
 - **A place's location is its area.** The free-text `city` column was removed;
   `travel_catalog_cleanup` matched it to an area by name and otherwise kept it
   in `address`. The forms require an area whenever areas exist.
@@ -70,19 +80,28 @@ dish?" and "what is good at this place?". A `By dish | By place` switch, kept in
 there. Recommendations are not listed on their own: they are the rows on a dish
 or place detail page.
 
-- **Both views take the same filters.** `GET /travel/places` accepts the
-  dish filters (spicy, vegetarian, tags, cuisines, allergens) and keeps a place when
-  at least one of its recommendations matches all of them. For places an
-  allergen filter hides only the matching dishes, not the whole place.
+- **Both views take the same filters.** `GET /travel/places` and
+  `GET /travel/dishes` accept `tags`, `excludeTags`, `cuisines`,
+  `foodCategories`, `placeCategories`, and `excludeAllergens`. Filtering by a
+  dish or place category works across both `By dish` and `By place` views (a
+  place matches food filters when at least one recommendation serves matching
+  food; a dish matches `placeCategories` when at least one recommendation is at
+  a matching place). For places, an allergen filter hides only the matching
+  dishes, not the whole place.
+- **Catalog results can be grouped by category** via `?group=category`. Each
+  category renders as its own section, with multi-category dishes or places
+  appearing under every matching category group (filtered to active category
+  selections when category filters are active) and uncategorized items placed
+  last.
 - **By dish is also a food dictionary.** With a country picked, the list
   holds dishes whose cuisines belong to that country plus any dish served
   there, so dishes with no place yet still show. With an area picked, it is
   the area's own cuisines, its country's country-wide cuisines, and anything
   served in the area. The location sorts and labels instead of filtering:
   `localPlaceCount` counts places in the picked area or country, dishes found
-  there come first, and the rest read "No recommended spots". Taste and tag
-  filters stay pick-based, since spicy or vegetarian depends on how a place
-  makes the dish.
+  there come first, and the rest read "No recommended spots". Special and tag
+  filters stay pick-based, since attributes like spicy, vegetarian, or Michelin
+  depend on how a place makes the dish.
 - **Dish and place suggestions are searched on the server** as you type
   (`?q=`), so the form never preloads the whole catalog.
 
@@ -100,9 +119,10 @@ the saved list to `excludeAllergens`.
 Only users with the `admin` role can write (`AdminRoleGuard`: session plus role,
 no admin key, since the travel app has no key to send). Reads are public.
 
-`POST /travel/recommendations` accepts `dishId` or `dishName` (+ `cuisines`) and
-`placeId` or `placeName` (+ `placeMapsUrl`), so one form submission can add a
-whole spreadsheet row, creating the dish and place on the way.
+`POST /travel/recommendations` accepts `dishId` or `dishName` (+ `cuisines`,
+`foodCategories`) and `placeId` or `place` (`name`, `mapsUrl`, `areaId`,
+`categories`), so one form submission can add a whole spreadsheet row, creating
+the dish, place, and category links on the way.
 
 ## Photos
 

@@ -34,9 +34,15 @@ function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
     DEFAULT_HIDDEN_COLUMNS,
   );
 
+  const handleAdd = async (names: string[]) => {
+    const ok = await props.add(names);
+    if (ok) controls.setPage(1);
+    return ok;
+  };
+
   return (
     <div className="space-y-4">
-      <QuickAddBar placeholder={props.addPlaceholder} onAdd={props.add}>
+      <QuickAddBar placeholder={props.addPlaceholder} onAdd={handleAdd}>
         {props.addControls}
       </QuickAddBar>
       <div className="flex items-center gap-2">
