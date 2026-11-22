@@ -3,18 +3,24 @@ import { useTranslation } from '@hatohui/i18n';
 import type {
   TravelParticipantMemberDto,
   TravelPlaceDto,
+  TravelSpotDto,
 } from '@hatohui/models';
 import { Button, Input, Label } from '@hatohui/ui';
+
+const SPOT_PREFIX = 'spot:';
+const PLACE_PREFIX = 'place:';
 
 interface PlanActivityFormProps {
   participants: TravelParticipantMemberDto[];
   places: TravelPlaceDto[];
+  spots: TravelSpotDto[];
   isCreating: boolean;
   onSubmit: (data: {
     name: string;
     from: string;
     to: string;
     placeId?: string;
+    spotId?: string;
     location?: string;
     mapsUrl?: string;
     note?: string;
@@ -26,6 +32,7 @@ interface PlanActivityFormProps {
 function PlanActivityForm({
   participants,
   places,
+  spots,
   isCreating,
   onSubmit,
 }: PlanActivityFormProps) {
@@ -33,7 +40,7 @@ function PlanActivityForm({
   const [name, setName] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const [placeId, setPlaceId] = useState('');
+  const [targetValue, setTargetValue] = useState('');
   const [location, setLocation] = useState('');
   const [mapsUrl, setMapsUrl] = useState('');
   const [note, setNote] = useState('');
@@ -53,11 +60,18 @@ function PlanActivityForm({
       onSubmit={(e) => {
         e.preventDefault();
         if (!name.trim() || !from || !to) return;
+        const spotId = targetValue.startsWith(SPOT_PREFIX)
+          ? targetValue.slice(SPOT_PREFIX.length)
+          : undefined;
+        const placeId = targetValue.startsWith(PLACE_PREFIX)
+          ? targetValue.slice(PLACE_PREFIX.length)
+          : undefined;
         void onSubmit({
           name: name.trim(),
           from: new Date(from).toISOString(),
           to: new Date(to).toISOString(),
-          placeId: placeId || undefined,
+          placeId,
+          spotId,
           location: location.trim() || undefined,
           mapsUrl: mapsUrl.trim() || undefined,
           note: note.trim() || undefined,
@@ -105,16 +119,29 @@ function PlanActivityForm({
           <Label htmlFor="act-place">{t('plans.timeline.form.place')}</Label>
           <select
             id="act-place"
-            value={placeId}
-            onChange={(e) => setPlaceId(e.target.value)}
+            value={targetValue}
+            onChange={(e) => setTargetValue(e.target.value)}
             className="h-9 w-full rounded-md border border-input bg-background px-2.5 text-sm"
           >
             <option value="">{t('plans.timeline.form.noPlace')}</option>
-            {places.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
+            {spots.length > 0 && (
+              <optgroup label={t('plans.timeline.form.spotGroup')}>
+                {spots.map((s) => (
+                  <option key={s.id} value={`${SPOT_PREFIX}${s.id}`}>
+                    {s.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            {places.length > 0 && (
+              <optgroup label={t('plans.timeline.form.foodPlaceGroup')}>
+                {places.map((p) => (
+                  <option key={p.id} value={`${PLACE_PREFIX}${p.id}`}>
+                    {p.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
           </select>
         </div>
         <div className="space-y-1">

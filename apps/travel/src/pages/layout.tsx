@@ -11,7 +11,9 @@ function RootLayout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const section = pathname.split('/')[1] ?? '';
   const isWide =
-    pathname === routes.catalog || pathname.startsWith(routes.admin);
+    pathname === routes.catalog ||
+    pathname === routes.spots ||
+    pathname.startsWith(routes.admin);
 
   return (
     <TravelLocationProvider>

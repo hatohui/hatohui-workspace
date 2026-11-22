@@ -7,6 +7,7 @@ import {
   Clock,
   ExternalLink,
   MapPin,
+  MapPinned,
   Plane,
   Plus,
   Search,
@@ -120,6 +121,7 @@ function PlanTimelineTab({
         <PlanActivityForm
           participants={participants}
           places={timeline.places}
+          spots={timeline.spots}
           isCreating={timeline.isCreating}
           onSubmit={timeline.addActivity}
         />
@@ -161,6 +163,15 @@ function PlanTimelineTab({
                         {flight}
                       </span>
                     ))}
+                    {item.spotId && (
+                      <Link
+                        to={routes.spot(item.spotId)}
+                        className="inline-flex items-center gap-1 rounded bg-muted px-2 py-0.5 text-xs hover:text-primary"
+                      >
+                        <MapPinned className="size-3" aria-hidden />
+                        {item.spotName}
+                      </Link>
+                    )}
                     {item.placeId && (
                       <Link
                         to={routes.place(item.placeId)}

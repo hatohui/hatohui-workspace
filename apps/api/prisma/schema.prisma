@@ -92,6 +92,9 @@ model User {
   travelGroupImages           TravelGroupImage[]          @relation("TravelGroupImageUploader")
   travelActivitiesCreated     TravelActivity[]            @relation("TravelActivityCreator")
   travelActivityMedia         TravelActivityMedia[]       @relation("TravelActivityMediaUploader")
+  travelSpots                 TravelSpot[]                @relation("TravelSpotCreator")
+  travelSpotCategories        TravelSpotCategory[]        @relation("TravelSpotCategoryCreator")
+  travelSpotImages            TravelSpotImage[]           @relation("TravelSpotImageUploader")
 }
 
 enum AppScope {
@@ -366,6 +369,7 @@ enum ProcessType {
   TRAVEL_GROUP_IMAGE_THUMBNAIL
   TRAVEL_ACTIVITY_IMAGE_THUMBNAIL
   TRAVEL_ACTIVITY_MEDIA_THUMBNAIL
+  TRAVEL_SPOT_IMAGE_THUMBNAIL
 }
 
 model ProcessQueue {
@@ -963,10 +967,59 @@ model TravelArea {
   createdAt   DateTime      @default(now())
 
   places   TravelPlace[]
+  spots    TravelSpot[]
   events   TravelEvent[]
   cuisines TravelCuisine[]
 
   @@unique([countryId, name])
+}
+
+model TravelSpot {
+  id          String      @id @default(cuid())
+  name        String
+  areaId      String?
+  area        TravelArea? @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  address     String?
+  mapsUrl     String?
+  latitude    Float?
+  longitude   Float?
+  note        String?
+  createdById String?
+  createdBy   User?       @relation("TravelSpotCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  categories TravelSpotCategory[]
+  tags       TravelTag[]
+  images     TravelSpotImage[]
+  activities TravelActivity[]
+
+  @@index([areaId])
+}
+
+model TravelSpotCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  createdById String?
+  createdBy   User?    @relation("TravelSpotCategoryCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  spots TravelSpot[]
+}
+
+model TravelSpotImage {
+  id           String     @id @default(cuid())
+  spotId       String
+  spot         TravelSpot @relation(fields: [spotId], references: [id], onDelete: Cascade)
+  key          String
+  thumbnailKey String?
+  previewKey   String?
+  position     Int
+  createdById  String?
+  createdBy    User?      @relation("TravelSpotImageUploader", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+
+  @@index([spotId, position])
 }
 
 enum TravelTagKind {
@@ -984,6 +1037,7 @@ model TravelTag {
   createdAt DateTime      @default(now())
 
   recommendations TravelRecommendation[]
+  spots           TravelSpot[]
   allergicUsers   User[]                 @relation("TravelUserAllergens")
 
   @@index([kind, position])
@@ -1237,6 +1291,8 @@ model TravelActivity {
   to             DateTime
   placeId        String?
   place          TravelPlace?             @relation(fields: [placeId], references: [id], onDelete: SetNull)
+  spotId         String?
+  spot           TravelSpot?              @relation(fields: [spotId], references: [id], onDelete: SetNull)
   location       String?
   mapsUrl        String?
   latitude       Float?
@@ -1256,6 +1312,7 @@ model TravelActivity {
 
   @@index([groupId])
   @@index([groupId, from])
+  @@index([spotId])
 }
 
 model TravelActivityMedia {

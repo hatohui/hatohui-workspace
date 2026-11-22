@@ -2,6 +2,7 @@
   "brand": "Du lịch",
   "nav": {
     "food": "Món ngon",
+    "spots": "Điểm đến",
     "admin": "Quản trị",
     "quickMenu": "Menu nhanh"
   },
@@ -144,6 +145,8 @@
     "foodCategoriesPlaceholder": "Cà phê, món nước, tráng miệng…",
     "placeCategories": "Danh mục địa điểm",
     "placeCategoriesPlaceholder": "Buffet, tự phục vụ, cơm tự chọn…",
+    "spotCategories": "Danh mục hoạt động",
+    "spotCategoriesPlaceholder": "Bảo tàng, công viên, vui chơi đêm, mua sắm…",
     "categoryCreate": "Thêm \"{{tag}}\"",
     "categoryRemove": "Xóa {{tag}}"
   },
@@ -191,6 +194,31 @@
     "deleteDescription": "{{name}} và mọi gợi ý tại đây sẽ bị xóa.",
     "mapTitle": "Bản đồ {{name}}"
   },
+  "spots": {
+    "back": "Tất cả điểm đến",
+    "title": "Điểm vui chơi & hoạt động",
+    "subtitle": "Những địa điểm được gợi ý để tham quan, khám phá và vui chơi.",
+    "searchPlaceholder": "Tìm điểm đến, danh mục, thẻ, thành phố",
+    "add": "Thêm điểm đến",
+    "createTitle": "Thêm điểm hoạt động",
+    "editTitle": "Sửa điểm đến",
+    "name": "Tên điểm đến",
+    "namePlaceholder": "Chợ Bến Thành",
+    "address": "Địa chỉ",
+    "addressPlaceholder": "Địa chỉ đường hoặc mốc nổi bật",
+    "note": "Ghi chú & mẹo",
+    "notePlaceholder": "Thời điểm đẹp nhất, giá vé, nên xem hoặc chơi gì",
+    "empty": "Chưa có điểm hoạt động nào.",
+    "emptyFiltered": "Không có điểm đến nào khớp bộ lọc.",
+    "spotTotal_one": "{{count}} điểm đến",
+    "spotTotal_other": "{{count}} điểm đến",
+    "noLocation": "Chưa có vị trí",
+    "pinnedOnMap": "Đã ghim trên bản đồ",
+    "deleteTitle": "Xóa điểm đến này?",
+    "deleteDescription": "{{name}} và các ảnh của nó sẽ bị xóa.",
+    "mapTitle": "Bản đồ {{name}}",
+    "popular": "Nhiều ảnh nhất"
+  },
   "notFound": {
     "title": "Không tìm thấy trang",
     "back": "Về danh mục món ngon"
@@ -230,6 +258,7 @@
     "title": "Bộ lọc",
     "foodCategories": "Danh mục món ăn",
     "placeCategories": "Danh mục địa điểm",
+    "spotCategories": "Danh mục hoạt động",
     "special": "Đặc biệt",
     "specialHint": "Bấm để chọn, bấm nữa để loại trừ",
     "stateIncluded": "Đang bao gồm {{label}} — bấm để loại trừ",
@@ -250,6 +279,7 @@
     "code": "Mã",
     "areas": "Khu vực",
     "places": "Địa điểm",
+    "spots": "Điểm đến",
     "dishes": "Món ăn",
     "kind": "Loại",
     "uses": "Lượt dùng",
@@ -261,6 +291,8 @@
       "foodCategories": "Danh mục món",
       "places": "Địa điểm",
       "placeCategories": "Danh mục quán",
+      "spots": "Điểm đến",
+      "spotCategories": "Danh mục điểm đến",
       "cuisines": "Ẩm thực",
       "tags": "Thẻ"
     },
@@ -275,6 +307,8 @@
     "addFoodCategories": "Thêm danh mục món, cách nhau bằng dấu phẩy",
     "addPlaces": "Thêm địa điểm hoặc link Google Maps, cách nhau bằng dấu phẩy",
     "addPlaceCategories": "Thêm danh mục địa điểm, cách nhau bằng dấu phẩy",
+    "addSpots": "Thêm điểm đến hoặc link Google Maps, cách nhau bằng dấu phẩy",
+    "addSpotCategories": "Thêm danh mục điểm đến, cách nhau bằng dấu phẩy",
     "addCuisines": "Thêm ẩm thực, cách nhau bằng dấu phẩy",
     "addTags": "Thêm thẻ, cách nhau bằng dấu phẩy",
     "bulkResult": "Đã thêm {{created}}, bỏ qua {{skipped}}",
@@ -285,6 +319,8 @@
     "deleteFoodCategory": "Các món sẽ mất danh mục này.",
     "deletePlace": "Mọi gợi ý tại địa điểm này và ảnh của chúng sẽ bị xóa.",
     "deletePlaceCategory": "Các địa điểm sẽ mất danh mục này.",
+    "deleteSpot": "Điểm đến này và các ảnh của nó sẽ bị xóa.",
+    "deleteSpotCategory": "Các điểm đến sẽ mất danh mục này.",
     "deleteCuisine": "Các món sẽ mất thẻ ẩm thực này.",
     "deleteTag": "Các gợi ý sẽ mất thẻ này.",
     "searchPlaceholder": "Tìm kiếm hàng",
@@ -341,5 +377,15 @@
   "overview": {
     "browseFoodTitle": "Khám phá món ăn và quán",
     "browseFoodBody": "Tìm món và nơi ăn, hoặc chọn quán để xem nên gọi món gì."
+  },
+  "plans": {
+    "timeline": {
+      "form": {
+        "place": "Điểm đến hoặc quán ăn đã lưu (tùy chọn)",
+        "noPlace": "Vị trí tùy chỉnh",
+        "spotGroup": "Điểm hoạt động",
+        "foodPlaceGroup": "Quán ăn"
+      }
+    }
   }
 }

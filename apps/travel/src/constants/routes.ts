@@ -3,6 +3,7 @@ const routes = {
   overview: '/overview',
   dishes: '/?view=dishes',
   places: '/?view=places',
+  spots: '/spots',
   events: '/events',
   eventNew: '/events/new',
   eventEdit: (id: string) => `/events/${id}/edit`,
@@ -19,6 +20,7 @@ const routes = {
   admin: '/admin',
   dish: (id: string) => `/dishes/${id}`,
   place: (id: string) => `/places/${id}`,
+  spot: (id: string) => `/spots/${id}`,
 };
 
 export default routes;

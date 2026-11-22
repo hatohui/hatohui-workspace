@@ -46,7 +46,12 @@ export interface CatalogSortOption {
   icon: LucideIcon;
 }
 
-export const CATALOG_SORT_OPTIONS: Record<FoodView, CatalogSortOption[]> = {
+export type CatalogSortView = FoodView | 'spots';
+
+export const CATALOG_SORT_OPTIONS: Record<
+  CatalogSortView,
+  CatalogSortOption[]
+> = {
   dishes: [
     { value: 'relevance', labelKey: 'catalog.sort.relevance', icon: Sparkles },
     { value: 'popular', labelKey: 'catalog.sort.popularDishes', icon: Flame },
@@ -61,6 +66,17 @@ export const CATALOG_SORT_OPTIONS: Record<FoodView, CatalogSortOption[]> = {
   places: [
     { value: 'relevance', labelKey: 'catalog.sort.relevance', icon: Sparkles },
     { value: 'popular', labelKey: 'catalog.sort.popularPlaces', icon: Flame },
+    {
+      value: 'newest',
+      labelKey: 'catalog.sort.newest',
+      icon: CalendarArrowDown,
+    },
+    { value: 'oldest', labelKey: 'catalog.sort.oldest', icon: CalendarArrowUp },
+    { value: 'name', labelKey: 'catalog.sort.name', icon: ArrowDownAZ },
+  ],
+  spots: [
+    { value: 'relevance', labelKey: 'catalog.sort.relevance', icon: Sparkles },
+    { value: 'popular', labelKey: 'spots.popular', icon: Flame },
     {
       value: 'newest',
       labelKey: 'catalog.sort.newest',

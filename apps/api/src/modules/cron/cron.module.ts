@@ -22,6 +22,8 @@ import {
   TravelActivityMediaThumbnailExecutor,
   TravelGroupImageThumbnailExecutor,
 } from '@/modules/travel-activities/services/travel-media-thumbnail.executors';
+import { TravelSpotsModule } from '@/modules/travel-spots/travel-spots.module';
+import { TravelSpotImageThumbnailExecutor } from '@/modules/travel-spots/services/travel-spot-image-thumbnail.executor';
 import { PROCESS_EXECUTORS } from '@/modules/process-queue/process-queue.constants';
 import { BirthdayConfigModule } from './birthday-config.module';
 import { BirthdayCronController } from '@/modules/cron/birthday-cron.controller';
@@ -44,6 +46,7 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
     TravelRecommendationsModule,
     TravelEventsModule,
     TravelActivitiesModule,
+    TravelSpotsModule,
   ],
   controllers: [BirthdayCronController, ProcessQueueCronController],
   providers: [
@@ -63,6 +66,7 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         travelGroupImageThumbnail: TravelGroupImageThumbnailExecutor,
         travelActivityImageThumbnail: TravelActivityImageThumbnailExecutor,
         travelActivityMediaThumbnail: TravelActivityMediaThumbnailExecutor,
+        travelSpotImageThumbnail: TravelSpotImageThumbnailExecutor,
       ) => [
         assetThumbnail,
         notificationEmail,
@@ -74,6 +78,7 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         travelGroupImageThumbnail,
         travelActivityImageThumbnail,
         travelActivityMediaThumbnail,
+        travelSpotImageThumbnail,
       ],
       inject: [
         AssetThumbnailExecutor,
@@ -86,6 +91,7 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         TravelGroupImageThumbnailExecutor,
         TravelActivityImageThumbnailExecutor,
         TravelActivityMediaThumbnailExecutor,
+        TravelSpotImageThumbnailExecutor,
       ],
     },
   ],

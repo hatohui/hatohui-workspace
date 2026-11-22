@@ -45,6 +45,7 @@ export const TRAVEL_DISHES_PREFIX = 'travel/dishes';
 export const TRAVEL_EVENTS_PREFIX = 'travel/events';
 export const TRAVEL_GROUPS_PREFIX = 'travel/groups';
 export const TRAVEL_ACTIVITIES_PREFIX = 'travel/activities';
+export const TRAVEL_SPOTS_PREFIX = 'travel/spots';
 
 /// Where a freshly signed upload goes before its owning record exists.
 export function stagedUploadKey(owner: string, extension: string): string {
@@ -195,6 +196,22 @@ export function travelActivityVariantKeyFor(
 ): string {
   const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
   return `${TRAVEL_ACTIVITIES_PREFIX}/${activityId}/${variant}/${randomUUID()}-${base}.webp`;
+}
+
+export function travelSpotImageKeyFor(
+  spotId: string,
+  sourceKey: string,
+): string {
+  return `${TRAVEL_SPOTS_PREFIX}/${spotId}/${fileNameOf(sourceKey)}`;
+}
+
+export function travelSpotVariantKeyFor(
+  spotId: string,
+  variant: typeof THUMBNAILS_SEGMENT | typeof PREVIEWS_SEGMENT,
+  sourceKey: string,
+): string {
+  const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
+  return `${TRAVEL_SPOTS_PREFIX}/${spotId}/${variant}/${randomUUID()}-${base}.webp`;
 }
 
 function fileNameOf(key: string): string {

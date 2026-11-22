@@ -15,6 +15,7 @@ export interface CreateTravelActivityDto {
   from: string;
   to: string;
   placeId?: string;
+  spotId?: string;
   /** @maxLength 200 */
   location?: string;
   /** @maxLength 1000 */

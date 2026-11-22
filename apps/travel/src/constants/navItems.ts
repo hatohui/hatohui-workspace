@@ -2,6 +2,7 @@ import {
   CalendarDays,
   CalendarRange,
   Compass,
+  MapPinned,
   Plane,
   UtensilsCrossed,
   type LucideIcon,
@@ -17,6 +18,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { to: routes.overview, labelKey: 'nav.overview', icon: Compass },
   { to: routes.catalog, labelKey: 'nav.food', icon: UtensilsCrossed },
+  { to: routes.spots, labelKey: 'nav.spots', icon: MapPinned },
   { to: routes.events, labelKey: 'nav.events', icon: CalendarRange },
   { to: routes.plans, labelKey: 'nav.plans', icon: Plane },
   { to: routes.schedule, labelKey: 'nav.schedule', icon: CalendarDays },

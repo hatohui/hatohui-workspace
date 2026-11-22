@@ -31,6 +31,7 @@ import type {
   AdminUpsertTravelJobProfileDto,
   BulkCreateTravelAreasDto,
   BulkCreateTravelPlacesDto,
+  BulkCreateTravelSpotsDto,
   BulkCreateTravelTagsDto,
   CreateTravelActivityDto,
   CreateTravelCustomHolidayDto,
@@ -41,6 +42,7 @@ import type {
   CreateTravelPlaceDto,
   CreateTravelRecommendationDto,
   CreateTravelScheduleExceptionDto,
+  CreateTravelSpotDto,
   GenerateTravelDishDescriptionsDto,
   GenerateTravelDishDescriptionsResultDto,
   InviteTravelMemberDto,
@@ -50,6 +52,7 @@ import type {
   MyTravelParticipationsParams,
   PaginatedTravelDishesDto,
   PaginatedTravelPlacesDto,
+  PaginatedTravelSpotsDto,
   TransferTravelOwnershipDto,
   TravelAccessDto,
   TravelActivityDto,
@@ -95,6 +98,10 @@ import type {
   TravelRecommendationsParams,
   TravelScheduleExceptionDto,
   TravelSharePlanDto,
+  TravelSpotCategoryDto,
+  TravelSpotDto,
+  TravelSpotsPageParams,
+  TravelSpotsParams,
   TravelTagDto,
   TravelWorkScheduleDto,
   UpdateTravelActivityDto,
@@ -111,6 +118,8 @@ import type {
   UpdateTravelPlaceCategoryDto,
   UpdateTravelPlaceDto,
   UpdateTravelRecommendationDto,
+  UpdateTravelSpotCategoryDto,
+  UpdateTravelSpotDto,
   UpdateTravelTagDto,
   UpsertTravelJobProfileDto,
   UpsertTravelWorkScheduleDto
@@ -4548,6 +4557,1042 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getDeleteTravelActivityMediaMutationOptions(options), queryClient);
+    }
+    export type travelSpotsResponse200 = {
+  data: TravelSpotDto[]
+  status: 200
+}
+
+export type travelSpotsResponseSuccess = (travelSpotsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelSpotsResponse = (travelSpotsResponseSuccess)
+
+export const getTravelSpotsUrl = (params?: TravelSpotsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    const explodeParameters = ["spotCategories","tags","excludeTags"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : String(v));
+      });
+      return;
+    }
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/travel/spots?${stringifiedParams}` : `/travel/spots`
+}
+
+/**
+ * @summary Every activity spot
+ */
+export const travelSpots = async (params?: TravelSpotsParams, options?: RequestInit): Promise<travelSpotsResponse> => {
+
+  return customFetch<travelSpotsResponse>(getTravelSpotsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelSpotsQueryKey = (params?: TravelSpotsParams,) => {
+    return [
+    `/travel/spots`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getTravelSpotsQueryOptions = <TData = Awaited<ReturnType<typeof travelSpots>>, TError = unknown>(params?: TravelSpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpots>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelSpotsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelSpots>>> = ({ signal }) => travelSpots(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelSpots>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelSpotsQueryResult = NonNullable<Awaited<ReturnType<typeof travelSpots>>>
+export type TravelSpotsQueryError = unknown
+
+
+export function useTravelSpots<TData = Awaited<ReturnType<typeof travelSpots>>, TError = unknown>(
+ params: undefined |  TravelSpotsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpots>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpots>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpots>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpots<TData = Awaited<ReturnType<typeof travelSpots>>, TError = unknown>(
+ params?: TravelSpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpots>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpots>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpots>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpots<TData = Awaited<ReturnType<typeof travelSpots>>, TError = unknown>(
+ params?: TravelSpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpots>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Every activity spot
+ */
+
+export function useTravelSpots<TData = Awaited<ReturnType<typeof travelSpots>>, TError = unknown>(
+ params?: TravelSpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpots>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelSpotsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type createTravelSpotResponse200 = {
+  data: TravelSpotDto
+  status: 200
+}
+
+export type createTravelSpotResponseSuccess = (createTravelSpotResponse200) & {
+  headers: Headers;
+};
+;
+
+export type createTravelSpotResponse = (createTravelSpotResponseSuccess)
+
+export const getCreateTravelSpotUrl = () => {
+
+
+
+
+  return `/travel/spots`
+}
+
+export const createTravelSpot = async (createTravelSpotDto: CreateTravelSpotDto, options?: RequestInit): Promise<createTravelSpotResponse> => {
+
+  return customFetch<createTravelSpotResponse>(getCreateTravelSpotUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(createTravelSpotDto)
+  }
+);}
+
+
+
+
+
+export const getCreateTravelSpotMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTravelSpot>>, TError,{data: CreateTravelSpotDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createTravelSpot>>, TError,{data: CreateTravelSpotDto}, TContext> => {
+
+const mutationKey = ['createTravelSpot'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTravelSpot>>, {data: CreateTravelSpotDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createTravelSpot(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateTravelSpotMutationResult = NonNullable<Awaited<ReturnType<typeof createTravelSpot>>>
+    export type CreateTravelSpotMutationBody = CreateTravelSpotDto
+    export type CreateTravelSpotMutationError = unknown
+
+    export const useCreateTravelSpot = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTravelSpot>>, TError,{data: CreateTravelSpotDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createTravelSpot>>,
+        TError,
+        {data: CreateTravelSpotDto},
+        TContext
+      > => {
+      return useMutation(getCreateTravelSpotMutationOptions(options), queryClient);
+    }
+    export type travelSpotsPageResponse200 = {
+  data: PaginatedTravelSpotsDto
+  status: 200
+}
+
+export type travelSpotsPageResponseSuccess = (travelSpotsPageResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelSpotsPageResponse = (travelSpotsPageResponseSuccess)
+
+export const getTravelSpotsPageUrl = (params?: TravelSpotsPageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    const explodeParameters = ["spotCategories","tags","excludeTags"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : String(v));
+      });
+      return;
+    }
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/travel/spots/page?${stringifiedParams}` : `/travel/spots/page`
+}
+
+/**
+ * @summary Paginated activity spots
+ */
+export const travelSpotsPage = async (params?: TravelSpotsPageParams, options?: RequestInit): Promise<travelSpotsPageResponse> => {
+
+  return customFetch<travelSpotsPageResponse>(getTravelSpotsPageUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelSpotsPageQueryKey = (params?: TravelSpotsPageParams,) => {
+    return [
+    `/travel/spots/page`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getTravelSpotsPageQueryOptions = <TData = Awaited<ReturnType<typeof travelSpotsPage>>, TError = unknown>(params?: TravelSpotsPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotsPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelSpotsPageQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelSpotsPage>>> = ({ signal }) => travelSpotsPage(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelSpotsPage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelSpotsPageQueryResult = NonNullable<Awaited<ReturnType<typeof travelSpotsPage>>>
+export type TravelSpotsPageQueryError = unknown
+
+
+export function useTravelSpotsPage<TData = Awaited<ReturnType<typeof travelSpotsPage>>, TError = unknown>(
+ params: undefined |  TravelSpotsPageParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotsPage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpotsPage>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpotsPage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpotsPage<TData = Awaited<ReturnType<typeof travelSpotsPage>>, TError = unknown>(
+ params?: TravelSpotsPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotsPage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpotsPage>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpotsPage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpotsPage<TData = Awaited<ReturnType<typeof travelSpotsPage>>, TError = unknown>(
+ params?: TravelSpotsPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotsPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Paginated activity spots
+ */
+
+export function useTravelSpotsPage<TData = Awaited<ReturnType<typeof travelSpotsPage>>, TError = unknown>(
+ params?: TravelSpotsPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotsPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelSpotsPageQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type travelSpotResponse200 = {
+  data: TravelSpotDto
+  status: 200
+}
+
+export type travelSpotResponseSuccess = (travelSpotResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelSpotResponse = (travelSpotResponseSuccess)
+
+export const getTravelSpotUrl = (id: string,) => {
+
+
+
+
+  return `/travel/spots/${id}`
+}
+
+/**
+ * @summary An activity spot with its photos, tags, and location
+ */
+export const travelSpot = async (id: string, options?: RequestInit): Promise<travelSpotResponse> => {
+
+  return customFetch<travelSpotResponse>(getTravelSpotUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelSpotQueryKey = (id: string,) => {
+    return [
+    `/travel/spots/${id}`
+    ] as const;
+    }
+
+
+export const getTravelSpotQueryOptions = <TData = Awaited<ReturnType<typeof travelSpot>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpot>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelSpotQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelSpot>>> = ({ signal }) => travelSpot(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelSpot>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelSpotQueryResult = NonNullable<Awaited<ReturnType<typeof travelSpot>>>
+export type TravelSpotQueryError = unknown
+
+
+export function useTravelSpot<TData = Awaited<ReturnType<typeof travelSpot>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpot>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpot>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpot>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpot<TData = Awaited<ReturnType<typeof travelSpot>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpot>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpot>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpot>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpot<TData = Awaited<ReturnType<typeof travelSpot>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpot>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary An activity spot with its photos, tags, and location
+ */
+
+export function useTravelSpot<TData = Awaited<ReturnType<typeof travelSpot>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpot>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelSpotQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type updateTravelSpotResponse200 = {
+  data: TravelSpotDto
+  status: 200
+}
+
+export type updateTravelSpotResponseSuccess = (updateTravelSpotResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateTravelSpotResponse = (updateTravelSpotResponseSuccess)
+
+export const getUpdateTravelSpotUrl = (id: string,) => {
+
+
+
+
+  return `/travel/spots/${id}`
+}
+
+export const updateTravelSpot = async (id: string,
+    updateTravelSpotDto: UpdateTravelSpotDto, options?: RequestInit): Promise<updateTravelSpotResponse> => {
+
+  return customFetch<updateTravelSpotResponse>(getUpdateTravelSpotUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateTravelSpotDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateTravelSpotMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelSpot>>, TError,{id: string;data: UpdateTravelSpotDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTravelSpot>>, TError,{id: string;data: UpdateTravelSpotDto}, TContext> => {
+
+const mutationKey = ['updateTravelSpot'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTravelSpot>>, {id: string;data: UpdateTravelSpotDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTravelSpot(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTravelSpotMutationResult = NonNullable<Awaited<ReturnType<typeof updateTravelSpot>>>
+    export type UpdateTravelSpotMutationBody = UpdateTravelSpotDto
+    export type UpdateTravelSpotMutationError = unknown
+
+    export const useUpdateTravelSpot = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelSpot>>, TError,{id: string;data: UpdateTravelSpotDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTravelSpot>>,
+        TError,
+        {id: string;data: UpdateTravelSpotDto},
+        TContext
+      > => {
+      return useMutation(getUpdateTravelSpotMutationOptions(options), queryClient);
+    }
+    export type deleteTravelSpotResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteTravelSpotResponseSuccess = (deleteTravelSpotResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteTravelSpotResponse = (deleteTravelSpotResponseSuccess)
+
+export const getDeleteTravelSpotUrl = (id: string,) => {
+
+
+
+
+  return `/travel/spots/${id}`
+}
+
+/**
+ * @summary Delete an activity spot and its photos
+ */
+export const deleteTravelSpot = async (id: string, options?: RequestInit): Promise<deleteTravelSpotResponse> => {
+
+  return customFetch<deleteTravelSpotResponse>(getDeleteTravelSpotUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTravelSpotMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelSpot>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTravelSpot>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteTravelSpot'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTravelSpot>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTravelSpot(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTravelSpotMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTravelSpot>>>
+
+    export type DeleteTravelSpotMutationError = unknown
+
+    /**
+ * @summary Delete an activity spot and its photos
+ */
+export const useDeleteTravelSpot = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelSpot>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTravelSpot>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteTravelSpotMutationOptions(options), queryClient);
+    }
+    export type bulkCreateTravelSpotsResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelSpotsResponseSuccess = (bulkCreateTravelSpotsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelSpotsResponse = (bulkCreateTravelSpotsResponseSuccess)
+
+export const getBulkCreateTravelSpotsUrl = () => {
+
+
+
+
+  return `/travel/spots/bulk`
+}
+
+/**
+ * @summary Add several activity spots by name or Google Maps link
+ */
+export const bulkCreateTravelSpots = async (bulkCreateTravelSpotsDto: BulkCreateTravelSpotsDto, options?: RequestInit): Promise<bulkCreateTravelSpotsResponse> => {
+
+  return customFetch<bulkCreateTravelSpotsResponse>(getBulkCreateTravelSpotsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(bulkCreateTravelSpotsDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelSpotsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelSpots>>, TError,{data: BulkCreateTravelSpotsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelSpots>>, TError,{data: BulkCreateTravelSpotsDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelSpots'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelSpots>>, {data: BulkCreateTravelSpotsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelSpots(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelSpotsMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelSpots>>>
+    export type BulkCreateTravelSpotsMutationBody = BulkCreateTravelSpotsDto
+    export type BulkCreateTravelSpotsMutationError = unknown
+
+    /**
+ * @summary Add several activity spots by name or Google Maps link
+ */
+export const useBulkCreateTravelSpots = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelSpots>>, TError,{data: BulkCreateTravelSpotsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelSpots>>,
+        TError,
+        {data: BulkCreateTravelSpotsDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelSpotsMutationOptions(options), queryClient);
+    }
+    export type travelSpotCategoriesResponse200 = {
+  data: TravelSpotCategoryDto[]
+  status: 200
+}
+
+export type travelSpotCategoriesResponseSuccess = (travelSpotCategoriesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelSpotCategoriesResponse = (travelSpotCategoriesResponseSuccess)
+
+export const getTravelSpotCategoriesUrl = () => {
+
+
+
+
+  return `/travel/spot-categories`
+}
+
+/**
+ * @summary Every spot category, for suggestions and filters
+ */
+export const travelSpotCategories = async ( options?: RequestInit): Promise<travelSpotCategoriesResponse> => {
+
+  return customFetch<travelSpotCategoriesResponse>(getTravelSpotCategoriesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelSpotCategoriesQueryKey = () => {
+    return [
+    `/travel/spot-categories`
+    ] as const;
+    }
+
+
+export const getTravelSpotCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof travelSpotCategories>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotCategories>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelSpotCategoriesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelSpotCategories>>> = ({ signal }) => travelSpotCategories({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelSpotCategories>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelSpotCategoriesQueryResult = NonNullable<Awaited<ReturnType<typeof travelSpotCategories>>>
+export type TravelSpotCategoriesQueryError = unknown
+
+
+export function useTravelSpotCategories<TData = Awaited<ReturnType<typeof travelSpotCategories>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotCategories>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpotCategories>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpotCategories>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpotCategories<TData = Awaited<ReturnType<typeof travelSpotCategories>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotCategories>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelSpotCategories>>,
+          TError,
+          Awaited<ReturnType<typeof travelSpotCategories>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelSpotCategories<TData = Awaited<ReturnType<typeof travelSpotCategories>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotCategories>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Every spot category, for suggestions and filters
+ */
+
+export function useTravelSpotCategories<TData = Awaited<ReturnType<typeof travelSpotCategories>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelSpotCategories>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelSpotCategoriesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type bulkCreateTravelSpotCategoriesResponse200 = {
+  data: TravelBulkResultDto
+  status: 200
+}
+
+export type bulkCreateTravelSpotCategoriesResponseSuccess = (bulkCreateTravelSpotCategoriesResponse200) & {
+  headers: Headers;
+};
+;
+
+export type bulkCreateTravelSpotCategoriesResponse = (bulkCreateTravelSpotCategoriesResponseSuccess)
+
+export const getBulkCreateTravelSpotCategoriesUrl = () => {
+
+
+
+
+  return `/travel/spot-categories/bulk`
+}
+
+/**
+ * @summary Add several spot categories by name
+ */
+export const bulkCreateTravelSpotCategories = async (travelBulkNamesDto: TravelBulkNamesDto, options?: RequestInit): Promise<bulkCreateTravelSpotCategoriesResponse> => {
+
+  return customFetch<bulkCreateTravelSpotCategoriesResponse>(getBulkCreateTravelSpotCategoriesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(travelBulkNamesDto)
+  }
+);}
+
+
+
+
+
+export const getBulkCreateTravelSpotCategoriesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelSpotCategories>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelSpotCategories>>, TError,{data: TravelBulkNamesDto}, TContext> => {
+
+const mutationKey = ['bulkCreateTravelSpotCategories'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof bulkCreateTravelSpotCategories>>, {data: TravelBulkNamesDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  bulkCreateTravelSpotCategories(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BulkCreateTravelSpotCategoriesMutationResult = NonNullable<Awaited<ReturnType<typeof bulkCreateTravelSpotCategories>>>
+    export type BulkCreateTravelSpotCategoriesMutationBody = TravelBulkNamesDto
+    export type BulkCreateTravelSpotCategoriesMutationError = unknown
+
+    /**
+ * @summary Add several spot categories by name
+ */
+export const useBulkCreateTravelSpotCategories = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof bulkCreateTravelSpotCategories>>, TError,{data: TravelBulkNamesDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof bulkCreateTravelSpotCategories>>,
+        TError,
+        {data: TravelBulkNamesDto},
+        TContext
+      > => {
+      return useMutation(getBulkCreateTravelSpotCategoriesMutationOptions(options), queryClient);
+    }
+    export type updateTravelSpotCategoryResponse200 = {
+  data: TravelSpotCategoryDto
+  status: 200
+}
+
+export type updateTravelSpotCategoryResponseSuccess = (updateTravelSpotCategoryResponse200) & {
+  headers: Headers;
+};
+;
+
+export type updateTravelSpotCategoryResponse = (updateTravelSpotCategoryResponseSuccess)
+
+export const getUpdateTravelSpotCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/travel/spot-categories/${id}`
+}
+
+export const updateTravelSpotCategory = async (id: string,
+    updateTravelSpotCategoryDto: UpdateTravelSpotCategoryDto, options?: RequestInit): Promise<updateTravelSpotCategoryResponse> => {
+
+  return customFetch<updateTravelSpotCategoryResponse>(getUpdateTravelSpotCategoryUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateTravelSpotCategoryDto)
+  }
+);}
+
+
+
+
+
+export const getUpdateTravelSpotCategoryMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelSpotCategory>>, TError,{id: string;data: UpdateTravelSpotCategoryDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTravelSpotCategory>>, TError,{id: string;data: UpdateTravelSpotCategoryDto}, TContext> => {
+
+const mutationKey = ['updateTravelSpotCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTravelSpotCategory>>, {id: string;data: UpdateTravelSpotCategoryDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTravelSpotCategory(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTravelSpotCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof updateTravelSpotCategory>>>
+    export type UpdateTravelSpotCategoryMutationBody = UpdateTravelSpotCategoryDto
+    export type UpdateTravelSpotCategoryMutationError = unknown
+
+    export const useUpdateTravelSpotCategory = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTravelSpotCategory>>, TError,{id: string;data: UpdateTravelSpotCategoryDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTravelSpotCategory>>,
+        TError,
+        {id: string;data: UpdateTravelSpotCategoryDto},
+        TContext
+      > => {
+      return useMutation(getUpdateTravelSpotCategoryMutationOptions(options), queryClient);
+    }
+    export type deleteTravelSpotCategoryResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteTravelSpotCategoryResponseSuccess = (deleteTravelSpotCategoryResponse204) & {
+  headers: Headers;
+};
+;
+
+export type deleteTravelSpotCategoryResponse = (deleteTravelSpotCategoryResponseSuccess)
+
+export const getDeleteTravelSpotCategoryUrl = (id: string,) => {
+
+
+
+
+  return `/travel/spot-categories/${id}`
+}
+
+/**
+ * @summary Delete a spot category; spots keep their other categories
+ */
+export const deleteTravelSpotCategory = async (id: string, options?: RequestInit): Promise<deleteTravelSpotCategoryResponse> => {
+
+  return customFetch<deleteTravelSpotCategoryResponse>(getDeleteTravelSpotCategoryUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTravelSpotCategoryMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelSpotCategory>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTravelSpotCategory>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteTravelSpotCategory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTravelSpotCategory>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTravelSpotCategory(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTravelSpotCategoryMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTravelSpotCategory>>>
+
+    export type DeleteTravelSpotCategoryMutationError = unknown
+
+    /**
+ * @summary Delete a spot category; spots keep their other categories
+ */
+export const useDeleteTravelSpotCategory = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTravelSpotCategory>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTravelSpotCategory>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteTravelSpotCategoryMutationOptions(options), queryClient);
     }
     export type travelCountriesResponse200 = {
   data: TravelCountryDto[]

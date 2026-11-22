@@ -2,6 +2,7 @@
   "brand": "トラベル",
   "nav": {
     "food": "グルメ",
+    "spots": "スポット",
     "admin": "管理",
     "quickMenu": "クイックメニュー"
   },
@@ -143,6 +144,8 @@
     "foodCategoriesPlaceholder": "コーヒー、麺類、デザート…",
     "placeCategories": "お店カテゴリー",
     "placeCategoriesPlaceholder": "ビュッフェ、セルフサービス、セルフ選択…",
+    "spotCategories": "スポットカテゴリー",
+    "spotCategoriesPlaceholder": "美術館、公園、ナイトライフ、ショッピング…",
     "categoryCreate": "「{{tag}}」を追加",
     "categoryRemove": "{{tag}} を削除"
   },
@@ -190,6 +193,31 @@
     "deleteDescription": "{{name}} とそこでのおすすめがすべて削除されます。",
     "mapTitle": "{{name}} の地図"
   },
+  "spots": {
+    "back": "スポット一覧",
+    "title": "アクティビティスポット",
+    "subtitle": "訪れるべきおすすめの場所・観光・遊び場。",
+    "searchPlaceholder": "スポット、カテゴリー、タグ、都市を検索",
+    "add": "スポットを追加",
+    "createTitle": "スポットを追加",
+    "editTitle": "スポットを編集",
+    "name": "スポット名",
+    "namePlaceholder": "ベンタイン市場",
+    "address": "住所",
+    "addressPlaceholder": "住所または目印",
+    "note": "メモ・ポイント",
+    "notePlaceholder": "おすすめの時間帯、チケット情報、見どころ",
+    "empty": "まだスポットがありません。",
+    "emptyFiltered": "条件に合うスポットがありません。",
+    "spotTotal_one": "{{count}} スポット",
+    "spotTotal_other": "{{count}} スポット",
+    "noLocation": "場所未登録",
+    "pinnedOnMap": "地図にピン留め済み",
+    "deleteTitle": "このスポットを削除しますか？",
+    "deleteDescription": "{{name}} とその写真が削除されます。",
+    "mapTitle": "{{name}} の地図",
+    "popular": "写真が多い順"
+  },
   "notFound": {
     "title": "ページが見つかりません",
     "back": "グルメカタログに戻る"
@@ -229,6 +257,7 @@
     "title": "絞り込み",
     "foodCategories": "料理カテゴリー",
     "placeCategories": "お店カテゴリー",
+    "spotCategories": "スポットカテゴリー",
     "special": "特徴",
     "specialHint": "1回で含める・2回で除外",
     "stateIncluded": "{{label}} を含む（クリックで除外）",
@@ -249,6 +278,7 @@
     "code": "コード",
     "areas": "エリア",
     "places": "お店",
+    "spots": "スポット",
     "dishes": "料理",
     "kind": "種類",
     "uses": "使用数",
@@ -260,6 +290,8 @@
       "foodCategories": "料理カテゴリー",
       "places": "お店",
       "placeCategories": "お店カテゴリー",
+      "spots": "スポット",
+      "spotCategories": "スポットカテゴリー",
       "cuisines": "ジャンル",
       "tags": "タグ"
     },
@@ -274,6 +306,8 @@
     "addFoodCategories": "料理カテゴリーを追加（カンマ区切り）",
     "addPlaces": "お店または Google マップのリンクを追加（カンマ区切り）",
     "addPlaceCategories": "お店カテゴリーを追加（カンマ区切り）",
+    "addSpots": "スポットまたは Google マップのリンクを追加（カンマ区切り）",
+    "addSpotCategories": "スポットカテゴリーを追加（カンマ区切り）",
     "addCuisines": "ジャンルを追加（カンマ区切り）",
     "addTags": "タグを追加（カンマ区切り）",
     "bulkResult": "{{created}} 件追加、{{skipped}} 件スキップ",
@@ -284,6 +318,8 @@
     "deleteFoodCategory": "料理からこのカテゴリーが外れます。",
     "deletePlace": "このお店のおすすめと写真がすべて削除されます。",
     "deletePlaceCategory": "お店からこのカテゴリーが外れます。",
+    "deleteSpot": "このスポットと写真がすべて削除されます。",
+    "deleteSpotCategory": "スポットからこのカテゴリーが外れます。",
     "deleteCuisine": "料理からこのジャンルが外れます。",
     "deleteTag": "おすすめからこのタグが外れます。",
     "searchPlaceholder": "行を検索",
@@ -340,5 +376,15 @@
   "overview": {
     "browseFoodTitle": "料理とお店を探す",
     "browseFoodBody": "料理から食べられるお店を、お店から頼むべき料理を探そう。"
+  },
+  "plans": {
+    "timeline": {
+      "form": {
+        "place": "保存済みスポットまたは飲食店（任意）",
+        "noPlace": "カスタム場所",
+        "spotGroup": "アクティビティスポット",
+        "foodPlaceGroup": "飲食店"
+      }
+    }
   }
 }
