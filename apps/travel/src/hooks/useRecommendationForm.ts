@@ -9,11 +9,13 @@ import { useTravelLocation } from './useTravelLocation';
 export function useRecommendationForm(
   existing: TravelRecommendationDto | undefined,
   onSaved: () => void,
+  initialDishName?: string,
 ) {
   const location = useTravelLocation();
   const { fields, set, toggle } = useRecommendationFields(
     existing,
     location.area?.id,
+    initialDishName,
   );
   const photos = usePhotoList(existing?.images ?? []);
   const matches = useCatalogMatches(fields.dishName, fields.placeName);

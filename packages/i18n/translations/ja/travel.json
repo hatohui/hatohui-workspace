@@ -132,7 +132,15 @@
     "name": "名前",
     "description": "説明",
     "deleteTitle": "この料理を削除しますか？",
-    "deleteDescription": "{{name}} とそのおすすめがすべて削除されます。"
+    "deleteDescription": "{{name}} とそのおすすめがすべて削除されます。",
+    "country": "国",
+    "noCountry": "国なし",
+    "placesHere_one": "ここに {{count}} 店",
+    "placesHere_other": "ここに {{count}} 店",
+    "notFoundHere": "このエリアではまだ見つかっていません",
+    "noPlacesYet": "まだお店がありません",
+    "noPlacesBody": "この料理を出すお店はまだ登録されていません。",
+    "addPlace": "お店を追加"
   },
   "places": {
     "back": "お店一覧",

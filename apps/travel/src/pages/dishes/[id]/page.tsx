@@ -1,5 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import { ErrorState } from '@hatohui/ui';
+import AddRecommendationButton from '../../../components/catalog/AddRecommendationButton';
 import DishHeader from '../../../components/dishes/DishHeader';
 import RecommendationGrid from '../../../components/recommendation/RecommendationGrid';
 import BackLink from '../../../components/shared/BackLink';
@@ -35,7 +36,13 @@ function DishPage() {
           isLoading={false}
           isError={false}
           onRetry={() => void refetch()}
-          emptyMessage={t('catalog.empty')}
+          emptyMessage={t('dishes.noPlacesBody')}
+          emptyAction={
+            <AddRecommendationButton
+              dishName={dish.name}
+              labelKey="dishes.addPlace"
+            />
+          }
         />
       </section>
     </div>

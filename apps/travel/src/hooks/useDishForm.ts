@@ -2,6 +2,7 @@ import {
   getTravelDishesQueryKey,
   getTravelDishQueryKey,
   updateTravelDish,
+  useTravelCountries,
   type TravelDishDto,
 } from '@hatohui/models';
 import { useDishPhoto } from './useDishPhoto';
@@ -11,6 +12,7 @@ import { useOptimisticEntityPatch } from './useOptimisticEntityPatch';
 const DISHES_LIST_KEY = getTravelDishesQueryKey();
 
 export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
+  const countries = useTravelCountries().data?.data ?? [];
   const photo = useDishPhoto(dish.imageKey, dish.thumbnailUrl ?? dish.imageUrl);
   const patch = useOptimisticEntityPatch<TravelDishDto>(
     getTravelDishQueryKey(dish.id),
@@ -22,6 +24,7 @@ export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
       name: dish.name,
       cuisines: dish.cuisines,
       description: dish.description ?? '',
+      countryId: dish.country?.id ?? '',
     },
     async (data) => {
       const result = await photo.uploadPending();
@@ -29,6 +32,7 @@ export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
       await updateTravelDish(dish.id, {
         ...data,
         name: data.name.trim(),
+        countryId: data.countryId || null,
         imageKey: result.imageKey,
       });
     },
@@ -38,6 +42,7 @@ export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
         name: data.name.trim(),
         cuisines: data.cuisines,
         description: data.description || null,
+        country: countries.find((c) => c.id === data.countryId) ?? null,
         ...(photo.isChanged && {
           imageUrl: photo.previewUrl,
           thumbnailUrl: photo.previewUrl,

@@ -132,7 +132,15 @@
     "name": "名称",
     "description": "描述",
     "deleteTitle": "删除这道菜？",
-    "deleteDescription": "{{name}} 及其所有推荐将被删除。"
+    "deleteDescription": "{{name}} 及其所有推荐将被删除。",
+    "country": "国家",
+    "noCountry": "无国家",
+    "placesHere_one": "此地 {{count}} 家店",
+    "placesHere_other": "此地 {{count}} 家店",
+    "notFoundHere": "此地暂未找到",
+    "noPlacesYet": "暂无店铺",
+    "noPlacesBody": "还没有人为这道菜添加店铺。",
+    "addPlace": "添加店铺"
   },
   "places": {
     "back": "全部地点",

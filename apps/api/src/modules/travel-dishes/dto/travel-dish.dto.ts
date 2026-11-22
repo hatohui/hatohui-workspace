@@ -19,6 +19,14 @@ import {
   TravelRecommendationDto,
 } from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
 
+export class TravelDishCountryDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty({ example: 'Vietnam' })
+  name!: string;
+}
+
 export class TravelDishDto {
   @ApiProperty()
   id!: string;
@@ -40,6 +48,17 @@ export class TravelDishDto {
 
   @ApiProperty({ description: 'Places recommended for this dish' })
   placeCount!: number;
+
+  @ApiProperty({
+    nullable: true,
+    type: Number,
+    description:
+      'Places in the requested area or country; null when no location was given',
+  })
+  localPlaceCount!: number | null;
+
+  @ApiProperty({ type: TravelDishCountryDto, nullable: true })
+  country!: TravelDishCountryDto | null;
 
   @ApiProperty({ nullable: true, type: String })
   imageKey!: string | null;
@@ -93,6 +112,16 @@ export class CreateTravelDishDto {
   @IsString()
   @MaxLength(TRAVEL_NOTE_MAX_LENGTH)
   description?: string;
+
+  @ApiProperty({
+    required: false,
+    nullable: true,
+    type: String,
+    description: 'Home country of the dish, or null to clear',
+  })
+  @IsOptional()
+  @IsString()
+  countryId?: string | null;
 
   @ApiProperty({
     required: false,
@@ -181,12 +210,20 @@ export class TravelDishQueryDto {
   @IsString({ each: true })
   tags?: string[];
 
-  @ApiProperty({ required: false, description: 'Only places in this area' })
+  @ApiProperty({
+    required: false,
+    description:
+      "Dishes from this area's country or served in this area, sorted by local availability",
+  })
   @IsOptional()
   @IsString()
   areaId?: string;
 
-  @ApiProperty({ required: false, description: 'Only places in this country' })
+  @ApiProperty({
+    required: false,
+    description:
+      'Dishes from this country or served in it, sorted by local availability',
+  })
   @IsOptional()
   @IsString()
   countryId?: string;

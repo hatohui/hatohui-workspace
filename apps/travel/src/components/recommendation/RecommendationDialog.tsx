@@ -6,13 +6,19 @@ import RecommendationForm from './RecommendationForm';
 interface Props {
   state: ReturnType<typeof useDialogState>;
   recommendation?: TravelRecommendationDto;
+  initialDishName?: string;
 }
 
-function RecommendationDialog({ state, recommendation }: Props) {
+function RecommendationDialog({
+  state,
+  recommendation,
+  initialDishName,
+}: Props) {
   return (
     <FormDialog open={state.open} onOpenChange={state.setOpen} wide>
       <RecommendationForm
         recommendation={recommendation}
+        initialDishName={initialDishName}
         onClose={state.close}
       />
     </FormDialog>

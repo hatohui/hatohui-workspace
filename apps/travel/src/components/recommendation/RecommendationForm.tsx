@@ -11,12 +11,17 @@ import TagFields from './TagFields';
 
 interface Props {
   recommendation?: TravelRecommendationDto;
+  initialDishName?: string;
   onClose: () => void;
 }
 
-function RecommendationForm({ recommendation, onClose }: Props) {
+function RecommendationForm({
+  recommendation,
+  initialDishName,
+  onClose,
+}: Props) {
   const { t } = useTranslation();
-  const form = useRecommendationForm(recommendation, onClose);
+  const form = useRecommendationForm(recommendation, onClose, initialDishName);
 
   return (
     <DialogForm

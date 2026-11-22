@@ -3,6 +3,7 @@ import {
   getTravelDishesQueryKey,
   useBulkCreateTravelDishes,
   useDeleteTravelDish,
+  useTravelCountries,
   useTravelDishes,
   useUpdateTravelDish,
   type TravelDishDto,
@@ -19,6 +20,7 @@ export interface DishRow {
   id: string;
   name: string;
   cuisines: string;
+  countryId: string;
   description: string;
   placeCount: number;
   createdAt: string;
@@ -38,11 +40,18 @@ export function useAdminDishes() {
   const bulk = useBulkCreateTravelDishes();
   const suggestions = useCuisineSuggestions();
   const { run, runBulk } = useAdminAction();
+  const countries = useTravelCountries().data?.data ?? [];
+  const countryOptions = [
+    { value: '', label: t('dishes.noCountry') },
+    ...countries.map((c) => ({ value: c.id, label: c.name })),
+  ];
+  const countryOf = (id: string) => countries.find((c) => c.id === id) ?? null;
 
   const rows: DishRow[] = (query.data?.data ?? []).map((dish) => ({
     id: dish.id,
     name: dish.name,
     cuisines: dish.cuisines.join(`${CUISINE_LIST_SEPARATOR} `),
+    countryId: dish.country?.id ?? '',
     description: dish.description ?? '',
     placeCount: dish.placeCount,
     createdAt: dish.createdAt,
@@ -67,6 +76,15 @@ export function useAdminDishes() {
       createLabel: (tag) => t('form.cuisineCreate', { tag }),
       removeLabel: (tag) => t('form.cuisineRemove', { tag }),
       size: 200,
+    },
+    {
+      key: 'countryId',
+      label: t('dishes.country'),
+      editable: true,
+      sortable: true,
+      options: countryOptions,
+      render: (row) => countryOf(row.countryId)?.name ?? '',
+      size: 150,
     },
     {
       key: 'description',
@@ -100,7 +118,9 @@ export function useAdminDishes() {
           data:
             key === 'cuisines'
               ? { cuisines: toCuisineList(value) }
-              : { [key]: value },
+              : key === 'countryId'
+                ? { countryId: value || null }
+                : { [key]: value },
         }),
       {
         queryKey: dishesQueryKey,
@@ -112,7 +132,9 @@ export function useAdminDishes() {
                   ...dish,
                   ...(key === 'cuisines'
                     ? { cuisines: toCuisineList(value) }
-                    : { [key]: value }),
+                    : key === 'countryId'
+                      ? { country: countryOf(value) }
+                      : { [key]: value }),
                 }
               : dish,
           ),

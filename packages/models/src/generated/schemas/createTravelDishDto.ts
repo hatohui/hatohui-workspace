@@ -17,6 +17,11 @@ export interface CreateTravelDishDto {
   /** @maxLength 2000 */
   description?: string;
   /**
+     * Home country of the dish, or null to clear
+     * @nullable
+     */
+  countryId?: string | null;
+  /**
      * Staged upload key, existing key, or null to clear
      * @nullable
      */

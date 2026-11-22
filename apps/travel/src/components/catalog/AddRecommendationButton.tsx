@@ -5,7 +5,15 @@ import { useCanEdit } from '../../hooks/useCanEdit';
 import { useDialogState } from '../../hooks/useDialogState';
 import RecommendationDialog from '../recommendation/RecommendationDialog';
 
-function AddRecommendationButton() {
+interface Props {
+  dishName?: string;
+  labelKey?: string;
+}
+
+function AddRecommendationButton({
+  dishName,
+  labelKey = 'catalog.add',
+}: Props) {
   const { t } = useTranslation();
   const canEdit = useCanEdit();
   const dialog = useDialogState();
@@ -19,9 +27,13 @@ function AddRecommendationButton() {
         onClick={dialog.show}
       >
         <Plus />
-        {t('catalog.add')}
+        {t(labelKey)}
       </Button>
-      <RecommendationDialog key={dialog.version} state={dialog} />
+      <RecommendationDialog
+        key={dialog.version}
+        state={dialog}
+        initialDishName={dishName}
+      />
     </>
   );
 }
