@@ -909,11 +909,12 @@ enum TravelTagKind {
 }
 
 model TravelTag {
-  id       String        @id @default(cuid())
-  key      String        @unique
-  name     String?
-  kind     TravelTagKind
-  position Int
+  id        String        @id @default(cuid())
+  key       String        @unique
+  name      String?
+  kind      TravelTagKind
+  position  Int
+  createdAt DateTime      @default(now())
 
   recommendations TravelRecommendation[]
 

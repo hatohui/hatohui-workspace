@@ -264,6 +264,7 @@ export class TravelDishesService {
       coverImageUrl:
         imageUrl ?? (recCover ? this.storage.getPublicUrl(recCover.key) : null),
       createdBy: toTravelCreatorDto(row.createdBy),
+      createdAt: row.createdAt,
     };
   }
 

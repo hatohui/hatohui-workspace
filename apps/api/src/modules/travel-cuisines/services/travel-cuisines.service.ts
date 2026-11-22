@@ -13,6 +13,7 @@ import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names
 const cuisineSelect = {
   id: true,
   name: true,
+  createdAt: true,
   _count: { select: { dishes: true } },
 } satisfies Prisma.TravelCuisineSelect;
 
@@ -105,6 +106,11 @@ export class TravelCuisinesService {
   }
 
   private toDto(row: CuisineRow): TravelCuisineDto {
-    return { id: row.id, name: row.name, dishCount: row._count.dishes };
+    return {
+      id: row.id,
+      name: row.name,
+      dishCount: row._count.dishes,
+      createdAt: row.createdAt,
+    };
   }
 }

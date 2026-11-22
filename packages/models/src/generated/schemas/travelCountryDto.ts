@@ -15,4 +15,5 @@ export interface TravelCountryDto {
   /** Places across all its areas */
   placeCount: number;
   areas: TravelAreaDto[];
+  createdAt: string;
 }

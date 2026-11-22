@@ -27,6 +27,9 @@ export class TravelCountryDto {
 
   @ApiProperty({ type: TravelAreaDto, isArray: true })
   areas!: TravelAreaDto[];
+
+  @ApiProperty()
+  createdAt!: Date;
 }
 
 export class UpdateTravelCountryDto {

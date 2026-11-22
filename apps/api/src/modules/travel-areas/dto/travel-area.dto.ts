@@ -15,6 +15,9 @@ export class TravelAreaDto {
 
   @ApiProperty({ description: 'Places in this area' })
   placeCount!: number;
+
+  @ApiProperty()
+  createdAt!: Date;
 }
 
 export class BulkCreateTravelAreasDto extends TravelBulkNamesDto {

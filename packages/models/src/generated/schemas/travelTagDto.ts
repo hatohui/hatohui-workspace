@@ -18,4 +18,5 @@ export interface TravelTagDto {
   name: string | null;
   /** Recommendations using this tag */
   usageCount: number;
+  createdAt: string;
 }

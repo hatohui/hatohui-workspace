@@ -118,11 +118,11 @@ export function EditableCell({
           setEditing(true);
         }}
         className={cn(
-          'w-full cursor-pointer truncate px-3 py-2 text-left text-sm outline-none transition-colors duration-150 ease-out motion-reduce:transition-none',
+          'block h-full min-h-9 w-full cursor-pointer truncate px-3 py-2 text-left text-sm outline-none transition-colors duration-150 ease-out motion-reduce:transition-none',
           'hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
         )}
       >
-        {displayValue ?? (value || ' ')}
+        {displayValue ?? (value || '\u00a0')}
       </button>
     );
   }

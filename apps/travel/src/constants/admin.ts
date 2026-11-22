@@ -10,6 +10,8 @@ import {
 
 export const QUICK_ADD_SEPARATOR = /[,\n]/;
 export const CUISINE_LIST_SEPARATOR = ',';
+export const ADMIN_PAGE_SIZES = [20, 50, 100] as const;
+export const DEFAULT_ADMIN_PAGE_SIZE = 20;
 
 export const ADMIN_TABS = [
   'recommendations',

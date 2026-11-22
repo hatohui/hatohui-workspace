@@ -11,6 +11,9 @@ export class TravelCuisineDto {
 
   @ApiProperty({ description: 'Dishes tagged with this cuisine' })
   dishCount!: number;
+
+  @ApiProperty()
+  createdAt!: Date;
 }
 
 export class UpdateTravelCuisineDto {

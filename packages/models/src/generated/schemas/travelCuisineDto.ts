@@ -11,4 +11,5 @@ export interface TravelCuisineDto {
   name: string;
   /** Dishes tagged with this cuisine */
   dishCount: number;
+  createdAt: string;
 }

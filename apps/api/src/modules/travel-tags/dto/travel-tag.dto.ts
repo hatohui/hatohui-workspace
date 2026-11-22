@@ -30,6 +30,9 @@ export class TravelTagDto {
 
   @ApiProperty({ description: 'Recommendations using this tag' })
   usageCount!: number;
+
+  @ApiProperty()
+  createdAt!: Date;
 }
 
 export class BulkCreateTravelTagsDto extends TravelBulkNamesDto {

@@ -20,6 +20,7 @@ const tagSelect = {
   key: true,
   kind: true,
   name: true,
+  createdAt: true,
   _count: { select: { recommendations: true } },
 } satisfies Prisma.TravelTagSelect;
 
@@ -95,6 +96,7 @@ export class TravelTagsService {
       kind: row.kind,
       name: row.name,
       usageCount: row._count.recommendations,
+      createdAt: row.createdAt,
     };
   }
 }

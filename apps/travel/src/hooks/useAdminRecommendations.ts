@@ -18,8 +18,9 @@ import {
   DEFAULT_CURRENCY,
   PRICE_LEVELS,
 } from '../constants/travel';
+import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
-import { useAdminTableSearch } from './useAdminTableSearch';
+import { useAdminTableControls } from './useAdminTableControls';
 import { useRowDeletion } from './useRowDeletion';
 import { useTagOptions } from './useTagOptions';
 
@@ -34,6 +35,7 @@ export interface AdminRecommendationRow {
   price: string;
   currency: string;
   note: string;
+  createdAt: string;
   isDraft?: boolean;
 }
 
@@ -145,6 +147,7 @@ export function useAdminRecommendations() {
         price: formatPriceCell(rec),
         currency: rec.currency,
         note: rec.note ?? '',
+        createdAt: rec.createdAt,
       })),
     [items],
   );
@@ -157,6 +160,7 @@ export function useAdminRecommendations() {
         key: 'dishId',
         label: t('admin.dish'),
         editable: (row) => Boolean(row.isDraft),
+        sortable: true,
         options: dishOptions,
         render: (row) => dishNames.get(row.dishId) ?? '',
         size: 180,
@@ -165,6 +169,7 @@ export function useAdminRecommendations() {
         key: 'placeId',
         label: t('admin.place'),
         editable: (row) => Boolean(row.isDraft),
+        sortable: true,
         options: placeOptions,
         render: (row) => placeNames.get(row.placeId) ?? '',
         size: 200,
@@ -193,12 +198,14 @@ export function useAdminRecommendations() {
         key: 'price',
         label: t('form.sectionPrice'),
         editable: true,
+        sortable: true,
         size: 130,
       },
       {
         key: 'currency',
         label: t('admin.code'),
         editable: true,
+        sortable: true,
         options: CURRENCIES.map((c) => ({ value: c, label: c })),
         size: 90,
       },
@@ -206,7 +213,15 @@ export function useAdminRecommendations() {
         key: 'note',
         label: t('admin.note'),
         editable: true,
+        sortable: true,
         size: 220,
+      },
+      {
+        key: 'createdAt',
+        label: t('admin.added'),
+        sortable: true,
+        render: (row) => formatAddedDate(row.createdAt),
+        size: 130,
       },
     ],
     [
@@ -220,7 +235,10 @@ export function useAdminRecommendations() {
     ],
   );
 
-  const tableSearch = useAdminTableSearch(rows, columns);
+  const controls = useAdminTableControls(rows, columns, {
+    key: 'createdAt',
+    direction: 'desc',
+  });
   const queryKey = getTravelRecommendationsQueryKey();
 
   const deletion = useRowDeletion<AdminRecommendationRow>(
@@ -257,6 +275,7 @@ export function useAdminRecommendations() {
         price: '',
         currency: DEFAULT_CURRENCY,
         note: '',
+        createdAt: '',
         isDraft: true,
       },
     ]);
@@ -321,12 +340,21 @@ export function useAdminRecommendations() {
   };
 
   return {
-    rows: tableSearch.filteredRows,
+    rows: controls.pagedRows,
     columns,
     isLoading: query.isLoading,
-    search: tableSearch.search,
-    setSearch: tableSearch.setSearch,
-    suggestions: tableSearch.suggestions,
+    search: controls.search,
+    setSearch: controls.setSearch,
+    suggestions: controls.suggestions,
+    sortBy: controls.sortBy,
+    sortDirection: controls.sortDirection,
+    onSortChange: controls.onSortChange,
+    page: controls.page,
+    setPage: controls.setPage,
+    pageSize: controls.pageSize,
+    setPageSize: controls.setPageSize,
+    totalRows: controls.totalRows,
+    totalPages: controls.totalPages,
     deletion,
     commit,
     addRow,

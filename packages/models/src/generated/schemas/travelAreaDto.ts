@@ -12,4 +12,5 @@ export interface TravelAreaDto {
   name: string;
   /** Places in this area */
   placeCount: number;
+  createdAt: string;
 }

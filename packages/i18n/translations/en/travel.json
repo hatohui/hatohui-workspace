@@ -203,6 +203,11 @@
     "deleteCuisine": "Dishes lose this cuisine tag.",
     "deleteTag": "Recommendations lose this tag.",
     "searchPlaceholder": "Search rows",
+    "added": "Added",
+    "showing": "{{from}}–{{to}} of {{total}}",
+    "perPage": "Rows per page",
+    "previous": "Previous",
+    "next": "Next",
     "kinds": {
       "DIET": "Diet",
       "ALLERGEN": "Allergen"

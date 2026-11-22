@@ -18,12 +18,14 @@ const countrySelect = {
   id: true,
   name: true,
   code: true,
+  createdAt: true,
   areas: {
     orderBy: { name: 'asc' },
     select: {
       id: true,
       countryId: true,
       name: true,
+      createdAt: true,
       _count: { select: { places: true } },
     },
   },
@@ -101,6 +103,7 @@ export class TravelCountriesService {
       countryId: area.countryId,
       name: area.name,
       placeCount: area._count.places,
+      createdAt: area.createdAt,
     }));
     return {
       id: row.id,
@@ -108,6 +111,7 @@ export class TravelCountriesService {
       code: row.code,
       placeCount: areas.reduce((sum, area) => sum + area.placeCount, 0),
       areas,
+      createdAt: row.createdAt,
     };
   }
 }

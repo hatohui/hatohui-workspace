@@ -203,6 +203,11 @@
     "deleteCuisine": "菜品将失去这个菜系标签。",
     "deleteTag": "推荐将失去这个标签。",
     "searchPlaceholder": "搜索行",
+    "added": "添加日期",
+    "showing": "第 {{from}}–{{to}} 条，共 {{total}} 条",
+    "perPage": "每页行数",
+    "previous": "上一页",
+    "next": "下一页",
     "kinds": {
       "DIET": "饮食",
       "ALLERGEN": "过敏原"

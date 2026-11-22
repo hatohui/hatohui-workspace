@@ -23,4 +23,5 @@ export interface TravelDishDto {
   coverImageUrl: string | null;
   /** @nullable */
   createdBy: TravelCreatorDto | null;
+  createdAt: string;
 }

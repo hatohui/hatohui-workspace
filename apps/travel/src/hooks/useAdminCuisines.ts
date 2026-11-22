@@ -8,6 +8,7 @@ import {
   type TravelCuisineDto,
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
+import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useRowDeletion } from './useRowDeletion';
 
@@ -15,6 +16,7 @@ export interface CuisineRow {
   id: string;
   name: string;
   dishCount: number;
+  createdAt: string;
 }
 
 export function useAdminCuisines() {
@@ -28,8 +30,21 @@ export function useAdminCuisines() {
   const rows: CuisineRow[] = query.data?.data ?? [];
 
   const columns: EditableColumn<CuisineRow>[] = [
-    { key: 'name', label: t('admin.name'), editable: true, size: 240 },
-    { key: 'dishCount', label: t('admin.dishes'), size: 100 },
+    {
+      key: 'name',
+      label: t('admin.name'),
+      editable: true,
+      sortable: true,
+      size: 240,
+    },
+    { key: 'dishCount', label: t('admin.dishes'), sortable: true, size: 100 },
+    {
+      key: 'createdAt',
+      label: t('admin.added'),
+      sortable: true,
+      render: (row) => formatAddedDate(row.createdAt),
+      size: 130,
+    },
   ];
 
   const cuisinesQueryKey = getTravelCuisinesQueryKey();

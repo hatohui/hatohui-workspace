@@ -10,6 +10,7 @@ import {
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
 import { TAG_KINDS } from '../constants/admin';
+import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useRowDeletion } from './useRowDeletion';
 import { useTagOptions } from './useTagOptions';
@@ -20,6 +21,7 @@ export interface TagRow {
   key: string;
   kind: TravelTagKind;
   usageCount: number;
+  createdAt: string;
 }
 
 export function useAdminTags() {
@@ -37,14 +39,22 @@ export function useAdminTags() {
     key: tag.key,
     kind: tag.kind,
     usageCount: tag.usageCount,
+    createdAt: tag.createdAt,
   }));
 
   const columns: EditableColumn<TagRow>[] = [
-    { key: 'name', label: t('admin.name'), editable: true, size: 220 },
+    {
+      key: 'name',
+      label: t('admin.name'),
+      editable: true,
+      sortable: true,
+      size: 220,
+    },
     {
       key: 'kind',
       label: t('admin.kind'),
       editable: true,
+      sortable: true,
       options: TAG_KINDS.map((option) => ({
         value: option,
         label: t(`admin.kinds.${option}`),
@@ -52,8 +62,15 @@ export function useAdminTags() {
       render: (row) => t(`admin.kinds.${row.kind}`),
       size: 120,
     },
-    { key: 'key', label: t('admin.code'), size: 160 },
-    { key: 'usageCount', label: t('admin.uses'), size: 90 },
+    { key: 'key', label: t('admin.code'), sortable: true, size: 160 },
+    { key: 'usageCount', label: t('admin.uses'), sortable: true, size: 90 },
+    {
+      key: 'createdAt',
+      label: t('admin.added'),
+      sortable: true,
+      render: (row) => formatAddedDate(row.createdAt),
+      size: 130,
+    },
   ];
 
   const tagsQueryKey = getTravelTagsQueryKey();

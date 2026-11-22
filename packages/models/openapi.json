@@ -12191,13 +12191,18 @@
           "placeCount": {
             "type": "number",
             "description": "Places in this area"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "required": [
           "id",
           "countryId",
           "name",
-          "placeCount"
+          "placeCount",
+          "createdAt"
         ]
       },
       "TravelCountryDto": {
@@ -12224,6 +12229,10 @@
             "items": {
               "$ref": "#/components/schemas/TravelAreaDto"
             }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "required": [
@@ -12231,7 +12240,8 @@
           "name",
           "code",
           "placeCount",
-          "areas"
+          "areas",
+          "createdAt"
         ]
       },
       "TravelBulkNamesDto": {
@@ -12345,6 +12355,10 @@
           "usageCount": {
             "type": "number",
             "description": "Recommendations using this tag"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "required": [
@@ -12352,7 +12366,8 @@
           "key",
           "kind",
           "name",
-          "usageCount"
+          "usageCount",
+          "createdAt"
         ]
       },
       "BulkCreateTravelTagsDto": {
@@ -12408,12 +12423,17 @@
           "dishCount": {
             "type": "number",
             "description": "Dishes tagged with this cuisine"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "required": [
           "id",
           "name",
-          "dishCount"
+          "dishCount",
+          "createdAt"
         ]
       },
       "UpdateTravelCuisineDto": {
@@ -12935,6 +12955,10 @@
                 "$ref": "#/components/schemas/TravelCreatorDto"
               }
             ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "required": [
@@ -12946,7 +12970,8 @@
           "imageKey",
           "imageUrl",
           "coverImageUrl",
-          "createdBy"
+          "createdBy",
+          "createdAt"
         ]
       },
       "TravelDishDetailDto": {
@@ -12997,6 +13022,10 @@
               }
             ]
           },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
           "recommendations": {
             "type": "array",
             "items": {
@@ -13014,6 +13043,7 @@
           "imageUrl",
           "coverImageUrl",
           "createdBy",
+          "createdAt",
           "recommendations"
         ]
       },

@@ -17,6 +17,7 @@ const areaSelect = {
   id: true,
   countryId: true,
   name: true,
+  createdAt: true,
   _count: { select: { places: true } },
 } as const;
 
@@ -58,6 +59,7 @@ export class TravelAreasService {
         countryId: row.countryId,
         name: row.name,
         placeCount: row._count.places,
+        createdAt: row.createdAt,
       };
     } catch (error) {
       throw translatePrismaError(error, ERRORS);

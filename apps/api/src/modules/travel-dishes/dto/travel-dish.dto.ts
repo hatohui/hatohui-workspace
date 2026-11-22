@@ -46,6 +46,9 @@ export class TravelDishDto {
 
   @ApiProperty({ type: TravelCreatorDto, nullable: true })
   createdBy!: TravelCreatorDto | null;
+
+  @ApiProperty()
+  createdAt!: Date;
 }
 
 export class TravelDishDetailDto extends TravelDishDto {

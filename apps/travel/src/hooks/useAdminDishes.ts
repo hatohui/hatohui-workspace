@@ -10,6 +10,7 @@ import {
 import type { EditableColumn } from '@hatohui/ui';
 import { CUISINE_LIST_SEPARATOR } from '../constants/admin';
 import { MAX_CUISINES } from '../constants/travel';
+import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useCuisineSuggestions } from './useCuisineSuggestions';
 import { useRowDeletion } from './useRowDeletion';
@@ -20,6 +21,7 @@ export interface DishRow {
   cuisines: string;
   description: string;
   placeCount: number;
+  createdAt: string;
 }
 
 const toCuisineList = (value: string) =>
@@ -43,14 +45,22 @@ export function useAdminDishes() {
     cuisines: dish.cuisines.join(`${CUISINE_LIST_SEPARATOR} `),
     description: dish.description ?? '',
     placeCount: dish.placeCount,
+    createdAt: dish.createdAt,
   }));
 
   const columns: EditableColumn<DishRow>[] = [
-    { key: 'name', label: t('admin.name'), editable: true, size: 200 },
+    {
+      key: 'name',
+      label: t('admin.name'),
+      editable: true,
+      sortable: true,
+      size: 200,
+    },
     {
       key: 'cuisines',
       label: t('form.cuisines'),
       editable: true,
+      sortable: true,
       suggestions,
       maxTags: MAX_CUISINES,
       selectPlaceholder: t('form.cuisinesPlaceholder'),
@@ -62,9 +72,22 @@ export function useAdminDishes() {
       key: 'description',
       label: t('dishes.description'),
       editable: true,
+      sortable: true,
       size: 280,
     },
-    { key: 'placeCount', label: t('admin.places'), size: 90 },
+    {
+      key: 'placeCount',
+      label: t('admin.places'),
+      sortable: true,
+      size: 90,
+    },
+    {
+      key: 'createdAt',
+      label: t('admin.added'),
+      sortable: true,
+      render: (row) => formatAddedDate(row.createdAt),
+      size: 130,
+    },
   ];
 
   const dishesQueryKey = getTravelDishesQueryKey();

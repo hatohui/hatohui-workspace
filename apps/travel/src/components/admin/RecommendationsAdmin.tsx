@@ -3,6 +3,7 @@ import { EditableDataTable, Skeleton } from '@hatohui/ui';
 import { useAdminRecommendations } from '../../hooks/useAdminRecommendations';
 import SearchField from '../shared/SearchField';
 import DeleteRowDialog from './DeleteRowDialog';
+import TablePagination from './TablePagination';
 
 function RecommendationsAdmin() {
   const { t } = useTranslation();
@@ -19,16 +20,29 @@ function RecommendationsAdmin() {
       {admin.isLoading ? (
         <Skeleton className="h-48 w-full" />
       ) : (
-        <EditableDataTable
-          storageKey="travel-admin-recommendations"
-          columns={admin.columns}
-          rows={admin.rows}
-          onCommit={admin.commit}
-          onAddRow={admin.addRow}
-          addRowLabel={t('catalog.add')}
-          onDeleteRow={admin.deletion.request}
-          deleteRowLabel={t('recommendation.delete')}
-        />
+        <>
+          <EditableDataTable
+            storageKey="travel-admin-recommendations"
+            columns={admin.columns}
+            rows={admin.rows}
+            sortBy={admin.sortBy}
+            sortDirection={admin.sortDirection}
+            onSortChange={admin.onSortChange}
+            onCommit={admin.commit}
+            onAddRow={admin.addRow}
+            addRowLabel={t('catalog.add')}
+            onDeleteRow={admin.deletion.request}
+            deleteRowLabel={t('recommendation.delete')}
+          />
+          <TablePagination
+            page={admin.page}
+            pageSize={admin.pageSize}
+            totalRows={admin.totalRows}
+            totalPages={admin.totalPages}
+            onPageChange={admin.setPage}
+            onPageSizeChange={admin.setPageSize}
+          />
+        </>
       )}
       <DeleteRowDialog
         name={admin.deletion.pending?.name ?? null}

@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { EditableDataTable, Skeleton, type EditableColumn } from '@hatohui/ui';
-import { useAdminTableSearch } from '../../hooks/useAdminTableSearch';
+import { useAdminTableControls } from '../../hooks/useAdminTableControls';
 import type { useRowDeletion } from '../../hooks/useRowDeletion';
 import SearchField from '../shared/SearchField';
 import DeleteRowDialog from './DeleteRowDialog';
 import QuickAddBar from './QuickAddBar';
+import TablePagination from './TablePagination';
 
 interface Props<T extends { id: string; name: string }> {
   storageKey: string;
@@ -22,7 +23,7 @@ interface Props<T extends { id: string; name: string }> {
 
 function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
   const { t } = useTranslation();
-  const tableSearch = useAdminTableSearch(props.rows, props.columns);
+  const controls = useAdminTableControls(props.rows, props.columns);
 
   return (
     <div className="space-y-4">
@@ -30,22 +31,35 @@ function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
         {props.addControls}
       </QuickAddBar>
       <SearchField
-        value={tableSearch.search}
+        value={controls.search}
         placeholder={t('admin.searchPlaceholder')}
-        onChange={tableSearch.setSearch}
-        suggestions={tableSearch.suggestions}
+        onChange={controls.setSearch}
+        suggestions={controls.suggestions}
       />
       {props.isLoading ? (
         <Skeleton className="h-48 w-full" />
       ) : (
-        <EditableDataTable
-          storageKey={props.storageKey}
-          columns={props.columns}
-          rows={tableSearch.filteredRows}
-          onCommit={props.commit}
-          onDeleteRow={props.deletion.request}
-          deleteRowLabel={t('recommendation.delete')}
-        />
+        <>
+          <EditableDataTable
+            storageKey={props.storageKey}
+            columns={props.columns}
+            rows={controls.pagedRows}
+            sortBy={controls.sortBy}
+            sortDirection={controls.sortDirection}
+            onSortChange={controls.onSortChange}
+            onCommit={props.commit}
+            onDeleteRow={props.deletion.request}
+            deleteRowLabel={t('recommendation.delete')}
+          />
+          <TablePagination
+            page={controls.page}
+            pageSize={controls.pageSize}
+            totalRows={controls.totalRows}
+            totalPages={controls.totalPages}
+            onPageChange={controls.setPage}
+            onPageSizeChange={controls.setPageSize}
+          />
+        </>
       )}
       <DeleteRowDialog
         name={props.deletion.pending?.name ?? null}

@@ -8,6 +8,7 @@ import {
   type TravelCountryDto,
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
+import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useRowDeletion } from './useRowDeletion';
 
@@ -17,6 +18,7 @@ export interface CountryRow {
   code: string;
   areaCount: number;
   placeCount: number;
+  createdAt: string;
 }
 
 export function useAdminCountries() {
@@ -33,13 +35,43 @@ export function useAdminCountries() {
     code: country.code ?? '',
     areaCount: country.areas.length,
     placeCount: country.placeCount,
+    createdAt: country.createdAt,
   }));
 
   const columns: EditableColumn<CountryRow>[] = [
-    { key: 'name', label: t('admin.name'), editable: true, size: 220 },
-    { key: 'code', label: t('admin.code'), editable: true, size: 100 },
-    { key: 'areaCount', label: t('admin.areas'), size: 100 },
-    { key: 'placeCount', label: t('admin.places'), size: 100 },
+    {
+      key: 'name',
+      label: t('admin.name'),
+      editable: true,
+      sortable: true,
+      size: 220,
+    },
+    {
+      key: 'code',
+      label: t('admin.code'),
+      editable: true,
+      sortable: true,
+      size: 100,
+    },
+    {
+      key: 'areaCount',
+      label: t('admin.areas'),
+      sortable: true,
+      size: 100,
+    },
+    {
+      key: 'placeCount',
+      label: t('admin.places'),
+      sortable: true,
+      size: 100,
+    },
+    {
+      key: 'createdAt',
+      label: t('admin.added'),
+      sortable: true,
+      render: (row) => formatAddedDate(row.createdAt),
+      size: 130,
+    },
   ];
 
   const countriesQueryKey = getTravelCountriesQueryKey();

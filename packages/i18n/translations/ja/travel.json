@@ -203,6 +203,11 @@
     "deleteCuisine": "料理からこのジャンルが外れます。",
     "deleteTag": "おすすめからこのタグが外れます。",
     "searchPlaceholder": "行を検索",
+    "added": "追加日",
+    "showing": "{{total}}件中 {{from}}–{{to}}件",
+    "perPage": "表示件数",
+    "previous": "前へ",
+    "next": "次へ",
     "kinds": {
       "DIET": "食事制限",
       "ALLERGEN": "アレルゲン"

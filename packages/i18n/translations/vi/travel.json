@@ -203,6 +203,11 @@
     "deleteCuisine": "Các món sẽ mất thẻ ẩm thực này.",
     "deleteTag": "Các gợi ý sẽ mất thẻ này.",
     "searchPlaceholder": "Tìm kiếm hàng",
+    "added": "Ngày thêm",
+    "showing": "{{from}}–{{to}} / {{total}}",
+    "perPage": "Số hàng mỗi trang",
+    "previous": "Trước",
+    "next": "Sau",
     "kinds": {
       "DIET": "Chế độ ăn",
       "ALLERGEN": "Dị ứng"
