@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from '@hatohui/ui';
+import { SWITCH_ACTIVE } from '../../constants/chips';
 
 export interface ChoiceOption<T extends string> {
   value: T;
@@ -23,7 +24,7 @@ function ChoiceChips<T extends string>({
     <div
       role="radiogroup"
       aria-label={label}
-      className="inline-flex flex-wrap gap-0.5 rounded-full bg-secondary p-0.5"
+      className="inline-flex flex-wrap gap-0.5 rounded-full border border-foreground/45 p-0.5 dark:border-foreground/35"
     >
       {options.map((option) => (
         <button
@@ -35,8 +36,8 @@ function ChoiceChips<T extends string>({
           className={cn(
             'inline-flex h-8 cursor-pointer items-center gap-1 rounded-full px-2.5 text-xs transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none sm:h-7',
             value === option.value
-              ? 'bg-background text-foreground shadow-soft'
-              : 'text-muted-foreground hover:text-foreground',
+              ? SWITCH_ACTIVE
+              : 'text-foreground/80 hover:bg-foreground/10 hover:text-foreground',
           )}
         >
           {option.label}

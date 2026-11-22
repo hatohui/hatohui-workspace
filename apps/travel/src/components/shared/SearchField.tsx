@@ -1,6 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import { cn, Input } from '@hatohui/ui';
 import { Search, X } from 'lucide-react';
+import { FIELD_OUTLINE } from '../../constants/chips';
 import {
   useSearchSuggest,
   type SearchSuggestion,
@@ -33,7 +34,7 @@ function SearchField({
   return (
     <div className="relative min-w-0 flex-1">
       <Search
-        className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+        className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-foreground/60"
         aria-hidden
       />
       <Input
@@ -57,7 +58,10 @@ function SearchField({
         onFocus={() => suggest.setOpen(true)}
         onBlur={() => suggest.setOpen(false)}
         onKeyDown={suggest.onKeyDown}
-        className="h-9 rounded-full pr-8 pl-8 text-sm sm:h-8"
+        className={cn(
+          'h-9 rounded-full pr-8 pl-8 text-sm sm:h-8',
+          FIELD_OUTLINE,
+        )}
       />
       {value && (
         <button

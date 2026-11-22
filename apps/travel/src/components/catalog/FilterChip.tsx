@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@hatohui/ui';
+import { CHIP_BASE, CHIP_IDLE, CHIP_SELECTED } from '../../constants/chips';
 
 interface Props {
   icon: LucideIcon;
@@ -14,15 +15,11 @@ function FilterChip({ icon: Icon, label, pressed, onChange }: Props) {
       type="button"
       aria-pressed={pressed}
       onClick={() => onChange(!pressed)}
-      className={cn(
-        'inline-flex h-8 cursor-pointer items-center gap-1 rounded-full border px-2.5 text-xs transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none sm:h-7',
-        pressed
-          ? 'border-primary bg-primary/10 text-foreground'
-          : 'border-border text-muted-foreground hover:text-foreground',
-      )}
+      title={label}
+      className={cn(CHIP_BASE, pressed ? CHIP_SELECTED : CHIP_IDLE)}
     >
-      <Icon className="size-3.5" aria-hidden />
-      {label}
+      <Icon className="size-3.5 shrink-0" aria-hidden />
+      <span className="truncate">{label}</span>
     </button>
   );
 }

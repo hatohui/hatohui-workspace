@@ -13,7 +13,7 @@ function MoreChip({ expanded, hiddenCount, onToggle }: Props) {
       type="button"
       aria-expanded={expanded}
       onClick={onToggle}
-      className="inline-flex h-8 cursor-pointer items-center rounded-full border border-dashed border-border px-2.5 text-xs text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:h-7"
+      className="inline-flex h-8 cursor-pointer items-center rounded-full border border-dashed border-foreground/45 px-2.5 text-xs text-foreground/80 transition-colors outline-none hover:border-foreground/70 hover:text-foreground dark:border-foreground/35 focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:h-7"
     >
       {expanded
         ? t('filters.showLess')
