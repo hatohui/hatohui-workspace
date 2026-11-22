@@ -4,6 +4,7 @@ import { useDishForm } from '../../hooks/useDishForm';
 import CuisineField from '../shared/CuisineField';
 import DialogForm from '../shared/DialogForm';
 import TextField from '../shared/TextField';
+import CountrySelect from '../location/CountrySelect';
 import DishPhotoField from './DishPhotoField';
 
 interface Props {
@@ -36,6 +37,11 @@ function DishForm({ dish, onClose }: Props) {
           optional
           value={form.values.cuisines}
           onChange={(value) => form.set('cuisines', value)}
+        />
+        <CountrySelect
+          id="dish-country"
+          value={form.values.countryId}
+          onChange={(value) => form.set('countryId', value)}
         />
         <TextField
           id="dish-description"

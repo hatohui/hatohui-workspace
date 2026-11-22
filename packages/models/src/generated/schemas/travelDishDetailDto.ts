@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { TravelCreatorDto } from './travelCreatorDto';
+import type { TravelDishCountryDto } from './travelDishCountryDto';
 import type { TravelRecommendationDto } from './travelRecommendationDto';
 
 export interface TravelDishDetailDto {
@@ -18,6 +19,13 @@ export interface TravelDishDetailDto {
   allergens: string[];
   /** Places recommended for this dish */
   placeCount: number;
+  /**
+     * Places in the requested area or country; null when no location was given
+     * @nullable
+     */
+  localPlaceCount: number | null;
+  /** @nullable */
+  country: TravelDishCountryDto | null;
   /** @nullable */
   imageKey: string | null;
   /** @nullable */

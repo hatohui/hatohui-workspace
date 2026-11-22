@@ -132,7 +132,15 @@
     "name": "Tên",
     "description": "Mô tả",
     "deleteTitle": "Xóa món này?",
-    "deleteDescription": "{{name}} và mọi gợi ý cho món này sẽ bị xóa."
+    "deleteDescription": "{{name}} và mọi gợi ý cho món này sẽ bị xóa.",
+    "country": "Quốc gia",
+    "noCountry": "Không có quốc gia",
+    "placesHere_one": "{{count}} quán ở đây",
+    "placesHere_other": "{{count}} quán ở đây",
+    "notFoundHere": "Chưa có ở đây",
+    "noPlacesYet": "Chưa có quán",
+    "noPlacesBody": "Chưa ai thêm quán cho món này.",
+    "addPlace": "Thêm quán"
   },
   "places": {
     "back": "Tất cả địa điểm",

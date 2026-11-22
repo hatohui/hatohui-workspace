@@ -67,8 +67,8 @@ export class TravelRecommendationsService {
     userId: string,
   ): Promise<TravelRecommendationDto> {
     const resolvedTags = await this.resolveTagLists(dto);
-    const dishId = await this.resolveDish(dto, userId);
     const placeId = await this.resolvePlace(dto, userId);
+    const dishId = await this.resolveDish(dto, userId, placeId);
 
     const created = await this.guardUnique(() =>
       this.db.travelRecommendation.create({
@@ -227,6 +227,7 @@ export class TravelRecommendationsService {
   private async resolveDish(
     dto: CreateTravelRecommendationDto,
     userId: string,
+    placeId: string,
   ): Promise<string> {
     if (dto.dishId) {
       const dish = await this.db.travelDish.findUnique({
@@ -247,9 +248,14 @@ export class TravelRecommendationsService {
       dto.cuisines ?? [],
       userId,
     );
+    const place = await this.db.travelPlace.findUnique({
+      where: { id: placeId },
+      select: { area: { select: { countryId: true } } },
+    });
     const created = await this.db.travelDish.create({
       data: {
         name,
+        countryId: place?.area?.countryId ?? null,
         createdById: userId,
         cuisines: { connect: cuisineIds.map((id) => ({ id })) },
       },

@@ -63,6 +63,16 @@ or place detail page.
   dish filters (spicy, diets, tags, cuisines, allergens) and keeps a place when
   at least one of its recommendations matches all of them. For places an
   allergen filter hides only the matching dishes, not the whole place.
+- **By dish is also a food dictionary.** A dish has an optional home
+  country (`TravelDish.countryId`), independent of where it is served. With a
+  country or area picked, the list holds that country's dishes plus any dish
+  served there, so dishes with no place yet still show. The location sorts and
+  labels instead of filtering: `localPlaceCount` counts places in the picked
+  area or country, dishes found there come first, and the rest read "Not found
+  here yet". Taste and tag filters stay pick-based, since spicy or vegetarian
+  depends on how a place makes the dish. A dish created inline from the food
+  form takes its place's country; the `travel_dish_country` migration set the
+  country only for dishes whose places all sit in one country.
 - **The form only shows Spicy and Vegetarian.** Other diet tags stay in the
   table for existing data but are no longer offered in the form or filters.
 - **Dish and place suggestions are searched on the server** as you type

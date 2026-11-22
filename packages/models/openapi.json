@@ -2503,7 +2503,7 @@
             "name": "areaId",
             "required": false,
             "in": "query",
-            "description": "Only places in this area",
+            "description": "Dishes from this area's country or served in this area, sorted by local availability",
             "schema": {
               "type": "string"
             }
@@ -2512,7 +2512,7 @@
             "name": "countryId",
             "required": false,
             "in": "query",
-            "description": "Only places in this country",
+            "description": "Dishes from this country or served in it, sorted by local availability",
             "schema": {
               "type": "string"
             }
@@ -10796,6 +10796,22 @@
           }
         }
       },
+      "TravelDishCountryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Vietnam"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
       "TravelCreatorDto": {
         "type": "object",
         "properties": {
@@ -10857,6 +10873,20 @@
             "type": "number",
             "description": "Places recommended for this dish"
           },
+          "localPlaceCount": {
+            "type": "number",
+            "nullable": true,
+            "description": "Places in the requested area or country; null when no location was given"
+          },
+          "country": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelDishCountryDto"
+              }
+            ]
+          },
           "imageKey": {
             "type": "string",
             "nullable": true
@@ -10898,6 +10928,8 @@
           "description",
           "allergens",
           "placeCount",
+          "localPlaceCount",
+          "country",
           "imageKey",
           "imageUrl",
           "thumbnailUrl",
@@ -11200,6 +11232,20 @@
             "type": "number",
             "description": "Places recommended for this dish"
           },
+          "localPlaceCount": {
+            "type": "number",
+            "nullable": true,
+            "description": "Places in the requested area or country; null when no location was given"
+          },
+          "country": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelDishCountryDto"
+              }
+            ]
+          },
           "imageKey": {
             "type": "string",
             "nullable": true
@@ -11247,6 +11293,8 @@
           "description",
           "allergens",
           "placeCount",
+          "localPlaceCount",
+          "country",
           "imageKey",
           "imageUrl",
           "thumbnailUrl",
@@ -11308,6 +11356,11 @@
             "type": "string",
             "maxLength": 2000
           },
+          "countryId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Home country of the dish, or null to clear"
+          },
           "imageKey": {
             "type": "string",
             "nullable": true,
@@ -11336,6 +11389,11 @@
           "description": {
             "type": "string",
             "maxLength": 2000
+          },
+          "countryId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Home country of the dish, or null to clear"
           },
           "imageKey": {
             "type": "string",

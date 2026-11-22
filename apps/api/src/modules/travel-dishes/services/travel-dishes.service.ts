@@ -19,7 +19,6 @@ import { TravelRecommendationsService } from '@/modules/travel-recommendations/s
 import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
 import { travelCuisineNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
-import { travelAreaFilter } from '@/modules/travel-recommendations/utils/travel-place-area';
 import {
   travelAllergenTagsSelect,
   uniqueAllergenKeys,
@@ -43,10 +42,25 @@ const dishInclude = {
   cuisines: travelCuisineNamesSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
-  recommendations: { select: { tags: travelAllergenTagsSelect } },
+  country: { select: { id: true, name: true } },
+  recommendations: {
+    select: {
+      tags: travelAllergenTagsSelect,
+      place: {
+        select: { areaId: true, area: { select: { countryId: true } } },
+      },
+    },
+  },
 } satisfies Prisma.TravelDishInclude;
 
 type DishRow = Prisma.TravelDishGetPayload<{ include: typeof dishInclude }>;
+type DishPlace = DishRow['recommendations'][number]['place'];
+
+interface LocationScope {
+  countryId: string;
+  where: Prisma.TravelPlaceWhereInput;
+  contains: (place: DishPlace) => boolean;
+}
 
 @Injectable()
 export class TravelDishesService {
@@ -64,9 +78,17 @@ export class TravelDishesService {
   async list(query: TravelDishQueryDto): Promise<TravelDishDto[]> {
     const q = query.q?.trim();
     const contains = q ? { contains: q, mode: 'insensitive' as const } : null;
-    const inArea = travelAreaFilter(query);
+    const scope = await this.locationScope(query);
     const and: Prisma.TravelDishWhereInput[] = [];
 
+    if (scope) {
+      and.push({
+        OR: [
+          { countryId: scope.countryId },
+          { recommendations: { some: { place: scope.where } } },
+        ],
+      });
+    }
     if (query.cuisines?.length) {
       and.push({
         cuisines: {
@@ -81,7 +103,6 @@ export class TravelDishesService {
 
     const requiredTags = [...(query.diets ?? []), ...(query.tags ?? [])];
     const recMatch: Prisma.TravelRecommendationWhereInput = {
-      ...(inArea ? { place: inArea } : {}),
       ...(query.spicy ? { spicy: true } : {}),
       ...(requiredTags.length
         ? { AND: requiredTags.map((key) => ({ tags: { some: { key } } })) }
@@ -109,7 +130,40 @@ export class TravelDishesService {
       include: dishInclude,
       orderBy: { name: 'asc' },
     });
-    return rows.map((row) => this.toDto(row));
+    const dishes = rows.map((row) => this.toDto(row, scope));
+    if (!scope) return dishes;
+    return dishes.sort(
+      (a, b) =>
+        Number((b.localPlaceCount ?? 0) > 0) -
+        Number((a.localPlaceCount ?? 0) > 0),
+    );
+  }
+
+  private async locationScope(
+    query: TravelDishQueryDto,
+  ): Promise<LocationScope | null> {
+    if (query.areaId) {
+      const areaId = query.areaId;
+      const area = await this.db.travelArea.findUnique({
+        where: { id: areaId },
+        select: { countryId: true },
+      });
+      if (!area) throw new NotFoundException('Area not found');
+      return {
+        countryId: area.countryId,
+        where: { areaId },
+        contains: (place) => place.areaId === areaId,
+      };
+    }
+    if (query.countryId) {
+      const countryId = query.countryId;
+      return {
+        countryId,
+        where: { area: { countryId } },
+        contains: (place) => place.area?.countryId === countryId,
+      };
+    }
+    return null;
   }
 
   async get(id: string): Promise<TravelDishDetailDto> {
@@ -283,10 +337,19 @@ export class TravelDishesService {
         dto.description === undefined
           ? undefined
           : dto.description.trim() || null,
-    } as { name: string; description?: string | null };
+      countryId:
+        dto.countryId === undefined ? undefined : dto.countryId || null,
+    } as {
+      name: string;
+      description?: string | null;
+      countryId?: string | null;
+    };
   }
 
-  private toDto(row: DishRow): TravelDishDto {
+  private toDto(
+    row: DishRow,
+    scope: LocationScope | null = null,
+  ): TravelDishDto {
     const imageUrl = row.imageKey
       ? this.storage.getPublicUrl(row.imageKey)
       : null;
@@ -303,6 +366,10 @@ export class TravelDishesService {
       description: row.description,
       allergens: uniqueAllergenKeys(row.recommendations),
       placeCount: row._count.recommendations,
+      localPlaceCount: scope
+        ? row.recommendations.filter((rec) => scope.contains(rec.place)).length
+        : null,
+      country: row.country,
       imageKey: row.imageKey,
       imageUrl,
       thumbnailUrl,

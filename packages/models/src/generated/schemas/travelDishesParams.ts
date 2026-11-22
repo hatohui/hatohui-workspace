@@ -33,11 +33,11 @@ excludeAllergens?: string[];
  */
 tags?: string[];
 /**
- * Only places in this area
+ * Dishes from this area's country or served in this area, sorted by local availability
  */
 areaId?: string;
 /**
- * Only places in this country
+ * Dishes from this country or served in it, sorted by local availability
  */
 countryId?: string;
 };

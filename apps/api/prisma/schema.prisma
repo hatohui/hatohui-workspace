@@ -865,19 +865,23 @@ model CommissionFollower {
 }
 
 model TravelDish {
-  id           String   @id @default(cuid())
-  name         String   @unique
+  id           String         @id @default(cuid())
+  name         String         @unique
   description  String?
   imageKey     String?
   thumbnailKey String?
   previewKey   String?
+  countryId    String?
+  country      TravelCountry? @relation(fields: [countryId], references: [id], onDelete: SetNull)
   createdById  String?
-  createdBy    User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdBy    User?          @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   cuisines        TravelCuisine[]
   recommendations TravelRecommendation[]
+
+  @@index([countryId])
 }
 
 model TravelCuisine {
@@ -922,7 +926,8 @@ model TravelCountry {
   createdBy   User?    @relation("TravelCountryCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
 
-  areas TravelArea[]
+  areas  TravelArea[]
+  dishes TravelDish[]
 }
 
 model TravelArea {

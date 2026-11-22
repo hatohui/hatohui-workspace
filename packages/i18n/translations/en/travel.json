@@ -137,7 +137,15 @@
     "name": "Name",
     "description": "Description",
     "deleteTitle": "Delete this dish?",
-    "deleteDescription": "{{name}} and every recommendation for it will be removed."
+    "deleteDescription": "{{name}} and every recommendation for it will be removed.",
+    "country": "Country",
+    "noCountry": "No country",
+    "placesHere_one": "{{count}} place here",
+    "placesHere_other": "{{count}} places here",
+    "notFoundHere": "Not found here yet",
+    "noPlacesYet": "No places yet",
+    "noPlacesBody": "No one has added a place for this dish yet.",
+    "addPlace": "Add a place"
   },
   "places": {
     "back": "All places",

@@ -33,8 +33,9 @@ const amount = (value: number | null | undefined) =>
 const fieldsFrom = (
   rec?: TravelRecommendationDto,
   defaultAreaId?: string,
+  initialDishName?: string,
 ): RecommendationFields => ({
-  dishName: rec?.dish.name ?? '',
+  dishName: rec?.dish.name ?? initialDishName ?? '',
   cuisines: rec?.dish.cuisines ?? [],
   placeName: rec?.place.name ?? '',
   areaId: rec?.place.area?.id ?? defaultAreaId ?? '',
@@ -54,8 +55,11 @@ const fieldsFrom = (
 export function useRecommendationFields(
   rec?: TravelRecommendationDto,
   defaultAreaId?: string,
+  initialDishName?: string,
 ) {
-  const [fields, setFields] = useState(() => fieldsFrom(rec, defaultAreaId));
+  const [fields, setFields] = useState(() =>
+    fieldsFrom(rec, defaultAreaId, initialDishName),
+  );
   const set = <K extends keyof RecommendationFields>(
     key: K,
     value: RecommendationFields[K],
