@@ -1,12 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Skeleton } from '@hatohui/ui';
-import { UtensilsCrossed } from 'lucide-react';
+import { EditableDataTable, Skeleton } from '@hatohui/ui';
 import { useAdminRecommendations } from '../../hooks/useAdminRecommendations';
-import RecommendationDialog from '../recommendation/RecommendationDialog';
-import EmptyState from '../shared/EmptyState';
 import SearchField from '../shared/SearchField';
 import DeleteRowDialog from './DeleteRowDialog';
-import RecommendationAdminRow from './RecommendationAdminRow';
 
 function RecommendationsAdmin() {
   const { t } = useTranslation();
@@ -22,31 +18,18 @@ function RecommendationsAdmin() {
       />
       {admin.isLoading ? (
         <Skeleton className="h-48 w-full" />
-      ) : admin.items.length === 0 ? (
-        <EmptyState icon={UtensilsCrossed} message={t('catalog.empty')} />
       ) : (
-        <div className="space-y-2">
-          {admin.items.map((rec) => (
-            <RecommendationAdminRow
-              key={rec.id}
-              recommendation={rec}
-              onEdit={() => admin.edit(rec)}
-              onDelete={() =>
-                admin.deletion.request({
-                  id: rec.id,
-                  name: `${rec.dish.name} — ${rec.place.name}`,
-                  recommendation: rec,
-                })
-              }
-            />
-          ))}
-        </div>
+        <EditableDataTable
+          storageKey="travel-admin-recommendations"
+          columns={admin.columns}
+          rows={admin.rows}
+          onCommit={admin.commit}
+          onAddRow={admin.addRow}
+          addRowLabel={t('catalog.add')}
+          onDeleteRow={admin.deletion.request}
+          deleteRowLabel={t('recommendation.delete')}
+        />
       )}
-      <RecommendationDialog
-        key={admin.editDialog.version}
-        state={admin.editDialog}
-        recommendation={admin.editing ?? undefined}
-      />
       <DeleteRowDialog
         name={admin.deletion.pending?.name ?? null}
         description={t('admin.deleteRecommendation')}
