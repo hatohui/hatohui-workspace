@@ -33,7 +33,7 @@ function SearchField({
   return (
     <div className="relative min-w-0 flex-1">
       <Search
-        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+        className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
         aria-hidden
       />
       <Input
@@ -57,14 +57,14 @@ function SearchField({
         onFocus={() => suggest.setOpen(true)}
         onBlur={() => suggest.setOpen(false)}
         onKeyDown={suggest.onKeyDown}
-        className="h-11 rounded-full pr-9 pl-9 sm:h-10"
+        className="h-9 rounded-full pr-8 pl-8 text-sm sm:h-8"
       />
       {value && (
         <button
           type="button"
           onClick={() => onChange('')}
           aria-label={t('catalog.clearSearch')}
-          className="absolute top-1/2 right-3 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
         >
           <X className="size-3.5" />
         </button>

@@ -24,7 +24,11 @@
     "byDish": "料理から",
     "byPlace": "お店から",
     "vegetarian": "ベジタリアン",
-    "hideMyAllergens": "自分のアレルゲンを隠す（{{count}}）"
+    "hideMyAllergens": "自分のアレルゲンを隠す（{{count}}）",
+    "dishTotal_one": "{{count}} 品",
+    "dishTotal_other": "{{count}} 品",
+    "placeTotal_one": "{{count}} 店",
+    "placeTotal_other": "{{count}} 店"
   },
   "recommendation": {
     "noEstimate": "価格未登録",
@@ -193,7 +197,9 @@
     "title": "絞り込み",
     "taste": "味",
     "addedBy": "追加した人",
-    "handlePlaceholder": "ハンドル"
+    "handlePlaceholder": "ハンドル",
+    "showMore": "他 {{count}} 件",
+    "showLess": "閉じる"
   },
   "admin": {
     "title": "管理",

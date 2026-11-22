@@ -12,7 +12,7 @@ function CreatorFilter({ value, onChange }: Props) {
   return (
     <div className="relative">
       <AtSign
-        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+        className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
         aria-hidden
       />
       <Input
@@ -20,7 +20,7 @@ function CreatorFilter({ value, onChange }: Props) {
         placeholder={t('filters.handlePlaceholder')}
         aria-label={t('filters.addedBy')}
         onChange={(event) => onChange(event.target.value.replace(/^@/, ''))}
-        className="pl-9"
+        className="h-8 pl-8 text-xs md:text-xs"
       />
     </div>
   );

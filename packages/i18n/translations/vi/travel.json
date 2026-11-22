@@ -24,7 +24,11 @@
     "byDish": "Theo món",
     "byPlace": "Theo quán",
     "vegetarian": "Chay",
-    "hideMyAllergens": "Ẩn món tôi dị ứng ({{count}})"
+    "hideMyAllergens": "Ẩn món tôi dị ứng ({{count}})",
+    "dishTotal_one": "{{count}} món",
+    "dishTotal_other": "{{count}} món",
+    "placeTotal_one": "{{count}} quán",
+    "placeTotal_other": "{{count}} quán"
   },
   "recommendation": {
     "noEstimate": "Chưa có giá",
@@ -193,7 +197,9 @@
     "title": "Bộ lọc",
     "taste": "Hương vị",
     "addedBy": "Người thêm",
-    "handlePlaceholder": "tên người dùng"
+    "handlePlaceholder": "tên người dùng",
+    "showMore": "+{{count}} nữa",
+    "showLess": "Thu gọn"
   },
   "admin": {
     "title": "Quản trị",

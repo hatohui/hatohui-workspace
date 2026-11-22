@@ -14,10 +14,9 @@ function ImageFrame({ src, alt, square = false, caution = [] }: Props) {
   return (
     <div
       className={cn(
-        'relative w-full overflow-hidden rounded-xl bg-card',
+        'relative w-full overflow-hidden rounded-lg bg-card',
         square ? 'aspect-square' : 'aspect-[4/3]',
-        isCaution &&
-          'ring-2 ring-amber-500 ring-offset-2 ring-offset-background',
+        isCaution && 'ring-[1.5px] ring-amber-500/80',
       )}
     >
       {src ? (

@@ -21,25 +21,26 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
   return (
     <Link
       to={routes.place(place.id)}
-      className="group flex flex-col gap-2 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      className="group flex flex-col gap-1.5 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <ImageFrame
         src={place.coverImageUrl}
         alt={place.name}
         caution={cautionFor(place.allergens)}
       />
-      <div className="flex items-baseline justify-between gap-2">
-        <h2 className="truncate text-lg font-medium tracking-tight group-hover:underline">
+      <div className="min-w-0">
+        <h2 className="truncate text-sm font-medium group-hover:underline">
           {place.name}
         </h2>
-        <span className="shrink-0 text-sm text-muted-foreground">
-          {t('places.dishCount', { count: place.dishCount })}
-        </span>
+        <p className="flex items-center gap-1 text-xs text-muted-foreground">
+          <MapPin className="size-3 shrink-0" aria-hidden />
+          <span className="truncate">{location || fallback}</span>
+          <span aria-hidden>·</span>
+          <span className="shrink-0">
+            {t('places.dishCount', { count: place.dishCount })}
+          </span>
+        </p>
       </div>
-      <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-        <MapPin className="size-3.5 shrink-0" aria-hidden />
-        <span className="truncate">{location || fallback}</span>
-      </span>
     </Link>
   );
 }

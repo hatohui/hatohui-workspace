@@ -3,6 +3,7 @@ import { Soup } from 'lucide-react';
 import type { useDishList } from '../../hooks/useDishList';
 import ClearFiltersButton from '../catalog/ClearFiltersButton';
 import DishCard from '../dishes/DishCard';
+import { CARD_GRID_CLASS } from '../../constants/travel';
 import ListState from '../shared/ListState';
 
 interface Props {
@@ -25,7 +26,7 @@ function DishResults({ list, isFiltered, onClearFilters }: Props) {
         isFiltered && <ClearFiltersButton onClick={onClearFilters} />
       }
     >
-      <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-3">
+      <div className={CARD_GRID_CLASS}>
         {list.dishes.map((dish) => (
           <DishCard key={dish.id} dish={dish} />
         ))}

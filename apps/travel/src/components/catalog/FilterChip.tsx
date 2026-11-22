@@ -15,13 +15,13 @@ function FilterChip({ icon: Icon, label, pressed, onChange }: Props) {
       aria-pressed={pressed}
       onClick={() => onChange(!pressed)}
       className={cn(
-        'inline-flex h-11 cursor-pointer items-center gap-1.5 rounded-full border px-4 text-sm transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none sm:h-10',
+        'inline-flex h-8 cursor-pointer items-center gap-1 rounded-full border px-2.5 text-xs transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none sm:h-7',
         pressed
           ? 'border-primary bg-primary/10 text-foreground'
           : 'border-border text-muted-foreground hover:text-foreground',
       )}
     >
-      <Icon className="size-4" aria-hidden />
+      <Icon className="size-3.5" aria-hidden />
       {label}
     </button>
   );

@@ -24,7 +24,11 @@
     "byDish": "按菜品",
     "byPlace": "按店铺",
     "vegetarian": "素食",
-    "hideMyAllergens": "隐藏我的过敏原（{{count}}）"
+    "hideMyAllergens": "隐藏我的过敏原（{{count}}）",
+    "dishTotal_one": "{{count}} 道菜",
+    "dishTotal_other": "{{count}} 道菜",
+    "placeTotal_one": "{{count}} 家店",
+    "placeTotal_other": "{{count}} 家店"
   },
   "recommendation": {
     "noEstimate": "暂无价格",
@@ -193,7 +197,9 @@
     "title": "筛选",
     "taste": "口味",
     "addedBy": "添加者",
-    "handlePlaceholder": "用户名"
+    "handlePlaceholder": "用户名",
+    "showMore": "另外 {{count}} 个",
+    "showLess": "收起"
   },
   "admin": {
     "title": "管理",

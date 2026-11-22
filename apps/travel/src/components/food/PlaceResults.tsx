@@ -3,6 +3,7 @@ import { MapPin } from 'lucide-react';
 import type { usePlaceList } from '../../hooks/usePlaceList';
 import ClearFiltersButton from '../catalog/ClearFiltersButton';
 import PlaceCard from '../places/PlaceCard';
+import { CARD_GRID_CLASS } from '../../constants/travel';
 import ListState from '../shared/ListState';
 
 interface Props {
@@ -25,7 +26,7 @@ function PlaceResults({ list, isFiltered, onClearFilters }: Props) {
         isFiltered && <ClearFiltersButton onClick={onClearFilters} />
       }
     >
-      <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-3">
+      <div className={CARD_GRID_CLASS}>
         {list.places.map((place) => (
           <PlaceCard key={place.id} place={place} />
         ))}

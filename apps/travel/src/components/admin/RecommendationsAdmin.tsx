@@ -28,7 +28,7 @@ function RecommendationsAdmin() {
           admin.isFiltered ? 'catalog.emptyFiltered' : 'catalog.empty',
         )}
       >
-        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {admin.recommendations.map((rec) => (
             <AdminRecommendationCard key={rec.id} recommendation={rec} />
           ))}

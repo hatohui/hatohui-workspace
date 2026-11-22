@@ -20,7 +20,8 @@ function MobileFilterButton({ filters }: { filters: Filters }) {
     <>
       <Button
         variant="outline"
-        className="h-11 shrink-0 rounded-full lg:hidden"
+        size="sm"
+        className="h-9 shrink-0 rounded-full text-xs sm:h-8 lg:hidden"
         onClick={() => setOpen(true)}
       >
         <SlidersHorizontal />

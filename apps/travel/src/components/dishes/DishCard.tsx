@@ -12,20 +12,20 @@ function DishCard({ dish }: { dish: TravelDishDto }) {
   return (
     <Link
       to={routes.dish(dish.id)}
-      className="group flex flex-col gap-2 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      className="group flex flex-col gap-1.5 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <ImageFrame
         src={dish.coverImageUrl}
         alt={dish.name}
         caution={cautionFor(dish.allergens)}
       />
-      <div className="flex items-baseline justify-between gap-2">
-        <h2 className="truncate text-lg font-medium tracking-tight group-hover:underline">
+      <div className="min-w-0">
+        <h2 className="truncate text-sm font-medium group-hover:underline">
           {dish.name}
         </h2>
-        <span className="shrink-0 text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {t('dishes.placeCount', { count: dish.placeCount })}
-        </span>
+        </p>
       </div>
       <CuisineChips cuisines={dish.cuisines} />
     </Link>
