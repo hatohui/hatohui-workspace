@@ -4,12 +4,14 @@ import { useDebouncedValue } from '@hatohui/libs';
 import { useTravelDishes, useTravelPlaces } from '@hatohui/models';
 import { SEARCH_DEBOUNCE_MS } from '../constants/travel';
 import type { SearchSuggestion } from './useSearchSuggest';
-import { useTravelLocation } from './useTravelLocation';
 
-const normalize = (value: string) => value.trim().toLowerCase();
+export const normalizeCatalogName = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[\u2018\u2019]/g, "'");
 
 export function useCatalogMatches(dishName: string, placeName: string) {
-  const location = useTravelLocation();
   const dishQ = useDebouncedValue(dishName.trim(), SEARCH_DEBOUNCE_MS);
   const placeQ = useDebouncedValue(placeName.trim(), SEARCH_DEBOUNCE_MS);
 
@@ -18,7 +20,7 @@ export function useCatalogMatches(dishName: string, placeName: string) {
     { query: { enabled: dishQ !== '', placeholderData: keepPreviousData } },
   );
   const placesQuery = useTravelPlaces(
-    { q: placeQ, ...location.filter },
+    { q: placeQ },
     { query: { enabled: placeQ !== '', placeholderData: keepPreviousData } },
   );
 
@@ -31,8 +33,12 @@ export function useCatalogMatches(dishName: string, placeName: string) {
     [placeQ, placesQuery.data?.data],
   );
 
-  const dish = dishes.find((d) => normalize(d.name) === normalize(dishName));
-  const place = places.find((p) => normalize(p.name) === normalize(placeName));
+  const dish = dishes.find(
+    (d) => normalizeCatalogName(d.name) === normalizeCatalogName(dishName),
+  );
+  const place = places.find(
+    (p) => normalizeCatalogName(p.name) === normalizeCatalogName(placeName),
+  );
 
   const dishSuggestions = useMemo<SearchSuggestion[]>(
     () =>
@@ -56,5 +62,15 @@ export function useCatalogMatches(dishName: string, placeName: string) {
     [places],
   );
 
-  return { dishSuggestions, placeSuggestions, dish, place };
+  const findDishById = (id: string) => dishes.find((d) => d.id === id) ?? null;
+  const findPlaceById = (id: string) => places.find((p) => p.id === id) ?? null;
+
+  return {
+    dishSuggestions,
+    placeSuggestions,
+    dish,
+    place,
+    findDishById,
+    findPlaceById,
+  };
 }

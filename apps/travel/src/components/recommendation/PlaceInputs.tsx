@@ -13,8 +13,9 @@ interface Props {
 
 function PlaceInputs({ form }: Props) {
   const { t } = useTranslation();
-  const { fields, set, matches, isEditing } = form;
-  const isNewPlace = !isEditing && !matches.place;
+  const { fields, set, matches, pickPlace, isEditing } = form;
+  const isNewPlace =
+    !isEditing && !matches.place && fields.placeName.trim() !== '';
   const showArea = isNewPlace || isEditing;
 
   return (
@@ -35,6 +36,7 @@ function PlaceInputs({ form }: Props) {
         isMatched={Boolean(matches.place)}
         disabled={isEditing}
         onChange={(value) => set('placeName', value)}
+        onSelect={(item) => pickPlace(item.id)}
       />
       {showArea && (
         <AreaSelect

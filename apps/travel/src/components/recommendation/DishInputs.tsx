@@ -11,7 +11,7 @@ interface Props {
 
 function DishInputs({ form }: Props) {
   const { t } = useTranslation();
-  const { fields, set, matches, isEditing } = form;
+  const { fields, set, matches, pickDish, isEditing } = form;
   const isNew = !isEditing && !matches.dish && fields.dishName.trim() !== '';
 
   return (
@@ -27,6 +27,7 @@ function DishInputs({ form }: Props) {
         isMatched={Boolean(matches.dish)}
         disabled={isEditing}
         onChange={(value) => set('dishName', value)}
+        onSelect={(item) => pickDish(item.id)}
       />
       {isNew && (
         <div className="grid gap-4 sm:grid-cols-2">
