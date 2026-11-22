@@ -30,6 +30,8 @@ import {
   GenerateTravelDishDescriptionsDto,
   GenerateTravelDishDescriptionsResultDto,
   PaginatedTravelDishesDto,
+  TravelDishDescriptionBatchProgressDto,
+  TravelDishDescriptionJobsDto,
   TravelDishDetailDto,
   TravelDishDto,
   TravelDishPageQueryDto,
@@ -64,6 +66,17 @@ export class TravelDishesController {
     return this.dishes.listPage(query);
   }
 
+  @Get('description-jobs')
+  @UseGuards(TravelEditorGuard)
+  @ApiOperation({
+    operationId: 'travelDishDescriptionJobs',
+    summary: 'Current AI dish description batch progress and last batch errors',
+  })
+  @ApiOkResponse({ type: TravelDishDescriptionJobsDto })
+  descriptionJobs(): Promise<TravelDishDescriptionJobsDto> {
+    return this.descriptions.jobs();
+  }
+
   @Get(':id')
   @ApiOperation({
     operationId: 'travelDish',
@@ -87,6 +100,21 @@ export class TravelDishesController {
     @CurrentUser() user: User,
   ): Promise<TravelBulkResultDto> {
     return this.dishes.bulkCreate(dto.names, user.id);
+  }
+
+  @Post('description-jobs')
+  @HttpCode(200)
+  @UseGuards(TravelEditorGuard)
+  @ApiOperation({
+    operationId: 'startTravelDishDescriptionBatch',
+    summary:
+      'Start a background AI batch (in groups of 10) for dishes missing descriptions',
+  })
+  @ApiOkResponse({ type: TravelDishDescriptionBatchProgressDto })
+  startDescriptionBatch(
+    @Body() dto: GenerateTravelDishDescriptionsDto,
+  ): Promise<TravelDishDescriptionBatchProgressDto> {
+    return this.descriptions.startBatch(dto.dishIds);
   }
 
   @Post('generate-descriptions')

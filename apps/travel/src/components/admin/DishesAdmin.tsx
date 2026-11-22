@@ -4,6 +4,7 @@ import { Button, ImageCropDialog, Spinner } from '@hatohui/ui';
 import { Sparkles } from 'lucide-react';
 import { useAdminDishes, type DishRow } from '../../hooks/useAdminDishes';
 import AdminTable from './AdminTable';
+import DishDescriptionErrorsBanner from './DishDescriptionErrorsBanner';
 import DishThumbnailCell from './DishThumbnailCell';
 
 function DishesAdmin() {
@@ -13,7 +14,12 @@ function DishesAdmin() {
     columns: baseColumns,
     missingDescriptionCount,
     isGeneratingDescriptions,
+    descriptionBatch,
+    descriptionErrors,
+    retryingDescriptionIds,
     generateDescriptions,
+    retryDishDescription,
+    dismissDescriptionErrors,
     ...admin
   } = useAdminDishes();
 
@@ -38,6 +44,13 @@ function DishesAdmin() {
     [baseColumns, photo],
   );
 
+  const generateButtonLabel = descriptionBatch
+    ? t('admin.generatingDescriptionsProgress', {
+        done: descriptionBatch.done,
+        total: descriptionBatch.total,
+      })
+    : t('admin.generateDescriptions', { count: missingDescriptionCount });
+
   const generateButton = (
     <Button
       type="button"
@@ -52,7 +65,7 @@ function DishesAdmin() {
       ) : (
         <Sparkles className="size-4" aria-hidden />
       )}
-      {t('admin.generateDescriptions', { count: missingDescriptionCount })}
+      {generateButtonLabel}
     </Button>
   );
 
@@ -69,6 +82,15 @@ function DishesAdmin() {
         commit={admin.commit}
         add={admin.add}
         toolbarActions={generateButton}
+        notice={
+          <DishDescriptionErrorsBanner
+            errors={descriptionErrors}
+            busy={isGeneratingDescriptions}
+            retryingIds={retryingDescriptionIds}
+            onRetry={(dishId) => void retryDishDescription(dishId)}
+            onDismiss={dismissDescriptionErrors}
+          />
+        }
       />
       <ImageCropDialog
         open={Boolean(photo.cropTarget)}

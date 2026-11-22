@@ -5,6 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { TravelDishDescriptionErrorDto } from './travelDishDescriptionErrorDto';
 
 export interface GenerateTravelDishDescriptionsResultDto {
   /** Dishes given an AI-generated description */
@@ -13,4 +14,6 @@ export interface GenerateTravelDishDescriptionsResultDto {
   skipped: number;
   /** Dishes that could not be generated */
   failed: number;
+  /** Per-dish failure reasons */
+  errors: TravelDishDescriptionErrorDto[];
 }

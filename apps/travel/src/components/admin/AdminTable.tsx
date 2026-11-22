@@ -25,6 +25,7 @@ interface Props<T extends { id: string; name: string }> {
   add: (names: string[]) => Promise<boolean>;
   addControls?: ReactNode;
   toolbarActions?: ReactNode;
+  notice?: ReactNode;
 }
 
 function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
@@ -75,6 +76,7 @@ function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
         onToggleColumn={visibility.toggle}
         actions={props.toolbarActions}
       />
+      {props.notice}
       {props.isLoading ? (
         <Skeleton className="h-48 w-full" />
       ) : (

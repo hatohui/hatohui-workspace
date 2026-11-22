@@ -2753,6 +2753,58 @@
         ]
       }
     },
+    "/travel/dishes/description-jobs": {
+      "get": {
+        "operationId": "travelDishDescriptionJobs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDescriptionJobsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Current AI dish description batch progress and last batch errors",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "startTravelDishDescriptionBatch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateTravelDishDescriptionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDescriptionBatchProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Start a background AI batch (in groups of 10) for dishes missing descriptions",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/dishes/{id}": {
       "get": {
         "operationId": "travelDish",
@@ -11612,6 +11664,103 @@
           "hasMore"
         ]
       },
+      "TravelDishDescriptionErrorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string",
+            "description": "Reason why AI generation failed for this dish"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "error"
+        ]
+      },
+      "TravelDishDescriptionBatchProgressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "done": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          },
+          "errors": {
+            "description": "Per-dish failure reasons recorded so far",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelDishDescriptionErrorDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "total",
+          "done",
+          "failed",
+          "errors"
+        ]
+      },
+      "TravelDishDescriptionLastBatchErrorsDto": {
+        "type": "object",
+        "properties": {
+          "batchId": {
+            "type": "string"
+          },
+          "errors": {
+            "description": "Per-dish failure reasons from the last completed batch",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelDishDescriptionErrorDto"
+            }
+          }
+        },
+        "required": [
+          "batchId",
+          "errors"
+        ]
+      },
+      "TravelDishDescriptionJobsDto": {
+        "type": "object",
+        "properties": {
+          "batch": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelDishDescriptionBatchProgressDto"
+              }
+            ]
+          },
+          "lastBatchErrors": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelDishDescriptionLastBatchErrorsDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "batch",
+          "lastBatchErrors"
+        ]
+      },
       "TravelDishSummaryDto": {
         "type": "object",
         "properties": {
@@ -12047,12 +12196,20 @@
           "failed": {
             "type": "number",
             "description": "Dishes that could not be generated"
+          },
+          "errors": {
+            "description": "Per-dish failure reasons",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelDishDescriptionErrorDto"
+            }
           }
         },
         "required": [
           "updated",
           "skipped",
-          "failed"
+          "failed",
+          "errors"
         ]
       },
       "CreateTravelDishDto": {
