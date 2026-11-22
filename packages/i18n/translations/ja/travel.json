@@ -62,6 +62,8 @@
     "cancel": "キャンセル",
     "save": "保存",
     "saving": "保存中...",
+    "optional": "任意",
+    "saveShortcut": "{{modifier}} + Enter で保存",
     "existing": "保存済み",
     "new": "新規",
     "duplicate": "このお店にはその料理のおすすめがすでにあります。",
@@ -111,6 +113,7 @@
     "mapPreview": "地図のプレビュー"
   },
   "dishes": {
+    "back": "料理一覧",
     "title": "料理",
     "subtitle": "すべての料理と、おいしく出すお店の数。",
     "searchPlaceholder": "料理やジャンルを検索",
@@ -127,6 +130,7 @@
     "deleteDescription": "{{name}} とそのおすすめがすべて削除されます。"
   },
   "places": {
+    "back": "お店一覧",
     "title": "お店",
     "subtitle": "どこへ行き、何を頼むか。",
     "searchPlaceholder": "お店、住所、都市を検索",

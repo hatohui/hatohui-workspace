@@ -3,7 +3,9 @@ import { ErrorState } from '@hatohui/ui';
 import PlaceHeader from '../../../components/places/PlaceHeader';
 import PlaceMap from '../../../components/maps/PlaceMap';
 import RecommendationGrid from '../../../components/recommendation/RecommendationGrid';
+import BackLink from '../../../components/shared/BackLink';
 import CardGridSkeleton from '../../../components/shared/CardGridSkeleton';
+import routes from '../../../constants/routes';
 import { usePlaceDetail } from '../../../hooks/usePlaceDetail';
 
 function PlacePage() {
@@ -22,6 +24,7 @@ function PlacePage() {
 
   return (
     <div className="space-y-8">
+      <BackLink to={routes.places} label={t('places.back')} />
       <PlaceHeader place={place} deletion={deletion} />
       <PlaceMap place={place} />
       <section className="space-y-4">

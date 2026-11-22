@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, ImageCropDialog, Label } from '@hatohui/ui';
+import { Button, ImageCropDialog } from '@hatohui/ui';
 import { Crop, ImagePlus, Loader2, X } from 'lucide-react';
 import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
 import type { useDishPhoto } from '../../hooks/useDishPhoto';
 import { useImagePaste } from '../../hooks/useImagePaste';
+import FieldLabel from '../shared/FieldLabel';
 
 interface Props {
   photo: ReturnType<typeof useDishPhoto>;
@@ -21,7 +22,7 @@ function DishPhotoField({ photo }: Props) {
 
   return (
     <div className="space-y-1.5">
-      <Label>{t('dishes.photo')}</Label>
+      <FieldLabel optional>{t('dishes.photo')}</FieldLabel>
       <input
         ref={inputRef}
         type="file"

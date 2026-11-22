@@ -47,6 +47,7 @@ export function useDishPhoto(
 
   return {
     previewUrl,
+    isChanged: pendingFile !== null || key !== initialKey,
     pendingFile,
     isUploading,
     pickFile,

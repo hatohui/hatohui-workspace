@@ -8,11 +8,12 @@ import { useCuisineNames } from '../../hooks/useCuisineNames';
 import TagChipGroup from '../shared/TagChipGroup';
 import CreatorFilter from './CreatorFilter';
 import FilterChip from './FilterChip';
+import FilterChipsSkeleton from './FilterChipsSkeleton';
 import FilterSection from './FilterSection';
 
 function CatalogFilters({ filters }: { filters: Filters }) {
   const { t } = useTranslation();
-  const cuisineNames = useCuisineNames();
+  const cuisines = useCuisineNames();
   const tags = useTagOptions();
 
   return (
@@ -26,20 +27,29 @@ function CatalogFilters({ filters }: { filters: Filters }) {
         />
       </FilterSection>
       <FilterSection title={t('form.diets')}>
-        <TagChipGroup
-          label={t('form.diets')}
-          options={tags.dietKeys}
-          selected={filters.diets}
-          labelOf={tags.labelOf}
-          iconOf={(tag) => DIET_ICONS[tag]}
-          onToggle={filters.toggleDiet}
-        />
+        {tags.isLoading ? (
+          <FilterChipsSkeleton />
+        ) : (
+          <TagChipGroup
+            label={t('form.diets')}
+            options={tags.dietKeys}
+            selected={filters.diets}
+            labelOf={tags.labelOf}
+            iconOf={(tag) => DIET_ICONS[tag]}
+            onToggle={filters.toggleDiet}
+          />
+        )}
       </FilterSection>
-      {cuisineNames.length > 0 && (
+      {cuisines.isLoading && (
+        <FilterSection title={t('form.cuisines')}>
+          <FilterChipsSkeleton />
+        </FilterSection>
+      )}
+      {cuisines.names.length > 0 && (
         <FilterSection title={t('form.cuisines')}>
           <TagChipGroup
             label={t('form.cuisines')}
-            options={cuisineNames}
+            options={cuisines.names}
             selected={filters.cuisines}
             labelOf={(name) => name}
             onToggle={filters.toggleCuisine}
@@ -58,15 +68,19 @@ function CatalogFilters({ filters }: { filters: Filters }) {
         </FilterSection>
       )}
       <FilterSection title={t('catalog.avoidAllergens')}>
-        <TagChipGroup
-          label={t('catalog.avoidAllergens')}
-          tone="warning"
-          options={tags.allergenKeys}
-          selected={filters.avoid}
-          labelOf={tags.labelOf}
-          iconOf={(tag) => ALLERGEN_ICONS[tag]}
-          onToggle={filters.toggleAvoid}
-        />
+        {tags.isLoading ? (
+          <FilterChipsSkeleton />
+        ) : (
+          <TagChipGroup
+            label={t('catalog.avoidAllergens')}
+            tone="warning"
+            options={tags.allergenKeys}
+            selected={filters.avoid}
+            labelOf={tags.labelOf}
+            iconOf={(tag) => ALLERGEN_ICONS[tag]}
+            onToggle={filters.toggleAvoid}
+          />
+        )}
       </FilterSection>
       <FilterSection title={t('filters.addedBy')}>
         <CreatorFilter value={filters.by} onChange={filters.setBy} />
