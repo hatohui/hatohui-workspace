@@ -22,3 +22,6 @@ const routes = {
 };
 
 export default routes;
+
+export const ROUTE_PRELOAD_DELAY_MS = 2000;
+export const NAV_PROGRESS_DELAY_MS = 120;
