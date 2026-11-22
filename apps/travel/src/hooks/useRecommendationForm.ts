@@ -1,6 +1,10 @@
-import type { FormEvent } from 'react';
-import type { TravelRecommendationDto } from '@hatohui/models';
-import { useCatalogMatches } from './useCatalogMatches';
+import { useState, type FormEvent } from 'react';
+import type {
+  TravelDishDto,
+  TravelPlaceDto,
+  TravelRecommendationDto,
+} from '@hatohui/models';
+import { normalizeCatalogName, useCatalogMatches } from './useCatalogMatches';
 import { usePhotoList } from './usePhotoList';
 import { useRecommendationFields } from './useRecommendationFields';
 import { useSaveRecommendation } from './useSaveRecommendation';
@@ -20,10 +24,28 @@ export function useRecommendationForm(
   );
   const photos = usePhotoList(existing?.images ?? []);
   const matches = useCatalogMatches(fields.dishName, fields.placeName);
+  const [pickedDish, setPickedDish] = useState<TravelDishDto | null>(null);
+  const [pickedPlace, setPickedPlace] = useState<TravelPlaceDto | null>(null);
   const { save } = useSaveRecommendation(existing, onSaved);
+
+  const matchedDish =
+    matches.dish ??
+    (pickedDish &&
+    normalizeCatalogName(pickedDish.name) ===
+      normalizeCatalogName(fields.dishName)
+      ? pickedDish
+      : undefined);
+  const matchedPlace =
+    matches.place ??
+    (pickedPlace &&
+    normalizeCatalogName(pickedPlace.name) ===
+      normalizeCatalogName(fields.placeName)
+      ? pickedPlace
+      : undefined);
+
   const hasAreas = useHasAreas();
   const needsArea =
-    hasAreas && !existing && !matches.place && fields.areaId === '';
+    hasAreas && !existing && !matchedPlace && fields.areaId === '';
 
   const canSubmit =
     fields.dishName.trim() !== '' &&
@@ -33,7 +55,7 @@ export function useRecommendationForm(
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (!canSubmit) return;
-    save(fields, { dish: matches.dish, place: matches.place }, photos.photos);
+    save(fields, { dish: matchedDish, place: matchedPlace }, photos.photos);
   };
 
   return {
@@ -42,7 +64,13 @@ export function useRecommendationForm(
     set,
     toggle,
     photos,
-    matches,
+    matches: {
+      ...matches,
+      dish: matchedDish,
+      place: matchedPlace,
+    },
+    pickDish: (id: string) => setPickedDish(matches.findDishById(id)),
+    pickPlace: (id: string) => setPickedPlace(matches.findPlaceById(id)),
     canSubmit,
     isSaving: false,
     submit,
