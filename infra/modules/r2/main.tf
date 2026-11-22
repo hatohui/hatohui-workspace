@@ -28,3 +28,22 @@ resource "cloudflare_r2_bucket_cors" "this" {
     max_age_seconds = 3600
   }]
 }
+
+resource "cloudflare_r2_bucket_lifecycle" "this" {
+  account_id  = var.cloudflare_account_id
+  bucket_name = cloudflare_r2_bucket.this.name
+
+  rules = [{
+    id      = "expire-staged-uploads"
+    enabled = true
+    conditions = {
+      prefix = "uploads/"
+    }
+    delete_objects_transition = {
+      condition = {
+        max_age = 86400
+        type    = "Age"
+      }
+    }
+  }]
+}
