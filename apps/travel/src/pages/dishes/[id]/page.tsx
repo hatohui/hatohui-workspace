@@ -28,6 +28,7 @@ function DishPage() {
         </h2>
         <RecommendationGrid
           recommendations={dish.recommendations}
+          labelMode="place"
           isLoading={false}
           isError={false}
           onRetry={() => void refetch()}

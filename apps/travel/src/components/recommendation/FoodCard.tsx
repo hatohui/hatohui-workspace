@@ -1,17 +1,21 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
 import { Spinner, cn } from '@hatohui/ui';
+import { formatPlaceLocation } from '../../lib/formatPlaceLocation';
 import { isOptimisticId } from '../../lib/optimistic';
 import ImageFrame from '../shared/ImageFrame';
 
 interface Props {
   recommendation: TravelRecommendationDto;
+  labelMode?: 'dish' | 'place';
   onOpen: () => void;
 }
 
-function FoodCard({ recommendation: rec, onOpen }: Props) {
+function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
   const { t } = useTranslation();
   const isOptimistic = isOptimisticId(rec.id);
+  const title = labelMode === 'place' ? rec.place.name : rec.dish.name;
+  const sublabel = labelMode === 'place' ? formatPlaceLocation(rec.place) : '';
 
   return (
     <button
@@ -33,7 +37,7 @@ function FoodCard({ recommendation: rec, onOpen }: Props) {
             rec.dish.imageUrl ??
             null
           }
-          alt={rec.dish.name}
+          alt={title}
           square
         />
         {isOptimistic && (
@@ -43,9 +47,16 @@ function FoodCard({ recommendation: rec, onOpen }: Props) {
           </span>
         )}
       </div>
-      <span className="line-clamp-2 font-medium tracking-tight group-hover:underline">
-        {rec.dish.name}
-      </span>
+      <div className="space-y-0.5">
+        <span className="line-clamp-2 block font-medium tracking-tight group-hover:underline">
+          {title}
+        </span>
+        {sublabel && (
+          <span className="line-clamp-1 block text-xs text-muted-foreground">
+            {sublabel}
+          </span>
+        )}
+      </div>
     </button>
   );
 }

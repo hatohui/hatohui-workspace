@@ -11,6 +11,7 @@ import RecommendationSheet from './RecommendationSheet';
 
 interface Props {
   recommendations: TravelRecommendationDto[];
+  labelMode?: 'dish' | 'place';
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
@@ -47,6 +48,7 @@ function RecommendationGrid(props: Props) {
           <FoodCard
             key={rec.id}
             recommendation={rec}
+            labelMode={props.labelMode}
             onOpen={() => detail.show(rec.id)}
           />
         ))}
