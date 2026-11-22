@@ -293,7 +293,8 @@
     "countriesPlaceholder": "选择国家…",
     "noCountry": "无国家",
     "area": "城市 / 地区",
-    "noArea": "未指定地区"
+    "noArea": "未指定地区",
+    "photo": "图片"
   },
   "settings": {
     "tabs": {

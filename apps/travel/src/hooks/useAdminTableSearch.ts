@@ -4,6 +4,7 @@ import type { EditableColumn } from '@hatohui/ui';
 import type { SearchSuggestion } from './useSearchSuggest';
 
 function cellText<T>(row: T, column: EditableColumn<T>): string {
+  if (column.renderCell) return '';
   const rendered = column.render?.(row);
   if (rendered !== undefined) return rendered;
   const raw = row[column.key];
@@ -37,6 +38,7 @@ export function useAdminTableSearch<T extends { id: string; name: string }>(
     () =>
       rows.map((row) => {
         const extra = columns
+          .filter((column) => !column.renderCell)
           .slice(1, 3)
           .map((column) => cellText(row, column))
           .filter(Boolean)

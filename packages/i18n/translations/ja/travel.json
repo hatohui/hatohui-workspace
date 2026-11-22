@@ -293,7 +293,8 @@
     "countriesPlaceholder": "国を選択…",
     "noCountry": "国なし",
     "area": "都市・エリア",
-    "noArea": "エリアなし"
+    "noArea": "エリアなし",
+    "photo": "写真"
   },
   "settings": {
     "tabs": {

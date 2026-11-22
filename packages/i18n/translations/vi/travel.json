@@ -293,7 +293,8 @@
     "countriesPlaceholder": "Chọn quốc gia…",
     "noCountry": "Không có quốc gia",
     "area": "Thành phố / khu vực",
-    "noArea": "Chưa chọn khu vực"
+    "noArea": "Chưa chọn khu vực",
+    "photo": "Ảnh"
   },
   "settings": {
     "tabs": {

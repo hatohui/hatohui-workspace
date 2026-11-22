@@ -12,12 +12,14 @@ import { CUISINE_LIST_SEPARATOR } from '../constants/admin';
 import { MAX_CATEGORIES, MAX_CUISINES } from '../constants/travel';
 import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
+import { useAdminDishPhotos } from './useAdminDishPhotos';
 import { useCuisineSuggestions } from './useCuisineSuggestions';
 import { useFoodCategorySuggestions } from './useFoodCategorySuggestions';
 import { useRowDeletion } from './useRowDeletion';
 
 export interface DishRow {
   id: string;
+  thumbnailUrl: string | null;
   name: string;
   cuisines: string;
   categories: string;
@@ -41,9 +43,11 @@ export function useAdminDishes() {
   const suggestions = useCuisineSuggestions();
   const categorySuggestions = useFoodCategorySuggestions();
   const { run, runBulk } = useAdminAction();
+  const photo = useAdminDishPhotos(run);
 
   const rows: DishRow[] = (query.data?.data ?? []).map((dish) => ({
     id: dish.id,
+    thumbnailUrl: dish.thumbnailUrl ?? dish.imageUrl ?? null,
     name: dish.name,
     cuisines: dish.cuisines.join(`${CUISINE_LIST_SEPARATOR} `),
     categories: dish.categories.join(`${CUISINE_LIST_SEPARATOR} `),
@@ -53,6 +57,12 @@ export function useAdminDishes() {
   }));
 
   const columns: EditableColumn<DishRow>[] = [
+    {
+      key: 'thumbnailUrl',
+      label: t('admin.photo'),
+      fixed: true,
+      size: 76,
+    },
     {
       key: 'name',
       label: t('admin.name'),
@@ -147,5 +157,6 @@ export function useAdminDishes() {
     commit,
     add: (names: string[]) =>
       runBulk(() => bulk.mutateAsync({ data: { names } })),
+    photo,
   };
 }
