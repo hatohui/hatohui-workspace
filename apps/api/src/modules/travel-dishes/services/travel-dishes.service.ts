@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, ProcessType } from '@prisma/client';
+import { sortTravelCatalog } from '@/modules/travel-recommendations/utils/travel-catalog-sort';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { paginateList } from '@/common/utils/paginate';
@@ -174,6 +175,9 @@ export class TravelDishesService {
         )
       : rows;
     const dishes = matched.map((row) => this.toDto(row, scope));
+    if (query.sort && query.sort !== 'relevance') {
+      return sortTravelCatalog(dishes, query.sort, (dish) => dish.placeCount);
+    }
     if (!scope && !q) return dishes;
     return dishes.sort((a, b) => {
       if (scope) {

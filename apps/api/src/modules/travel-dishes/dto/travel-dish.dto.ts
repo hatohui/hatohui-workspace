@@ -17,6 +17,7 @@ import {
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
+import { TravelCatalogSortQueryDto } from '@/modules/travel-recommendations/dto/travel-catalog-sort-query.dto';
 import {
   TravelCreatorDto,
   TravelRecommendationDto,
@@ -143,7 +144,7 @@ const toList = ({ value }: { value: unknown }) =>
         .map((item) => item.trim())
         .filter(Boolean);
 
-export class TravelDishQueryDto {
+export class TravelDishQueryDto extends TravelCatalogSortQueryDto {
   @ApiProperty({ required: false, description: 'Match name or cuisine' })
   @IsOptional()
   @IsString()

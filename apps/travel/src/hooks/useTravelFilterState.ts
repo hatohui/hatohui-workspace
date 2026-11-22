@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useDebouncedValue } from '@hatohui/libs';
+import type { TravelCatalogSort } from '@hatohui/models';
+import { DEFAULT_CATALOG_SORT } from '../constants/food';
 import { SEARCH_DEBOUNCE_MS } from '../constants/travel';
 import { useMyAllergies } from './useMyAllergies';
 import { useSearchState } from './useSearchState';
@@ -20,6 +22,7 @@ export function useTravelFilterState() {
   const [placeCategories, setPlaceCategories] = useState<string[]>([]);
   const [by, setBy] = useState('');
   const [hideMine, setHideMine] = useState(false);
+  const [sort, setSort] = useState<TravelCatalogSort>(DEFAULT_CATALOG_SORT);
   const mine = useMyAllergies();
   const excluded = hideMine
     ? [...new Set([...avoid, ...mine.allergens])]
@@ -71,6 +74,7 @@ export function useTravelFilterState() {
       foodCategories: listOrUndefined(foodCategories),
       placeCategories: listOrUndefined(placeCategories),
       by: debouncedBy || undefined,
+      sort: sort === DEFAULT_CATALOG_SORT ? undefined : sort,
     },
     filters: {
       search,
@@ -87,6 +91,7 @@ export function useTravelFilterState() {
       foodCategories,
       toggleFoodCategory: (name: string) =>
         setFoodCategories((l) => toggled(l, name)),
+      clearFoodCategories: () => setFoodCategories([]),
       placeCategories,
       togglePlaceCategory: (name: string) =>
         setPlaceCategories((l) => toggled(l, name)),
@@ -97,6 +102,8 @@ export function useTravelFilterState() {
       myAllergenCount: mine.allergens.length,
       activeCount,
       clearFilters,
+      sort,
+      setSort,
     },
     isFiltered: Boolean(query) || activeCount > 0,
   };

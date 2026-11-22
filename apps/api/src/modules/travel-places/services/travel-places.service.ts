@@ -8,6 +8,7 @@ import { matchesSearch, searchMatchRank } from '@/common/utils/text-search';
 import { MapsLinkPreviewDto } from '@/modules/travel-places/dto/maps-link-preview.dto';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names';
+import { sortTravelCatalog } from '@/modules/travel-recommendations/utils/travel-catalog-sort';
 import { MAPS_LINK_ENTRY } from '@/modules/travel-places/travel-places.constants';
 import {
   toTravelPlaceAreaDto,
@@ -107,7 +108,11 @@ export class TravelPlacesService {
               b.id.localeCompare(a.id),
           )
       : rows;
-    return matched.map((row) => this.toDto(row));
+    return sortTravelCatalog(
+      matched.map((row) => this.toDto(row)),
+      query.sort,
+      (place) => place.dishCount,
+    );
   }
 
   async listPage(

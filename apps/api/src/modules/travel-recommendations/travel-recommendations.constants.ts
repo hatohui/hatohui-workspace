@@ -14,3 +14,12 @@ export const TRAVEL_PRICE_LEVELS = ['LOW', 'MID', 'HIGH'] as const;
 
 export const TRAVEL_BULK_MAX_ITEMS = 50;
 export const TRAVEL_COUNTRY_CODE_PATTERN = /^([A-Za-z]{2})?$/;
+
+export const TRAVEL_CATALOG_SORTS = [
+  'relevance',
+  'newest',
+  'oldest',
+  'name',
+  'popular',
+] as const;
+export type TravelCatalogSort = (typeof TRAVEL_CATALOG_SORTS)[number];

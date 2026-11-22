@@ -19,6 +19,8 @@
     "empty": "Nothing here yet.",
     "emptyFiltered": "No food matches these filters.",
     "clearFilters": "Clear filters",
+    "clearFiltersCount_one": "Clear {{count}} filter",
+    "clearFiltersCount_other": "Clear {{count}} filters",
     "searchSuggestions": "Suggestions",
     "clearSearch": "Clear search",
     "avoidAllergens": "Avoid allergens",
@@ -35,7 +37,16 @@
     "placeTotal_one": "{{count}} place",
     "placeTotal_other": "{{count}} places",
     "groupByCategory": "Group by category",
-    "uncategorized": "Uncategorized"
+    "uncategorized": "Uncategorized",
+    "sort": {
+      "label": "Sort by",
+      "relevance": "Recommended",
+      "popularDishes": "Most places",
+      "popularPlaces": "Most dishes",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "name": "Name A–Z"
+    }
   },
   "recommendation": {
     "noEstimate": "No price yet",
@@ -231,7 +242,9 @@
     "addedBy": "Added by",
     "handlePlaceholder": "handle",
     "showMore": "+{{count}} more",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "allCategories": "All",
+    "removeCategory": "Remove {{name}} filter"
   },
   "admin": {
     "title": "Admin",

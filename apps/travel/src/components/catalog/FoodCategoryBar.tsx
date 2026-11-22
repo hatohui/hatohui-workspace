@@ -1,16 +1,16 @@
 import { useTranslation } from '@hatohui/i18n';
-import { cn } from '@hatohui/ui';
-import { Check } from 'lucide-react';
-import { CHIP_BASE, CHIP_IDLE, CHIP_SELECTED } from '../../constants/chips';
+import { LayoutGrid, X } from 'lucide-react';
 import { useFoodCategoryNames } from '../../hooks/useFoodCategoryNames';
+import CategoryPill from './CategoryPill';
 import FilterChipsSkeleton from './FilterChipsSkeleton';
 
 interface Props {
   selected: readonly string[];
   onToggle: (category: string) => void;
+  onClear: () => void;
 }
 
-function FoodCategoryBar({ selected, onToggle }: Props) {
+function FoodCategoryBar({ selected, onToggle, onClear }: Props) {
   const { t } = useTranslation();
   const foodCategories = useFoodCategoryNames();
 
@@ -23,21 +23,25 @@ function FoodCategoryBar({ selected, onToggle }: Props) {
     <div
       role="group"
       aria-label={t('filters.foodCategories')}
-      className="flex flex-nowrap items-center gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:pb-0"
+      className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:pb-0"
     >
+      <CategoryPill selected={selected.length === 0} onClick={onClear}>
+        <LayoutGrid className="size-4 shrink-0" aria-hidden />
+        <span>{t('filters.allCategories')}</span>
+      </CategoryPill>
+      <span aria-hidden className="mx-0.5 h-5 w-px shrink-0 bg-border" />
       {foodCategories.names.map((name) => {
         const isOn = selected.includes(name);
         return (
-          <button
+          <CategoryPill
             key={name}
-            type="button"
-            aria-pressed={isOn}
+            selected={isOn}
             onClick={() => onToggle(name)}
-            className={cn(CHIP_BASE, isOn ? CHIP_SELECTED : CHIP_IDLE)}
+            label={isOn ? t('filters.removeCategory', { name }) : undefined}
           >
-            {isOn && <Check className="size-3.5 shrink-0" aria-hidden />}
             <span>{name}</span>
-          </button>
+            {isOn && <X className="-mr-1 size-3.5 shrink-0" aria-hidden />}
+          </CategoryPill>
         );
       })}
     </div>

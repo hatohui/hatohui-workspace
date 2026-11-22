@@ -14,6 +14,7 @@
     "empty": "这里还没有内容。",
     "emptyFiltered": "没有符合筛选条件的美食。",
     "clearFilters": "清除筛选",
+    "clearFiltersCount_other": "清除 {{count}} 个筛选",
     "searchSuggestions": "推荐",
     "clearSearch": "清除搜索",
     "avoidAllergens": "避开过敏原",
@@ -30,7 +31,16 @@
     "placeTotal_one": "{{count}} 家店",
     "placeTotal_other": "{{count}} 家店",
     "groupByCategory": "按分类分组",
-    "uncategorized": "未分类"
+    "uncategorized": "未分类",
+    "sort": {
+      "label": "排序",
+      "relevance": "推荐",
+      "popularDishes": "餐厅最多",
+      "popularPlaces": "菜品最多",
+      "newest": "最新",
+      "oldest": "最早",
+      "name": "名称 A–Z"
+    }
   },
   "recommendation": {
     "noEstimate": "暂无价格",
@@ -226,7 +236,9 @@
     "addedBy": "添加者",
     "handlePlaceholder": "用户名",
     "showMore": "另外 {{count}} 个",
-    "showLess": "收起"
+    "showLess": "收起",
+    "allCategories": "全部",
+    "removeCategory": "移除 {{name}} 筛选"
   },
   "admin": {
     "title": "管理",

@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router';
 import {
+  CATALOG_PAGE_PARAM,
   DEFAULT_FOOD_VIEW,
   FOOD_GROUP_CATEGORY,
   FOOD_GROUP_PARAM,
@@ -19,6 +20,7 @@ export function useFoodView() {
       (prev) => {
         const updated = new URLSearchParams(prev);
         updated.set(FOOD_VIEW_PARAM, next);
+        updated.delete(CATALOG_PAGE_PARAM);
         return updated;
       },
       { replace: true },

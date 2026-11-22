@@ -255,6 +255,7 @@ export * from './travelAllergiesDto';
 export * from './travelAreaDto';
 export * from './travelBulkNamesDto';
 export * from './travelBulkResultDto';
+export * from './travelCatalogSort';
 export * from './travelCountryDto';
 export * from './travelCountrySettingDto';
 export * from './travelCreatorDto';
