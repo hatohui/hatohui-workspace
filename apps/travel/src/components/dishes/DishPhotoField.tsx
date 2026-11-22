@@ -4,6 +4,7 @@ import { Button, Label } from '@hatohui/ui';
 import { ImagePlus, Loader2, X } from 'lucide-react';
 import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
 import { useDishPhoto } from '../../hooks/useDishPhoto';
+import { useImagePaste } from '../../hooks/useImagePaste';
 
 interface Props {
   initialKey: string | null;
@@ -16,6 +17,9 @@ function DishPhotoField({ initialKey, initialUrl, onChange }: Props) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const photo = useDishPhoto(initialKey, initialUrl, onChange);
+  useImagePaste((files) => {
+    if (files[0]) void photo.pickFile(files[0]);
+  }, !photo.isUploading);
 
   return (
     <div className="space-y-1.5">
