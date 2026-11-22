@@ -1,3 +1,4 @@
+import type { TravelTagKind } from '@prisma/client';
 import type { UpdateTravelRecommendationDto } from '@/modules/travel-recommendations/dto/travel-recommendation-input.dto';
 
 export function travelPriceRange(
@@ -20,25 +21,21 @@ export function travelRecommendationDetails(
     priceLevel: dto.priceLevel,
     currency: dto.currency,
     spicy: dto.spicy,
+    vegetarian: dto.vegetarian,
   };
 }
 
 export function travelTagKeys(
-  resolved: { diets?: string[]; allergens?: string[]; tags?: string[] },
-  current: { key: string; kind: 'DIET' | 'ALLERGEN' | 'GENERAL' }[],
+  resolved: { allergens?: string[]; tags?: string[] },
+  current: { key: string; kind: TravelTagKind }[],
 ): string[] | undefined {
-  if (
-    resolved.diets === undefined &&
-    resolved.allergens === undefined &&
-    resolved.tags === undefined
-  ) {
+  if (resolved.allergens === undefined && resolved.tags === undefined) {
     return undefined;
   }
-  const keep = (kind: 'DIET' | 'ALLERGEN' | 'GENERAL') =>
+  const keep = (kind: TravelTagKind) =>
     current.filter((tag) => tag.kind === kind).map((tag) => tag.key);
   return [
     ...new Set([
-      ...(resolved.diets ?? keep('DIET')),
       ...(resolved.allergens ?? keep('ALLERGEN')),
       ...(resolved.tags ?? keep('GENERAL')),
     ]),

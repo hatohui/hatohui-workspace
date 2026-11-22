@@ -2464,15 +2464,12 @@
             }
           },
           {
-            "name": "diets",
+            "name": "vegetarian",
             "required": false,
             "in": "query",
-            "description": "Only dishes with a recommendation meeting every listed diet",
+            "description": "Only dishes with a vegetarian recommendation",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "boolean"
             }
           },
           {
@@ -2503,7 +2500,7 @@
             "name": "areaId",
             "required": false,
             "in": "query",
-            "description": "Dishes from this area's country or served in this area, sorted by local availability",
+            "description": "Dishes whose cuisines belong to this area or its country, or served in this area; sorted by local availability",
             "schema": {
               "type": "string"
             }
@@ -2512,7 +2509,7 @@
             "name": "countryId",
             "required": false,
             "in": "query",
-            "description": "Dishes from this country or served in it, sorted by local availability",
+            "description": "Dishes whose cuisines belong to this country, or served in it; sorted by local availability",
             "schema": {
               "type": "string"
             }
@@ -2741,14 +2738,6 @@
             }
           },
           {
-            "name": "city",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "by",
             "required": false,
             "in": "query",
@@ -2801,15 +2790,11 @@
             }
           },
           {
-            "name": "diets",
+            "name": "vegetarian",
             "required": false,
             "in": "query",
-            "description": "Only dishes that meet every listed diet",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "boolean"
             }
           },
           {
@@ -7165,15 +7150,11 @@
             }
           },
           {
-            "name": "diets",
+            "name": "vegetarian",
             "required": false,
             "in": "query",
-            "description": "Only dishes that meet every listed diet",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "boolean"
             }
           },
           {
@@ -7204,7 +7185,7 @@
             "name": "q",
             "required": false,
             "in": "query",
-            "description": "Match name, address or city",
+            "description": "Match name or address",
             "schema": {
               "type": "string"
             }
@@ -10796,22 +10777,6 @@
           }
         }
       },
-      "TravelDishCountryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Vietnam"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ]
-      },
       "TravelCreatorDto": {
         "type": "object",
         "properties": {
@@ -10878,15 +10843,6 @@
             "nullable": true,
             "description": "Places in the requested area or country; null when no location was given"
           },
-          "country": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelDishCountryDto"
-              }
-            ]
-          },
           "imageKey": {
             "type": "string",
             "nullable": true
@@ -10929,7 +10885,6 @@
           "allergens",
           "placeCount",
           "localPlaceCount",
-          "country",
           "imageKey",
           "imageUrl",
           "thumbnailUrl",
@@ -11028,10 +10983,6 @@
             "type": "string",
             "nullable": true
           },
-          "city": {
-            "type": "string",
-            "nullable": true
-          },
           "mapsUrl": {
             "type": "string",
             "nullable": true
@@ -11050,7 +11001,6 @@
           "name",
           "area",
           "address",
-          "city",
           "mapsUrl",
           "latitude",
           "longitude"
@@ -11139,12 +11089,8 @@
           "spicy": {
             "type": "boolean"
           },
-          "diets": {
-            "description": "Diet tag keys, e.g. vegetarian",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "vegetarian": {
+            "type": "boolean"
           },
           "allergens": {
             "description": "Allergen tag keys the dish contains, e.g. peanuts",
@@ -11190,7 +11136,7 @@
           "priceLevel",
           "currency",
           "spicy",
-          "diets",
+          "vegetarian",
           "allergens",
           "tags",
           "images",
@@ -11236,15 +11182,6 @@
             "type": "number",
             "nullable": true,
             "description": "Places in the requested area or country; null when no location was given"
-          },
-          "country": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelDishCountryDto"
-              }
-            ]
           },
           "imageKey": {
             "type": "string",
@@ -11294,7 +11231,6 @@
           "allergens",
           "placeCount",
           "localPlaceCount",
-          "country",
           "imageKey",
           "imageUrl",
           "thumbnailUrl",
@@ -11356,11 +11292,6 @@
             "type": "string",
             "maxLength": 2000
           },
-          "countryId": {
-            "type": "string",
-            "nullable": true,
-            "description": "Home country of the dish, or null to clear"
-          },
           "imageKey": {
             "type": "string",
             "nullable": true,
@@ -11389,11 +11320,6 @@
           "description": {
             "type": "string",
             "maxLength": 2000
-          },
-          "countryId": {
-            "type": "string",
-            "nullable": true,
-            "description": "Home country of the dish, or null to clear"
           },
           "imageKey": {
             "type": "string",
@@ -11521,12 +11447,8 @@
           "spicy": {
             "type": "boolean"
           },
-          "diets": {
-            "description": "Diet tag keys",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "vegetarian": {
+            "type": "boolean"
           },
           "allergens": {
             "description": "Allergen tag keys or names",
@@ -11599,12 +11521,8 @@
           "spicy": {
             "type": "boolean"
           },
-          "diets": {
-            "description": "Diet tag keys",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "vegetarian": {
+            "type": "boolean"
           },
           "allergens": {
             "description": "Allergen tag keys or names",
@@ -11648,6 +11566,16 @@
             "type": "number",
             "description": "Dishes tagged with this cuisine"
           },
+          "countryId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Country this cuisine belongs to; null for styles like cafe"
+          },
+          "areaId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Area for a regional cuisine; implies its country"
+          },
           "createdAt": {
             "format": "date-time",
             "type": "string"
@@ -11657,6 +11585,8 @@
           "id",
           "name",
           "dishCount",
+          "countryId",
+          "areaId",
           "createdAt"
         ]
       },
@@ -11666,11 +11596,17 @@
           "name": {
             "type": "string",
             "maxLength": 120
+          },
+          "countryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "areaId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Setting an area also sets its country"
           }
-        },
-        "required": [
-          "name"
-        ]
+        }
       },
       "TravelEventDto": {
         "type": "object",
@@ -15826,7 +15762,6 @@
       "TravelTagKind": {
         "type": "string",
         "enum": [
-          "DIET",
           "ALLERGEN",
           "GENERAL"
         ]
@@ -15934,10 +15869,6 @@
             "type": "string",
             "nullable": true
           },
-          "city": {
-            "type": "string",
-            "nullable": true
-          },
           "mapsUrl": {
             "type": "string",
             "nullable": true
@@ -15984,7 +15915,6 @@
           "name",
           "area",
           "address",
-          "city",
           "mapsUrl",
           "latitude",
           "longitude",
@@ -16015,10 +15945,6 @@
             ]
           },
           "address": {
-            "type": "string",
-            "nullable": true
-          },
-          "city": {
             "type": "string",
             "nullable": true
           },
@@ -16074,7 +16000,6 @@
           "name",
           "area",
           "address",
-          "city",
           "mapsUrl",
           "latitude",
           "longitude",

@@ -31,8 +31,7 @@ export interface TravelRecommendationDto {
   priceLevel: TravelPriceLevel | null;
   currency: string;
   spicy: boolean;
-  /** Diet tag keys, e.g. vegetarian */
-  diets: string[];
+  vegetarian: boolean;
   /** Allergen tag keys the dish contains, e.g. peanuts */
   allergens: string[];
   /** General tag keys, e.g. bread, meat */

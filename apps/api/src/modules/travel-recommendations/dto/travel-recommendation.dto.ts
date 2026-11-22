@@ -85,9 +85,6 @@ export class TravelPlaceSummaryDto {
   address!: string | null;
 
   @ApiProperty({ nullable: true, type: String })
-  city!: string | null;
-
-  @ApiProperty({ nullable: true, type: String })
   mapsUrl!: string | null;
 
   @ApiProperty({ nullable: true, type: Number })
@@ -138,11 +135,8 @@ export class TravelRecommendationDto {
   @ApiProperty()
   spicy!: boolean;
 
-  @ApiProperty({
-    type: [String],
-    description: 'Diet tag keys, e.g. vegetarian',
-  })
-  diets!: string[];
+  @ApiProperty()
+  vegetarian!: boolean;
 
   @ApiProperty({
     type: [String],

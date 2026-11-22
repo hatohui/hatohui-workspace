@@ -258,7 +258,6 @@ export * from './travelCountrySettingDto';
 export * from './travelCreatorDto';
 export * from './travelCuisineDto';
 export * from './travelCustomHolidayDto';
-export * from './travelDishCountryDto';
 export * from './travelDishDetailDto';
 export * from './travelDishDto';
 export * from './travelDishesParams';

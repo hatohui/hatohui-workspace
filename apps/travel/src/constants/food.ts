@@ -24,6 +24,4 @@ export const FOOD_VIEW_OPTIONS: Record<
   },
 };
 
-export const VEGETARIAN_TAG = 'vegetarian';
-
 export const BROWSE_FOOD_IMAGE_COUNT = 3;

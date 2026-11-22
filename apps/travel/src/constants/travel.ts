@@ -6,15 +6,11 @@ import {
   Bean,
   Egg,
   Fish,
-  Leaf,
   Milk,
-  MilkOff,
   Nut,
   Shell,
-  ShieldCheck,
   Sprout,
   Wheat,
-  WheatOff,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -24,20 +20,9 @@ export const DEFAULT_CURRENCY: Currency = 'VND';
 
 export const PRICE_LEVELS = Object.values(TravelPriceLevel);
 export const TAG_KIND_NAMESPACE = {
-  DIET: 'diet',
   ALLERGEN: 'allergen',
   GENERAL: 'tag',
 } as const;
-
-export const DIET_ICONS: Partial<Record<string, LucideIcon>> = {
-  vegetarian: Leaf,
-  vegan: Sprout,
-  pescatarian: Fish,
-  halal: ShieldCheck,
-  kosher: ShieldCheck,
-  'gluten-free': WheatOff,
-  'dairy-free': MilkOff,
-};
 
 export const ALLERGEN_ICONS: Partial<Record<string, LucideIcon>> = {
   peanuts: Nut,

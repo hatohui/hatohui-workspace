@@ -15,7 +15,7 @@ export function usePlaceList(state: TravelFilterState, enabled: boolean) {
       places.map((place) => ({
         id: place.id,
         label: place.name,
-        sublabel: place.area?.name ?? place.city,
+        sublabel: place.area?.name ?? null,
         imageUrl: place.coverImageUrl,
       })),
     [places],

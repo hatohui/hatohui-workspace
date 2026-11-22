@@ -29,8 +29,7 @@ export interface UpdateTravelRecommendationDto {
   priceLevel?: TravelPriceLevel | null;
   currency?: UpdateTravelRecommendationDtoCurrency;
   spicy?: boolean;
-  /** Diet tag keys */
-  diets?: string[];
+  vegetarian?: boolean;
   /** Allergen tag keys or names */
   allergens?: string[];
   /** General tag keys or names (e.g. bread, meat) */

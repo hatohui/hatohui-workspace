@@ -62,11 +62,11 @@ export class TravelCuisinesController {
   @UseGuards(TravelEditorGuard)
   @ApiOperation({ operationId: 'updateTravelCuisine' })
   @ApiOkResponse({ type: TravelCuisineDto })
-  rename(
+  update(
     @Param('id') id: string,
     @Body() dto: UpdateTravelCuisineDto,
   ): Promise<TravelCuisineDto> {
-    return this.cuisines.rename(id, dto.name);
+    return this.cuisines.update(id, dto);
   }
 
   @Delete(':id')

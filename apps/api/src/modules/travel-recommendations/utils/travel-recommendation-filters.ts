@@ -13,7 +13,6 @@ export function travelRecommendationWhere(
 ): Prisma.TravelRecommendationWhereInput {
   const q = query.q?.trim();
   const and: Prisma.TravelRecommendationWhereInput[] = [
-    ...(query.diets ?? []).map((key) => ({ tags: { some: { key } } })),
     ...(query.tags ?? []).map((key) => ({ tags: { some: { key } } })),
   ];
   if (query.excludeAllergens?.length) {
@@ -39,8 +38,8 @@ export function travelRecommendationWhere(
     dishId: query.dishId,
     placeId: query.placeId,
     spicy: query.spicy || undefined,
+    vegetarian: query.vegetarian || undefined,
     createdBy: travelCreatorFilter(query.by),
-    place: query.city ? { city: contains(query.city) } : undefined,
     AND: and.length ? and : undefined,
     OR: q
       ? [

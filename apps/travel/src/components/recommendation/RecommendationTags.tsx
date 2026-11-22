@@ -1,11 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
-import { Flame, Tag } from 'lucide-react';
-import { DIET_ICONS } from '../../constants/travel';
+import { Flame, Leaf, Tag } from 'lucide-react';
 import { useTagOptions } from '../../hooks/useTagOptions';
-import TagChipIcon from '../shared/TagChipIcon';
 
-type Tags = Pick<TravelRecommendationDto, 'spicy' | 'diets' | 'tags'>;
+type Tags = Pick<TravelRecommendationDto, 'spicy' | 'vegetarian' | 'tags'>;
 
 const chipClass =
   'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs';
@@ -13,7 +11,7 @@ const chipClass =
 function RecommendationTags({ tags }: { tags: Tags }) {
   const { t } = useTranslation();
   const { labelOf } = useTagOptions();
-  if (!tags.spicy && !tags.diets.length && !tags.tags.length) return null;
+  if (!tags.spicy && !tags.vegetarian && !tags.tags.length) return null;
 
   return (
     <ul className="flex flex-wrap gap-1">
@@ -25,15 +23,14 @@ function RecommendationTags({ tags }: { tags: Tags }) {
           {t('catalog.spicy')}
         </li>
       )}
-      {tags.diets.map((diet) => (
+      {tags.vegetarian && (
         <li
-          key={diet}
           className={`${chipClass} bg-green-600/10 text-green-800 dark:text-green-300`}
         >
-          <TagChipIcon icon={DIET_ICONS[diet]} />
-          {labelOf(diet)}
+          <Leaf className="size-3.5" aria-hidden />
+          {t('catalog.vegetarian')}
         </li>
-      ))}
+      )}
       {tags.tags.map((tag) => (
         <li
           key={tag}

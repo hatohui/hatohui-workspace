@@ -1,9 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Flame, Leaf } from 'lucide-react';
-import { VEGETARIAN_TAG } from '../../constants/food';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
-import { withTag } from '../../lib/withTag';
 import FilterChip from '../catalog/FilterChip';
 import FormSection from '../shared/FormSection';
 import TagGroupInput from './TagGroupInput';
@@ -31,10 +29,8 @@ function TagFields({ fields, set }: Props) {
         <FilterChip
           icon={Leaf}
           label={t('catalog.vegetarian')}
-          pressed={fields.diets.includes(VEGETARIAN_TAG)}
-          onChange={(on) =>
-            set('diets', withTag(fields.diets, VEGETARIAN_TAG, on))
-          }
+          pressed={fields.vegetarian}
+          onChange={(vegetarian) => set('vegetarian', vegetarian)}
         />
       </div>
       <div className="grid gap-4 md:grid-cols-2">

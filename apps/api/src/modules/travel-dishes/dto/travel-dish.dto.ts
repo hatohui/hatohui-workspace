@@ -19,14 +19,6 @@ import {
   TravelRecommendationDto,
 } from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
 
-export class TravelDishCountryDto {
-  @ApiProperty()
-  id!: string;
-
-  @ApiProperty({ example: 'Vietnam' })
-  name!: string;
-}
-
 export class TravelDishDto {
   @ApiProperty()
   id!: string;
@@ -56,9 +48,6 @@ export class TravelDishDto {
       'Places in the requested area or country; null when no location was given',
   })
   localPlaceCount!: number | null;
-
-  @ApiProperty({ type: TravelDishCountryDto, nullable: true })
-  country!: TravelDishCountryDto | null;
 
   @ApiProperty({ nullable: true, type: String })
   imageKey!: string | null;
@@ -112,16 +101,6 @@ export class CreateTravelDishDto {
   @IsString()
   @MaxLength(TRAVEL_NOTE_MAX_LENGTH)
   description?: string;
-
-  @ApiProperty({
-    required: false,
-    nullable: true,
-    type: String,
-    description: 'Home country of the dish, or null to clear',
-  })
-  @IsOptional()
-  @IsString()
-  countryId?: string | null;
 
   @ApiProperty({
     required: false,
@@ -181,13 +160,12 @@ export class TravelDishQueryDto {
 
   @ApiProperty({
     required: false,
-    type: [String],
-    description: 'Only dishes with a recommendation meeting every listed diet',
+    description: 'Only dishes with a vegetarian recommendation',
   })
   @IsOptional()
-  @Transform(toList)
-  @IsString({ each: true })
-  diets?: string[];
+  @Transform(toBoolean)
+  @IsBoolean()
+  vegetarian?: boolean;
 
   @ApiProperty({
     required: false,
@@ -213,7 +191,7 @@ export class TravelDishQueryDto {
   @ApiProperty({
     required: false,
     description:
-      "Dishes from this area's country or served in this area, sorted by local availability",
+      'Dishes whose cuisines belong to this area or its country, or served in this area; sorted by local availability',
   })
   @IsOptional()
   @IsString()
@@ -222,7 +200,7 @@ export class TravelDishQueryDto {
   @ApiProperty({
     required: false,
     description:
-      'Dishes from this country or served in it, sorted by local availability',
+      'Dishes whose cuisines belong to this country, or served in it; sorted by local availability',
   })
   @IsOptional()
   @IsString()

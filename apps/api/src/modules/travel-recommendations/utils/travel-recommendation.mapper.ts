@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma, TravelTagKind } from '@prisma/client';
 import type { TravelRecommendationDto } from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
 import {
   toTravelCreatorDto,
@@ -31,7 +31,6 @@ export const travelRecommendationInclude = {
       name: true,
       area: travelPlaceAreaSelect,
       address: true,
-      city: true,
       mapsUrl: true,
       latitude: true,
       longitude: true,
@@ -61,7 +60,7 @@ export function toTravelRecommendationDto(
   row: TravelRecommendationRow,
   publicUrlOf: (key: string) => string,
 ): TravelRecommendationDto {
-  const tagsOf = (kind: 'DIET' | 'ALLERGEN' | 'GENERAL') =>
+  const tagsOf = (kind: TravelTagKind) =>
     row.tags.filter((tag) => tag.kind === kind).map((tag) => tag.key);
 
   return {
@@ -89,7 +88,7 @@ export function toTravelRecommendationDto(
     priceLevel: row.priceLevel,
     currency: row.currency,
     spicy: row.spicy,
-    diets: tagsOf('DIET'),
+    vegetarian: row.vegetarian,
     allergens: tagsOf('ALLERGEN'),
     tags: tagsOf('GENERAL'),
     images: row.images.map(

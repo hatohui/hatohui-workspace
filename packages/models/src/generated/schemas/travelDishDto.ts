@@ -6,7 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { TravelCreatorDto } from './travelCreatorDto';
-import type { TravelDishCountryDto } from './travelDishCountryDto';
 
 export interface TravelDishDto {
   id: string;
@@ -23,8 +22,6 @@ export interface TravelDishDto {
      * @nullable
      */
   localPlaceCount: number | null;
-  /** @nullable */
-  country: TravelDishCountryDto | null;
   /** @nullable */
   imageKey: string | null;
   /** @nullable */

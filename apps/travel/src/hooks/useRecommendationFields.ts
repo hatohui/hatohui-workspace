@@ -22,7 +22,7 @@ export interface RecommendationFields {
   currency: Currency;
   note: string;
   spicy: boolean;
-  diets: string[];
+  vegetarian: boolean;
   allergens: string[];
   tags: string[];
 }
@@ -47,7 +47,7 @@ const fieldsFrom = (
   currency: (rec?.currency as Currency | undefined) ?? DEFAULT_CURRENCY,
   note: rec?.note ?? '',
   spicy: rec?.spicy ?? false,
-  diets: rec?.diets ?? [],
+  vegetarian: rec?.vegetarian ?? false,
   allergens: rec?.allergens ?? [],
   tags: rec?.tags ?? [],
 });
@@ -64,7 +64,7 @@ export function useRecommendationFields(
     key: K,
     value: RecommendationFields[K],
   ) => setFields((current) => ({ ...current, [key]: value }));
-  const toggle = <K extends 'diets' | 'allergens'>(
+  const toggle = <K extends 'allergens'>(
     key: K,
     tag: RecommendationFields[K][number],
   ) =>

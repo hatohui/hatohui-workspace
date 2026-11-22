@@ -30,7 +30,6 @@ export async function travelPlaceData(dto: Partial<TravelPlaceInputDto>) {
     name: dto.name?.trim(),
     areaId: optional(dto.areaId),
     address: optional(dto.address),
-    city: optional(dto.city),
     note: optional(dto.note),
     mapsUrl,
     latitude: hasCoordinates ? dto.latitude : coordinate(location, 'latitude'),

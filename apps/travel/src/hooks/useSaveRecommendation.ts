@@ -42,7 +42,7 @@ const detailsOf = (fields: RecommendationFields, imageKeys: string[]) => {
     priceLevel: isRange ? null : fields.priceLevel,
     currency: fields.currency,
     spicy: fields.spicy,
-    diets: fields.diets,
+    vegetarian: fields.vegetarian,
     allergens: fields.allergens,
     tags: fields.tags,
     imageKeys,

@@ -12,7 +12,7 @@ const listOrUndefined = <T>(list: T[]) => (list.length ? list : undefined);
 export function useTravelFilterState() {
   const { search, setSearch, query } = useSearchState();
   const [spicy, setSpicy] = useState(false);
-  const [diets, setDiets] = useState<string[]>([]);
+  const [vegetarian, setVegetarian] = useState(false);
   const [avoid, setAvoid] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [cuisines, setCuisines] = useState<string[]>([]);
@@ -26,7 +26,7 @@ export function useTravelFilterState() {
 
   const activeCount =
     Number(spicy) +
-    diets.length +
+    Number(vegetarian) +
     avoid.length +
     tags.length +
     cuisines.length +
@@ -36,7 +36,7 @@ export function useTravelFilterState() {
   const clearFilters = () => {
     setSearch('');
     setSpicy(false);
-    setDiets([]);
+    setVegetarian(false);
     setAvoid([]);
     setTags([]);
     setCuisines([]);
@@ -48,7 +48,7 @@ export function useTravelFilterState() {
     queryParams: {
       q: query,
       spicy: spicy || undefined,
-      diets: listOrUndefined(diets),
+      vegetarian: vegetarian || undefined,
       excludeAllergens: listOrUndefined(excluded),
       tags: listOrUndefined(tags),
       cuisines: listOrUndefined(cuisines),
@@ -59,8 +59,8 @@ export function useTravelFilterState() {
       setSearch,
       spicy,
       setSpicy,
-      diets,
-      toggleDiet: (tag: string) => setDiets((l) => toggled(l, tag)),
+      vegetarian,
+      setVegetarian,
       avoid,
       toggleAvoid: (tag: string) => setAvoid((l) => toggled(l, tag)),
       tags,

@@ -20,7 +20,7 @@ function PlaceForm({ place, onClose }: Props) {
     <DialogForm
       title={t('places.editTitle')}
       onSubmit={(event) => void form.submit(event)}
-      canSubmit={form.values.name.trim() !== ''}
+      canSubmit={form.canSubmit}
       isSaving={form.isSaving}
       onCancel={onClose}
     >

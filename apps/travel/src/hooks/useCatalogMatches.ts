@@ -50,7 +50,7 @@ export function useCatalogMatches(dishName: string, placeName: string) {
       places.map((p) => ({
         id: p.id,
         label: p.name,
-        sublabel: p.area?.name ?? p.city,
+        sublabel: p.area?.name ?? null,
         imageUrl: p.coverImageUrl,
       })),
     [places],

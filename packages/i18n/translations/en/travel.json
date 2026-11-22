@@ -138,8 +138,6 @@
     "description": "Description",
     "deleteTitle": "Delete this dish?",
     "deleteDescription": "{{name}} and every recommendation for it will be removed.",
-    "country": "Country",
-    "noCountry": "No country",
     "placesHere_one": "{{count}} place here",
     "placesHere_other": "{{count}} places here",
     "notFoundHere": "Not found here yet",
@@ -161,7 +159,6 @@
     "editTitle": "Edit place",
     "name": "Name",
     "address": "Address",
-    "city": "City",
     "note": "Note",
     "deleteTitle": "Delete this place?",
     "deleteDescription": "{{name}} and every recommendation there will be removed.",
@@ -175,15 +172,6 @@
     "LOW": "Low price",
     "MID": "Mid price",
     "HIGH": "High price"
-  },
-  "diet": {
-    "vegetarian": "Vegetarian",
-    "vegan": "Vegan",
-    "pescatarian": "Pescatarian",
-    "halal": "Halal",
-    "kosher": "Kosher",
-    "gluten-free": "Gluten-free",
-    "dairy-free": "Dairy-free"
   },
   "allergen": {
     "peanuts": "Peanuts",
@@ -262,7 +250,6 @@
     "columns": "Columns",
     "mapsLink": "Maps link",
     "kinds": {
-      "DIET": "Diet",
       "ALLERGEN": "Allergen",
       "GENERAL": "Tag"
     },
@@ -297,7 +284,11 @@
       "activities": "{{count}} activities",
       "deleteTitle": "Delete plan {{name}}?",
       "deleteDescription": "This permanently removes the travel group, its participations, activities, and photos."
-    }
+    },
+    "country": "Country",
+    "noCountry": "No country",
+    "area": "City / area",
+    "noArea": "No area"
   },
   "overview": {
     "title": "Travel overview",

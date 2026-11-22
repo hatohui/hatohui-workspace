@@ -46,12 +46,12 @@ export class TravelPlaceQueryDto extends PickType(
     'countryId',
     'cuisines',
     'spicy',
-    'diets',
+    'vegetarian',
     'excludeAllergens',
     'tags',
   ] as const,
 ) {
-  @ApiProperty({ required: false, description: 'Match name, address or city' })
+  @ApiProperty({ required: false, description: 'Match name or address' })
   @IsOptional()
   @IsString()
   q?: string;

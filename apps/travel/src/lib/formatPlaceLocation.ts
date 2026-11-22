@@ -3,7 +3,7 @@ import type { TravelPlaceSummaryDto } from '@hatohui/models';
 export function formatPlaceLocation(place: TravelPlaceSummaryDto): string {
   const parts: string[] = [];
   const seen = new Set<string>();
-  for (const raw of [place.address, place.city, place.area?.name]) {
+  for (const raw of [place.address, place.area?.name]) {
     const value = raw?.trim();
     if (!value) continue;
     const key = value.toLowerCase();

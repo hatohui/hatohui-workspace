@@ -6,7 +6,9 @@ export function googleMapsLink(place: TravelPlaceSummaryDto): string {
   const query =
     place.latitude != null && place.longitude != null
       ? `${place.latitude},${place.longitude}`
-      : [place.name, place.address, place.city].filter(Boolean).join(', ');
+      : [place.name, place.address, place.area?.name]
+          .filter(Boolean)
+          .join(', ');
   const params = new URLSearchParams({ api: '1', query });
   return `${MAPS_SEARCH_URL}?${params.toString()}`;
 }
