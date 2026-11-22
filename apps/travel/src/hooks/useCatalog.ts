@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTravelRecommendations } from '@hatohui/models';
+import { usePagination } from './usePagination';
 import type { SearchSuggestion } from './useSearchSuggest';
 import { useTravelFilterState } from './useTravelFilterState';
 import { useTravelLocation } from './useTravelLocation';
@@ -31,8 +32,12 @@ export function useCatalog() {
     [recommendations],
   );
 
+  const resetKey = JSON.stringify({ ...queryParams, ...location.filter });
+  const pagination = usePagination(recommendations, resetKey);
+
   return {
-    recommendations,
+    recommendations: pagination.pagedItems,
+    pagination,
     suggestions,
     isLoading: result.isLoading,
     isError: result.isError,

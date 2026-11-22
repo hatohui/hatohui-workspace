@@ -3,6 +3,7 @@ import { MapPin } from 'lucide-react';
 import PlaceCard from '../../components/places/PlaceCard';
 import ListState from '../../components/shared/ListState';
 import PageHeading from '../../components/shared/PageHeading';
+import PaginationBar from '../../components/shared/PaginationBar';
 import SearchField from '../../components/shared/SearchField';
 import { usePlaceList } from '../../hooks/usePlaceList';
 
@@ -33,6 +34,14 @@ function PlacesPage() {
           ))}
         </div>
       </ListState>
+      <PaginationBar
+        page={list.pagination.page}
+        pageSize={list.pagination.pageSize}
+        totalItems={list.pagination.totalItems}
+        totalPages={list.pagination.totalPages}
+        onPageChange={list.pagination.setPage}
+        onPageSizeChange={list.pagination.setPageSize}
+      />
     </div>
   );
 }

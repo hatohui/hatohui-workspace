@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTravelDishes } from '@hatohui/models';
+import { usePagination } from './usePagination';
 import type { SearchSuggestion } from './useSearchSuggest';
 import { useTravelFilterState } from './useTravelFilterState';
 
@@ -17,8 +18,10 @@ export function useDishList() {
       })),
     [dishes],
   );
+  const pagination = usePagination(dishes, JSON.stringify(queryParams));
   return {
-    dishes,
+    dishes: pagination.pagedItems,
+    pagination,
     suggestions,
     isLoading: result.isLoading,
     isError: result.isError,

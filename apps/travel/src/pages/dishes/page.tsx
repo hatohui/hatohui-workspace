@@ -6,6 +6,7 @@ import MobileFilterButton from '../../components/catalog/MobileFilterButton';
 import DishCard from '../../components/dishes/DishCard';
 import ListState from '../../components/shared/ListState';
 import PageHeading from '../../components/shared/PageHeading';
+import PaginationBar from '../../components/shared/PaginationBar';
 import SearchField from '../../components/shared/SearchField';
 import { useDishList } from '../../hooks/useDishList';
 
@@ -50,6 +51,14 @@ function DishesPage() {
               ))}
             </div>
           </ListState>
+          <PaginationBar
+            page={list.pagination.page}
+            pageSize={list.pagination.pageSize}
+            totalItems={list.pagination.totalItems}
+            totalPages={list.pagination.totalPages}
+            onPageChange={list.pagination.setPage}
+            onPageSizeChange={list.pagination.setPageSize}
+          />
         </div>
       </div>
     </div>

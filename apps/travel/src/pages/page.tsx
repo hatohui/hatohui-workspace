@@ -5,6 +5,7 @@ import ClearFiltersButton from '../components/catalog/ClearFiltersButton';
 import MobileFilterButton from '../components/catalog/MobileFilterButton';
 import RecommendationGrid from '../components/recommendation/RecommendationGrid';
 import PageHeading from '../components/shared/PageHeading';
+import PaginationBar from '../components/shared/PaginationBar';
 import SearchField from '../components/shared/SearchField';
 import { useCatalog } from '../hooks/useCatalog';
 
@@ -45,6 +46,14 @@ function CatalogPage() {
                 <ClearFiltersButton onClick={filters.clearFilters} />
               )
             }
+          />
+          <PaginationBar
+            page={catalog.pagination.page}
+            pageSize={catalog.pagination.pageSize}
+            totalItems={catalog.pagination.totalItems}
+            totalPages={catalog.pagination.totalPages}
+            onPageChange={catalog.pagination.setPage}
+            onPageSizeChange={catalog.pagination.setPageSize}
           />
         </div>
       </div>
