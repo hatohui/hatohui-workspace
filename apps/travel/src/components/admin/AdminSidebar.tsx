@@ -1,14 +1,12 @@
 import { useTranslation } from '@hatohui/i18n';
 import { TabsList, TabsTrigger } from '@hatohui/ui';
 import { ADMIN_TAB_ICONS, ADMIN_TABS } from '../../constants/admin';
-import AddRecommendationButton from '../catalog/AddRecommendationButton';
 
 function AdminSidebar() {
   const { t } = useTranslation();
 
   return (
-    <aside className="space-y-3 lg:sticky lg:top-20">
-      <AddRecommendationButton />
+    <aside className="lg:sticky lg:top-20">
       <TabsList className="flex flex-row gap-1 overflow-x-auto border-b border-border pb-2 lg:flex-col lg:overflow-visible lg:border-r lg:border-b-0 lg:pr-3 lg:pb-0">
         {ADMIN_TABS.map((tab) => {
           const Icon = ADMIN_TAB_ICONS[tab];

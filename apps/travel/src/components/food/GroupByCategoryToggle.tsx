@@ -1,6 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import { cn } from '@hatohui/ui';
 import { Layers } from 'lucide-react';
+import { CHIP_BASE, CHIP_IDLE, CHIP_SELECTED } from '../../constants/chips';
 
 interface Props {
   active: boolean;
@@ -16,13 +17,12 @@ function GroupByCategoryToggle({ active, onToggle }: Props) {
       aria-pressed={active}
       onClick={onToggle}
       className={cn(
-        'inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg border px-3 text-sm transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
-        active
-          ? 'border-primary/40 bg-primary/10 font-medium text-primary dark:bg-primary/15'
-          : 'border-border bg-card text-muted-foreground hover:text-foreground',
+        CHIP_BASE,
+        'h-9 sm:h-8',
+        active ? CHIP_SELECTED : CHIP_IDLE,
       )}
     >
-      <Layers className="size-4" aria-hidden />
+      <Layers className="size-3.5" aria-hidden />
       {t('catalog.groupByCategory')}
     </button>
   );

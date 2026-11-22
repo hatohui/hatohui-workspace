@@ -21,8 +21,12 @@ function AddRecommendationButton({
 
   return (
     <>
-      <Button size="sm" className="shrink-0" onClick={dialog.show}>
-        <Plus className="size-4" aria-hidden />
+      <Button
+        size="sm"
+        className="h-9 shrink-0 rounded-full text-xs sm:h-8"
+        onClick={dialog.show}
+      >
+        <Plus />
         {t(labelKey)}
       </Button>
       <RecommendationDialog
