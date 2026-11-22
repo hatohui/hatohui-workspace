@@ -127,6 +127,7 @@
     "empty": "还没有地点。",
     "whatToOrder": "推荐点什么",
     "noLocation": "暂无位置",
+    "pinnedOnMap": "已在地图标记",
     "editTitle": "编辑地点",
     "name": "名称",
     "address": "地址",

@@ -3,11 +3,18 @@ import { useTranslation } from '@hatohui/i18n';
 import type { TravelPlaceDto } from '@hatohui/models';
 import { MapPin } from 'lucide-react';
 import routes from '../../constants/routes';
+import {
+  formatPlaceLocation,
+  hasPlaceCoordinates,
+} from '../../lib/formatPlaceLocation';
 import ImageFrame from '../shared/ImageFrame';
 
 function PlaceCard({ place }: { place: TravelPlaceDto }) {
   const { t } = useTranslation();
-  const location = [place.address, place.city].filter(Boolean).join(', ');
+  const location = formatPlaceLocation(place);
+  const fallback = hasPlaceCoordinates(place)
+    ? t('places.pinnedOnMap')
+    : t('places.noLocation');
 
   return (
     <Link
@@ -25,7 +32,7 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
       </div>
       <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
         <MapPin className="size-3.5 shrink-0" aria-hidden />
-        <span className="truncate">{location || t('places.noLocation')}</span>
+        <span className="truncate">{location || fallback}</span>
       </span>
     </Link>
   );

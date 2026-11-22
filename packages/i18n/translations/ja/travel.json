@@ -127,6 +127,7 @@
     "empty": "まだお店がありません。",
     "whatToOrder": "おすすめの注文",
     "noLocation": "場所未登録",
+    "pinnedOnMap": "地図にピン留め済み",
     "editTitle": "お店を編集",
     "name": "名前",
     "address": "住所",
