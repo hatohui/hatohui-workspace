@@ -5,7 +5,7 @@ function CategoryChips({ categories }: { categories: string[] }) {
       {categories.map((category) => (
         <li
           key={category}
-          className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary dark:bg-primary/15"
+          className="rounded-full bg-primary/15 px-1.5 py-px text-[11px] font-medium text-[#8f4429] dark:bg-primary/25 dark:text-[#e9a487]"
         >
           {category}
         </li>

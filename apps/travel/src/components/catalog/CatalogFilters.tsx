@@ -93,7 +93,7 @@ function CatalogFilters({
             limit={FILTER_CHIP_PREVIEW_LIMIT}
           />
         )}
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-[11px] text-foreground/65">
           {t('filters.specialHint')}
         </p>
       </FilterSection>

@@ -7,8 +7,10 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  cn,
 } from '@hatohui/ui';
 import { SlidersHorizontal } from 'lucide-react';
+import { FIELD_OUTLINE } from '../../constants/chips';
 import type { FoodView } from '../../constants/food';
 import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
 import CatalogFilters from './CatalogFilters';
@@ -28,7 +30,10 @@ function MobileFilterButton({
       <Button
         variant="outline"
         size="sm"
-        className="h-9 shrink-0 lg:hidden"
+        className={cn(
+          'h-9 shrink-0 rounded-full text-xs sm:h-8 lg:hidden',
+          FIELD_OUTLINE,
+        )}
         onClick={() => setOpen(true)}
       >
         <SlidersHorizontal />

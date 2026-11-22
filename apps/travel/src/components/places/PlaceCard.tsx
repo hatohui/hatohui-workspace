@@ -23,8 +23,8 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
     : t('places.noLocation');
   const isOptimistic = isOptimisticId(place.id);
   const cardClass = cn(
-    'group flex flex-col overflow-hidden rounded-xl border border-border bg-card text-left transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
-    isOptimistic ? 'cursor-wait opacity-85' : 'hover:border-primary/50',
+    'group flex flex-col gap-1.5 rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+    isOptimistic && 'cursor-wait opacity-85',
   );
 
   const body = (
@@ -33,13 +33,12 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
         <ImageFrame
           src={place.coverImageUrl}
           alt={place.name}
-          flush
           caution={cautionFor(place.allergens)}
         />
         {isOptimistic && <OptimisticBadge />}
       </div>
-      <div className="flex flex-1 flex-col gap-1.5 p-3">
-        <h2 className="truncate text-sm font-medium transition-colors group-hover:text-primary">
+      <div className="min-w-0">
+        <h2 className="truncate text-sm font-medium group-hover:underline">
           {place.name}
         </h2>
         <p className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -50,8 +49,8 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
             {t('places.dishCount', { count: place.dishCount })}
           </span>
         </p>
-        <CategoryChips categories={place.categories} />
       </div>
+      <CategoryChips categories={place.categories} />
     </>
   );
 
