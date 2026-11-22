@@ -13,6 +13,7 @@ interface Options {
   onChange: (value: string) => void;
   suggestions?: SearchSuggestion[];
   onSelect?: (suggestion: SearchSuggestion) => void;
+  showOnEmpty?: boolean;
 }
 
 export function useSearchSuggest({
@@ -20,6 +21,7 @@ export function useSearchSuggest({
   onChange,
   suggestions = [],
   onSelect,
+  showOnEmpty = false,
 }: Options) {
   const listId = useId();
   const [open, setOpen] = useState(false);
@@ -27,12 +29,14 @@ export function useSearchSuggest({
   const query = value.trim().toLowerCase();
 
   const matches = useMemo(() => {
-    if (!query) return [];
+    if (!query && !showOnEmpty) return [];
     const seen = new Set<string>();
     const result: SearchSuggestion[] = [];
     for (const item of suggestions) {
-      const hay = `${item.label} ${item.sublabel ?? ''}`.toLowerCase();
-      if (!hay.includes(query)) continue;
+      if (query) {
+        const hay = `${item.label} ${item.sublabel ?? ''}`.toLowerCase();
+        if (!hay.includes(query)) continue;
+      }
       const key = item.label.toLowerCase();
       if (seen.has(key)) continue;
       seen.add(key);
@@ -40,9 +44,9 @@ export function useSearchSuggest({
       if (result.length >= SEARCH_SUGGESTION_LIMIT) break;
     }
     return result;
-  }, [query, suggestions]);
+  }, [query, showOnEmpty, suggestions]);
 
-  const shown = open && query.length > 0 && matches.length > 0;
+  const shown = open && (showOnEmpty || query.length > 0) && matches.length > 0;
 
   const pick = (suggestion: SearchSuggestion) => {
     setOpen(false);

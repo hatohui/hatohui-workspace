@@ -1,4 +1,5 @@
 import { useTranslation } from '@hatohui/i18n';
+import { UtensilsCrossed } from 'lucide-react';
 import type { useRecommendationForm } from '../../hooks/useRecommendationForm';
 import CuisineField from '../shared/CuisineField';
 import MatchedField from './MatchedField';
@@ -20,7 +21,8 @@ function DishInputs({ form }: Props) {
         hint={t('form.dishHint')}
         placeholder={t('form.dishPlaceholder')}
         value={fields.dishName}
-        options={matches.dishOptions}
+        options={matches.dishSuggestions}
+        fallbackIcon={UtensilsCrossed}
         isMatched={Boolean(matches.dish)}
         disabled={isEditing}
         onChange={(value) => set('dishName', value)}
