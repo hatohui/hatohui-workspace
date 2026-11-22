@@ -139,6 +139,11 @@ export function EditableCell({
         ref={tagWrapperRef}
         onKeyDown={(e) => {
           if (e.key === 'Escape') setEditing(false);
+          if (e.key === 'Tab' && !e.shiftKey && !e.defaultPrevented) {
+            e.preventDefault();
+            setEditing(false);
+            onNavigate?.('right');
+          }
         }}
       >
         <TagInput

@@ -83,7 +83,7 @@ function TagInput({
             onChange={(event) => tags.changeDraft(event.target.value)}
             onKeyDown={tags.onKeyDown}
             onFocus={() => tags.setOpen(true)}
-            onBlur={() => tags.draft && tags.add(tags.draft)}
+            onBlur={tags.onBlur}
             className="min-w-24 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </div>
