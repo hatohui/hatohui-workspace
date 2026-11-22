@@ -76,6 +76,19 @@ model User {
   travelPlaces            TravelPlace[]               @relation("TravelPlaceCreator")
   travelRecommendations   TravelRecommendation[]      @relation("TravelRecommendationCreator")
   travelImages            TravelRecommendationImage[] @relation("TravelImageUploader")
+  travelJobProfile        TravelJobProfile?
+  travelWorkSchedule      TravelWorkSchedule?
+  travelScheduleExceptions TravelScheduleException[]
+  travelCustomHolidays    TravelCustomHoliday[]
+  travelEventsCreated     TravelEvent[]               @relation("TravelEventCreator")
+  travelEventInvites      TravelEventInvitee[]
+  travelOwnedGroups       TravelParticipationGroup[]  @relation("TravelGroupOwner")
+  travelParticipations    TravelParticipation[]       @relation("TravelParticipationUser")
+  travelParticipationsCreated TravelParticipation[]   @relation("TravelParticipationCreator")
+  travelJoinRequests      TravelJoinRequest[]
+  travelGroupImages       TravelGroupImage[]          @relation("TravelGroupImageUploader")
+  travelActivitiesCreated TravelActivity[]            @relation("TravelActivityCreator")
+  travelActivityMedia     TravelActivityMedia[]       @relation("TravelActivityMediaUploader")
 }
 
 enum AppScope {
@@ -206,6 +219,18 @@ enum NotificationType {
   CONNECTION_REJECTED_BY_YOU
   BIRTHDAY_REMINDER
   SYSTEM
+  TRAVEL_JOIN_REQUEST
+  TRAVEL_JOIN_REQUEST_APPROVED
+  TRAVEL_JOIN_REQUEST_REJECTED
+  TRAVEL_INVITED_TO_JOIN
+  TRAVEL_INVITE_ACCEPTED
+  TRAVEL_INVITE_DECLINED
+  TRAVEL_OWNERSHIP_TRANSFERRED
+  TRAVEL_GROUP_PROMOTION
+  TRAVEL_USER_KICKED
+  TRAVEL_USER_LEFT
+  TRAVEL_EVENT_DELETED
+  TRAVEL_PLAN_DELETED
 }
 
 /// `subjectId` is intentionally not a foreign key; `type` says which table to
@@ -334,6 +359,10 @@ enum ProcessType {
   COMMISSION_PURGE
   TRAVEL_DISH_THUMBNAIL
   TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL
+  TRAVEL_EVENT_THUMBNAIL
+  TRAVEL_GROUP_IMAGE_THUMBNAIL
+  TRAVEL_ACTIVITY_IMAGE_THUMBNAIL
+  TRAVEL_ACTIVITY_MEDIA_THUMBNAIL
 }
 
 model ProcessQueue {
@@ -877,6 +906,8 @@ model TravelPlace {
   updatedAt   DateTime    @updatedAt
 
   recommendations TravelRecommendation[]
+  events          TravelEvent[]
+  activities      TravelActivity[]
 
   @@index([city])
   @@index([areaId])
@@ -903,6 +934,7 @@ model TravelArea {
   createdAt   DateTime      @default(now())
 
   places TravelPlace[]
+  events TravelEvent[]
 
   @@unique([countryId, name])
 }
@@ -969,4 +1001,244 @@ model TravelRecommendationImage {
   createdAt        DateTime             @default(now())
 
   @@index([recommendationId, position])
+}
+
+enum TravelEventVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum TravelLeaveType {
+  ANNUAL
+  SICK
+  UNPAID
+}
+
+enum TravelJoinRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model TravelJobProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title           String?
+  daysOfLeave     Int
+  daysOfSickLeave Int
+  leaveCycleStart DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TravelWorkSchedule {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sunday    Boolean  @default(false)
+  monday    Boolean  @default(true)
+  tuesday   Boolean  @default(true)
+  wednesday Boolean  @default(true)
+  thursday  Boolean  @default(true)
+  friday    Boolean  @default(true)
+  saturday  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TravelScheduleException {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  isWorkDay Boolean
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model TravelCustomHoliday {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  name      String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model TravelEvent {
+  id           String                @id @default(cuid())
+  title        String
+  description  String?
+  imageKey     String?
+  thumbnailKey String?
+  previewKey   String?
+  isApproved   Boolean               @default(false)
+  isYearly     Boolean               @default(false)
+  visibility   TravelEventVisibility @default(PUBLIC)
+  startAt      DateTime
+  endAt        DateTime
+  location     String?
+  mapsUrl      String?
+  latitude     Float?
+  longitude    Float?
+  areaId       String?
+  area         TravelArea?           @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  placeId      String?
+  place        TravelPlace?          @relation(fields: [placeId], references: [id], onDelete: SetNull)
+  reference    String?
+  createdById  String?
+  createdBy    User?                 @relation("TravelEventCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  isDeleted    Boolean               @default(false)
+  deletedAt    DateTime?
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  invitees            TravelEventInvitee[]
+  participations      TravelParticipation[]
+  participationGroups TravelParticipationGroup[]
+
+  @@index([title])
+  @@index([startAt, endAt])
+  @@index([areaId])
+}
+
+model TravelEventInvitee {
+  id        String      @id @default(cuid())
+  eventId   String
+  event     TravelEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@unique([eventId, userId])
+  @@index([userId])
+}
+
+model TravelParticipationGroup {
+  id                        String       @id @default(cuid())
+  eventId                   String?
+  event                     TravelEvent? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  ownerId                   String
+  owner                     User         @relation("TravelGroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  name                      String       @default("My Plan")
+  isMemberInviteAllowed     Boolean      @default(true)
+  isPublic                  Boolean      @default(false)
+  isActivityPublicVisible   Boolean      @default(true)
+  isMemberListPublicVisible Boolean      @default(true)
+  isMediaPublicVisible      Boolean      @default(true)
+  createdAt                 DateTime     @default(now())
+  updatedAt                 DateTime     @updatedAt
+
+  joinRequests   TravelJoinRequest[]
+  participations TravelParticipation[]
+  activities     TravelActivity[]
+  images         TravelGroupImage[]
+
+  @@index([eventId])
+  @@index([ownerId])
+}
+
+model TravelParticipation {
+  id            String                    @id @default(cuid())
+  userId        String
+  user          User                      @relation("TravelParticipationUser", fields: [userId], references: [id], onDelete: Cascade)
+  eventId       String?
+  event         TravelEvent?              @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  groupId       String?
+  group         TravelParticipationGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  from          DateTime
+  to            DateTime
+  leaveType     TravelLeaveType
+  createdById   String?
+  createdBy     User?                     @relation("TravelParticipationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  isAlreadyHere Boolean                   @default(false)
+  entryFlight   String?
+  exitFlight    String?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  @@index([userId, from, to])
+  @@index([userId, eventId])
+  @@index([groupId])
+}
+
+model TravelJoinRequest {
+  id        String                   @id @default(cuid())
+  groupId   String
+  group     TravelParticipationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    TravelJoinRequestStatus  @default(PENDING)
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+
+  @@unique([groupId, userId])
+  @@index([groupId, status])
+}
+
+model TravelGroupImage {
+  id           String                   @id @default(cuid())
+  groupId      String
+  group        TravelParticipationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  key          String
+  thumbnailKey String?
+  previewKey   String?
+  caption      String?
+  uploadedById String?
+  uploadedBy   User?                    @relation("TravelGroupImageUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime                 @default(now())
+
+  @@index([groupId])
+}
+
+model TravelActivity {
+  id             String                   @id @default(cuid())
+  groupId        String
+  group          TravelParticipationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  name           String
+  from           DateTime
+  to             DateTime
+  placeId        String?
+  place          TravelPlace?             @relation(fields: [placeId], references: [id], onDelete: SetNull)
+  location       String?
+  mapsUrl        String?
+  latitude       Float?
+  longitude      Float?
+  involvedPeople String[]                 @default([])
+  isExcludeMode  Boolean                  @default(false)
+  note           String?
+  imageKey       String?
+  thumbnailKey   String?
+  previewKey     String?
+  createdById    String?
+  createdBy      User?                    @relation("TravelActivityCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  media TravelActivityMedia[]
+
+  @@index([groupId])
+  @@index([groupId, from])
+}
+
+model TravelActivityMedia {
+  id           String         @id @default(cuid())
+  activityId   String
+  activity     TravelActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  key          String
+  thumbnailKey String?
+  previewKey   String?
+  caption      String?
+  uploadedById String?
+  uploadedBy   User?          @relation("TravelActivityMediaUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime       @default(now())
+
+  @@index([activityId])
 }

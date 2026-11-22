@@ -56,3 +56,22 @@ of names, skips ones that already exist (case-insensitively, keeping the first
 spelling), and returns `{ created, skipped }`. The places endpoint also accepts
 Google Maps links: the place is named from the link and gets its pin, and a
 link without a place name is skipped.
+
+## Event and plan moderation (planned)
+
+In addition to food-catalog master data, `/admin` hosts moderation tabs for the
+travel-planning features (see [events](../events/README.md),
+[plans](../plans/README.md), and
+[leave & schedule](../leave-and-schedule/README.md)):
+
+- **Events** — review and approve pending `PUBLIC` event submissions, edit any
+  event, and soft- or hard-delete events (hard-delete cleans up child groups,
+  activities, and stored media, and notifies affected participants).
+- **Plans & participations** — searchable, paginated overview of all
+  `TravelParticipationGroup`s and participations (by group name, event, or
+  member), with admin delete capability.
+- **Job profiles & stats** — summary counts (users, pending events, active
+  plans) and full admin management of user `TravelJobProfile` records (view,
+  create, and edit for any user), complementing self-service editing in
+  `/settings/leave`. User account and role management stay in `apps/workspace`,
+  not `apps/travel`.

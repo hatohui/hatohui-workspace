@@ -1960,7 +1960,11 @@
                 "STORAGE_DELETE",
                 "COMMISSION_PURGE",
                 "TRAVEL_DISH_THUMBNAIL",
-                "TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL"
+                "TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL",
+                "TRAVEL_EVENT_THUMBNAIL",
+                "TRAVEL_GROUP_IMAGE_THUMBNAIL",
+                "TRAVEL_ACTIVITY_IMAGE_THUMBNAIL",
+                "TRAVEL_ACTIVITY_MEDIA_THUMBNAIL"
               ]
             }
           }
@@ -3091,6 +3095,763 @@
           }
         },
         "summary": "Delete a cuisine tag; dishes keep their other cuisines",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/events": {
+      "get": {
+        "operationId": "travelEvents",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelEventDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelEvent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelEventDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/events/upcoming": {
+      "get": {
+        "operationId": "upcomingTravelEvents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelEventDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/events/calendar": {
+      "get": {
+        "operationId": "travelEventsCalendar",
+        "parameters": [
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelEventDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/events/{id}": {
+      "get": {
+        "operationId": "travelEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelEventDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelEventDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/events/{id}/my-participation": {
+      "get": {
+        "operationId": "myTravelEventParticipation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelMyEventParticipationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/events": {
+      "get": {
+        "operationId": "adminTravelEvents",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "approved",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelEventDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/events/{id}/approve": {
+      "post": {
+        "operationId": "approveTravelEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelEventDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/events/{id}": {
+      "delete": {
+        "operationId": "hardDeleteTravelEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/activities": {
+      "get": {
+        "operationId": "travelActivities",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelActivityDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelActivity",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelActivityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelActivityDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/activities/{activityId}": {
+      "patch": {
+        "operationId": "updateTravelActivity",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelActivityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelActivityDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelActivity",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/gallery": {
+      "get": {
+        "operationId": "travelPlanGallery",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activityId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uploadedById",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelMediaItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/images": {
+      "post": {
+        "operationId": "addTravelGroupImage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelMediaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelMediaItemDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/images/{imageId}": {
+      "delete": {
+        "operationId": "deleteTravelGroupImage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "imageId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/activities/{activityId}/media": {
+      "post": {
+        "operationId": "addTravelActivityMedia",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelMediaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelMediaItemDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/activities/{activityId}/media/{mediaId}": {
+      "delete": {
+        "operationId": "deleteTravelActivityMedia",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activityId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mediaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
         "tags": [
           "travel"
         ]
@@ -6599,6 +7360,1228 @@
           "travel"
         ]
       }
+    },
+    "/travel/work-schedule": {
+      "get": {
+        "operationId": "travelWorkSchedule",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelWorkScheduleDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "put": {
+        "operationId": "upsertTravelWorkSchedule",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertTravelWorkScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelWorkScheduleDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/schedule-exceptions": {
+      "get": {
+        "operationId": "travelScheduleExceptions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelScheduleExceptionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelScheduleException",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelScheduleExceptionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelScheduleExceptionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/schedule-exceptions/{id}": {
+      "delete": {
+        "operationId": "deleteTravelScheduleException",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/custom-holidays": {
+      "get": {
+        "operationId": "travelCustomHolidays",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelCustomHolidayDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelCustomHoliday",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelCustomHolidayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelCustomHolidayDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/custom-holidays/{id}": {
+      "delete": {
+        "operationId": "deleteTravelCustomHoliday",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/holidays": {
+      "get": {
+        "operationId": "travelHolidays",
+        "parameters": [
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-12-31",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelPublicHolidayDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/holiday-country": {
+      "get": {
+        "operationId": "travelHolidayCountry",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelCountrySettingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "put": {
+        "operationId": "updateTravelHolidayCountry",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelCountrySettingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelCountrySettingDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/heatmap": {
+      "get": {
+        "operationId": "travelHeatmap",
+        "parameters": [
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-12-31",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelHeatmapEntryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/job-profiles/me": {
+      "get": {
+        "operationId": "myTravelJobProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelJobProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "put": {
+        "operationId": "upsertMyTravelJobProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertTravelJobProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelJobProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/job-profiles/me/confirm": {
+      "post": {
+        "operationId": "confirmMyTravelJobProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelJobProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/leave-balance": {
+      "get": {
+        "operationId": "travelLeaveBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelLeaveBalanceDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/job-profiles": {
+      "get": {
+        "operationId": "adminTravelJobProfiles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelJobProfileDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "put": {
+        "operationId": "adminUpsertTravelJobProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUpsertTravelJobProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelJobProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/job-profiles/{id}": {
+      "patch": {
+        "operationId": "adminUpdateTravelJobProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertTravelJobProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelJobProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "adminDeleteTravelJobProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations": {
+      "get": {
+        "operationId": "myTravelParticipations",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelParticipationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelParticipation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelParticipationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelParticipationDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/share": {
+      "get": {
+        "operationId": "travelParticipationShare",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelSharePlanDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}": {
+      "get": {
+        "operationId": "travelParticipation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelParticipationDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelParticipationDates",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelParticipationDatesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelParticipationDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/settings": {
+      "patch": {
+        "operationId": "updateTravelGroupSettings",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelGroupSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelParticipationGroupDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/invite": {
+      "post": {
+        "operationId": "inviteTravelMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteTravelMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/invite/accept": {
+      "post": {
+        "operationId": "acceptTravelInvite",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptTravelInviteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelParticipationDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/invite/decline": {
+      "post": {
+        "operationId": "declineTravelInvite",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/join-requests": {
+      "get": {
+        "operationId": "travelJoinRequests",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelJoinRequestDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelJoinRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelJoinRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/join-requests/{requestId}/approve": {
+      "post": {
+        "operationId": "approveTravelJoinRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/join-requests/{requestId}/reject": {
+      "post": {
+        "operationId": "rejectTravelJoinRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/kick": {
+      "post": {
+        "operationId": "kickTravelMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KickTravelMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/leave": {
+      "post": {
+        "operationId": "leaveTravelGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/participations/{id}/transfer": {
+      "post": {
+        "operationId": "transferTravelOwnership",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferTravelOwnershipDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/stats": {
+      "get": {
+        "operationId": "adminTravelStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelAdminStatsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/groups": {
+      "get": {
+        "operationId": "adminTravelGroups",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "skip",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "take",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelAdminGroupsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/admin/groups/{id}": {
+      "delete": {
+        "operationId": "adminDeleteTravelGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
     }
   },
   "info": {
@@ -7122,7 +9105,19 @@
               "CONNECTION_REJECTED",
               "CONNECTION_REJECTED_BY_YOU",
               "BIRTHDAY_REMINDER",
-              "SYSTEM"
+              "SYSTEM",
+              "TRAVEL_JOIN_REQUEST",
+              "TRAVEL_JOIN_REQUEST_APPROVED",
+              "TRAVEL_JOIN_REQUEST_REJECTED",
+              "TRAVEL_INVITED_TO_JOIN",
+              "TRAVEL_INVITE_ACCEPTED",
+              "TRAVEL_INVITE_DECLINED",
+              "TRAVEL_OWNERSHIP_TRANSFERRED",
+              "TRAVEL_GROUP_PROMOTION",
+              "TRAVEL_USER_KICKED",
+              "TRAVEL_USER_LEFT",
+              "TRAVEL_EVENT_DELETED",
+              "TRAVEL_PLAN_DELETED"
             ]
           },
           "scope": {
@@ -8307,7 +10302,11 @@
               "STORAGE_DELETE",
               "COMMISSION_PURGE",
               "TRAVEL_DISH_THUMBNAIL",
-              "TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL"
+              "TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL",
+              "TRAVEL_EVENT_THUMBNAIL",
+              "TRAVEL_GROUP_IMAGE_THUMBNAIL",
+              "TRAVEL_ACTIVITY_IMAGE_THUMBNAIL",
+              "TRAVEL_ACTIVITY_MEDIA_THUMBNAIL"
             ],
             "nullable": true,
             "example": null
@@ -9489,6 +11488,539 @@
         },
         "required": [
           "name"
+        ]
+      },
+      "TravelEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isApproved": {
+            "type": "boolean"
+          },
+          "isYearly": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "PRIVATE"
+            ]
+          },
+          "startAt": {
+            "type": "string"
+          },
+          "endAt": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "areaId": {
+            "type": "string",
+            "nullable": true
+          },
+          "placeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "inviteeIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "isApproved",
+          "isYearly",
+          "visibility",
+          "startAt",
+          "endAt",
+          "inviteeIds",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "TravelMyEventParticipationDto": {
+        "type": "object",
+        "properties": {
+          "participationId": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateTravelEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "imageKey": {
+            "type": "string"
+          },
+          "isYearly": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "PRIVATE"
+            ]
+          },
+          "startAt": {
+            "type": "string"
+          },
+          "endAt": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "areaId": {
+            "type": "string"
+          },
+          "placeId": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "inviteeIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "startAt",
+          "endAt"
+        ]
+      },
+      "UpdateTravelEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "isYearly": {
+            "type": "boolean"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "PRIVATE"
+            ]
+          },
+          "startAt": {
+            "type": "string"
+          },
+          "endAt": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "areaId": {
+            "type": "string",
+            "nullable": true
+          },
+          "placeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "reference": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "inviteeIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TravelActivityPlaceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "TravelMediaItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "GROUP",
+              "ACTIVITY"
+            ]
+          },
+          "key": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "previewUrl": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "nullable": true
+          },
+          "uploadedById": {
+            "type": "string",
+            "nullable": true
+          },
+          "activityId": {
+            "type": "string",
+            "nullable": true
+          },
+          "activityName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "source",
+          "key",
+          "url",
+          "thumbnailUrl",
+          "previewUrl",
+          "createdAt"
+        ]
+      },
+      "TravelActivityDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "groupId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "place": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelActivityPlaceDto"
+              }
+            ]
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "involvedPeople": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isExcludeMode": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdById": {
+            "type": "string",
+            "nullable": true
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelMediaItemDto"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "groupId",
+          "name",
+          "from",
+          "to",
+          "involvedPeople",
+          "isExcludeMode",
+          "media",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateTravelActivityDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "placeId": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "involvedPeople": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isExcludeMode": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "imageKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "from",
+          "to"
+        ]
+      },
+      "UpdateTravelActivityDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "placeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          },
+          "involvedPeople": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isExcludeMode": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateTravelMediaDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "key"
         ]
       },
       "AssetProcessStepDto": {
@@ -13486,6 +16018,1075 @@
             "maxLength": 2000
           }
         }
+      },
+      "TravelWorkScheduleDto": {
+        "type": "object",
+        "properties": {
+          "sunday": {
+            "type": "boolean"
+          },
+          "monday": {
+            "type": "boolean"
+          },
+          "tuesday": {
+            "type": "boolean"
+          },
+          "wednesday": {
+            "type": "boolean"
+          },
+          "thursday": {
+            "type": "boolean"
+          },
+          "friday": {
+            "type": "boolean"
+          },
+          "saturday": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sunday",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday"
+        ]
+      },
+      "UpsertTravelWorkScheduleDto": {
+        "type": "object",
+        "properties": {
+          "sunday": {
+            "type": "boolean"
+          },
+          "monday": {
+            "type": "boolean"
+          },
+          "tuesday": {
+            "type": "boolean"
+          },
+          "wednesday": {
+            "type": "boolean"
+          },
+          "thursday": {
+            "type": "boolean"
+          },
+          "friday": {
+            "type": "boolean"
+          },
+          "saturday": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sunday",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday"
+        ]
+      },
+      "TravelScheduleExceptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "isWorkDay": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "isWorkDay",
+          "createdAt"
+        ]
+      },
+      "CreateTravelScheduleExceptionDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-12-26"
+          },
+          "isWorkDay": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "date",
+          "isWorkDay"
+        ]
+      },
+      "TravelCustomHolidayDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "name",
+          "createdAt"
+        ]
+      },
+      "CreateTravelCustomHolidayDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-12-31"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "date",
+          "name"
+        ]
+      },
+      "TravelPublicHolidayDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-01-01"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "example": "VN"
+          }
+        },
+        "required": [
+          "date",
+          "name",
+          "type",
+          "country"
+        ]
+      },
+      "TravelCountrySettingDto": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "example": "VN"
+          }
+        },
+        "required": [
+          "country"
+        ]
+      },
+      "UpdateTravelCountrySettingDto": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "example": "VN",
+            "minLength": 2,
+            "maxLength": 2
+          }
+        },
+        "required": [
+          "country"
+        ]
+      },
+      "TravelHeatmapEntryDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-05-01"
+          },
+          "intensity": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "date",
+          "intensity"
+        ]
+      },
+      "TravelJobProfileUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "displayName"
+        ]
+      },
+      "TravelJobProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "daysOfLeave": {
+            "type": "number"
+          },
+          "daysOfSickLeave": {
+            "type": "number"
+          },
+          "leaveCycleStart": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/TravelJobProfileUserDto"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "daysOfLeave",
+          "daysOfSickLeave",
+          "leaveCycleStart",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpsertTravelJobProfileDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "daysOfLeave": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "daysOfSickLeave": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "leaveCycleStart": {
+            "type": "string",
+            "example": "2026-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "daysOfLeave",
+          "daysOfSickLeave"
+        ]
+      },
+      "TravelLeaveBucketDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "used": {
+            "type": "number"
+          },
+          "remaining": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "used",
+          "remaining"
+        ]
+      },
+      "TravelLeaveBalanceDto": {
+        "type": "object",
+        "properties": {
+          "annual": {
+            "$ref": "#/components/schemas/TravelLeaveBucketDto"
+          },
+          "sick": {
+            "$ref": "#/components/schemas/TravelLeaveBucketDto"
+          },
+          "cycleFrom": {
+            "type": "string"
+          },
+          "cycleTo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "annual",
+          "sick",
+          "cycleFrom",
+          "cycleTo"
+        ]
+      },
+      "AdminUpsertTravelJobProfileDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "daysOfLeave": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "daysOfSickLeave": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "leaveCycleStart": {
+            "type": "string",
+            "example": "2026-01-01T00:00:00.000Z"
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "daysOfLeave",
+          "daysOfSickLeave",
+          "userId"
+        ]
+      },
+      "TravelParticipationEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "startAt": {
+            "type": "string"
+          },
+          "endAt": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "PRIVATE"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "startAt",
+          "endAt",
+          "visibility"
+        ]
+      },
+      "TravelParticipationGroupDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isMemberInviteAllowed": {
+            "type": "boolean"
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "isActivityPublicVisible": {
+            "type": "boolean"
+          },
+          "isMemberListPublicVisible": {
+            "type": "boolean"
+          },
+          "isMediaPublicVisible": {
+            "type": "boolean"
+          },
+          "memberCount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "name",
+          "isMemberInviteAllowed",
+          "isPublic",
+          "isActivityPublicVisible",
+          "isMemberListPublicVisible",
+          "isMediaPublicVisible",
+          "memberCount",
+          "createdAt"
+        ]
+      },
+      "TravelParticipationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string",
+            "nullable": true
+          },
+          "groupId": {
+            "type": "string",
+            "nullable": true
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "ANNUAL",
+              "SICK",
+              "UNPAID"
+            ]
+          },
+          "isAlreadyHere": {
+            "type": "boolean"
+          },
+          "entryFlight": {
+            "type": "string",
+            "nullable": true
+          },
+          "exitFlight": {
+            "type": "string",
+            "nullable": true
+          },
+          "event": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelParticipationEventDto"
+              }
+            ]
+          },
+          "group": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelParticipationGroupDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "from",
+          "to",
+          "leaveType",
+          "isAlreadyHere"
+        ]
+      },
+      "CreateTravelParticipationDto": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string"
+          },
+          "groupName": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "ANNUAL",
+              "SICK",
+              "UNPAID"
+            ]
+          },
+          "isAlreadyHere": {
+            "type": "boolean"
+          },
+          "entryFlight": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "exitFlight": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "coTravelerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "leaveType"
+        ]
+      },
+      "TravelParticipantMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "ANNUAL",
+              "SICK",
+              "UNPAID"
+            ]
+          },
+          "isAlreadyHere": {
+            "type": "boolean"
+          },
+          "entryFlight": {
+            "type": "string",
+            "nullable": true
+          },
+          "exitFlight": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdById": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "from",
+          "to",
+          "leaveType",
+          "isAlreadyHere"
+        ]
+      },
+      "TravelParticipationDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "ANNUAL",
+              "SICK",
+              "UNPAID"
+            ]
+          },
+          "isAlreadyHere": {
+            "type": "boolean"
+          },
+          "entryFlight": {
+            "type": "string",
+            "nullable": true
+          },
+          "exitFlight": {
+            "type": "string",
+            "nullable": true
+          },
+          "isOwner": {
+            "type": "boolean"
+          },
+          "isMember": {
+            "type": "boolean"
+          },
+          "event": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelParticipationEventDto"
+              }
+            ]
+          },
+          "group": {
+            "$ref": "#/components/schemas/TravelParticipationGroupDto"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelParticipantMemberDto"
+            }
+          },
+          "myJoinRequestStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED"
+            ],
+            "nullable": true
+          },
+          "pendingJoinRequestsCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "from",
+          "to",
+          "leaveType",
+          "isAlreadyHere",
+          "isOwner",
+          "isMember",
+          "group",
+          "participants",
+          "pendingJoinRequestsCount"
+        ]
+      },
+      "TravelSharePlanDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "ANNUAL",
+              "SICK",
+              "UNPAID"
+            ]
+          },
+          "groupName": {
+            "type": "string"
+          },
+          "memberCount": {
+            "type": "number"
+          },
+          "sharerName": {
+            "type": "string"
+          },
+          "sharerAvatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "eventLocation": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "from",
+          "to",
+          "leaveType",
+          "groupName",
+          "memberCount",
+          "sharerName"
+        ]
+      },
+      "UpdateTravelParticipationDatesDto": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "ANNUAL",
+              "SICK",
+              "UNPAID"
+            ]
+          },
+          "isAlreadyHere": {
+            "type": "boolean"
+          },
+          "entryFlight": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          },
+          "exitFlight": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 32
+          }
+        }
+      },
+      "UpdateTravelGroupSettingsDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "isMemberInviteAllowed": {
+            "type": "boolean"
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "isActivityPublicVisible": {
+            "type": "boolean"
+          },
+          "isMemberListPublicVisible": {
+            "type": "boolean"
+          },
+          "isMediaPublicVisible": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InviteTravelMemberDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId"
+        ]
+      },
+      "AcceptTravelInviteDto": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "leaveType": {
+            "type": "string",
+            "enum": [
+              "ANNUAL",
+              "SICK",
+              "UNPAID"
+            ]
+          },
+          "isAlreadyHere": {
+            "type": "boolean"
+          },
+          "entryFlight": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "exitFlight": {
+            "type": "string",
+            "maxLength": 32
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "leaveType"
+        ]
+      },
+      "TravelJoinRequestDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "groupId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "groupId",
+          "userId",
+          "displayName",
+          "status",
+          "createdAt"
+        ]
+      },
+      "KickTravelMemberDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId"
+        ]
+      },
+      "TransferTravelOwnershipDto": {
+        "type": "object",
+        "properties": {
+          "newOwnerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "newOwnerId"
+        ]
+      },
+      "TravelAdminStatsDto": {
+        "type": "object",
+        "properties": {
+          "totalEvents": {
+            "type": "number"
+          },
+          "pendingEvents": {
+            "type": "number"
+          },
+          "totalGroups": {
+            "type": "number"
+          },
+          "totalParticipations": {
+            "type": "number"
+          },
+          "totalJobProfiles": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "totalEvents",
+          "pendingEvents",
+          "totalGroups",
+          "totalParticipations",
+          "totalJobProfiles"
+        ]
+      },
+      "TravelAdminGroupItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "eventTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberCount": {
+            "type": "number"
+          },
+          "activityCount": {
+            "type": "number"
+          },
+          "imageCount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "ownerId",
+          "isPublic",
+          "memberCount",
+          "activityCount",
+          "imageCount",
+          "createdAt"
+        ]
+      },
+      "TravelAdminGroupsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelAdminGroupItemDto"
+            }
+          }
+        },
+        "required": [
+          "total",
+          "groups"
+        ]
       }
     }
   }

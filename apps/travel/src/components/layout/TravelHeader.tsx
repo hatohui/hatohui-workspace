@@ -8,6 +8,8 @@ import LocationPicker from '../location/LocationPicker';
 import AccountButton from './AccountButton';
 import AdminNavLink from './AdminNavLink';
 import HeaderNavLink from './HeaderNavLink';
+import NotificationsBell from './NotificationsBell';
+import SettingsNavLink from './SettingsNavLink';
 
 function TravelHeader() {
   const { t } = useTranslation();
@@ -30,6 +32,8 @@ function TravelHeader() {
         <div className="hidden md:flex">
           <AdminNavLink />
         </div>
+        <NotificationsBell />
+        <SettingsNavLink />
         <ThemeToggle />
         <AccountButton />
       </div>

@@ -64,17 +64,7 @@ export async function exportCroppedFile(
   if (!ctx) {
     throw new Error('Canvas 2D context is not supported');
   }
-  ctx.drawImage(
-    image,
-    area.sx,
-    area.sy,
-    area.sw,
-    area.sh,
-    0,
-    0,
-    outW,
-    outH,
-  );
+  ctx.drawImage(image, area.sx, area.sy, area.sw, area.sh, 0, 0, outW, outH);
 
   const outputType = CANVAS_SAFE_TYPES.has(file.type)
     ? file.type

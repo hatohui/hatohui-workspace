@@ -5,6 +5,9 @@ import AreasAdmin from '../../components/admin/AreasAdmin';
 import CountriesAdmin from '../../components/admin/CountriesAdmin';
 import CuisinesAdmin from '../../components/admin/CuisinesAdmin';
 import DishesAdmin from '../../components/admin/DishesAdmin';
+import EventsAdmin from '../../components/admin/EventsAdmin';
+import JobProfilesAdmin from '../../components/admin/JobProfilesAdmin';
+import PlansAdmin from '../../components/admin/PlansAdmin';
 import RecommendationsAdmin from '../../components/admin/RecommendationsAdmin';
 import TagsAdmin from '../../components/admin/TagsAdmin';
 import AddRecommendationButton from '../../components/catalog/AddRecommendationButton';
@@ -19,6 +22,9 @@ const PANELS = {
   dishes: DishesAdmin,
   cuisines: CuisinesAdmin,
   tags: TagsAdmin,
+  events: EventsAdmin,
+  plans: PlansAdmin,
+  jobProfiles: JobProfilesAdmin,
 };
 
 function AdminPage() {

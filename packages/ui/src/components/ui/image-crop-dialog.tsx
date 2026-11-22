@@ -3,12 +3,7 @@ import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { computeCropArea, exportCroppedFile } from '../../lib/crop-image';
 import { cn } from '../../lib/utils';
 import { Button } from './button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from './dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
 import { Spinner } from './spinner';
 
 export interface CropAspectOption {
