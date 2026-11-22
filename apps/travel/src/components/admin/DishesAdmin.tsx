@@ -1,13 +1,21 @@
 import { useMemo } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { ImageCropDialog } from '@hatohui/ui';
+import { Button, ImageCropDialog, Spinner } from '@hatohui/ui';
+import { Sparkles } from 'lucide-react';
 import { useAdminDishes, type DishRow } from '../../hooks/useAdminDishes';
 import AdminTable from './AdminTable';
 import DishThumbnailCell from './DishThumbnailCell';
 
 function DishesAdmin() {
   const { t } = useTranslation();
-  const { photo, columns: baseColumns, ...admin } = useAdminDishes();
+  const {
+    photo,
+    columns: baseColumns,
+    missingDescriptionCount,
+    isGeneratingDescriptions,
+    generateDescriptions,
+    ...admin
+  } = useAdminDishes();
 
   const columns = useMemo(
     () =>
@@ -30,6 +38,24 @@ function DishesAdmin() {
     [baseColumns, photo],
   );
 
+  const generateButton = (
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      className="h-10 shrink-0 gap-1.5"
+      disabled={isGeneratingDescriptions || missingDescriptionCount === 0}
+      onClick={() => void generateDescriptions()}
+    >
+      {isGeneratingDescriptions ? (
+        <Spinner className="size-4" />
+      ) : (
+        <Sparkles className="size-4" aria-hidden />
+      )}
+      {t('admin.generateDescriptions', { count: missingDescriptionCount })}
+    </Button>
+  );
+
   return (
     <>
       <AdminTable
@@ -42,6 +68,7 @@ function DishesAdmin() {
         deletion={admin.deletion}
         commit={admin.commit}
         add={admin.add}
+        toolbarActions={generateButton}
       />
       <ImageCropDialog
         open={Boolean(photo.cropTarget)}

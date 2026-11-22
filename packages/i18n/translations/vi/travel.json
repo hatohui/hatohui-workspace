@@ -307,7 +307,12 @@
     "noCountry": "Không có quốc gia",
     "area": "Thành phố / khu vực",
     "noArea": "Chưa chọn khu vực",
-    "photo": "Ảnh"
+    "photo": "Ảnh",
+    "generateDescriptions": "Tạo mô tả ({{count}})",
+    "generatingDescriptions": "Đang tạo mô tả món ăn…",
+    "generatedDescriptions": "Đã tạo {{updated}} mô tả",
+    "generatedDescriptionsPartial": "Đã tạo {{updated}} mô tả ({{failed}} lỗi)",
+    "noMissingDescriptions": "Tất cả món ăn đều đã có mô tả."
   },
   "settings": {
     "tabs": {

@@ -23,9 +23,12 @@ import {
   TravelBulkNamesDto,
   TravelBulkResultDto,
 } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
+import { TravelDishDescriptionsService } from '@/modules/travel-dishes/services/travel-dish-descriptions.service';
 import { TravelDishesService } from '@/modules/travel-dishes/services/travel-dishes.service';
 import {
   CreateTravelDishDto,
+  GenerateTravelDishDescriptionsDto,
+  GenerateTravelDishDescriptionsResultDto,
   PaginatedTravelDishesDto,
   TravelDishDetailDto,
   TravelDishDto,
@@ -37,7 +40,10 @@ import {
 @ApiTags('travel')
 @Controller('travel/dishes')
 export class TravelDishesController {
-  constructor(private readonly dishes: TravelDishesService) {}
+  constructor(
+    private readonly dishes: TravelDishesService,
+    private readonly descriptions: TravelDishDescriptionsService,
+  ) {}
 
   @Get()
   @ApiOperation({ operationId: 'travelDishes', summary: 'Every dish' })
@@ -81,6 +87,20 @@ export class TravelDishesController {
     @CurrentUser() user: User,
   ): Promise<TravelBulkResultDto> {
     return this.dishes.bulkCreate(dto.names, user.id);
+  }
+
+  @Post('generate-descriptions')
+  @HttpCode(200)
+  @UseGuards(TravelEditorGuard)
+  @ApiOperation({
+    operationId: 'generateTravelDishDescriptions',
+    summary: 'Generate concise English descriptions for dishes missing one',
+  })
+  @ApiOkResponse({ type: GenerateTravelDishDescriptionsResultDto })
+  generateDescriptions(
+    @Body() dto: GenerateTravelDishDescriptionsDto,
+  ): Promise<GenerateTravelDishDescriptionsResultDto> {
+    return this.descriptions.generateMissing(dto.dishIds);
   }
 
   @Post()

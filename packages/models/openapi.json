@@ -2877,6 +2877,38 @@
         ]
       }
     },
+    "/travel/dishes/generate-descriptions": {
+      "post": {
+        "operationId": "generateTravelDishDescriptions",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateTravelDishDescriptionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateTravelDishDescriptionsResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Generate concise English descriptions for dishes missing one",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/access": {
       "get": {
         "operationId": "travelAccess",
@@ -11987,6 +12019,40 @@
         "required": [
           "created",
           "skipped"
+        ]
+      },
+      "GenerateTravelDishDescriptionsDto": {
+        "type": "object",
+        "properties": {
+          "dishIds": {
+            "description": "Optional dish ids to fill; omit to generate for all dishes missing a description",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GenerateTravelDishDescriptionsResultDto": {
+        "type": "object",
+        "properties": {
+          "updated": {
+            "type": "number",
+            "description": "Dishes given an AI-generated description"
+          },
+          "skipped": {
+            "type": "number",
+            "description": "Dishes skipped because they already had one"
+          },
+          "failed": {
+            "type": "number",
+            "description": "Dishes that could not be generated"
+          }
+        },
+        "required": [
+          "updated",
+          "skipped",
+          "failed"
         ]
       },
       "CreateTravelDishDto": {

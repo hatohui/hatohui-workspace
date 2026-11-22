@@ -347,7 +347,12 @@
     "noCountry": "No country",
     "area": "City / area",
     "noArea": "No area",
-    "photo": "Photo"
+    "photo": "Photo",
+    "generateDescriptions": "Generate descriptions ({{count}})",
+    "generatingDescriptions": "Generating dish descriptions…",
+    "generatedDescriptions": "Generated {{updated}} descriptions",
+    "generatedDescriptionsPartial": "Generated {{updated}} descriptions ({{failed}} failed)",
+    "noMissingDescriptions": "Every dish already has a description."
   },
   "overview": {
     "title": "Travel overview",

@@ -172,6 +172,8 @@ export * from './friendDtoConnectionStatus';
 export * from './friendDtoSocialMedias';
 export * from './friendDtoVisibility';
 export * from './galleryTagsParams';
+export * from './generateTravelDishDescriptionsDto';
+export * from './generateTravelDishDescriptionsResultDto';
 export * from './googleLoginDto';
 export * from './healthDto';
 export * from './healthDtoDb';
