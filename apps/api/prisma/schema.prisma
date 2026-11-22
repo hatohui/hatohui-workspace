@@ -332,6 +332,8 @@ enum ProcessType {
   NOTIFICATION_EMAIL
   STORAGE_DELETE
   COMMISSION_PURGE
+  TRAVEL_DISH_THUMBNAIL
+  TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL
 }
 
 model ProcessQueue {
@@ -833,11 +835,13 @@ model CommissionFollower {
 }
 
 model TravelDish {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  imageKey    String?
-  createdById String?
+  id           String   @id @default(cuid())
+  name         String   @unique
+  description  String?
+  imageKey     String?
+  thumbnailKey String?
+  previewKey   String?
+  createdById  String?
   createdBy   User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -956,6 +960,8 @@ model TravelRecommendationImage {
   recommendationId String
   recommendation   TravelRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
   key              String
+  thumbnailKey     String?
+  previewKey       String?
   position         Int
   createdById      String?
   createdBy        User?                @relation("TravelImageUploader", fields: [createdById], references: [id], onDelete: SetNull)

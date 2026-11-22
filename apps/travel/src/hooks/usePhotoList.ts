@@ -14,7 +14,11 @@ export interface PhotoItem {
 }
 
 const fromImages = (images: TravelImageDto[]): PhotoItem[] =>
-  images.map((image) => ({ id: image.key, key: image.key, url: image.url }));
+  images.map((image) => ({
+    id: image.key,
+    key: image.key,
+    url: image.thumbnailUrl ?? image.url,
+  }));
 
 export function usePhotoList(initial: TravelImageDto[]) {
   const [photos, setPhotos] = useState<PhotoItem[]>(() => fromImages(initial));

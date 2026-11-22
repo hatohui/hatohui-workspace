@@ -9,6 +9,12 @@ export class TravelImageDto {
   @ApiProperty()
   url!: string;
 
+  @ApiProperty({ nullable: true, type: String })
+  thumbnailUrl!: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  previewUrl!: string | null;
+
   @ApiProperty({
     nullable: true,
     type: String,
@@ -43,6 +49,12 @@ export class TravelDishSummaryDto {
 
   @ApiProperty({ nullable: true, type: String })
   imageUrl!: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  thumbnailUrl!: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  previewUrl!: string | null;
 }
 
 export class TravelPlaceAreaDto {

@@ -4,7 +4,7 @@ import { useEntityForm } from './useEntityForm';
 
 export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
   const update = useUpdateTravelDish();
-  const photo = useDishPhoto(dish.imageKey, dish.imageUrl);
+  const photo = useDishPhoto(dish.imageKey, dish.thumbnailUrl ?? dish.imageUrl);
   const form = useEntityForm(
     {
       name: dish.name,

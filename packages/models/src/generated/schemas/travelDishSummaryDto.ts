@@ -12,4 +12,8 @@ export interface TravelDishSummaryDto {
   cuisines: string[];
   /** @nullable */
   imageUrl: string | null;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  /** @nullable */
+  previewUrl: string | null;
 }

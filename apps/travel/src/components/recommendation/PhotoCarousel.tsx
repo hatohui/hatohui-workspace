@@ -16,7 +16,10 @@ function PhotoCarousel({ images, alt }: Props) {
 
   return (
     <div className="group relative">
-      <ImageFrame src={images[index]?.url ?? null} alt={alt} />
+      <ImageFrame
+        src={images[index]?.previewUrl ?? images[index]?.url ?? null}
+        alt={alt}
+      />
       {hasMany && (
         <>
           <CarouselButton

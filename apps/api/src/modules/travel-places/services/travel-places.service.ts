@@ -34,7 +34,11 @@ const placeInclude = {
   recommendations: {
     orderBy: { createdAt: 'desc' },
     select: {
-      images: { orderBy: { position: 'asc' }, take: 1, select: { key: true } },
+      images: {
+        orderBy: { position: 'asc' },
+        take: 1,
+        select: { key: true, thumbnailKey: true },
+      },
     },
   },
 } satisfies Prisma.TravelPlaceInclude;
@@ -165,6 +169,7 @@ export class TravelPlacesService {
 
   private toDto(row: PlaceRow): TravelPlaceDto {
     const cover = row.recommendations.find((r) => r.images.length)?.images[0];
+    const coverKey = cover?.thumbnailKey ?? cover?.key;
     return {
       id: row.id,
       name: row.name,
@@ -176,7 +181,7 @@ export class TravelPlacesService {
       longitude: row.longitude,
       note: row.note,
       dishCount: row._count.recommendations,
-      coverImageUrl: cover ? this.storage.getPublicUrl(cover.key) : null,
+      coverImageUrl: coverKey ? this.storage.getPublicUrl(coverKey) : null,
       createdBy: toTravelCreatorDto(row.createdBy),
     };
   }

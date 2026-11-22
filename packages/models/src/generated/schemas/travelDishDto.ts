@@ -20,6 +20,10 @@ export interface TravelDishDto {
   /** @nullable */
   imageUrl: string | null;
   /** @nullable */
+  thumbnailUrl: string | null;
+  /** @nullable */
+  previewUrl: string | null;
+  /** @nullable */
   coverImageUrl: string | null;
   /** @nullable */
   createdBy: TravelCreatorDto | null;

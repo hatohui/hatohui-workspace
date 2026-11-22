@@ -10,11 +10,11 @@ A food catalog for trips: dishes, the places that serve them well, and what to o
 | Places       | • Place list<br>• What to order there<br>• Embedded map<br>• Google Maps link<br>• Short share links<br>• Coordinates from Maps link<br>• Map preview while editing<br>• Edit and delete a place                                                                                               | [spec](../../docs/specs/travel/food-catalog/README.md) |
 | Locations    | • Country and area picker<br>• Remembered per browser<br>• New places filed under the picked area                                                                                                                                                                                              | [spec](../../docs/specs/travel/admin/README.md)        |
 | Admin        | • Editor access from a system parameter<br>• Quick recommendations add and edit<br>• Inline-edit tables with search and optimistic updates<br>• Quick add many at once<br>• One-click delete<br>• Countries and areas<br>• Dishes and cuisines<br>• Diet and allergen tags                     | [spec](../../docs/specs/travel/admin/README.md)        |
-| Account      | • Google sign-in<br>• Theme                                                                                                                                                                                                                                              |                                                        |
+| Account        | • Google sign-in<br>• Theme                                                                                                                                                                                                                                                                    |                                                        |
+| Photo variants | • 512px WebP thumbnails and 2048px WebP previews for dish and recommendation photos<br>• Queue retry on failure                                                                                                                                                                                | [spec](../../docs/specs/art/storage-layout/README.md)  |
 
 ## Planned
 
-| Feature        | Sub-features                                                               |
-| -------------- | -------------------------------------------------------------------------- |
-| Trip planner   | • AI suggestions for where to go next<br>• Route by distance<br>• Map view |
-| Photo variants | • Thumbnails and previews for recommendation photos                        |
+| Feature      | Sub-features                                                               |
+| ------------ | -------------------------------------------------------------------------- |
+| Trip planner | • AI suggestions for where to go next<br>• Route by distance<br>• Map view |

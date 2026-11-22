@@ -125,9 +125,13 @@ export class TravelRecommendationsService {
   ): Promise<string[]> {
     const rows = await this.db.travelRecommendationImage.findMany({
       where: { recommendation: where },
-      select: { key: true },
+      select: { key: true, thumbnailKey: true, previewKey: true },
     });
-    return rows.map((row) => row.key);
+    return rows.flatMap((row) =>
+      [row.key, row.thumbnailKey, row.previewKey].filter((k): k is string =>
+        Boolean(k),
+      ),
+    );
   }
 
   deleteObjects(keys: string[]): Promise<void> {

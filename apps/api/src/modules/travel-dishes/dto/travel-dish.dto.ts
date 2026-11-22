@@ -42,6 +42,12 @@ export class TravelDishDto {
   imageUrl!: string | null;
 
   @ApiProperty({ nullable: true, type: String })
+  thumbnailUrl!: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
+  previewUrl!: string | null;
+
+  @ApiProperty({ nullable: true, type: String })
   coverImageUrl!: string | null;
 
   @ApiProperty({ type: TravelCreatorDto, nullable: true })

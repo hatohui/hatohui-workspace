@@ -1958,7 +1958,9 @@
                 "ASSET_THUMBNAIL",
                 "NOTIFICATION_EMAIL",
                 "STORAGE_DELETE",
-                "COMMISSION_PURGE"
+                "COMMISSION_PURGE",
+                "TRAVEL_DISH_THUMBNAIL",
+                "TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL"
               ]
             }
           }
@@ -2411,6 +2413,662 @@
         "summary": "Artist uploads an image for a comment or update; deleted later unless claimed",
         "tags": [
           "commission-attachments"
+        ]
+      }
+    },
+    "/travel/dishes": {
+      "get": {
+        "operationId": "travelDishes",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name or cuisine",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cuisines",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these cuisines",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "by",
+            "required": false,
+            "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "spicy",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "diets",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes with a recommendation meeting every listed diet",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeAllergens",
+            "required": false,
+            "in": "query",
+            "description": "Hide dishes with any recommendation containing these allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this country",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelDishDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every dish",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelDish",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelDishDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/dishes/{id}": {
+      "get": {
+        "operationId": "travelDish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A dish and every place recommended for it",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelDish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelDishDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelDishDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelDish",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a dish and its recommendations",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/dishes/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelDishes",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several dishes by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/access": {
+      "get": {
+        "operationId": "travelAccess",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelAccessDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "What the viewer may do in the travel app",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/recommendations": {
+      "get": {
+        "operationId": "travelRecommendations",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match dish, place, cuisine or note",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cuisines",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these cuisines",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "city",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "by",
+            "required": false,
+            "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this country",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dishId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "placeId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "spicy",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "diets",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes that meet every listed diet",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeAllergens",
+            "required": false,
+            "in": "query",
+            "description": "Hide dishes that contain any of these allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelRecommendationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "The food catalog: each dish a place is recommended for",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelRecommendation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelRecommendationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRecommendationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Recommend a dish at a place, creating either one by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/recommendations/{id}": {
+      "get": {
+        "operationId": "travelRecommendation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRecommendationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelRecommendation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelRecommendationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRecommendationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelRecommendation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/cuisines": {
+      "get": {
+        "operationId": "travelCuisines",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelCuisineDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every cuisine tag, for suggestions and filters",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/cuisines/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelCuisines",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several cuisines by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/cuisines/{id}": {
+      "patch": {
+        "operationId": "updateTravelCuisine",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelCuisineDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelCuisineDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelCuisine",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a cuisine tag; dishes keep their other cuisines",
+        "tags": [
+          "travel"
         ]
       }
     },
@@ -5334,28 +5992,6 @@
         ]
       }
     },
-    "/travel/access": {
-      "get": {
-        "operationId": "travelAccess",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelAccessDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "What the viewer may do in the travel app",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
     "/travel/countries": {
       "get": {
         "operationId": "travelCountries",
@@ -5686,640 +6322,6 @@
           }
         },
         "summary": "Delete a tag; recommendations lose it",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/cuisines": {
-      "get": {
-        "operationId": "travelCuisines",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TravelCuisineDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Every cuisine tag, for suggestions and filters",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/cuisines/bulk": {
-      "post": {
-        "operationId": "bulkCreateTravelCuisines",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TravelBulkNamesDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelBulkResultDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Add several cuisines by name",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/cuisines/{id}": {
-      "patch": {
-        "operationId": "updateTravelCuisine",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTravelCuisineDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelCuisineDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "travel"
-        ]
-      },
-      "delete": {
-        "operationId": "deleteTravelCuisine",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "summary": "Delete a cuisine tag; dishes keep their other cuisines",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/recommendations": {
-      "get": {
-        "operationId": "travelRecommendations",
-        "parameters": [
-          {
-            "name": "q",
-            "required": false,
-            "in": "query",
-            "description": "Match dish, place, cuisine or note",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cuisines",
-            "required": false,
-            "in": "query",
-            "description": "Only dishes tagged with any of these cuisines",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "city",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "by",
-            "required": false,
-            "in": "query",
-            "description": "Only entries added by this @handle",
-            "schema": {
-              "example": "hatohui",
-              "type": "string"
-            }
-          },
-          {
-            "name": "areaId",
-            "required": false,
-            "in": "query",
-            "description": "Only places in this area",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "countryId",
-            "required": false,
-            "in": "query",
-            "description": "Only places in this country",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dishId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "placeId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "spicy",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "diets",
-            "required": false,
-            "in": "query",
-            "description": "Only dishes that meet every listed diet",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "excludeAllergens",
-            "required": false,
-            "in": "query",
-            "description": "Hide dishes that contain any of these allergens",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TravelRecommendationDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "The food catalog: each dish a place is recommended for",
-        "tags": [
-          "travel"
-        ]
-      },
-      "post": {
-        "operationId": "createTravelRecommendation",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTravelRecommendationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelRecommendationDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Recommend a dish at a place, creating either one by name",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/recommendations/{id}": {
-      "get": {
-        "operationId": "travelRecommendation",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelRecommendationDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "travel"
-        ]
-      },
-      "patch": {
-        "operationId": "updateTravelRecommendation",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTravelRecommendationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelRecommendationDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "travel"
-        ]
-      },
-      "delete": {
-        "operationId": "deleteTravelRecommendation",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "summary": "",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/dishes": {
-      "get": {
-        "operationId": "travelDishes",
-        "parameters": [
-          {
-            "name": "q",
-            "required": false,
-            "in": "query",
-            "description": "Match name or cuisine",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cuisines",
-            "required": false,
-            "in": "query",
-            "description": "Only dishes tagged with any of these cuisines",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "by",
-            "required": false,
-            "in": "query",
-            "description": "Only entries added by this @handle",
-            "schema": {
-              "example": "hatohui",
-              "type": "string"
-            }
-          },
-          {
-            "name": "spicy",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "diets",
-            "required": false,
-            "in": "query",
-            "description": "Only dishes with a recommendation meeting every listed diet",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "excludeAllergens",
-            "required": false,
-            "in": "query",
-            "description": "Hide dishes with any recommendation containing these allergens",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "areaId",
-            "required": false,
-            "in": "query",
-            "description": "Only places in this area",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "countryId",
-            "required": false,
-            "in": "query",
-            "description": "Only places in this country",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TravelDishDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Every dish",
-        "tags": [
-          "travel"
-        ]
-      },
-      "post": {
-        "operationId": "createTravelDish",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTravelDishDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelDishDetailDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/dishes/{id}": {
-      "get": {
-        "operationId": "travelDish",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelDishDetailDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "A dish and every place recommended for it",
-        "tags": [
-          "travel"
-        ]
-      },
-      "patch": {
-        "operationId": "updateTravelDish",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTravelDishDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelDishDetailDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "",
-        "tags": [
-          "travel"
-        ]
-      },
-      "delete": {
-        "operationId": "deleteTravelDish",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          }
-        },
-        "summary": "Delete a dish and its recommendations",
-        "tags": [
-          "travel"
-        ]
-      }
-    },
-    "/travel/dishes/bulk": {
-      "post": {
-        "operationId": "bulkCreateTravelDishes",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TravelBulkNamesDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelBulkResultDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Add several dishes by name",
         "tags": [
           "travel"
         ]
@@ -8279,7 +8281,9 @@
               "ASSET_THUMBNAIL",
               "NOTIFICATION_EMAIL",
               "STORAGE_DELETE",
-              "COMMISSION_PURGE"
+              "COMMISSION_PURGE",
+              "TRAVEL_DISH_THUMBNAIL",
+              "TRAVEL_RECOMMENDATION_IMAGE_THUMBNAIL"
             ],
             "nullable": true,
             "example": null
@@ -8660,6 +8664,782 @@
             "description": "Hide this piece from everyone but you"
           }
         }
+      },
+      "TravelCreatorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Profile display name, else the account name"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "handle": {
+            "type": "string",
+            "nullable": true,
+            "example": "hatohui"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "avatarUrl",
+          "handle"
+        ]
+      },
+      "TravelDishDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "placeCount": {
+            "type": "number",
+            "description": "Places recommended for this dish"
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisines",
+          "description",
+          "placeCount",
+          "imageKey",
+          "imageUrl",
+          "thumbnailUrl",
+          "previewUrl",
+          "coverImageUrl",
+          "createdBy",
+          "createdAt"
+        ]
+      },
+      "TravelDishSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisines",
+          "imageUrl",
+          "thumbnailUrl",
+          "previewUrl"
+        ]
+      },
+      "TravelPlaceAreaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ho Chi Minh City"
+          },
+          "countryId": {
+            "type": "string"
+          },
+          "countryName": {
+            "type": "string",
+            "example": "Vietnam"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "countryId",
+          "countryName"
+        ]
+      },
+      "TravelPlaceSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "21Grams Vegetarian"
+          },
+          "area": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceAreaDto"
+              }
+            ]
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "area",
+          "address",
+          "city",
+          "mapsUrl",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "TravelPriceLevel": {
+        "type": "string",
+        "enum": [
+          "LOW",
+          "MID",
+          "HIGH"
+        ],
+        "description": "Rough price level when no amount is known"
+      },
+      "TravelImageDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Storage key; send it back to keep the image"
+          },
+          "url": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdById": {
+            "type": "string",
+            "nullable": true,
+            "description": "Uploader user id"
+          }
+        },
+        "required": [
+          "key",
+          "url",
+          "thumbnailUrl",
+          "previewUrl",
+          "createdById"
+        ]
+      },
+      "TravelRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dish": {
+            "$ref": "#/components/schemas/TravelDishSummaryDto"
+          },
+          "place": {
+            "$ref": "#/components/schemas/TravelPlaceSummaryDto"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "priceMin": {
+            "type": "number",
+            "nullable": true,
+            "description": "Lowest price per person, in currency units"
+          },
+          "priceMax": {
+            "type": "number",
+            "nullable": true,
+            "description": "Highest price per person; equal to priceMin for one price"
+          },
+          "priceLevel": {
+            "nullable": true,
+            "description": "Rough price level when no amount is known",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPriceLevel"
+              }
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "example": "VND"
+          },
+          "spicy": {
+            "type": "boolean"
+          },
+          "diets": {
+            "description": "Diet tag keys, e.g. vegetarian",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allergens": {
+            "description": "Allergen tag keys the dish contains, e.g. peanuts",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelImageDto"
+            }
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "dish",
+          "place",
+          "note",
+          "priceMin",
+          "priceMax",
+          "priceLevel",
+          "currency",
+          "spicy",
+          "diets",
+          "allergens",
+          "images",
+          "createdBy",
+          "createdAt"
+        ]
+      },
+      "TravelDishDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "placeCount": {
+            "type": "number",
+            "description": "Places recommended for this dish"
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisines",
+          "description",
+          "placeCount",
+          "imageKey",
+          "imageUrl",
+          "thumbnailUrl",
+          "previewUrl",
+          "coverImageUrl",
+          "createdBy",
+          "createdAt",
+          "recommendations"
+        ]
+      },
+      "TravelBulkNamesDto": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "maxItems": 50,
+            "description": "Names to add; ones that already exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "names"
+        ]
+      },
+      "TravelBulkResultDto": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "number"
+          },
+          "skipped": {
+            "type": "number",
+            "description": "Already saved or unusable entries"
+          }
+        },
+        "required": [
+          "created",
+          "skipped"
+        ]
+      },
+      "CreateTravelDishDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "cuisines": {
+            "maxItems": 6,
+            "description": "Cuisine tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Staged upload key, existing key, or null to clear"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTravelDishDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "cuisines": {
+            "maxItems": 6,
+            "description": "Cuisine tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "imageKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Staged upload key, existing key, or null to clear"
+          }
+        }
+      },
+      "TravelAccessDto": {
+        "type": "object",
+        "properties": {
+          "canEdit": {
+            "type": "boolean",
+            "description": "Whether the viewer may edit travel data: an admin, or an email listed in the travel.admin.emails system parameter"
+          }
+        },
+        "required": [
+          "canEdit"
+        ]
+      },
+      "TravelPlaceInputDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area the place is in; empty clears it"
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CreateTravelRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "dishId": {
+            "type": "string",
+            "description": "An existing dish"
+          },
+          "dishName": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "Dish name, found or created when dishId is absent"
+          },
+          "cuisines": {
+            "maxItems": 6,
+            "description": "Cuisine tags for a newly created dish, found or created",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "placeId": {
+            "type": "string",
+            "description": "An existing place"
+          },
+          "place": {
+            "description": "A new place, created when placeId is absent",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceInputDto"
+              }
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "priceMin": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          },
+          "priceMax": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Leave equal to priceMin, or empty, for a single price"
+          },
+          "priceLevel": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPriceLevel"
+              }
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "VND",
+              "USD",
+              "JPY",
+              "EUR",
+              "THB"
+            ]
+          },
+          "spicy": {
+            "type": "boolean"
+          },
+          "diets": {
+            "description": "Diet tag keys",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allergens": {
+            "description": "Allergen tag keys",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageKeys": {
+            "maxItems": 12,
+            "description": "Ordered image keys: staged uploads or ones already attached",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateTravelRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "dishId": {
+            "type": "string",
+            "description": "An existing dish"
+          },
+          "placeId": {
+            "type": "string",
+            "description": "An existing place"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "priceMin": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          },
+          "priceMax": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Leave equal to priceMin, or empty, for a single price"
+          },
+          "priceLevel": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPriceLevel"
+              }
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "VND",
+              "USD",
+              "JPY",
+              "EUR",
+              "THB"
+            ]
+          },
+          "spicy": {
+            "type": "boolean"
+          },
+          "diets": {
+            "description": "Diet tag keys",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allergens": {
+            "description": "Allergen tag keys",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageKeys": {
+            "maxItems": 12,
+            "description": "Ordered image keys: staged uploads or ones already attached",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TravelCuisineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Vietnamese"
+          },
+          "dishCount": {
+            "type": "number",
+            "description": "Dishes tagged with this cuisine"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "dishCount",
+          "createdAt"
+        ]
+      },
+      "UpdateTravelCuisineDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "AssetProcessStepDto": {
         "type": "object",
@@ -12163,18 +12943,6 @@
           }
         }
       },
-      "TravelAccessDto": {
-        "type": "object",
-        "properties": {
-          "canEdit": {
-            "type": "boolean",
-            "description": "Whether the viewer may edit travel data: an admin, or an email listed in the travel.admin.emails system parameter"
-          }
-        },
-        "required": [
-          "canEdit"
-        ]
-      },
       "TravelAreaDto": {
         "type": "object",
         "properties": {
@@ -12242,38 +13010,6 @@
           "placeCount",
           "areas",
           "createdAt"
-        ]
-      },
-      "TravelBulkNamesDto": {
-        "type": "object",
-        "properties": {
-          "names": {
-            "maxItems": 50,
-            "description": "Names to add; ones that already exist are skipped",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "names"
-        ]
-      },
-      "TravelBulkResultDto": {
-        "type": "object",
-        "properties": {
-          "created": {
-            "type": "number"
-          },
-          "skipped": {
-            "type": "number",
-            "description": "Already saved or unusable entries"
-          }
-        },
-        "required": [
-          "created",
-          "skipped"
         ]
       },
       "UpdateTravelCountryDto": {
@@ -12407,698 +13143,6 @@
                 "$ref": "#/components/schemas/TravelTagKind"
               }
             ]
-          }
-        }
-      },
-      "TravelCuisineDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Vietnamese"
-          },
-          "dishCount": {
-            "type": "number",
-            "description": "Dishes tagged with this cuisine"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "dishCount",
-          "createdAt"
-        ]
-      },
-      "UpdateTravelCuisineDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 120
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "TravelDishSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Egg coffee"
-          },
-          "cuisines": {
-            "example": [
-              "Vietnamese"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "imageUrl": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "cuisines",
-          "imageUrl"
-        ]
-      },
-      "TravelPlaceAreaDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Ho Chi Minh City"
-          },
-          "countryId": {
-            "type": "string"
-          },
-          "countryName": {
-            "type": "string",
-            "example": "Vietnam"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "countryId",
-          "countryName"
-        ]
-      },
-      "TravelPlaceSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "21Grams Vegetarian"
-          },
-          "area": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPlaceAreaDto"
-              }
-            ]
-          },
-          "address": {
-            "type": "string",
-            "nullable": true
-          },
-          "city": {
-            "type": "string",
-            "nullable": true
-          },
-          "mapsUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "latitude": {
-            "type": "number",
-            "nullable": true
-          },
-          "longitude": {
-            "type": "number",
-            "nullable": true
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "area",
-          "address",
-          "city",
-          "mapsUrl",
-          "latitude",
-          "longitude"
-        ]
-      },
-      "TravelPriceLevel": {
-        "type": "string",
-        "enum": [
-          "LOW",
-          "MID",
-          "HIGH"
-        ],
-        "description": "Rough price level when no amount is known"
-      },
-      "TravelImageDto": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "description": "Storage key; send it back to keep the image"
-          },
-          "url": {
-            "type": "string"
-          },
-          "createdById": {
-            "type": "string",
-            "nullable": true,
-            "description": "Uploader user id"
-          }
-        },
-        "required": [
-          "key",
-          "url",
-          "createdById"
-        ]
-      },
-      "TravelCreatorDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "description": "Profile display name, else the account name"
-          },
-          "avatarUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "handle": {
-            "type": "string",
-            "nullable": true,
-            "example": "hatohui"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "avatarUrl",
-          "handle"
-        ]
-      },
-      "TravelRecommendationDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "dish": {
-            "$ref": "#/components/schemas/TravelDishSummaryDto"
-          },
-          "place": {
-            "$ref": "#/components/schemas/TravelPlaceSummaryDto"
-          },
-          "note": {
-            "type": "string",
-            "nullable": true
-          },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "description": "Lowest price per person, in currency units"
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "description": "Highest price per person; equal to priceMin for one price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "description": "Rough price level when no amount is known",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
-          },
-          "currency": {
-            "type": "string",
-            "example": "VND"
-          },
-          "spicy": {
-            "type": "boolean"
-          },
-          "diets": {
-            "description": "Diet tag keys, e.g. vegetarian",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys the dish contains, e.g. peanuts",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "images": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TravelImageDto"
-            }
-          },
-          "createdBy": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelCreatorDto"
-              }
-            ]
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "dish",
-          "place",
-          "note",
-          "priceMin",
-          "priceMax",
-          "priceLevel",
-          "currency",
-          "spicy",
-          "diets",
-          "allergens",
-          "images",
-          "createdBy",
-          "createdAt"
-        ]
-      },
-      "TravelPlaceInputDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 120
-          },
-          "areaId": {
-            "type": "string",
-            "description": "Area the place is in; empty clears it"
-          },
-          "address": {
-            "type": "string",
-            "maxLength": 2000
-          },
-          "city": {
-            "type": "string",
-            "maxLength": 120
-          },
-          "mapsUrl": {
-            "type": "string",
-            "maxLength": 2000,
-            "description": "Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given"
-          },
-          "latitude": {
-            "type": "number"
-          },
-          "longitude": {
-            "type": "number"
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 2000
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "CreateTravelRecommendationDto": {
-        "type": "object",
-        "properties": {
-          "dishId": {
-            "type": "string",
-            "description": "An existing dish"
-          },
-          "dishName": {
-            "type": "string",
-            "maxLength": 120,
-            "description": "Dish name, found or created when dishId is absent"
-          },
-          "cuisines": {
-            "maxItems": 6,
-            "description": "Cuisine tags for a newly created dish, found or created",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "placeId": {
-            "type": "string",
-            "description": "An existing place"
-          },
-          "place": {
-            "description": "A new place, created when placeId is absent",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPlaceInputDto"
-              }
-            ]
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 2000
-          },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0,
-            "description": "Leave equal to priceMin, or empty, for a single price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "VND",
-              "USD",
-              "JPY",
-              "EUR",
-              "THB"
-            ]
-          },
-          "spicy": {
-            "type": "boolean"
-          },
-          "diets": {
-            "description": "Diet tag keys",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "imageKeys": {
-            "maxItems": 12,
-            "description": "Ordered image keys: staged uploads or ones already attached",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "UpdateTravelRecommendationDto": {
-        "type": "object",
-        "properties": {
-          "dishId": {
-            "type": "string",
-            "description": "An existing dish"
-          },
-          "placeId": {
-            "type": "string",
-            "description": "An existing place"
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 2000
-          },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0,
-            "description": "Leave equal to priceMin, or empty, for a single price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "VND",
-              "USD",
-              "JPY",
-              "EUR",
-              "THB"
-            ]
-          },
-          "spicy": {
-            "type": "boolean"
-          },
-          "diets": {
-            "description": "Diet tag keys",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "imageKeys": {
-            "maxItems": 12,
-            "description": "Ordered image keys: staged uploads or ones already attached",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "TravelDishDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Egg coffee"
-          },
-          "cuisines": {
-            "example": [
-              "Vietnamese"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "placeCount": {
-            "type": "number",
-            "description": "Places recommended for this dish"
-          },
-          "imageKey": {
-            "type": "string",
-            "nullable": true
-          },
-          "imageUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "coverImageUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdBy": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelCreatorDto"
-              }
-            ]
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "cuisines",
-          "description",
-          "placeCount",
-          "imageKey",
-          "imageUrl",
-          "coverImageUrl",
-          "createdBy",
-          "createdAt"
-        ]
-      },
-      "TravelDishDetailDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Egg coffee"
-          },
-          "cuisines": {
-            "example": [
-              "Vietnamese"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "placeCount": {
-            "type": "number",
-            "description": "Places recommended for this dish"
-          },
-          "imageKey": {
-            "type": "string",
-            "nullable": true
-          },
-          "imageUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "coverImageUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "createdBy": {
-            "nullable": true,
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelCreatorDto"
-              }
-            ]
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "recommendations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TravelRecommendationDto"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "cuisines",
-          "description",
-          "placeCount",
-          "imageKey",
-          "imageUrl",
-          "coverImageUrl",
-          "createdBy",
-          "createdAt",
-          "recommendations"
-        ]
-      },
-      "CreateTravelDishDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 120
-          },
-          "cuisines": {
-            "maxItems": 6,
-            "description": "Cuisine tags, found or created by name",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "description": {
-            "type": "string",
-            "maxLength": 2000
-          },
-          "imageKey": {
-            "type": "string",
-            "nullable": true,
-            "description": "Staged upload key, existing key, or null to clear"
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "UpdateTravelDishDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 120
-          },
-          "cuisines": {
-            "maxItems": 6,
-            "description": "Cuisine tags, found or created by name",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "description": {
-            "type": "string",
-            "maxLength": 2000
-          },
-          "imageKey": {
-            "type": "string",
-            "nullable": true,
-            "description": "Staged upload key, existing key, or null to clear"
           }
         }
       },

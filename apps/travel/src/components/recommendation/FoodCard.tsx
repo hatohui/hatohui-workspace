@@ -14,7 +14,13 @@ function FoodCard({ recommendation: rec, onOpen }: Props) {
       className="group flex cursor-pointer flex-col gap-2 rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <ImageFrame
-        src={rec.images[0]?.url ?? rec.dish.imageUrl ?? null}
+        src={
+          rec.images[0]?.thumbnailUrl ??
+          rec.images[0]?.url ??
+          rec.dish.thumbnailUrl ??
+          rec.dish.imageUrl ??
+          null
+        }
         alt={rec.dish.name}
         square
       />

@@ -128,6 +128,24 @@ export function travelDishImageKeyFor(
   return `${TRAVEL_DISHES_PREFIX}/${dishId}/${fileNameOf(sourceKey)}`;
 }
 
+export function travelDishVariantKeyFor(
+  dishId: string,
+  variant: typeof THUMBNAILS_SEGMENT | typeof PREVIEWS_SEGMENT,
+  sourceKey: string,
+): string {
+  const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
+  return `${TRAVEL_DISHES_PREFIX}/${dishId}/${variant}/${randomUUID()}-${base}.webp`;
+}
+
+export function travelRecommendationVariantKeyFor(
+  recommendationId: string,
+  variant: typeof THUMBNAILS_SEGMENT | typeof PREVIEWS_SEGMENT,
+  sourceKey: string,
+): string {
+  const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
+  return `${TRAVEL_RECOMMENDATIONS_PREFIX}/${recommendationId}/${variant}/${randomUUID()}-${base}.webp`;
+}
+
 function fileNameOf(key: string): string {
   return key.split('/').pop() as string;
 }

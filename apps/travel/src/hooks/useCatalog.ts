@@ -27,7 +27,12 @@ export function useCatalog() {
         sublabel: [rec.place.name, ...rec.dish.cuisines]
           .filter(Boolean)
           .join(' · '),
-        imageUrl: rec.images[0]?.url ?? rec.dish.imageUrl ?? null,
+        imageUrl:
+          rec.images[0]?.thumbnailUrl ??
+          rec.images[0]?.url ??
+          rec.dish.thumbnailUrl ??
+          rec.dish.imageUrl ??
+          null,
       })),
     [recommendations],
   );

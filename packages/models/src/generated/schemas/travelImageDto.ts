@@ -10,6 +10,10 @@ export interface TravelImageDto {
   /** Storage key; send it back to keep the image */
   key: string;
   url: string;
+  /** @nullable */
+  thumbnailUrl: string | null;
+  /** @nullable */
+  previewUrl: string | null;
   /**
      * Uploader user id
      * @nullable

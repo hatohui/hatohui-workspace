@@ -20,6 +20,8 @@ export const travelRecommendationInclude = {
       id: true,
       name: true,
       imageKey: true,
+      thumbnailKey: true,
+      previewKey: true,
       cuisines: travelCuisineNamesSelect,
     },
   },
@@ -37,7 +39,12 @@ export const travelRecommendationInclude = {
   },
   images: {
     orderBy: { position: 'asc' },
-    select: { key: true, createdById: true },
+    select: {
+      key: true,
+      thumbnailKey: true,
+      previewKey: true,
+      createdById: true,
+    },
   },
   tags: {
     orderBy: { position: 'asc' },
@@ -64,6 +71,16 @@ export function toTravelRecommendationDto(
       name: row.dish.name,
       cuisines: row.dish.cuisines.map((cuisine) => cuisine.name),
       imageUrl: row.dish.imageKey ? publicUrlOf(row.dish.imageKey) : null,
+      thumbnailUrl: row.dish.thumbnailKey
+        ? publicUrlOf(row.dish.thumbnailKey)
+        : row.dish.imageKey
+          ? publicUrlOf(row.dish.imageKey)
+          : null,
+      previewUrl: row.dish.previewKey
+        ? publicUrlOf(row.dish.previewKey)
+        : row.dish.imageKey
+          ? publicUrlOf(row.dish.imageKey)
+          : null,
     },
     place: { ...row.place, area: toTravelPlaceAreaDto(row.place.area) },
     note: row.note,
@@ -74,11 +91,15 @@ export function toTravelRecommendationDto(
     spicy: row.spicy,
     diets: tagsOf('DIET'),
     allergens: tagsOf('ALLERGEN'),
-    images: row.images.map(({ key, createdById }) => ({
-      key,
-      url: publicUrlOf(key),
-      createdById,
-    })),
+    images: row.images.map(
+      ({ key, thumbnailKey, previewKey, createdById }) => ({
+        key,
+        url: publicUrlOf(key),
+        thumbnailUrl: thumbnailKey ? publicUrlOf(thumbnailKey) : null,
+        previewUrl: previewKey ? publicUrlOf(previewKey) : null,
+        createdById,
+      }),
+    ),
     createdBy: toTravelCreatorDto(row.createdBy),
     createdAt: row.createdAt,
   };

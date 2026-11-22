@@ -2,9 +2,10 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, ProcessType } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import {
@@ -12,6 +13,8 @@ import {
   isStagedKey,
   travelDishImageKeyFor,
 } from '@/common/utils/asset-paths';
+import { ProcessQueueService } from '@/modules/process-queue/services/process-queue.service';
+import { TravelDishThumbnailExecutor } from '@/modules/travel-dishes/services/travel-dish-thumbnail.executor';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
 import { travelCuisineNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
@@ -39,7 +42,11 @@ const dishInclude = {
   recommendations: {
     orderBy: { createdAt: 'desc' },
     select: {
-      images: { orderBy: { position: 'asc' }, take: 1, select: { key: true } },
+      images: {
+        orderBy: { position: 'asc' },
+        take: 1,
+        select: { key: true, thumbnailKey: true },
+      },
     },
   },
 } satisfies Prisma.TravelDishInclude;
@@ -48,11 +55,15 @@ type DishRow = Prisma.TravelDishGetPayload<{ include: typeof dishInclude }>;
 
 @Injectable()
 export class TravelDishesService {
+  private readonly logger = new Logger(TravelDishesService.name);
+
   constructor(
     private readonly db: Database,
     private readonly storage: Storage,
     private readonly recommendations: TravelRecommendationsService,
     private readonly cuisines: TravelCuisinesService,
+    private readonly processQueue: ProcessQueueService,
+    private readonly thumbnailExecutor: TravelDishThumbnailExecutor,
   ) {}
 
   async list(query: TravelDishQueryDto): Promise<TravelDishDto[]> {
@@ -140,6 +151,7 @@ export class TravelDishesService {
         where: { id: created.id },
         data: { imageKey },
       });
+      if (imageKey) await this.generateOrQueueThumbnail(created.id);
     }
     return this.get(created.id);
   }
@@ -171,29 +183,39 @@ export class TravelDishesService {
     dto: UpdateTravelDishDto,
     userId: string,
   ): Promise<TravelDishDetailDto> {
-    const existing = await this.get(id);
+    const existing = await this.db.travelDish.findUnique({
+      where: { id },
+      select: { imageKey: true, thumbnailKey: true, previewKey: true },
+    });
+    if (!existing) throw new NotFoundException('Dish not found');
     const cuisines =
       dto.cuisines && (await this.cuisineRefs(dto.cuisines, userId));
     const imageKey =
       dto.imageKey === undefined
         ? undefined
         : await this.placeImage(id, dto.imageKey, existing.imageKey, userId);
+    const imageChanged =
+      imageKey !== undefined && imageKey !== existing.imageKey;
     await this.guardUnique(() =>
       this.db.travelDish.update({
         where: { id },
         data: {
           ...this.fieldsOf(dto),
-          ...(imageKey !== undefined ? { imageKey } : {}),
+          ...(imageChanged
+            ? { imageKey, thumbnailKey: null, previewKey: null }
+            : {}),
           cuisines: cuisines ? { set: cuisines } : undefined,
         },
       }),
     );
-    if (
-      imageKey !== undefined &&
-      existing.imageKey &&
-      existing.imageKey !== imageKey
-    ) {
-      await this.recommendations.deleteObjects([existing.imageKey]);
+    if (imageChanged) {
+      const oldKeys = [
+        existing.imageKey,
+        existing.thumbnailKey,
+        existing.previewKey,
+      ].filter((k): k is string => Boolean(k));
+      if (oldKeys.length) await this.recommendations.deleteObjects(oldKeys);
+      if (imageKey) await this.generateOrQueueThumbnail(id);
     }
     return this.get(id);
   }
@@ -201,15 +223,36 @@ export class TravelDishesService {
   async remove(id: string): Promise<void> {
     const existing = await this.db.travelDish.findUnique({
       where: { id },
-      select: { imageKey: true },
+      select: { imageKey: true, thumbnailKey: true, previewKey: true },
     });
     if (!existing) throw new NotFoundException('Dish not found');
     const keys = await this.recommendations.imageKeysWhere({ dishId: id });
-    if (existing.imageKey) keys.push(existing.imageKey);
+    for (const key of [
+      existing.imageKey,
+      existing.thumbnailKey,
+      existing.previewKey,
+    ]) {
+      if (key) keys.push(key);
+    }
     await this.db.travelDish.delete({ where: { id } }).catch(() => {
       throw new NotFoundException('Dish not found');
     });
     await this.recommendations.deleteObjects(keys);
+  }
+
+  private async generateOrQueueThumbnail(dishId: string): Promise<void> {
+    try {
+      await this.thumbnailExecutor.execute(dishId);
+    } catch (error) {
+      this.logger.warn(
+        `Travel dish thumbnail failed for ${dishId}, queued: ${error}`,
+      );
+      await this.processQueue.enqueueFailure(
+        ProcessType.TRAVEL_DISH_THUMBNAIL,
+        dishId,
+        error,
+      );
+    }
   }
 
   private async placeImage(
@@ -251,8 +294,15 @@ export class TravelDishesService {
     const imageUrl = row.imageKey
       ? this.storage.getPublicUrl(row.imageKey)
       : null;
+    const thumbnailUrl = row.thumbnailKey
+      ? this.storage.getPublicUrl(row.thumbnailKey)
+      : imageUrl;
+    const previewUrl = row.previewKey
+      ? this.storage.getPublicUrl(row.previewKey)
+      : imageUrl;
     const recCover = row.recommendations.find((r) => r.images.length)
       ?.images[0];
+    const recCoverKey = recCover?.thumbnailKey ?? recCover?.key;
     return {
       id: row.id,
       name: row.name,
@@ -261,8 +311,11 @@ export class TravelDishesService {
       placeCount: row._count.recommendations,
       imageKey: row.imageKey,
       imageUrl,
+      thumbnailUrl,
+      previewUrl,
       coverImageUrl:
-        imageUrl ?? (recCover ? this.storage.getPublicUrl(recCover.key) : null),
+        thumbnailUrl ??
+        (recCoverKey ? this.storage.getPublicUrl(recCoverKey) : null),
       createdBy: toTravelCreatorDto(row.createdBy),
       createdAt: row.createdAt,
     };

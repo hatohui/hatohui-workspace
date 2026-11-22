@@ -10,6 +10,10 @@ import { StorageCleanupModule } from '@/modules/storage-cleanup/storage-cleanup.
 import { StorageDeleteExecutor } from '@/modules/storage-cleanup/services/storage-delete.executor';
 import { CommissionPurgeModule } from '@/modules/commission-purge/commission-purge.module';
 import { CommissionPurgeExecutor } from '@/modules/commission-purge/services/commission-purge.executor';
+import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module';
+import { TravelDishThumbnailExecutor } from '@/modules/travel-dishes/services/travel-dish-thumbnail.executor';
+import { TravelRecommendationsModule } from '@/modules/travel-recommendations/travel-recommendations.module';
+import { TravelRecommendationImageThumbnailExecutor } from '@/modules/travel-recommendations/services/travel-recommendation-image-thumbnail.executor';
 import { PROCESS_EXECUTORS } from '@/modules/process-queue/process-queue.constants';
 import { BirthdayConfigModule } from './birthday-config.module';
 import { BirthdayCronController } from '@/modules/cron/birthday-cron.controller';
@@ -28,6 +32,8 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
     ProcessQueueModule,
     StorageCleanupModule,
     CommissionPurgeModule,
+    TravelDishesModule,
+    TravelRecommendationsModule,
   ],
   controllers: [BirthdayCronController, ProcessQueueCronController],
   providers: [
@@ -41,12 +47,23 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         notificationEmail: NotificationEmailExecutor,
         storageDelete: StorageDeleteExecutor,
         commissionPurge: CommissionPurgeExecutor,
-      ) => [assetThumbnail, notificationEmail, storageDelete, commissionPurge],
+        travelDishThumbnail: TravelDishThumbnailExecutor,
+        travelRecImageThumbnail: TravelRecommendationImageThumbnailExecutor,
+      ) => [
+        assetThumbnail,
+        notificationEmail,
+        storageDelete,
+        commissionPurge,
+        travelDishThumbnail,
+        travelRecImageThumbnail,
+      ],
       inject: [
         AssetThumbnailExecutor,
         NotificationEmailExecutor,
         StorageDeleteExecutor,
         CommissionPurgeExecutor,
+        TravelDishThumbnailExecutor,
+        TravelRecommendationImageThumbnailExecutor,
       ],
     },
   ],
