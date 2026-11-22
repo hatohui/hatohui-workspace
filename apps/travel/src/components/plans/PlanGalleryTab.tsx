@@ -10,11 +10,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  Skeleton,
 } from '@hatohui/ui';
 import { ImagePlus, Trash2 } from 'lucide-react';
 import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
 import type { useTravelGallery } from '../../hooks/useTravelGallery';
+import PlanGallerySkeleton from './PlanGallerySkeleton';
 
 interface PlanGalleryTabProps {
   gallery: ReturnType<typeof useTravelGallery>;
@@ -95,7 +95,7 @@ function PlanGalleryTab({
       </div>
 
       {gallery.isLoading ? (
-        <Skeleton className="h-56 w-full rounded-xl" />
+        <PlanGallerySkeleton />
       ) : gallery.items.length === 0 ? (
         <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
           {t('plans.gallery.empty')}

@@ -107,12 +107,6 @@ export const PRICE_PRESETS: Record<Currency, [number, number][]> = {
   ],
 };
 
-export const FILTER_CHIP_SKELETON_WIDTHS = [
-  '5.5rem',
-  '4.5rem',
-  '6rem',
-] as const;
-
 export const APPLE_PLATFORM_PATTERN = /Mac|iPhone|iPad/;
 
 export const INITIAL_LOCATION_KEY = 'default';

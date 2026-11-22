@@ -1,8 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Skeleton } from '@hatohui/ui';
+import { Button } from '@hatohui/ui';
 import { ALLERGEN_ICONS } from '../../constants/travel';
 import type { useAllergySettings } from '../../hooks/useAllergySettings';
 import TagChipGroup from '../shared/TagChipGroup';
+import FormCardSkeleton from '../shared/FormCardSkeleton';
 
 type Props = ReturnType<typeof useAllergySettings>;
 
@@ -10,7 +11,7 @@ function AllergiesForm(props: Props) {
   const { t } = useTranslation();
 
   if (props.isLoading) {
-    return <Skeleton className="h-48 w-full rounded-xl" />;
+    return <FormCardSkeleton fields={1} />;
   }
 
   return (

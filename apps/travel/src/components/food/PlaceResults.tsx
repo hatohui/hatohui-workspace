@@ -1,10 +1,12 @@
 import { useTranslation } from '@hatohui/i18n';
 import { MapPin } from 'lucide-react';
+import { PLACE_CARD_TAG_WIDTHS } from '../../constants/skeleton';
 import { CARD_GRID_CLASS } from '../../constants/travel';
 import type { usePlaceList } from '../../hooks/usePlaceList';
 import { groupByCategory } from '../../lib/groupByCategory';
 import ClearFiltersButton from '../catalog/ClearFiltersButton';
 import PlaceCard from '../places/PlaceCard';
+import CardGridSkeleton from '../shared/CardGridSkeleton';
 import ListState from '../shared/ListState';
 import CategoryGroupList from './CategoryGroupList';
 
@@ -36,6 +38,12 @@ function PlaceResults({
   return (
     <ListState
       isLoading={list.isLoading}
+      skeleton={
+        <CardGridSkeleton
+          count={list.pageSize}
+          tagWidths={PLACE_CARD_TAG_WIDTHS}
+        />
+      }
       isError={list.isError}
       isEmpty={!(isGrouped ? list.allPlaces.length : list.places.length)}
       onRetry={() => void list.refetch()}

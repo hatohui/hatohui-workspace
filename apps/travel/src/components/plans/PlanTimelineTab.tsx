@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelParticipantMemberDto } from '@hatohui/models';
-import { Button, Input, Skeleton } from '@hatohui/ui';
+import { Button, Input } from '@hatohui/ui';
 import {
   ArrowUpDown,
   Clock,
@@ -16,6 +16,8 @@ import {
 import routes from '../../constants/routes';
 import type { useTravelTimeline } from '../../hooks/useTravelTimeline';
 import PlanActivityForm from './PlanActivityForm';
+import SkeletonReveal from '../shared/SkeletonReveal';
+import PlanTimelineSkeleton from './PlanTimelineSkeleton';
 
 interface PlanTimelineTabProps {
   timeline: ReturnType<typeof useTravelTimeline>;
@@ -124,7 +126,9 @@ function PlanTimelineTab({
       )}
 
       {timeline.isLoading ? (
-        <Skeleton className="h-56 w-full rounded-xl" />
+        <SkeletonReveal>
+          <PlanTimelineSkeleton />
+        </SkeletonReveal>
       ) : timeline.visibleItems.length === 0 ? (
         <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
           {t('plans.timeline.empty')}

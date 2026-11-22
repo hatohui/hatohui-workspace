@@ -73,6 +73,7 @@ export function useDishList(
     dishes: pagedItems,
     pagination: { page, totalItems, totalPages, setPage },
     suggestions,
+    pageSize,
     isLoading: active.isLoading,
     isError: active.isError,
     refetch: active.refetch,

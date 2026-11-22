@@ -1,8 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Input, Label, Skeleton } from '@hatohui/ui';
+import { Button, Input, Label } from '@hatohui/ui';
 import { Plus, Trash2 } from 'lucide-react';
 import { WEEKDAY_KEYS } from '../../constants/schedule';
 import type { useWorkScheduleSettings } from '../../hooks/useWorkScheduleSettings';
+import FormCardSkeleton from '../shared/FormCardSkeleton';
 
 type WorkScheduleFormProps = ReturnType<typeof useWorkScheduleSettings>;
 
@@ -10,7 +11,7 @@ function WorkScheduleForm(props: WorkScheduleFormProps) {
   const { t } = useTranslation();
 
   if (props.isLoading) {
-    return <Skeleton className="h-72 w-full rounded-xl" />;
+    return <FormCardSkeleton />;
   }
 
   return (

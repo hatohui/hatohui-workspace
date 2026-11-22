@@ -2,11 +2,11 @@ import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from '@hatohui/i18n';
 import { ErrorState } from '@hatohui/ui';
-import CardGridSkeleton from './CardGridSkeleton';
 import EmptyState from './EmptyState';
 
 interface Props {
   isLoading: boolean;
+  skeleton: ReactNode;
   isError: boolean;
   isEmpty: boolean;
   onRetry: () => void;
@@ -18,7 +18,7 @@ interface Props {
 
 function ListState(props: Props) {
   const { t } = useTranslation();
-  if (props.isLoading) return <CardGridSkeleton />;
+  if (props.isLoading) return <>{props.skeleton}</>;
   if (props.isError) {
     return (
       <ErrorState

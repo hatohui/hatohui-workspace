@@ -75,6 +75,7 @@ export function usePlaceList(
     places: pagedItems,
     pagination: { page, totalItems, totalPages, setPage },
     suggestions,
+    pageSize,
     isLoading: active.isLoading,
     isError: active.isError,
     refetch: active.refetch,

@@ -4,7 +4,7 @@ import PlaceHeader from '../../../components/places/PlaceHeader';
 import PlaceMap from '../../../components/maps/PlaceMap';
 import RecommendationGrid from '../../../components/recommendation/RecommendationGrid';
 import BackLink from '../../../components/shared/BackLink';
-import CardGridSkeleton from '../../../components/shared/CardGridSkeleton';
+import DetailPageSkeleton from '../../../components/shared/DetailPageSkeleton';
 import routes from '../../../constants/routes';
 import { usePlaceDetail } from '../../../hooks/usePlaceDetail';
 
@@ -12,7 +12,7 @@ function PlacePage() {
   const { t } = useTranslation();
   const { place, isLoading, isError, refetch, deletion } = usePlaceDetail();
 
-  if (isLoading) return <CardGridSkeleton />;
+  if (isLoading) return <DetailPageSkeleton withImage={false} />;
   if (isError || !place) {
     return (
       <ErrorState

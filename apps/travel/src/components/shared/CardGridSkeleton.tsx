@@ -1,19 +1,26 @@
-import { Skeleton } from '@hatohui/ui';
 import { CARD_GRID_CLASS } from '../../constants/travel';
+import CardSkeleton from './CardSkeleton';
+import SkeletonReveal from './SkeletonReveal';
 
-const PLACEHOLDER_COUNT = 10;
+interface Props {
+  count: number;
+  square?: boolean;
+  tagWidths?: readonly string[];
+  className?: string;
+}
 
-function CardGridSkeleton() {
+function CardGridSkeleton({
+  count,
+  square,
+  tagWidths,
+  className = CARD_GRID_CLASS,
+}: Props) {
   return (
-    <div className={CARD_GRID_CLASS}>
-      {Array.from({ length: PLACEHOLDER_COUNT }, (_, index) => (
-        <div key={index} className="space-y-1.5">
-          <Skeleton className="aspect-[4/3] w-full rounded-lg" />
-          <Skeleton className="h-4 w-2/3" />
-          <Skeleton className="h-3 w-1/2" />
-        </div>
+    <SkeletonReveal className={className}>
+      {Array.from({ length: count }, (_, index) => (
+        <CardSkeleton key={index} square={square} tagWidths={tagWidths} />
       ))}
-    </div>
+    </SkeletonReveal>
   );
 }
 

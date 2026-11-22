@@ -1,11 +1,12 @@
 import { useRef, type ReactNode } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { EditableDataTable, Skeleton, type EditableColumn } from '@hatohui/ui';
+import { EditableDataTable, type EditableColumn } from '@hatohui/ui';
 import { useAdminColumnFilters } from '../../hooks/useAdminColumnFilters';
 import { useAdminTableControls } from '../../hooks/useAdminTableControls';
 import { useAutoFitRows } from '../../hooks/useAutoFitRows';
 import { useColumnVisibility } from '../../hooks/useColumnVisibility';
 import type { useRowDeletion } from '../../hooks/useRowDeletion';
+import AdminTableSkeleton from './AdminTableSkeleton';
 import AdminTableToolbar from './AdminTableToolbar';
 import DeleteRowDialog from './DeleteRowDialog';
 import QuickAddBar from './QuickAddBar';
@@ -78,7 +79,7 @@ function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
       />
       {props.notice}
       {props.isLoading ? (
-        <Skeleton className="h-48 w-full" />
+        <AdminTableSkeleton columns={visibility.visibleColumns.length} />
       ) : (
         <div ref={tableRef} className="space-y-4">
           <EditableDataTable

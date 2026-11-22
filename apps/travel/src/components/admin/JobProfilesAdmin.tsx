@@ -1,7 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Avatar, Button, Input, Skeleton } from '@hatohui/ui';
+import { Avatar, Button, Input } from '@hatohui/ui';
 import { Trash2 } from 'lucide-react';
 import { useAdminJobProfiles } from '../../hooks/useAdminJobProfiles';
+import ListTableSkeleton from './ListTableSkeleton';
 
 function JobProfilesAdmin() {
   const { t } = useTranslation();
@@ -9,7 +10,7 @@ function JobProfilesAdmin() {
     useAdminJobProfiles();
 
   if (isLoading) {
-    return <Skeleton className="h-48 w-full rounded-xl" />;
+    return <ListTableSkeleton withHeader />;
   }
 
   if (profiles.length === 0) {

@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
 import { useTravelLeaveBalance } from '@hatohui/models';
-import { Button, Skeleton } from '@hatohui/ui';
+import { Button } from '@hatohui/ui';
 import { CalendarDays, CalendarRange, Compass, Plus } from 'lucide-react';
 import BrowseFoodCard from '../../components/food/BrowseFoodCard';
 import PlanCard from '../../components/plans/PlanCard';
@@ -10,6 +10,7 @@ import LeaveBalanceCards from '../../components/schedule/LeaveBalanceCards';
 import EmptyState from '../../components/shared/EmptyState';
 import routes from '../../constants/routes';
 import { useTravelPlans } from '../../hooks/useTravelPlans';
+import PlanListSkeleton from '../../components/plans/PlanListSkeleton';
 
 function OverviewPage() {
   const { t } = useTranslation();
@@ -93,8 +94,8 @@ function OverviewPage() {
                 <Link to={routes.plans}>{t('overview.viewAllPlans')}</Link>
               </Button>
             </div>
-            {plansLoading ? (
-              <Skeleton className="h-32 w-full rounded-xl" />
+            {plansLoading || authLoading ? (
+              <PlanListSkeleton className="gap-3" />
             ) : upcoming.length === 0 ? (
               <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
                 {t('overview.noUpcoming')}

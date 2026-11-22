@@ -4,7 +4,7 @@ import AddRecommendationButton from '../../../components/catalog/AddRecommendati
 import DishHeader from '../../../components/dishes/DishHeader';
 import RecommendationGrid from '../../../components/recommendation/RecommendationGrid';
 import BackLink from '../../../components/shared/BackLink';
-import CardGridSkeleton from '../../../components/shared/CardGridSkeleton';
+import DetailPageSkeleton from '../../../components/shared/DetailPageSkeleton';
 import routes from '../../../constants/routes';
 import { useDishDetail } from '../../../hooks/useDishDetail';
 
@@ -12,7 +12,7 @@ function DishPage() {
   const { t } = useTranslation();
   const { dish, isLoading, isError, refetch, deletion } = useDishDetail();
 
-  if (isLoading) return <CardGridSkeleton />;
+  if (isLoading) return <DetailPageSkeleton withImage={true} />;
   if (isError || !dish) {
     return (
       <ErrorState
