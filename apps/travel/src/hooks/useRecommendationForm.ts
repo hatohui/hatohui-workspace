@@ -14,19 +14,19 @@ export function useRecommendationForm(
   const matches = useCatalogMatches(fields.dishName, fields.placeName);
   const { save, isSaving } = useSaveRecommendation(existing, onSaved);
 
+  const busy = photos.isUploading || isSaving;
   const canSubmit =
-    fields.dishName.trim() !== '' &&
-    fields.placeName.trim() !== '' &&
-    !photos.isUploading &&
-    !isSaving;
+    fields.dishName.trim() !== '' && fields.placeName.trim() !== '' && !busy;
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (!canSubmit) return;
-    void save(
+    const keys = await photos.uploadPending();
+    if (!keys) return;
+    await save(
       fields,
       { dishId: matches.dish?.id, placeId: matches.place?.id },
-      photos.keys,
+      keys,
     );
   };
 
@@ -38,7 +38,7 @@ export function useRecommendationForm(
     photos,
     matches,
     canSubmit,
-    isSaving,
-    submit,
+    isSaving: busy,
+    submit: (event: FormEvent) => void submit(event),
   };
 }

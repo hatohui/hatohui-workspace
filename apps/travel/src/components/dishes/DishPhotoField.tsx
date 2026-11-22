@@ -3,22 +3,18 @@ import { useTranslation } from '@hatohui/i18n';
 import { Button, Label } from '@hatohui/ui';
 import { ImagePlus, Loader2, X } from 'lucide-react';
 import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
-import { useDishPhoto } from '../../hooks/useDishPhoto';
+import type { useDishPhoto } from '../../hooks/useDishPhoto';
 import { useImagePaste } from '../../hooks/useImagePaste';
 
 interface Props {
-  initialKey: string | null;
-  initialUrl: string | null;
-  onChange: (key: string | null) => void;
-  onUploadingChange?: (uploading: boolean) => void;
+  photo: ReturnType<typeof useDishPhoto>;
 }
 
-function DishPhotoField({ initialKey, initialUrl, onChange }: Props) {
+function DishPhotoField({ photo }: Props) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
-  const photo = useDishPhoto(initialKey, initialUrl, onChange);
   useImagePaste((files) => {
-    if (files[0]) void photo.pickFile(files[0]);
+    if (files[0]) photo.pickFile(files[0]);
   }, !photo.isUploading);
 
   return (
@@ -32,7 +28,7 @@ function DishPhotoField({ initialKey, initialUrl, onChange }: Props) {
         onChange={(event) => {
           const file = event.target.files?.[0];
           event.target.value = '';
-          if (file) void photo.pickFile(file);
+          if (file) photo.pickFile(file);
         }}
       />
       {photo.previewUrl ? (

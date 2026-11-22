@@ -18,7 +18,7 @@ function PhotoThumb({ photo, isCover, onRemove, onMakeCover }: Props) {
   return (
     <div className="relative aspect-square overflow-hidden rounded-lg bg-card">
       <img src={photo.url} alt="" className="size-full object-cover" />
-      {!photo.key && (
+      {photo.uploading && (
         <div
           className="absolute inset-0 flex items-center justify-center bg-background/60"
           aria-label={t('form.uploading')}
@@ -27,7 +27,7 @@ function PhotoThumb({ photo, isCover, onRemove, onMakeCover }: Props) {
         </div>
       )}
       <div className="absolute top-1 right-1 flex gap-1">
-        {!isCover && photo.key && (
+        {!isCover && !photo.uploading && (
           <button
             type="button"
             className={actionClass}

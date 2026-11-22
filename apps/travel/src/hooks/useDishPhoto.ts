@@ -6,33 +6,44 @@ import { useErrorMessage } from './useErrorMessage';
 export function useDishPhoto(
   initialKey: string | null,
   initialUrl: string | null,
-  onChange: (key: string | null) => void,
 ) {
+  const [key, setKey] = useState<string | null>(initialKey);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialUrl);
   const [isUploading, setIsUploading] = useState(false);
   const { uploadImage } = useImageUpload();
   const toast = useToast();
   const errorMessage = useErrorMessage();
 
-  const pickFile = async (file: File) => {
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
+  const pickFile = (file: File) => {
+    setPendingFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const remove = () => {
+    setPendingFile(null);
+    setKey(null);
+    setPreviewUrl(null);
+  };
+
+  const uploadPending = async (): Promise<{
+    ok: boolean;
+    imageKey: string | null;
+  }> => {
+    if (!pendingFile) return { ok: true, imageKey: key };
     setIsUploading(true);
     try {
-      const { key } = await uploadImage(file);
-      onChange(key);
+      const uploaded = await uploadImage(pendingFile);
+      setKey(uploaded.key);
+      setPendingFile(null);
+      return { ok: true, imageKey: uploaded.key };
     } catch (error) {
-      setPreviewUrl(initialKey ? initialUrl : null);
       toast.error(errorMessage(error));
+      return { ok: false, imageKey: key };
     } finally {
       setIsUploading(false);
     }
   };
 
-  const remove = () => {
-    setPreviewUrl(null);
-    onChange(null);
-  };
-
-  return { previewUrl, isUploading, pickFile, remove };
+  return { previewUrl, isUploading, pickFile, remove, uploadPending };
 }

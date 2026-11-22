@@ -43,11 +43,7 @@ function DishForm({ dish, onClose }: Props) {
           value={form.values.description}
           onChange={(value) => form.set('description', value)}
         />
-        <DishPhotoField
-          initialKey={dish.imageKey}
-          initialUrl={dish.imageUrl}
-          onChange={(key) => form.set('imageKey', key)}
-        />
+        <DishPhotoField photo={form.photo} />
       </div>
     </DialogForm>
   );

@@ -9,6 +9,8 @@ export interface PhotoItem {
   id: string;
   key: string | null;
   url: string;
+  file?: File;
+  uploading?: boolean;
 }
 
 const fromImages = (images: TravelImageDto[]): PhotoItem[] =>
@@ -16,6 +18,7 @@ const fromImages = (images: TravelImageDto[]): PhotoItem[] =>
 
 export function usePhotoList(initial: TravelImageDto[]) {
   const [photos, setPhotos] = useState<PhotoItem[]>(() => fromImages(initial));
+  const [isUploading, setIsUploading] = useState(false);
   const { uploadImage } = useImageUpload();
   const toast = useToast();
   const errorMessage = useErrorMessage();
@@ -29,28 +32,51 @@ export function usePhotoList(initial: TravelImageDto[]) {
           ),
     );
 
-  const addFiles = async (files: File[]) => {
-    const room = MAX_PHOTOS - photos.length;
-    const pending = files.slice(0, Math.max(room, 0)).map((file) => ({
-      file,
-      photo: {
+  const addFiles = (files: File[]) => {
+    setPhotos((list) => {
+      const room = MAX_PHOTOS - list.length;
+      const queued = files.slice(0, Math.max(room, 0)).map((file) => ({
         id: crypto.randomUUID(),
         key: null,
         url: URL.createObjectURL(file),
-      },
-    }));
-    setPhotos((list) => [...list, ...pending.map((p) => p.photo)]);
+        file,
+      }));
+      return [...list, ...queued];
+    });
+  };
+
+  const uploadPending = async (): Promise<string[] | null> => {
+    const pending = photos.filter((photo) => !photo.key && photo.file);
+    if (pending.length === 0) {
+      return photos.flatMap((photo) => (photo.key ? [photo.key] : []));
+    }
+
+    setIsUploading(true);
+    const uploadedKeys = new Map<string, string>();
+    let failed = false;
+
     await Promise.all(
-      pending.map(async ({ file, photo }) => {
+      pending.map(async (photo) => {
+        patch(photo.id, { uploading: true });
         try {
-          const { key } = await uploadImage(file);
-          patch(photo.id, { key });
+          const { key } = await uploadImage(photo.file);
+          uploadedKeys.set(photo.id, key);
+          patch(photo.id, { key, file: undefined, uploading: false });
         } catch (error) {
-          patch(photo.id, null);
+          failed = true;
+          patch(photo.id, { uploading: false });
           toast.error(errorMessage(error));
         }
       }),
     );
+
+    setIsUploading(false);
+    if (failed) return null;
+
+    return photos.flatMap((photo) => {
+      const key = photo.key ?? uploadedKeys.get(photo.id);
+      return key ? [key] : [];
+    });
   };
 
   const makeCover = (id: string) =>
@@ -67,11 +93,11 @@ export function usePhotoList(initial: TravelImageDto[]) {
   return {
     photos,
     addFiles,
+    uploadPending,
     remove: (id: string) => patch(id, null),
     makeCover,
     reset,
-    keys: photos.flatMap((photo) => (photo.key ? [photo.key] : [])),
-    isUploading: photos.some((photo) => !photo.key),
+    isUploading,
     isFull: photos.length >= MAX_PHOTOS,
   };
 }
