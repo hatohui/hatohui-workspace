@@ -7,7 +7,6 @@ import CreatorBadge from '../shared/CreatorBadge';
 import CuisineChips from '../shared/CuisineChips';
 import AllergenNote from './AllergenNote';
 import PhotoCarousel from './PhotoCarousel';
-import PriceLabel from './PriceLabel';
 import RecommendationActions from './RecommendationActions';
 import RecommendationTags from './RecommendationTags';
 
@@ -32,7 +31,6 @@ function RecommendationDetails({ recommendation: rec }: Props) {
           </Link>
           <div className="flex flex-wrap items-center gap-2">
             <PlaceMapsChip place={rec.place} />
-            <PriceLabel price={rec} />
           </div>
         </div>
         <RecommendationActions recommendation={rec} />

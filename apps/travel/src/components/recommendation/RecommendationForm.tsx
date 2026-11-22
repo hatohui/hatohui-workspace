@@ -7,7 +7,6 @@ import TextField from '../shared/TextField';
 import DishInputs from './DishInputs';
 import PhotoField from './PhotoField';
 import PlaceInputs from './PlaceInputs';
-import PriceField from './PriceField';
 import TagFields from './TagFields';
 
 interface Props {
@@ -40,9 +39,6 @@ function RecommendationForm({ recommendation, onClose }: Props) {
           <PhotoField photos={form.photos} />
         </div>
         <div className="space-y-5 lg:[grid-area:details]">
-          <FormSection title={t('form.sectionPrice')}>
-            <PriceField fields={form.fields} set={form.set} />
-          </FormSection>
           <FormSection title={t('form.sectionTags')}>
             <TagFields
               fields={form.fields}
