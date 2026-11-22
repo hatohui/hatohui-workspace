@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useTravelDishes } from '@hatohui/models';
-import { useSearchState } from './useSearchState';
 import type { SearchSuggestion } from './useSearchSuggest';
+import { useTravelFilterState } from './useTravelFilterState';
 
 export function useDishList() {
-  const { search, setSearch, query } = useSearchState();
-  const result = useTravelDishes({ q: query });
+  const { queryParams, filters, isFiltered } = useTravelFilterState();
+  const result = useTravelDishes(queryParams);
   const dishes = useMemo(() => result.data?.data ?? [], [result.data?.data]);
   const suggestions = useMemo<SearchSuggestion[]>(
     () =>
@@ -23,7 +23,7 @@ export function useDishList() {
     isLoading: result.isLoading,
     isError: result.isError,
     refetch: result.refetch,
-    search,
-    setSearch,
+    filters,
+    isFiltered,
   };
 }

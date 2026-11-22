@@ -12,6 +12,23 @@ export type TravelDishesParams = {
  */
 q?: string;
 /**
+ * Only dishes tagged with any of these cuisines
+ */
+cuisines?: string[];
+/**
+ * Only entries added by this @handle
+ */
+by?: string;
+spicy?: boolean;
+/**
+ * Only dishes with a recommendation meeting every listed diet
+ */
+diets?: string[];
+/**
+ * Hide dishes with any recommendation containing these allergens
+ */
+excludeAllergens?: string[];
+/**
  * Only places in this area
  */
 areaId?: string;

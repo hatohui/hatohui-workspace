@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -6,6 +7,11 @@ import {
 import { Prisma } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
+import {
+  STAGING_PREFIX,
+  isStagedKey,
+  travelDishImageKeyFor,
+} from '@/common/utils/asset-paths';
 import { TravelRecommendationsService } from '@/modules/travel-recommendations/services/travel-recommendations.service';
 import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel-cuisines.service';
 import { travelCuisineNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
@@ -15,6 +21,7 @@ import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names
 import { UNIQUE_VIOLATION_CODE } from '@/modules/travel-recommendations/travel-recommendations.constants';
 import {
   toTravelCreatorDto,
+  travelCreatorFilter,
   travelCreatorSelect,
 } from '@/modules/travel-recommendations/utils/travel-creator';
 import {
@@ -52,9 +59,42 @@ export class TravelDishesService {
     const q = query.q?.trim();
     const contains = q ? { contains: q, mode: 'insensitive' as const } : null;
     const inArea = travelAreaFilter(query);
+    const and: Prisma.TravelDishWhereInput[] = [];
+
+    if (query.cuisines?.length) {
+      and.push({
+        cuisines: {
+          some: {
+            OR: query.cuisines.map((name) => ({
+              name: { equals: name, mode: 'insensitive' as const },
+            })),
+          },
+        },
+      });
+    }
+
+    const recMatch: Prisma.TravelRecommendationWhereInput = {
+      ...(inArea ? { place: inArea } : {}),
+      ...(query.spicy ? { spicy: true } : {}),
+      ...(query.diets?.length
+        ? { AND: query.diets.map((key) => ({ tags: { some: { key } } })) }
+        : {}),
+    };
+    if (Object.keys(recMatch).length > 0) {
+      and.push({ recommendations: { some: recMatch } });
+    }
+    if (query.excludeAllergens?.length) {
+      and.push({
+        recommendations: {
+          none: { tags: { some: { key: { in: query.excludeAllergens } } } },
+        },
+      });
+    }
+
     const rows = await this.db.travelDish.findMany({
       where: {
-        recommendations: inArea ? { some: { place: inArea } } : undefined,
+        createdBy: travelCreatorFilter(query.by),
+        AND: and.length ? and : undefined,
         OR: contains
           ? [{ name: contains }, { cuisines: { some: { name: contains } } }]
           : undefined,
@@ -89,6 +129,18 @@ export class TravelDishesService {
         },
       }),
     );
+    if (dto.imageKey) {
+      const imageKey = await this.placeImage(
+        created.id,
+        dto.imageKey,
+        null,
+        userId,
+      );
+      await this.db.travelDish.update({
+        where: { id: created.id },
+        data: { imageKey },
+      });
+    }
     return this.get(created.id);
   }
 
@@ -119,27 +171,65 @@ export class TravelDishesService {
     dto: UpdateTravelDishDto,
     userId: string,
   ): Promise<TravelDishDetailDto> {
-    await this.get(id);
+    const existing = await this.get(id);
     const cuisines =
       dto.cuisines && (await this.cuisineRefs(dto.cuisines, userId));
+    const imageKey =
+      dto.imageKey === undefined
+        ? undefined
+        : await this.placeImage(id, dto.imageKey, existing.imageKey, userId);
     await this.guardUnique(() =>
       this.db.travelDish.update({
         where: { id },
         data: {
           ...this.fieldsOf(dto),
+          ...(imageKey !== undefined ? { imageKey } : {}),
           cuisines: cuisines ? { set: cuisines } : undefined,
         },
       }),
     );
+    if (
+      imageKey !== undefined &&
+      existing.imageKey &&
+      existing.imageKey !== imageKey
+    ) {
+      await this.recommendations.deleteObjects([existing.imageKey]);
+    }
     return this.get(id);
   }
 
   async remove(id: string): Promise<void> {
+    const existing = await this.db.travelDish.findUnique({
+      where: { id },
+      select: { imageKey: true },
+    });
+    if (!existing) throw new NotFoundException('Dish not found');
     const keys = await this.recommendations.imageKeysWhere({ dishId: id });
+    if (existing.imageKey) keys.push(existing.imageKey);
     await this.db.travelDish.delete({ where: { id } }).catch(() => {
       throw new NotFoundException('Dish not found');
     });
     await this.recommendations.deleteObjects(keys);
+  }
+
+  private async placeImage(
+    dishId: string,
+    key: string | null,
+    existingKey: string | null,
+    uploaderId: string,
+  ): Promise<string | null> {
+    const trimmed = key?.trim() ?? '';
+    if (!trimmed) return null;
+    if (trimmed === existingKey) return existingKey;
+    if (!isStagedKey(trimmed)) {
+      throw new BadRequestException(`Unknown image key: ${trimmed}`);
+    }
+    if (!trimmed.startsWith(`${STAGING_PREFIX}/${uploaderId}/`)) {
+      throw new BadRequestException("Cannot claim another uploader's file");
+    }
+    const target = travelDishImageKeyFor(dishId, trimmed);
+    await this.storage.moveObject(trimmed, target);
+    return target;
   }
 
   private async cuisineRefs(names: string[] | undefined, userId: string) {
@@ -158,14 +248,21 @@ export class TravelDishesService {
   }
 
   private toDto(row: DishRow): TravelDishDto {
-    const cover = row.recommendations.find((r) => r.images.length)?.images[0];
+    const imageUrl = row.imageKey
+      ? this.storage.getPublicUrl(row.imageKey)
+      : null;
+    const recCover = row.recommendations.find((r) => r.images.length)
+      ?.images[0];
     return {
       id: row.id,
       name: row.name,
       cuisines: row.cuisines.map((cuisine) => cuisine.name),
       description: row.description,
       placeCount: row._count.recommendations,
-      coverImageUrl: cover ? this.storage.getPublicUrl(cover.key) : null,
+      imageKey: row.imageKey,
+      imageUrl,
+      coverImageUrl:
+        imageUrl ?? (recCover ? this.storage.getPublicUrl(recCover.key) : null),
       createdBy: toTravelCreatorDto(row.createdBy),
     };
   }

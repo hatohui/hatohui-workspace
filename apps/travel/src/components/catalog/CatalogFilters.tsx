@@ -1,7 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
 import { Flame } from 'lucide-react';
-import { DIET_ICONS } from '../../constants/travel';
+import { ALLERGEN_ICONS, DIET_ICONS } from '../../constants/travel';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import type { CatalogFilters as Filters } from '../../hooks/useCatalog';
 import { useCuisineNames } from '../../hooks/useCuisineNames';
@@ -53,6 +53,7 @@ function CatalogFilters({ filters }: { filters: Filters }) {
           options={tags.allergenKeys}
           selected={filters.avoid}
           labelOf={tags.labelOf}
+          iconOf={(tag) => ALLERGEN_ICONS[tag]}
           onToggle={filters.toggleAvoid}
         />
       </FilterSection>

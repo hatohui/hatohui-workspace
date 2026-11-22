@@ -17,6 +17,10 @@ export interface TravelDishDetailDto {
   /** Places recommended for this dish */
   placeCount: number;
   /** @nullable */
+  imageKey: string | null;
+  /** @nullable */
+  imageUrl: string | null;
+  /** @nullable */
   coverImageUrl: string | null;
   /** @nullable */
   createdBy: TravelCreatorDto | null;

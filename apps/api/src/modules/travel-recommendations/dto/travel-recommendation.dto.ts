@@ -40,6 +40,9 @@ export class TravelDishSummaryDto {
 
   @ApiProperty({ type: [String], example: ['Vietnamese'] })
   cuisines!: string[];
+
+  @ApiProperty({ nullable: true, type: String })
+  imageUrl!: string | null;
 }
 
 export class TravelPlaceAreaDto {

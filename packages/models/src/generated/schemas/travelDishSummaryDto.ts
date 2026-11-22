@@ -10,4 +10,6 @@ export interface TravelDishSummaryDto {
   id: string;
   name: string;
   cuisines: string[];
+  /** @nullable */
+  imageUrl: string | null;
 }

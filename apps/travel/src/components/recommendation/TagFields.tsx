@@ -1,7 +1,7 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Label } from '@hatohui/ui';
 import { Flame } from 'lucide-react';
-import { DIET_ICONS } from '../../constants/travel';
+import { ALLERGEN_ICONS, DIET_ICONS } from '../../constants/travel';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
 import TagChipGroup from '../shared/TagChipGroup';
@@ -45,6 +45,7 @@ function TagFields({ fields, set, toggle }: Props) {
           options={tags.allergenKeys}
           selected={fields.allergens}
           labelOf={tags.labelOf}
+          iconOf={(tag) => ALLERGEN_ICONS[tag]}
           onToggle={(tag) => toggle('allergens', tag)}
         />
       </div>

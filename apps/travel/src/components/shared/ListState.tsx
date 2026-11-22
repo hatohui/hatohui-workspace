@@ -12,6 +12,7 @@ interface Props {
   onRetry: () => void;
   emptyIcon: LucideIcon;
   emptyMessage: string;
+  emptyAction?: ReactNode;
   children: ReactNode;
 }
 
@@ -27,7 +28,13 @@ function ListState(props: Props) {
     );
   }
   if (props.isEmpty) {
-    return <EmptyState icon={props.emptyIcon} message={props.emptyMessage} />;
+    return (
+      <EmptyState
+        icon={props.emptyIcon}
+        message={props.emptyMessage}
+        action={props.emptyAction}
+      />
+    );
   }
   return <>{props.children}</>;
 }

@@ -836,6 +836,7 @@ model TravelDish {
   id          String   @id @default(cuid())
   name        String   @unique
   description String?
+  imageKey    String?
   createdById String?
   createdBy   User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())

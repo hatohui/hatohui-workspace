@@ -4,6 +4,7 @@ import { useDishForm } from '../../hooks/useDishForm';
 import CuisineField from '../shared/CuisineField';
 import DialogForm from '../shared/DialogForm';
 import TextField from '../shared/TextField';
+import DishPhotoField from './DishPhotoField';
 
 interface Props {
   dish: TravelDishDto;
@@ -41,6 +42,11 @@ function DishForm({ dish, onClose }: Props) {
           label={t('dishes.description')}
           value={form.values.description}
           onChange={(value) => form.set('description', value)}
+        />
+        <DishPhotoField
+          initialKey={dish.imageKey}
+          initialUrl={dish.imageUrl}
+          onChange={(key) => form.set('imageKey', key)}
         />
       </div>
     </DialogForm>

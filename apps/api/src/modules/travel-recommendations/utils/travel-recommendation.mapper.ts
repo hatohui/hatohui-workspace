@@ -16,7 +16,12 @@ export const travelCuisineNamesSelect = {
 
 export const travelRecommendationInclude = {
   dish: {
-    select: { id: true, name: true, cuisines: travelCuisineNamesSelect },
+    select: {
+      id: true,
+      name: true,
+      imageKey: true,
+      cuisines: travelCuisineNamesSelect,
+    },
   },
   place: {
     select: {
@@ -58,6 +63,7 @@ export function toTravelRecommendationDto(
       id: row.dish.id,
       name: row.dish.name,
       cuisines: row.dish.cuisines.map((cuisine) => cuisine.name),
+      imageUrl: row.dish.imageKey ? publicUrlOf(row.dish.imageKey) : null,
     },
     place: { ...row.place, area: toTravelPlaceAreaDto(row.place.area) },
     note: row.note,

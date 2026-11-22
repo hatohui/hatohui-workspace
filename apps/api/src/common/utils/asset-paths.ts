@@ -41,6 +41,7 @@ export const PREVIEWS_SEGMENT = 'previews';
 export const PROCESS_SEGMENT = 'process';
 export const UNASSIGNED_ARTIST_SEGMENT = 'unassigned';
 export const TRAVEL_RECOMMENDATIONS_PREFIX = 'travel/recommendations';
+export const TRAVEL_DISHES_PREFIX = 'travel/dishes';
 
 /// Where a freshly signed upload goes before its owning record exists.
 export function stagedUploadKey(owner: string, extension: string): string {
@@ -118,6 +119,13 @@ function derivedImageKeyFor(
 ): string {
   const base = fileNameOf(sourceKeyOrFilename).replace(/\.[^.]+$/, '');
   return `${ART_PREFIX}/${artist}/${segment}/${randomUUID()}-${base}.webp`;
+}
+
+export function travelDishImageKeyFor(
+  dishId: string,
+  sourceKey: string,
+): string {
+  return `${TRAVEL_DISHES_PREFIX}/${dishId}/${fileNameOf(sourceKey)}`;
 }
 
 function fileNameOf(key: string): string {

@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import type { TravelRecommendationDto } from '@hatohui/models';
 import routes from '../../constants/routes';
+import PlaceMap from '../maps/PlaceMap';
 import PlaceMapsChip from '../maps/PlaceMapsChip';
 import CreatorBadge from '../shared/CreatorBadge';
 import CuisineChips from '../shared/CuisineChips';
@@ -44,6 +45,7 @@ function RecommendationDetails({ recommendation: rec }: Props) {
           {rec.note}
         </p>
       )}
+      <PlaceMap place={rec.place} />
       <CreatorBadge creator={rec.createdBy} />
     </div>
   );

@@ -8,6 +8,7 @@ export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
       name: dish.name,
       cuisines: dish.cuisines,
       description: dish.description ?? '',
+      imageKey: dish.imageKey,
     },
     (data) => update.mutateAsync({ id: dish.id, data }),
     onSaved,

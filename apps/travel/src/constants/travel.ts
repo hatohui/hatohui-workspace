@@ -3,10 +3,17 @@ import {
   TravelPriceLevel,
 } from '@hatohui/models';
 import {
+  Bean,
+  Egg,
   Fish,
   Leaf,
+  Milk,
   MilkOff,
+  Nut,
+  Shell,
+  ShieldCheck,
   Sprout,
+  Wheat,
   WheatOff,
   type LucideIcon,
 } from 'lucide-react';
@@ -25,8 +32,22 @@ export const DIET_ICONS: Partial<Record<string, LucideIcon>> = {
   vegetarian: Leaf,
   vegan: Sprout,
   pescatarian: Fish,
+  halal: ShieldCheck,
+  kosher: ShieldCheck,
   'gluten-free': WheatOff,
   'dairy-free': MilkOff,
+};
+
+export const ALLERGEN_ICONS: Partial<Record<string, LucideIcon>> = {
+  peanuts: Nut,
+  'tree-nuts': Nut,
+  shellfish: Shell,
+  fish: Fish,
+  egg: Egg,
+  dairy: Milk,
+  gluten: Wheat,
+  soy: Bean,
+  sesame: Sprout,
 };
 
 export const PRICE_LEVEL_SYMBOLS: Record<TravelPriceLevel, number> = {

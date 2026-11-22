@@ -16,4 +16,9 @@ export interface UpdateTravelDishDto {
   cuisines?: string[];
   /** @maxLength 2000 */
   description?: string;
+  /**
+     * Staged upload key, existing key, or null to clear
+     * @nullable
+     */
+  imageKey?: string | null;
 }
