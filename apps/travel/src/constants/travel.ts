@@ -26,6 +26,7 @@ export const PRICE_LEVELS = Object.values(TravelPriceLevel);
 export const TAG_KIND_NAMESPACE = {
   DIET: 'diet',
   ALLERGEN: 'allergen',
+  GENERAL: 'tag',
 } as const;
 
 export const DIET_ICONS: Partial<Record<string, LucideIcon>> = {

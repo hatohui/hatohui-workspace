@@ -27,6 +27,7 @@ const detailsOf = (fields: RecommendationFields, imageKeys: string[]) => {
     spicy: fields.spicy,
     diets: fields.diets,
     allergens: fields.allergens,
+    tags: fields.tags,
     imageKeys,
   };
 };

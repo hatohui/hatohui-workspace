@@ -125,12 +125,22 @@ export class CreateTravelRecommendationDto {
   @ApiProperty({
     required: false,
     type: [String],
-    description: 'Allergen tag keys',
+    description: 'Allergen tag keys or names',
   })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   allergens?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'General tag keys or names (e.g. bread, meat)',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 
   @ApiProperty({
     type: [String],

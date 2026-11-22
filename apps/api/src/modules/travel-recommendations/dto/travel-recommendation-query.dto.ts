@@ -92,4 +92,14 @@ export class TravelRecommendationQueryDto {
   @Transform(toList)
   @IsString({ each: true })
   excludeAllergens?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Only dishes with every listed general tag',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsString({ each: true })
+  tags?: string[];
 }

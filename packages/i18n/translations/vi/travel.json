@@ -73,7 +73,14 @@
     "sectionPrice": "Giá",
     "sectionTags": "Thẻ",
     "diets": "Chế độ ăn",
+    "dietsPlaceholder": "Tìm hoặc thêm chế độ ăn…",
     "allergens": "Chất gây dị ứng",
+    "allergensPlaceholder": "Tìm hoặc thêm chất gây dị ứng…",
+    "noticeTags": "Lưu ý",
+    "otherTags": "Thẻ khác",
+    "otherTagsPlaceholder": "Bánh mì, thịt, bún…",
+    "tagCreate": "Thêm \"{{tag}}\"",
+    "tagRemove": "Xóa {{tag}}",
     "priceRange": "Số tiền",
     "priceLevel": "Mức giá",
     "priceFrom": "Từ",
@@ -212,7 +219,8 @@
     "mapsLink": "Link bản đồ",
     "kinds": {
       "DIET": "Chế độ ăn",
-      "ALLERGEN": "Dị ứng"
+      "ALLERGEN": "Dị ứng",
+      "GENERAL": "Thẻ"
     }
   }
 }

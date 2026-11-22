@@ -4,9 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, type TravelTagKind } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
+import { tagKeyOf } from '@/modules/travel-tags/utils/tag-key';
 import { travelPlaceData } from '@/modules/travel-recommendations/utils/travel-place-data';
 import {
   CreateTravelRecommendationDto,
@@ -65,7 +66,7 @@ export class TravelRecommendationsService {
     dto: CreateTravelRecommendationDto,
     userId: string,
   ): Promise<TravelRecommendationDto> {
-    await this.assertTags(dto);
+    const resolvedTags = await this.resolveTagLists(dto);
     const dishId = await this.resolveDish(dto, userId);
     const placeId = await this.resolvePlace(dto, userId);
 
@@ -75,7 +76,7 @@ export class TravelRecommendationsService {
           dishId,
           placeId,
           ...travelRecommendationDetails(dto),
-          tags: { connect: this.tagRefs(travelTagKeys(dto, [])) },
+          tags: { connect: this.tagRefs(travelTagKeys(resolvedTags, [])) },
           createdById: userId,
         },
       }),
@@ -91,11 +92,12 @@ export class TravelRecommendationsService {
     dto: UpdateTravelRecommendationDto,
     userId: string,
   ): Promise<TravelRecommendationDto> {
-    await this.assertTags(dto);
+    const resolvedTags = await this.resolveTagLists(dto);
     const current = await this.get(id);
-    const tagKeys = travelTagKeys(dto, [
+    const tagKeys = travelTagKeys(resolvedTags, [
       ...current.diets.map((key) => ({ key, kind: 'DIET' as const })),
       ...current.allergens.map((key) => ({ key, kind: 'ALLERGEN' as const })),
+      ...current.tags.map((key) => ({ key, kind: 'GENERAL' as const })),
     ]);
     await this.guardUnique(() =>
       this.db.travelRecommendation.update({
@@ -144,28 +146,72 @@ export class TravelRecommendationsService {
     );
   }
 
-  private async assertTags(dto: UpdateTravelRecommendationDto) {
-    const wanted = [
-      ...(dto.diets ?? []).map((key) => ({ key, kind: 'DIET' as const })),
-      ...(dto.allergens ?? []).map((key) => ({
-        key,
-        kind: 'ALLERGEN' as const,
-      })),
+  private async resolveTagLists(dto: UpdateTravelRecommendationDto) {
+    const diets =
+      dto.diets === undefined
+        ? undefined
+        : await this.resolveTagsOfKind('DIET', dto.diets);
+    const allergens =
+      dto.allergens === undefined
+        ? undefined
+        : await this.resolveTagsOfKind('ALLERGEN', dto.allergens);
+    const tags =
+      dto.tags === undefined
+        ? undefined
+        : await this.resolveTagsOfKind('GENERAL', dto.tags);
+    return { diets, allergens, tags };
+  }
+
+  private async resolveTagsOfKind(
+    kind: TravelTagKind,
+    entries: string[],
+  ): Promise<string[]> {
+    const cleaned = [
+      ...new Set(entries.map((item) => item.trim()).filter(Boolean)),
     ];
-    if (!wanted.length) return;
-    const found = await this.db.travelTag.findMany({
-      where: { key: { in: wanted.map((tag) => tag.key) } },
-      select: { key: true, kind: true },
+    if (!cleaned.length) return [];
+
+    const existing = await this.db.travelTag.findMany({
+      select: { key: true, name: true, position: true },
     });
-    const known = new Set(found.map((tag) => `${tag.kind}:${tag.key}`));
-    const unknown = wanted.filter(
-      (tag) => !known.has(`${tag.kind}:${tag.key}`),
+    const byKey = new Map(
+      existing.map((tag) => [tag.key.toLowerCase(), tag.key]),
     );
-    if (unknown.length) {
-      throw new BadRequestException(
-        `Unknown tags: ${unknown.map((tag) => tag.key).join(', ')}`,
-      );
+    const byName = new Map(
+      existing
+        .filter((tag) => tag.name)
+        .map((tag) => [tag.name!.toLowerCase(), tag.key]),
+    );
+    let nextPosition = existing.reduce(
+      (max, tag) => Math.max(max, tag.position),
+      0,
+    );
+
+    const keys: string[] = [];
+    for (const entry of cleaned) {
+      const slug = tagKeyOf(entry);
+      const existingKey =
+        byKey.get(entry.toLowerCase()) ??
+        byName.get(entry.toLowerCase()) ??
+        (slug ? byKey.get(slug) : undefined);
+      if (existingKey) {
+        keys.push(existingKey);
+        continue;
+      }
+      if (!slug) continue;
+      await this.db.travelTag.create({
+        data: {
+          key: slug,
+          name: entry,
+          kind,
+          position: (nextPosition += 1),
+        },
+      });
+      byKey.set(slug, slug);
+      byName.set(entry.toLowerCase(), slug);
+      keys.push(slug);
     }
+    return [...new Set(keys)];
   }
 
   private tagRefs(keys: string[] | undefined) {

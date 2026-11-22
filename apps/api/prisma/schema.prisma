@@ -910,6 +910,7 @@ model TravelArea {
 enum TravelTagKind {
   DIET
   ALLERGEN
+  GENERAL
 }
 
 model TravelTag {

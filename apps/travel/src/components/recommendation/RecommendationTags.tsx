@@ -1,11 +1,11 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
-import { Flame } from 'lucide-react';
+import { Flame, Tag } from 'lucide-react';
 import { DIET_ICONS } from '../../constants/travel';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import TagChipIcon from '../shared/TagChipIcon';
 
-type Tags = Pick<TravelRecommendationDto, 'spicy' | 'diets'>;
+type Tags = Pick<TravelRecommendationDto, 'spicy' | 'diets' | 'tags'>;
 
 const chipClass =
   'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs';
@@ -13,7 +13,7 @@ const chipClass =
 function RecommendationTags({ tags }: { tags: Tags }) {
   const { t } = useTranslation();
   const { labelOf } = useTagOptions();
-  if (!tags.spicy && !tags.diets.length) return null;
+  if (!tags.spicy && !tags.diets.length && !tags.tags.length) return null;
 
   return (
     <ul className="flex flex-wrap gap-1">
@@ -32,6 +32,15 @@ function RecommendationTags({ tags }: { tags: Tags }) {
         >
           <TagChipIcon icon={DIET_ICONS[diet]} />
           {labelOf(diet)}
+        </li>
+      ))}
+      {tags.tags.map((tag) => (
+        <li
+          key={tag}
+          className={`${chipClass} bg-secondary text-secondary-foreground`}
+        >
+          <Tag className="size-3" aria-hidden />
+          {labelOf(tag)}
         </li>
       ))}
     </ul>

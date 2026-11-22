@@ -73,7 +73,14 @@
     "sectionPrice": "Price",
     "sectionTags": "Tags",
     "diets": "Diet",
+    "dietsPlaceholder": "Search or add diet…",
     "allergens": "Contains allergens",
+    "allergensPlaceholder": "Search or add allergen…",
+    "noticeTags": "Notice tags",
+    "otherTags": "Other tags",
+    "otherTagsPlaceholder": "Bread, meat, noodles…",
+    "tagCreate": "Add \"{{tag}}\"",
+    "tagRemove": "Remove {{tag}}",
     "priceRange": "Amount",
     "priceLevel": "Level",
     "priceFrom": "From",
@@ -212,7 +219,8 @@
     "mapsLink": "Maps link",
     "kinds": {
       "DIET": "Diet",
-      "ALLERGEN": "Allergen"
+      "ALLERGEN": "Allergen",
+      "GENERAL": "Tag"
     }
   }
 }

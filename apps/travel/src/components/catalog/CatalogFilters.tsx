@@ -46,6 +46,17 @@ function CatalogFilters({ filters }: { filters: Filters }) {
           />
         </FilterSection>
       )}
+      {tags.generalKeys.length > 0 && (
+        <FilterSection title={t('form.otherTags')}>
+          <TagChipGroup
+            label={t('form.otherTags')}
+            options={tags.generalKeys}
+            selected={filters.tags}
+            labelOf={tags.labelOf}
+            onToggle={filters.toggleTag}
+          />
+        </FilterSection>
+      )}
       <FilterSection title={t('catalog.avoidAllergens')}>
         <TagChipGroup
           label={t('catalog.avoidAllergens')}

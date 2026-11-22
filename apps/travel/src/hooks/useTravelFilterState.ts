@@ -13,6 +13,7 @@ export function useTravelFilterState() {
   const [spicy, setSpicy] = useState(false);
   const [diets, setDiets] = useState<string[]>([]);
   const [avoid, setAvoid] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [by, setBy] = useState('');
   const debouncedBy = useDebouncedValue(by.trim(), SEARCH_DEBOUNCE_MS);
@@ -21,6 +22,7 @@ export function useTravelFilterState() {
     Number(spicy) +
     diets.length +
     avoid.length +
+    tags.length +
     cuisines.length +
     Number(Boolean(by.trim()));
 
@@ -29,6 +31,7 @@ export function useTravelFilterState() {
     setSpicy(false);
     setDiets([]);
     setAvoid([]);
+    setTags([]);
     setCuisines([]);
     setBy('');
   };
@@ -39,6 +42,7 @@ export function useTravelFilterState() {
       spicy: spicy || undefined,
       diets: listOrUndefined(diets),
       excludeAllergens: listOrUndefined(avoid),
+      tags: listOrUndefined(tags),
       cuisines: listOrUndefined(cuisines),
       by: debouncedBy || undefined,
     },
@@ -51,6 +55,8 @@ export function useTravelFilterState() {
       toggleDiet: (tag: string) => setDiets((l) => toggled(l, tag)),
       avoid,
       toggleAvoid: (tag: string) => setAvoid((l) => toggled(l, tag)),
+      tags,
+      toggleTag: (tag: string) => setTags((l) => toggled(l, tag)),
       cuisines,
       toggleCuisine: (name: string) => setCuisines((l) => toggled(l, name)),
       by,

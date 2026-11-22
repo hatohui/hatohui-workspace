@@ -31,8 +31,10 @@ export interface UpdateTravelRecommendationDto {
   spicy?: boolean;
   /** Diet tag keys */
   diets?: string[];
-  /** Allergen tag keys */
+  /** Allergen tag keys or names */
   allergens?: string[];
+  /** General tag keys or names (e.g. bread, meat) */
+  tags?: string[];
   /**
      * Ordered image keys: staged uploads or ones already attached
      * @maxItems 12

@@ -73,7 +73,14 @@
     "sectionPrice": "価格",
     "sectionTags": "タグ",
     "diets": "食事制限",
+    "dietsPlaceholder": "食事制限を検索・追加…",
     "allergens": "含まれるアレルゲン",
+    "allergensPlaceholder": "アレルゲンを検索・追加…",
+    "noticeTags": "注意タグ",
+    "otherTags": "その他のタグ",
+    "otherTagsPlaceholder": "パン、肉、麺…",
+    "tagCreate": "「{{tag}}」を追加",
+    "tagRemove": "{{tag}}を削除",
     "priceRange": "金額",
     "priceLevel": "価格帯",
     "priceFrom": "から",
@@ -212,7 +219,8 @@
     "mapsLink": "地図リンク",
     "kinds": {
       "DIET": "食事制限",
-      "ALLERGEN": "アレルゲン"
+      "ALLERGEN": "アレルゲン",
+      "GENERAL": "タグ"
     }
   }
 }

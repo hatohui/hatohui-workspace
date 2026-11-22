@@ -84,11 +84,12 @@ export class TravelDishesService {
       });
     }
 
+    const requiredTags = [...(query.diets ?? []), ...(query.tags ?? [])];
     const recMatch: Prisma.TravelRecommendationWhereInput = {
       ...(inArea ? { place: inArea } : {}),
       ...(query.spicy ? { spicy: true } : {}),
-      ...(query.diets?.length
-        ? { AND: query.diets.map((key) => ({ tags: { some: { key } } })) }
+      ...(requiredTags.length
+        ? { AND: requiredTags.map((key) => ({ tags: { some: { key } } })) }
         : {}),
     };
     if (Object.keys(recMatch).length > 0) {

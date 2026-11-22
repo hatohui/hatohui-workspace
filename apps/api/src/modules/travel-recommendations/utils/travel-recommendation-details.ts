@@ -24,14 +24,23 @@ export function travelRecommendationDetails(
 }
 
 export function travelTagKeys(
-  dto: UpdateTravelRecommendationDto,
-  current: { key: string; kind: 'DIET' | 'ALLERGEN' }[],
+  resolved: { diets?: string[]; allergens?: string[]; tags?: string[] },
+  current: { key: string; kind: 'DIET' | 'ALLERGEN' | 'GENERAL' }[],
 ): string[] | undefined {
-  if (dto.diets === undefined && dto.allergens === undefined) return undefined;
-  const keep = (kind: 'DIET' | 'ALLERGEN') =>
+  if (
+    resolved.diets === undefined &&
+    resolved.allergens === undefined &&
+    resolved.tags === undefined
+  ) {
+    return undefined;
+  }
+  const keep = (kind: 'DIET' | 'ALLERGEN' | 'GENERAL') =>
     current.filter((tag) => tag.kind === kind).map((tag) => tag.key);
   return [
-    ...(dto.diets ?? keep('DIET')),
-    ...(dto.allergens ?? keep('ALLERGEN')),
+    ...new Set([
+      ...(resolved.diets ?? keep('DIET')),
+      ...(resolved.allergens ?? keep('ALLERGEN')),
+      ...(resolved.tags ?? keep('GENERAL')),
+    ]),
   ];
 }

@@ -39,4 +39,8 @@ diets?: string[];
  * Hide dishes that contain any of these allergens
  */
 excludeAllergens?: string[];
+/**
+ * Only dishes with every listed general tag
+ */
+tags?: string[];
 };

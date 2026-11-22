@@ -150,6 +150,12 @@ export class TravelRecommendationDto {
   })
   allergens!: string[];
 
+  @ApiProperty({
+    type: [String],
+    description: 'General tag keys, e.g. bread, meat',
+  })
+  tags!: string[];
+
   @ApiProperty({ type: TravelImageDto, isArray: true })
   images!: TravelImageDto[];
 

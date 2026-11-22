@@ -29,6 +29,10 @@ diets?: string[];
  */
 excludeAllergens?: string[];
 /**
+ * Only dishes with a recommendation having every listed tag
+ */
+tags?: string[];
+/**
  * Only places in this area
  */
 areaId?: string;

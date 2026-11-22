@@ -2484,6 +2484,18 @@
             }
           },
           {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes with a recommendation having every listed tag",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "areaId",
             "required": false,
             "in": "query",
@@ -2801,6 +2813,18 @@
             "required": false,
             "in": "query",
             "description": "Hide dishes that contain any of these allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes with every listed general tag",
             "schema": {
               "type": "array",
               "items": {
@@ -8982,6 +9006,13 @@
               "type": "string"
             }
           },
+          "tags": {
+            "description": "General tag keys, e.g. bread, meat",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "images": {
             "type": "array",
             "items": {
@@ -9014,6 +9045,7 @@
           "spicy",
           "diets",
           "allergens",
+          "tags",
           "images",
           "createdBy",
           "createdAt"
@@ -9316,7 +9348,14 @@
             }
           },
           "allergens": {
-            "description": "Allergen tag keys",
+            "description": "Allergen tag keys or names",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "description": "General tag keys or names (e.g. bread, meat)",
             "type": "array",
             "items": {
               "type": "string"
@@ -9387,7 +9426,14 @@
             }
           },
           "allergens": {
-            "description": "Allergen tag keys",
+            "description": "Allergen tag keys or names",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "description": "General tag keys or names (e.g. bread, meat)",
             "type": "array",
             "items": {
               "type": "string"
@@ -13063,7 +13109,8 @@
         "type": "string",
         "enum": [
           "DIET",
-          "ALLERGEN"
+          "ALLERGEN",
+          "GENERAL"
         ]
       },
       "TravelTagDto": {

@@ -21,7 +21,7 @@ export const ADMIN_TABS = [
   'cuisines',
   'tags',
 ] as const;
-export const TAG_KINDS = ['DIET', 'ALLERGEN'] as const;
+export const TAG_KINDS = ['DIET', 'ALLERGEN', 'GENERAL'] as const;
 export type AdminTab = (typeof ADMIN_TABS)[number];
 
 export const ADMIN_TAB_ICONS: Record<AdminTab, LucideIcon> = {

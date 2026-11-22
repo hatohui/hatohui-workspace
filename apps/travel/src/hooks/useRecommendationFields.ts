@@ -23,6 +23,7 @@ export interface RecommendationFields {
   spicy: boolean;
   diets: string[];
   allergens: string[];
+  tags: string[];
 }
 
 const amount = (value: number | null | undefined) =>
@@ -42,6 +43,7 @@ const fieldsFrom = (rec?: TravelRecommendationDto): RecommendationFields => ({
   spicy: rec?.spicy ?? false,
   diets: rec?.diets ?? [],
   allergens: rec?.allergens ?? [],
+  tags: rec?.tags ?? [],
 });
 
 export function useRecommendationFields(rec?: TravelRecommendationDto) {

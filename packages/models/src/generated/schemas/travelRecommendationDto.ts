@@ -35,6 +35,8 @@ export interface TravelRecommendationDto {
   diets: string[];
   /** Allergen tag keys the dish contains, e.g. peanuts */
   allergens: string[];
+  /** General tag keys, e.g. bread, meat */
+  tags: string[];
   images: TravelImageDto[];
   /** @nullable */
   createdBy: TravelCreatorDto | null;

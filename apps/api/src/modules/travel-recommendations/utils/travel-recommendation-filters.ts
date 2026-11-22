@@ -14,6 +14,7 @@ export function travelRecommendationWhere(
   const q = query.q?.trim();
   const and: Prisma.TravelRecommendationWhereInput[] = [
     ...(query.diets ?? []).map((key) => ({ tags: { some: { key } } })),
+    ...(query.tags ?? []).map((key) => ({ tags: { some: { key } } })),
   ];
   if (query.excludeAllergens?.length) {
     and.push({ tags: { none: { key: { in: query.excludeAllergens } } } });

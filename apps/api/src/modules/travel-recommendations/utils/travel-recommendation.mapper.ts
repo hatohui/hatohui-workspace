@@ -61,7 +61,7 @@ export function toTravelRecommendationDto(
   row: TravelRecommendationRow,
   publicUrlOf: (key: string) => string,
 ): TravelRecommendationDto {
-  const tagsOf = (kind: 'DIET' | 'ALLERGEN') =>
+  const tagsOf = (kind: 'DIET' | 'ALLERGEN' | 'GENERAL') =>
     row.tags.filter((tag) => tag.kind === kind).map((tag) => tag.key);
 
   return {
@@ -91,6 +91,7 @@ export function toTravelRecommendationDto(
     spicy: row.spicy,
     diets: tagsOf('DIET'),
     allergens: tagsOf('ALLERGEN'),
+    tags: tagsOf('GENERAL'),
     images: row.images.map(
       ({ key, thumbnailKey, previewKey, createdById }) => ({
         key,

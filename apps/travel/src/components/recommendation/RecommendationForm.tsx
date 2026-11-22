@@ -39,13 +39,7 @@ function RecommendationForm({ recommendation, onClose }: Props) {
           <PhotoField photos={form.photos} />
         </div>
         <div className="space-y-5 lg:[grid-area:details]">
-          <FormSection title={t('form.sectionTags')}>
-            <TagFields
-              fields={form.fields}
-              set={form.set}
-              toggle={form.toggle}
-            />
-          </FormSection>
+          <TagFields fields={form.fields} set={form.set} />
         </div>
         <div className="lg:[grid-area:note]">
           <TextField

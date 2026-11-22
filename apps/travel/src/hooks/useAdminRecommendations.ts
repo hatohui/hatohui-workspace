@@ -28,6 +28,7 @@ export interface AdminRecommendationRow {
   spicy: string;
   diets: string;
   allergens: string;
+  tags: string;
   note: string;
   createdAt: string;
   isDraft?: boolean;
@@ -90,6 +91,7 @@ export function useAdminRecommendations() {
         spicy: String(rec.spicy),
         diets: rec.diets.join(', '),
         allergens: rec.allergens.join(', '),
+        tags: rec.tags.join(', '),
         note: rec.note ?? '',
         createdAt: rec.createdAt,
       })),
@@ -149,6 +151,13 @@ export function useAdminRecommendations() {
         size: 140,
       },
       {
+        key: 'tags',
+        label: t('form.otherTags'),
+        editable: true,
+        suggestions: tags.generalKeys.map((key) => ({ value: key })),
+        size: 140,
+      },
+      {
         key: 'note',
         label: t('admin.note'),
         editable: true,
@@ -163,7 +172,14 @@ export function useAdminRecommendations() {
         size: 120,
       },
     ],
-    [dishSuggestions, placeSuggestions, t, tags.allergenKeys, tags.dietKeys],
+    [
+      dishSuggestions,
+      placeSuggestions,
+      t,
+      tags.allergenKeys,
+      tags.dietKeys,
+      tags.generalKeys,
+    ],
   );
 
   const controls = useAdminTableControls(rows, columns, {
@@ -205,6 +221,7 @@ export function useAdminRecommendations() {
         spicy: 'false',
         diets: '',
         allergens: '',
+        tags: '',
         note: '',
         createdAt: '',
         isDraft: true,
@@ -247,6 +264,7 @@ export function useAdminRecommendations() {
               spicy: next.spicy === 'true',
               diets: parseList(next.diets),
               allergens: parseList(next.allergens),
+              tags: parseList(next.tags),
               note: next.note || undefined,
             },
           });
@@ -263,7 +281,9 @@ export function useAdminRecommendations() {
           ? { diets: parseList(value) }
           : key === 'allergens'
             ? { allergens: parseList(value) }
-            : { note: value };
+            : key === 'tags'
+              ? { tags: parseList(value) }
+              : { note: value };
 
     void run<{ data: TravelRecommendationDto[] }>(
       () => update.mutateAsync({ id, data: patch }),

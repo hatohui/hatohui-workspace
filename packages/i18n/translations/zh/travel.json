@@ -73,7 +73,14 @@
     "sectionPrice": "价格",
     "sectionTags": "标签",
     "diets": "饮食",
+    "dietsPlaceholder": "搜索或添加饮食标签…",
     "allergens": "含过敏原",
+    "allergensPlaceholder": "搜索或添加过敏原…",
+    "noticeTags": "注意标签",
+    "otherTags": "其他标签",
+    "otherTagsPlaceholder": "面包、肉类、面条…",
+    "tagCreate": "添加“{{tag}}”",
+    "tagRemove": "移除 {{tag}}",
     "priceRange": "金额",
     "priceLevel": "价位",
     "priceFrom": "从",
@@ -212,7 +219,8 @@
     "mapsLink": "地图链接",
     "kinds": {
       "DIET": "饮食",
-      "ALLERGEN": "过敏原"
+      "ALLERGEN": "过敏原",
+      "GENERAL": "标签"
     }
   }
 }
