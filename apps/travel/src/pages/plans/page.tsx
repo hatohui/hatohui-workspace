@@ -1,12 +1,13 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
-import { Button, Skeleton } from '@hatohui/ui';
+import { Button } from '@hatohui/ui';
 import { Plane, Plus } from 'lucide-react';
 import PlanCard from '../../components/plans/PlanCard';
 import EmptyState from '../../components/shared/EmptyState';
 import routes from '../../constants/routes';
 import { useTravelPlans } from '../../hooks/useTravelPlans';
+import PlanListSkeleton from '../../components/plans/PlanListSkeleton';
 
 function PlansPage() {
   const { t } = useTranslation();
@@ -34,11 +35,8 @@ function PlansPage() {
         </Button>
       </div>
 
-      {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-        </div>
+      {isLoading || authLoading ? (
+        <PlanListSkeleton />
       ) : plans.length === 0 ? (
         <EmptyState icon={Plane} message={t('plans.empty')} />
       ) : (

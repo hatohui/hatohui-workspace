@@ -1,8 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Skeleton } from '@hatohui/ui';
+import { Button } from '@hatohui/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { WEEKDAY_KEYS } from '../../constants/schedule';
 import type { CalendarCell } from '../../hooks/useTravelSchedulePage';
+import CalendarGridSkeleton from './CalendarGridSkeleton';
 
 interface ScheduleCalendarProps {
   month: Date;
@@ -63,7 +64,7 @@ function ScheduleCalendar({
       </div>
 
       {isLoading ? (
-        <Skeleton className="mt-2 h-64 w-full rounded-lg" />
+        <CalendarGridSkeleton />
       ) : (
         <div className="mt-1 grid grid-cols-7 gap-1">
           {cells.map((cell) => (

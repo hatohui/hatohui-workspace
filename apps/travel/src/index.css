@@ -15,6 +15,27 @@ html {
   scrollbar-gutter: stable;
 }
 
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+  --removed-body-scroll-bar-size: 0px;
+}
+
+[data-slot='skeleton'] {
+  background-color: color-mix(
+    in oklab,
+    var(--color-foreground) 8%,
+    transparent
+  );
+}
+
+.dark [data-slot='skeleton'] {
+  background-color: color-mix(
+    in oklab,
+    var(--color-foreground) 10%,
+    transparent
+  );
+}
+
 @keyframes nav-progress {
   from {
     transform: translateX(-100%);

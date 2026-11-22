@@ -1,12 +1,13 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, ConfirmDialog, Skeleton } from '@hatohui/ui';
+import { Button, ConfirmDialog } from '@hatohui/ui';
 import { Check, Pencil, Trash2 } from 'lucide-react';
 import routes from '../../constants/routes';
 import {
   useAdminEvents,
   type AdminEventFilter,
 } from '../../hooks/useAdminEvents';
+import ListTableSkeleton from './ListTableSkeleton';
 
 const FILTERS: AdminEventFilter[] = ['pending', 'approved', 'all'];
 
@@ -30,7 +31,7 @@ function EventsAdmin() {
       </div>
 
       {admin.isLoading ? (
-        <Skeleton className="h-48 w-full rounded-xl" />
+        <ListTableSkeleton />
       ) : admin.events.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
           {t('admin.events.empty')}

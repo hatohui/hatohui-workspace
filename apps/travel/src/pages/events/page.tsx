@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
-import { Button, Input, Skeleton } from '@hatohui/ui';
+import { Button, Input } from '@hatohui/ui';
 import {
   Calendar,
   CalendarRange,
@@ -20,6 +20,7 @@ import {
   useTravelEventsPage,
   type EventViewMode,
 } from '../../hooks/useTravelEventsPage';
+import EventGridSkeleton from '../../components/events/EventGridSkeleton';
 
 const VIEW_OPTIONS: Array<{ mode: EventViewMode; icon: typeof Calendar }> = [
   { mode: 'timeline', icon: List },
@@ -88,11 +89,7 @@ function EventsPage() {
       </div>
 
       {state.isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Skeleton className="h-60 rounded-xl" />
-          <Skeleton className="h-60 rounded-xl" />
-          <Skeleton className="h-60 rounded-xl" />
-        </div>
+        <EventGridSkeleton view={state.view} />
       ) : state.events.length === 0 ? (
         <EmptyState icon={CalendarRange} message={t('events.empty')} />
       ) : state.view === 'calendar' ? (

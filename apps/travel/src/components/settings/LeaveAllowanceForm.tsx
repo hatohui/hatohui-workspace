@@ -1,7 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Input, Label, Skeleton } from '@hatohui/ui';
+import { Button, Input, Label } from '@hatohui/ui';
 import { CheckCircle2 } from 'lucide-react';
 import type { useLeaveSettingsForm } from '../../hooks/useLeaveSettingsForm';
+import FormCardSkeleton from '../shared/FormCardSkeleton';
 
 type LeaveAllowanceFormProps = ReturnType<typeof useLeaveSettingsForm>;
 
@@ -9,7 +10,7 @@ function LeaveAllowanceForm(props: LeaveAllowanceFormProps) {
   const { t } = useTranslation();
 
   if (props.isLoading) {
-    return <Skeleton className="h-64 w-full rounded-xl" />;
+    return <FormCardSkeleton />;
   }
 
   return (

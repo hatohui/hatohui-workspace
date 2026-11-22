@@ -6,6 +6,10 @@ import {
   FILTER_CHIP_PREVIEW_LIMIT,
   SPECIAL_ICONS,
 } from '../../constants/travel';
+import {
+  OTHER_TAGS_SKELETON_COUNT,
+  SPECIAL_SKELETON_COUNT,
+} from '../../constants/skeleton';
 import { useCuisineNames } from '../../hooks/useCuisineNames';
 import { usePlaceCategoryNames } from '../../hooks/usePlaceCategoryNames';
 import { useTagOptions } from '../../hooks/useTagOptions';
@@ -27,7 +31,7 @@ function CatalogFilters({ filters }: { filters: Filters }) {
     <div className="space-y-4">
       <FilterSection title={t('filters.special')}>
         {tags.isLoading ? (
-          <FilterChipsSkeleton />
+          <FilterChipsSkeleton count={SPECIAL_SKELETON_COUNT} />
         ) : (
           <TriStateChipGroup
             label={t('filters.special')}
@@ -78,6 +82,11 @@ function CatalogFilters({ filters }: { filters: Filters }) {
           />
         </FilterSection>
       )}
+      {tags.isLoading && (
+        <FilterSection title={t('form.otherTags')}>
+          <FilterChipsSkeleton count={OTHER_TAGS_SKELETON_COUNT} />
+        </FilterSection>
+      )}
       {tags.generalKeys.length > 0 && (
         <FilterSection title={t('form.otherTags')}>
           <TagChipGroup
@@ -102,7 +111,7 @@ function CatalogFilters({ filters }: { filters: Filters }) {
           />
         )}
         {tags.isLoading ? (
-          <FilterChipsSkeleton />
+          <FilterChipsSkeleton count={SPECIAL_SKELETON_COUNT} />
         ) : (
           <TagChipGroup
             label={t('catalog.avoidAllergens')}

@@ -1,7 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { CreateTravelEventDtoVisibility } from '@hatohui/models';
-import { Button, Input, Label, Skeleton } from '@hatohui/ui';
+import { Button, Input, Label } from '@hatohui/ui';
 import DishPhotoField from '../dishes/DishPhotoField';
+import FormCardSkeleton from '../shared/FormCardSkeleton';
+import { EVENT_FORM_SKELETON_FIELDS } from '../../constants/skeleton';
 import type { useTravelEventForm } from '../../hooks/useTravelEventForm';
 
 type EventFormProps = ReturnType<typeof useTravelEventForm>;
@@ -10,7 +12,7 @@ function EventForm(props: EventFormProps) {
   const { t } = useTranslation();
 
   if (props.isLoading) {
-    return <Skeleton className="h-96 w-full max-w-2xl rounded-xl" />;
+    return <FormCardSkeleton fields={EVENT_FORM_SKELETON_FIELDS} />;
   }
 
   return (

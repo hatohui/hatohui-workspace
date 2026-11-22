@@ -61,3 +61,6 @@ export const ADMIN_TAB_ICONS: Record<AdminTab, LucideIcon> = {
   plans: Plane,
   jobProfiles: Briefcase,
 };
+
+export const ADMIN_RECOMMENDATION_GRID_CLASS =
+  'grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6';

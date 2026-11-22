@@ -1,11 +1,11 @@
 import { useParams } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
-import { Skeleton } from '@hatohui/ui';
 import { Lock } from 'lucide-react';
 import PlanDetailBody from '../../../components/plans/PlanDetailBody';
 import EmptyState from '../../../components/shared/EmptyState';
 import { useTravelPlanDetail } from '../../../hooks/useTravelPlanDetail';
+import PlanDetailSkeleton from '../../../components/plans/PlanDetailSkeleton';
 
 function PlanDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +14,7 @@ function PlanDetailPage() {
   const state = useTravelPlanDetail(id ?? '');
 
   if (state.isLoading) {
-    return <Skeleton className="h-72 w-full rounded-xl" />;
+    return <PlanDetailSkeleton />;
   }
 
   if (state.isError || !state.plan) {

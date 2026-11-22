@@ -2,7 +2,7 @@ import { useTranslation } from '@hatohui/i18n';
 import { LayoutGrid, X } from 'lucide-react';
 import { useFoodCategoryNames } from '../../hooks/useFoodCategoryNames';
 import CategoryPill from './CategoryPill';
-import FilterChipsSkeleton from './FilterChipsSkeleton';
+import CategoryBarSkeleton from './CategoryBarSkeleton';
 
 interface Props {
   selected: readonly string[];
@@ -15,7 +15,7 @@ function FoodCategoryBar({ selected, onToggle, onClear }: Props) {
   const foodCategories = useFoodCategoryNames();
 
   if (foodCategories.isLoading) {
-    return <FilterChipsSkeleton />;
+    return <CategoryBarSkeleton />;
   }
   if (foodCategories.names.length === 0) return null;
 

@@ -1,7 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
 import { UtensilsCrossed } from 'lucide-react';
+import { ADMIN_RECOMMENDATION_GRID_CLASS } from '../../constants/admin';
 import { useAdminRecommendations } from '../../hooks/useAdminRecommendations';
 import AddRecommendationButton from '../catalog/AddRecommendationButton';
+import CardGridSkeleton from '../shared/CardGridSkeleton';
 import ListState from '../shared/ListState';
 import PaginationBar from '../shared/PaginationBar';
 import SearchField from '../shared/SearchField';
@@ -26,6 +28,13 @@ function RecommendationsAdmin() {
       </div>
       <ListState
         isLoading={admin.isLoading}
+        skeleton={
+          <CardGridSkeleton
+            count={admin.pageSize}
+            square
+            className={ADMIN_RECOMMENDATION_GRID_CLASS}
+          />
+        }
         isError={admin.isError}
         isEmpty={!admin.recommendations.length}
         onRetry={() => void admin.refetch()}
@@ -34,7 +43,7 @@ function RecommendationsAdmin() {
           admin.isFiltered ? 'catalog.emptyFiltered' : 'catalog.empty',
         )}
       >
-        <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+        <div className={ADMIN_RECOMMENDATION_GRID_CLASS}>
           {admin.recommendations.map((rec) => (
             <AdminRecommendationCard key={rec.id} recommendation={rec} />
           ))}

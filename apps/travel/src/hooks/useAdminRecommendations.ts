@@ -16,6 +16,7 @@ export function useAdminRecommendations() {
     setSearch,
     recommendations: pagination.pagedItems,
     pagination,
+    pageSize,
     isLoading: result.isLoading,
     isError: result.isError,
     refetch: result.refetch,

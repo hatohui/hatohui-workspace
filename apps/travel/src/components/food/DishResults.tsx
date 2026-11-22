@@ -1,10 +1,12 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Soup } from 'lucide-react';
+import { CATALOG_CARD_TAG_WIDTHS } from '../../constants/skeleton';
 import { CARD_GRID_CLASS } from '../../constants/travel';
 import type { useDishList } from '../../hooks/useDishList';
 import { groupByCategory } from '../../lib/groupByCategory';
 import ClearFiltersButton from '../catalog/ClearFiltersButton';
 import DishCard from '../dishes/DishCard';
+import CardGridSkeleton from '../shared/CardGridSkeleton';
 import ListState from '../shared/ListState';
 import CategoryGroupList from './CategoryGroupList';
 
@@ -36,6 +38,12 @@ function DishResults({
   return (
     <ListState
       isLoading={list.isLoading}
+      skeleton={
+        <CardGridSkeleton
+          count={list.pageSize}
+          tagWidths={CATALOG_CARD_TAG_WIDTHS}
+        />
+      }
       isError={list.isError}
       isEmpty={!(isGrouped ? list.allDishes.length : list.dishes.length)}
       onRetry={() => void list.refetch()}

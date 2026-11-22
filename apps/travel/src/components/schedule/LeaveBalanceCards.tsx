@@ -1,9 +1,10 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelLeaveBalanceDto } from '@hatohui/models';
-import { Button, Skeleton } from '@hatohui/ui';
+import { Button } from '@hatohui/ui';
 import { CalendarClock, Settings2 } from 'lucide-react';
 import routes from '../../constants/routes';
+import LeaveBalanceSkeleton from './LeaveBalanceSkeleton';
 
 interface LeaveBalanceCardsProps {
   balance: TravelLeaveBalanceDto | null;
@@ -14,12 +15,7 @@ function LeaveBalanceCards({ balance, isLoading }: LeaveBalanceCardsProps) {
   const { t } = useTranslation();
 
   if (isLoading) {
-    return (
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Skeleton className="h-28 rounded-xl" />
-        <Skeleton className="h-28 rounded-xl" />
-      </div>
-    );
+    return <LeaveBalanceSkeleton />;
   }
 
   if (!balance) {

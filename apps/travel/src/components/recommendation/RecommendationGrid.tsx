@@ -3,6 +3,7 @@ import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
 import { ErrorState } from '@hatohui/ui';
 import { UtensilsCrossed } from 'lucide-react';
+import { DETAIL_GRID_SKELETON_COUNT } from '../../constants/skeleton';
 import { CARD_GRID_CLASS } from '../../constants/travel';
 import { useOpenRecommendation } from '../../hooks/useOpenRecommendation';
 import CardGridSkeleton from '../shared/CardGridSkeleton';
@@ -24,7 +25,8 @@ function RecommendationGrid(props: Props) {
   const { t } = useTranslation();
   const detail = useOpenRecommendation(props.recommendations);
 
-  if (props.isLoading) return <CardGridSkeleton />;
+  if (props.isLoading)
+    return <CardGridSkeleton count={DETAIL_GRID_SKELETON_COUNT} square />;
   if (props.isError) {
     return (
       <ErrorState

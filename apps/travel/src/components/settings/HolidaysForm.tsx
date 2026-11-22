@@ -1,8 +1,9 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Input, Label, Skeleton } from '@hatohui/ui';
+import { Button, Input, Label } from '@hatohui/ui';
 import { Plus, Trash2 } from 'lucide-react';
 import { HOLIDAY_COUNTRIES } from '../../constants/schedule';
 import type { useHolidaySettings } from '../../hooks/useHolidaySettings';
+import FormCardSkeleton from '../shared/FormCardSkeleton';
 
 type HolidaysFormProps = ReturnType<typeof useHolidaySettings>;
 
@@ -10,7 +11,7 @@ function HolidaysForm(props: HolidaysFormProps) {
   const { t } = useTranslation();
 
   if (props.isLoading) {
-    return <Skeleton className="h-72 w-full rounded-xl" />;
+    return <FormCardSkeleton />;
   }
 
   return (

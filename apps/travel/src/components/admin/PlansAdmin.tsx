@@ -1,7 +1,8 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Button, ConfirmDialog, Input, Skeleton } from '@hatohui/ui';
+import { Button, ConfirmDialog, Input } from '@hatohui/ui';
 import { Search, Trash2 } from 'lucide-react';
 import { useAdminPlans } from '../../hooks/useAdminPlans';
+import ListTableSkeleton from './ListTableSkeleton';
 
 function PlansAdmin() {
   const { t } = useTranslation();
@@ -60,7 +61,7 @@ function PlansAdmin() {
       </div>
 
       {admin.isLoading ? (
-        <Skeleton className="h-48 w-full rounded-xl" />
+        <ListTableSkeleton />
       ) : admin.groups.length === 0 ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
           {t('admin.plans.empty')}
