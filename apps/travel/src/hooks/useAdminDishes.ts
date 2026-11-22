@@ -1,20 +1,28 @@
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import {
+  ApiError,
   getTravelDishesQueryKey,
   useBulkCreateTravelDishes,
   useDeleteTravelDish,
   useGenerateTravelDishDescriptions,
+  useStartTravelDishDescriptionBatch,
   useTravelDishes,
   useUpdateTravelDish,
   type TravelDishDto,
 } from '@hatohui/models';
 import { useToast, type EditableColumn } from '@hatohui/ui';
 import { CUISINE_LIST_SEPARATOR } from '../constants/admin';
-import { MAX_CATEGORIES, MAX_CUISINES } from '../constants/travel';
+import {
+  CONFLICT_STATUS,
+  MAX_CATEGORIES,
+  MAX_CUISINES,
+} from '../constants/travel';
 import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useAdminDishPhotos } from './useAdminDishPhotos';
 import { useCuisineSuggestions } from './useCuisineSuggestions';
+import { useDishDescriptionJobs } from './useDishDescriptionJobs';
 import { useErrorMessage } from './useErrorMessage';
 import { useFoodCategorySuggestions } from './useFoodCategorySuggestions';
 import { useInvalidateTravel } from './useInvalidateTravel';
@@ -43,7 +51,8 @@ export function useAdminDishes() {
   const update = useUpdateTravelDish();
   const remove = useDeleteTravelDish();
   const bulk = useBulkCreateTravelDishes();
-  const generateMissing = useGenerateTravelDishDescriptions();
+  const startBatch = useStartTravelDishDescriptionBatch();
+  const generateSingle = useGenerateTravelDishDescriptions();
   const suggestions = useCuisineSuggestions();
   const categorySuggestions = useFoodCategorySuggestions();
   const { run, runBulk } = useAdminAction();
@@ -51,6 +60,51 @@ export function useAdminDishes() {
   const toast = useToast();
   const errorMessage = useErrorMessage();
   const invalidate = useInvalidateTravel();
+
+  const [startingBatch, setStartingBatch] = useState(false);
+  const [dismissedBatchId, setDismissedBatchId] = useState<string | null>(null);
+  const [retryingIds, setRetryingIds] = useState<string[]>([]);
+  const toastIdRef = useRef<number | null>(null);
+
+  const jobs = useDishDescriptionJobs({
+    onBatchProgress: (batch) => {
+      void invalidate();
+      if (toastIdRef.current !== null && batch.total > 0) {
+        toast.update(
+          toastIdRef.current,
+          t('admin.generatingDescriptionsProgress', {
+            done: batch.done,
+            total: batch.total,
+          }),
+          'loading',
+          Math.min(0.95, Math.max(0.05, batch.done / batch.total)),
+        );
+      }
+    },
+    onBatchSettled: (batch) => {
+      void invalidate();
+      const updated = Math.max(0, batch.total - batch.failed);
+      const activeToastId = toastIdRef.current;
+      toastIdRef.current = null;
+
+      if (batch.total > 0 && batch.failed === batch.total) {
+        const msg = t('admin.generateDescriptionsFailed');
+        if (activeToastId !== null) toast.update(activeToastId, msg, 'error');
+        else toast.error(msg);
+      } else if (batch.failed > 0) {
+        const msg = t('admin.generatedDescriptionsPartial', {
+          updated,
+          failed: batch.failed,
+        });
+        if (activeToastId !== null) toast.update(activeToastId, msg, 'info');
+        else toast.info(msg);
+      } else {
+        const msg = t('admin.generatedDescriptions', { updated });
+        if (activeToastId !== null) toast.update(activeToastId, msg, 'success');
+        else toast.success(msg);
+      }
+    },
+  });
 
   const rows: DishRow[] = (query.data?.data ?? []).map((dish) => ({
     id: dish.id,
@@ -66,34 +120,74 @@ export function useAdminDishes() {
   const missingDescriptionCount = rows.filter(
     (row) => !row.description.trim(),
   ).length;
+  const isGeneratingDescriptions = jobs.batch !== null || startingBatch;
+  const retryingDescriptionIds = useMemo(
+    () => new Set(retryingIds),
+    [retryingIds],
+  );
+
+  const descriptionErrors = jobs.batch?.errors.length
+    ? jobs.batch.errors
+    : jobs.lastBatchErrors && jobs.lastBatchErrors.batchId !== dismissedBatchId
+      ? jobs.lastBatchErrors.errors
+      : [];
 
   const generateDescriptions = async () => {
-    if (generateMissing.isPending || missingDescriptionCount === 0) return;
-    const toastId = toast.loading(t('admin.generatingDescriptions'), 0.2);
+    if (isGeneratingDescriptions || missingDescriptionCount === 0) return;
+
+    setStartingBatch(true);
     try {
-      const { data } = await generateMissing.mutateAsync({ data: {} });
-      toast.update(toastId, t('form.refreshingCatalog'), 'loading', 0.85);
-      await invalidate();
-      if (data.updated === 0 && data.failed === 0) {
-        toast.update(toastId, t('admin.noMissingDescriptions'), 'info');
-      } else if (data.failed > 0) {
-        toast.update(
-          toastId,
-          t('admin.generatedDescriptionsPartial', {
-            updated: data.updated,
-            failed: data.failed,
-          }),
-          data.updated > 0 ? 'info' : 'error',
-        );
+      const { data: batch } = await startBatch.mutateAsync({ data: {} });
+      setDismissedBatchId(null);
+      if (batch.total === 0) {
+        toast.info(t('admin.noMissingDescriptions'));
+        return;
+      }
+      toastIdRef.current = toast.loading(
+        t('admin.generatingDescriptionsProgress', {
+          done: batch.done,
+          total: batch.total,
+        }),
+        0.05,
+      );
+      jobs.watchBatch(batch);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === CONFLICT_STATUS) {
+        toast.info(t('admin.descriptionBatchRunning'));
+        void jobs.refreshJobs();
       } else {
-        toast.update(
-          toastId,
-          t('admin.generatedDescriptions', { updated: data.updated }),
-          'success',
-        );
+        toast.error(errorMessage(error));
+      }
+    } finally {
+      setStartingBatch(false);
+    }
+  };
+
+  const retryDishDescription = async (dishId: string) => {
+    if (isGeneratingDescriptions || retryingDescriptionIds.has(dishId)) return;
+
+    setRetryingIds((prev) => [...prev, dishId]);
+    try {
+      const { data } = await generateSingle.mutateAsync({
+        data: { dishIds: [dishId] },
+      });
+      await Promise.all([invalidate(), jobs.refreshJobs()]);
+      const failure = data.errors[0];
+      if (!failure && data.updated > 0) {
+        toast.success(t('admin.generatedDescriptions', { updated: 1 }));
+      } else {
+        toast.error(failure?.error ?? t('admin.generateDescriptionsFailed'));
       }
     } catch (error) {
-      toast.update(toastId, errorMessage(error), 'error');
+      toast.error(errorMessage(error));
+    } finally {
+      setRetryingIds((prev) => prev.filter((id) => id !== dishId));
+    }
+  };
+
+  const dismissDescriptionErrors = () => {
+    if (jobs.lastBatchErrors) {
+      setDismissedBatchId(jobs.lastBatchErrors.batchId);
     }
   };
 
@@ -200,7 +294,12 @@ export function useAdminDishes() {
       runBulk(() => bulk.mutateAsync({ data: { names } })),
     photo,
     missingDescriptionCount,
-    isGeneratingDescriptions: generateMissing.isPending,
+    isGeneratingDescriptions,
+    descriptionBatch: jobs.batch,
+    descriptionErrors,
+    retryingDescriptionIds,
     generateDescriptions,
+    retryDishDescription,
+    dismissDescriptionErrors,
   };
 }

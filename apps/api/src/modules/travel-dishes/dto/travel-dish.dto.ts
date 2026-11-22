@@ -288,6 +288,64 @@ export class GenerateTravelDishDescriptionsDto {
   dishIds?: string[];
 }
 
+export class TravelDishDescriptionErrorDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  name!: string;
+
+  @ApiProperty({ description: 'Reason why AI generation failed for this dish' })
+  error!: string;
+}
+
+export class TravelDishDescriptionBatchProgressDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  total!: number;
+
+  @ApiProperty()
+  done!: number;
+
+  @ApiProperty()
+  failed!: number;
+
+  @ApiProperty({
+    type: TravelDishDescriptionErrorDto,
+    isArray: true,
+    description: 'Per-dish failure reasons recorded so far',
+  })
+  errors!: TravelDishDescriptionErrorDto[];
+}
+
+export class TravelDishDescriptionLastBatchErrorsDto {
+  @ApiProperty()
+  batchId!: string;
+
+  @ApiProperty({
+    type: TravelDishDescriptionErrorDto,
+    isArray: true,
+    description: 'Per-dish failure reasons from the last completed batch',
+  })
+  errors!: TravelDishDescriptionErrorDto[];
+}
+
+export class TravelDishDescriptionJobsDto {
+  @ApiProperty({
+    type: TravelDishDescriptionBatchProgressDto,
+    nullable: true,
+  })
+  batch!: TravelDishDescriptionBatchProgressDto | null;
+
+  @ApiProperty({
+    type: TravelDishDescriptionLastBatchErrorsDto,
+    nullable: true,
+  })
+  lastBatchErrors!: TravelDishDescriptionLastBatchErrorsDto | null;
+}
+
 export class GenerateTravelDishDescriptionsResultDto {
   @ApiProperty({ description: 'Dishes given an AI-generated description' })
   updated!: number;
@@ -297,4 +355,11 @@ export class GenerateTravelDishDescriptionsResultDto {
 
   @ApiProperty({ description: 'Dishes that could not be generated' })
   failed!: number;
+
+  @ApiProperty({
+    type: TravelDishDescriptionErrorDto,
+    isArray: true,
+    description: 'Per-dish failure reasons',
+  })
+  errors!: TravelDishDescriptionErrorDto[];
 }

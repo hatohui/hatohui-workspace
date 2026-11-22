@@ -63,6 +63,8 @@ import type {
   TravelCountrySettingDto,
   TravelCuisineDto,
   TravelCustomHolidayDto,
+  TravelDishDescriptionBatchProgressDto,
+  TravelDishDescriptionJobsDto,
   TravelDishDetailDto,
   TravelDishDto,
   TravelDishesPageParams,
@@ -466,7 +468,201 @@ export function useTravelDishesPage<TData = Awaited<ReturnType<typeof travelDish
 
 
 
-export type travelDishResponse200 = {
+export type travelDishDescriptionJobsResponse200 = {
+  data: TravelDishDescriptionJobsDto
+  status: 200
+}
+
+export type travelDishDescriptionJobsResponseSuccess = (travelDishDescriptionJobsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelDishDescriptionJobsResponse = (travelDishDescriptionJobsResponseSuccess)
+
+export const getTravelDishDescriptionJobsUrl = () => {
+
+
+
+
+  return `/travel/dishes/description-jobs`
+}
+
+/**
+ * @summary Current AI dish description batch progress and last batch errors
+ */
+export const travelDishDescriptionJobs = async ( options?: RequestInit): Promise<travelDishDescriptionJobsResponse> => {
+
+  return customFetch<travelDishDescriptionJobsResponse>(getTravelDishDescriptionJobsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelDishDescriptionJobsQueryKey = () => {
+    return [
+    `/travel/dishes/description-jobs`
+    ] as const;
+    }
+
+
+export const getTravelDishDescriptionJobsQueryOptions = <TData = Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelDishDescriptionJobsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelDishDescriptionJobs>>> = ({ signal }) => travelDishDescriptionJobs({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelDishDescriptionJobsQueryResult = NonNullable<Awaited<ReturnType<typeof travelDishDescriptionJobs>>>
+export type TravelDishDescriptionJobsQueryError = unknown
+
+
+export function useTravelDishDescriptionJobs<TData = Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelDishDescriptionJobs>>,
+          TError,
+          Awaited<ReturnType<typeof travelDishDescriptionJobs>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelDishDescriptionJobs<TData = Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelDishDescriptionJobs>>,
+          TError,
+          Awaited<ReturnType<typeof travelDishDescriptionJobs>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelDishDescriptionJobs<TData = Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Current AI dish description batch progress and last batch errors
+ */
+
+export function useTravelDishDescriptionJobs<TData = Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishDescriptionJobs>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelDishDescriptionJobsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type startTravelDishDescriptionBatchResponse200 = {
+  data: TravelDishDescriptionBatchProgressDto
+  status: 200
+}
+
+export type startTravelDishDescriptionBatchResponseSuccess = (startTravelDishDescriptionBatchResponse200) & {
+  headers: Headers;
+};
+;
+
+export type startTravelDishDescriptionBatchResponse = (startTravelDishDescriptionBatchResponseSuccess)
+
+export const getStartTravelDishDescriptionBatchUrl = () => {
+
+
+
+
+  return `/travel/dishes/description-jobs`
+}
+
+/**
+ * @summary Start a background AI batch (in groups of 10) for dishes missing descriptions
+ */
+export const startTravelDishDescriptionBatch = async (generateTravelDishDescriptionsDto: GenerateTravelDishDescriptionsDto, options?: RequestInit): Promise<startTravelDishDescriptionBatchResponse> => {
+
+  return customFetch<startTravelDishDescriptionBatchResponse>(getStartTravelDishDescriptionBatchUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(generateTravelDishDescriptionsDto)
+  }
+);}
+
+
+
+
+
+export const getStartTravelDishDescriptionBatchMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startTravelDishDescriptionBatch>>, TError,{data: GenerateTravelDishDescriptionsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startTravelDishDescriptionBatch>>, TError,{data: GenerateTravelDishDescriptionsDto}, TContext> => {
+
+const mutationKey = ['startTravelDishDescriptionBatch'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startTravelDishDescriptionBatch>>, {data: GenerateTravelDishDescriptionsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  startTravelDishDescriptionBatch(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StartTravelDishDescriptionBatchMutationResult = NonNullable<Awaited<ReturnType<typeof startTravelDishDescriptionBatch>>>
+    export type StartTravelDishDescriptionBatchMutationBody = GenerateTravelDishDescriptionsDto
+    export type StartTravelDishDescriptionBatchMutationError = unknown
+
+    /**
+ * @summary Start a background AI batch (in groups of 10) for dishes missing descriptions
+ */
+export const useStartTravelDishDescriptionBatch = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startTravelDishDescriptionBatch>>, TError,{data: GenerateTravelDishDescriptionsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof startTravelDishDescriptionBatch>>,
+        TError,
+        {data: GenerateTravelDishDescriptionsDto},
+        TContext
+      > => {
+      return useMutation(getStartTravelDishDescriptionBatchMutationOptions(options), queryClient);
+    }
+    export type travelDishResponse200 = {
   data: TravelDishDetailDto
   status: 200
 }
