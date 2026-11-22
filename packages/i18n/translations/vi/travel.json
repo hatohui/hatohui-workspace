@@ -136,8 +136,8 @@
     "deleteDescription": "{{name}} và mọi gợi ý cho món này sẽ bị xóa.",
     "placesHere_one": "{{count}} quán ở đây",
     "placesHere_other": "{{count}} quán ở đây",
-    "notFoundHere": "Chưa có ở đây",
-    "noPlacesYet": "Chưa có quán",
+    "notFoundHere": "Chưa có quán được gợi ý",
+    "noPlacesYet": "Chưa có quán được gợi ý",
     "noPlacesBody": "Chưa ai thêm quán cho món này.",
     "addPlace": "Thêm quán"
   },

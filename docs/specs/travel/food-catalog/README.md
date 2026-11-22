@@ -80,7 +80,7 @@ or place detail page.
   the area's own cuisines, its country's country-wide cuisines, and anything
   served in the area. The location sorts and labels instead of filtering:
   `localPlaceCount` counts places in the picked area or country, dishes found
-  there come first, and the rest read "Not found here yet". Taste and tag
+  there come first, and the rest read "No recommended spots". Taste and tag
   filters stay pick-based, since spicy or vegetarian depends on how a place
   makes the dish.
 - **Dish and place suggestions are searched on the server** as you type

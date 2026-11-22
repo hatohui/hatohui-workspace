@@ -141,8 +141,8 @@
     "deleteDescription": "{{name}} and every recommendation for it will be removed.",
     "placesHere_one": "{{count}} place here",
     "placesHere_other": "{{count}} places here",
-    "notFoundHere": "Not found here yet",
-    "noPlacesYet": "No places yet",
+    "notFoundHere": "No recommended spots",
+    "noPlacesYet": "No recommended spots",
     "noPlacesBody": "No one has added a place for this dish yet.",
     "addPlace": "Add a place"
   },

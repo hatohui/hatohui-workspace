@@ -136,8 +136,8 @@
     "deleteDescription": "{{name}} とそのおすすめがすべて削除されます。",
     "placesHere_one": "ここに {{count}} 店",
     "placesHere_other": "ここに {{count}} 店",
-    "notFoundHere": "このエリアではまだ見つかっていません",
-    "noPlacesYet": "まだお店がありません",
+    "notFoundHere": "おすすめのお店はまだありません",
+    "noPlacesYet": "おすすめのお店はまだありません",
     "noPlacesBody": "この料理を出すお店はまだ登録されていません。",
     "addPlace": "お店を追加"
   },
