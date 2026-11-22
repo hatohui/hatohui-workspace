@@ -31,7 +31,7 @@ export function useAdminTags() {
   const remove = useDeleteTravelTag();
   const bulk = useBulkCreateTravelTags();
   const { run, runBulk } = useAdminAction();
-  const [kind, setKind] = useState<TravelTagKind>('DIET');
+  const [kind, setKind] = useState<TravelTagKind>('ALLERGEN');
 
   const rows: TagRow[] = tags.tags.map((tag) => ({
     id: tag.id,

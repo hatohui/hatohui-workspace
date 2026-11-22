@@ -16,8 +16,6 @@ export interface TravelPlaceDto {
   /** @nullable */
   address: string | null;
   /** @nullable */
-  city: string | null;
-  /** @nullable */
   mapsUrl: string | null;
   /** @nullable */
   latitude: number | null;

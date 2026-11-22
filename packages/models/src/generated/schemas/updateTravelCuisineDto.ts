@@ -8,5 +8,12 @@
 
 export interface UpdateTravelCuisineDto {
   /** @maxLength 120 */
-  name: string;
+  name?: string;
+  /** @nullable */
+  countryId?: string | null;
+  /**
+     * Setting an area also sets its country
+     * @nullable
+     */
+  areaId?: string | null;
 }

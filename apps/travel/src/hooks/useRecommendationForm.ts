@@ -4,6 +4,7 @@ import { useCatalogMatches } from './useCatalogMatches';
 import { usePhotoList } from './usePhotoList';
 import { useRecommendationFields } from './useRecommendationFields';
 import { useSaveRecommendation } from './useSaveRecommendation';
+import { useHasAreas } from './useHasAreas';
 import { useTravelLocation } from './useTravelLocation';
 
 export function useRecommendationForm(
@@ -20,9 +21,14 @@ export function useRecommendationForm(
   const photos = usePhotoList(existing?.images ?? []);
   const matches = useCatalogMatches(fields.dishName, fields.placeName);
   const { save } = useSaveRecommendation(existing, onSaved);
+  const hasAreas = useHasAreas();
+  const needsArea =
+    hasAreas && !existing && !matches.place && fields.areaId === '';
 
   const canSubmit =
-    fields.dishName.trim() !== '' && fields.placeName.trim() !== '';
+    fields.dishName.trim() !== '' &&
+    fields.placeName.trim() !== '' &&
+    !needsArea;
 
   const submit = (event: FormEvent) => {
     event.preventDefault();

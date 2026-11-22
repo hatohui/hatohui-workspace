@@ -1,7 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
 import { Flame, Leaf, ShieldAlert } from 'lucide-react';
-import { VEGETARIAN_TAG } from '../../constants/food';
 import {
   ALLERGEN_ICONS,
   FILTER_CHIP_PREVIEW_LIMIT,
@@ -33,8 +32,8 @@ function CatalogFilters({ filters }: { filters: Filters }) {
           <FilterChip
             icon={Leaf}
             label={t('catalog.vegetarian')}
-            pressed={filters.diets.includes(VEGETARIAN_TAG)}
-            onChange={() => filters.toggleDiet(VEGETARIAN_TAG)}
+            pressed={filters.vegetarian}
+            onChange={filters.setVegetarian}
           />
         </div>
       </FilterSection>

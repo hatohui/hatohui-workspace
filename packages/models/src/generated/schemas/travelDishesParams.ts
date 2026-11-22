@@ -21,9 +21,9 @@ cuisines?: string[];
 by?: string;
 spicy?: boolean;
 /**
- * Only dishes with a recommendation meeting every listed diet
+ * Only dishes with a vegetarian recommendation
  */
-diets?: string[];
+vegetarian?: boolean;
 /**
  * Hide dishes with any recommendation containing these allergens
  */
@@ -33,11 +33,11 @@ excludeAllergens?: string[];
  */
 tags?: string[];
 /**
- * Dishes from this area's country or served in this area, sorted by local availability
+ * Dishes whose cuisines belong to this area or its country, or served in this area; sorted by local availability
  */
 areaId?: string;
 /**
- * Dishes from this country or served in it, sorted by local availability
+ * Dishes whose cuisines belong to this country, or served in it; sorted by local availability
  */
 countryId?: string;
 };

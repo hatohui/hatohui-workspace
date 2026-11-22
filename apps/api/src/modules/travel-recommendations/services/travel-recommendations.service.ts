@@ -67,8 +67,8 @@ export class TravelRecommendationsService {
     userId: string,
   ): Promise<TravelRecommendationDto> {
     const resolvedTags = await this.resolveTagLists(dto);
+    const dishId = await this.resolveDish(dto, userId);
     const placeId = await this.resolvePlace(dto, userId);
-    const dishId = await this.resolveDish(dto, userId, placeId);
 
     const created = await this.guardUnique(() =>
       this.db.travelRecommendation.create({
@@ -95,7 +95,6 @@ export class TravelRecommendationsService {
     const resolvedTags = await this.resolveTagLists(dto);
     const current = await this.get(id);
     const tagKeys = travelTagKeys(resolvedTags, [
-      ...current.diets.map((key) => ({ key, kind: 'DIET' as const })),
       ...current.allergens.map((key) => ({ key, kind: 'ALLERGEN' as const })),
       ...current.tags.map((key) => ({ key, kind: 'GENERAL' as const })),
     ]);
@@ -153,10 +152,6 @@ export class TravelRecommendationsService {
   }
 
   private async resolveTagLists(dto: UpdateTravelRecommendationDto) {
-    const diets =
-      dto.diets === undefined
-        ? undefined
-        : await this.resolveTagsOfKind('DIET', dto.diets);
     const allergens =
       dto.allergens === undefined
         ? undefined
@@ -165,7 +160,7 @@ export class TravelRecommendationsService {
       dto.tags === undefined
         ? undefined
         : await this.resolveTagsOfKind('GENERAL', dto.tags);
-    return { diets, allergens, tags };
+    return { allergens, tags };
   }
 
   private async resolveTagsOfKind(
@@ -227,7 +222,6 @@ export class TravelRecommendationsService {
   private async resolveDish(
     dto: CreateTravelRecommendationDto,
     userId: string,
-    placeId: string,
   ): Promise<string> {
     if (dto.dishId) {
       const dish = await this.db.travelDish.findUnique({
@@ -248,14 +242,9 @@ export class TravelRecommendationsService {
       dto.cuisines ?? [],
       userId,
     );
-    const place = await this.db.travelPlace.findUnique({
-      where: { id: placeId },
-      select: { area: { select: { countryId: true } } },
-    });
     const created = await this.db.travelDish.create({
       data: {
         name,
-        countryId: place?.area?.countryId ?? null,
         createdById: userId,
         cuisines: { connect: cuisineIds.map((id) => ({ id })) },
       },

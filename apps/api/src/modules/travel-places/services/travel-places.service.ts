@@ -67,9 +67,7 @@ export class TravelPlacesService {
         ...travelAreaFilter(query),
         createdBy: travelCreatorFilter(query.by),
         recommendations: this.servesMatchingFood(query),
-        OR: contains
-          ? [{ name: contains }, { address: contains }, { city: contains }]
-          : undefined,
+        OR: contains ? [{ name: contains }, { address: contains }] : undefined,
       },
       include: placeInclude,
       orderBy: { name: 'asc' },
@@ -80,15 +78,16 @@ export class TravelPlacesService {
   private servesMatchingFood(
     query: TravelPlaceQueryDto,
   ): Prisma.TravelRecommendationListRelationFilter | undefined {
-    const { spicy, diets, tags, excludeAllergens, cuisines } = query;
+    const { spicy, vegetarian, tags, excludeAllergens, cuisines } = query;
     const isFiltered =
       spicy ||
-      [diets, tags, excludeAllergens, cuisines].some((list) => list?.length);
+      vegetarian ||
+      [tags, excludeAllergens, cuisines].some((list) => list?.length);
     if (!isFiltered) return undefined;
     return {
       some: travelRecommendationWhere({
         spicy,
-        diets,
+        vegetarian,
         tags,
         excludeAllergens,
         cuisines,
@@ -201,7 +200,6 @@ export class TravelPlacesService {
       name: row.name,
       area: toTravelPlaceAreaDto(row.area),
       address: row.address,
-      city: row.city,
       mapsUrl: row.mapsUrl,
       latitude: row.latitude,
       longitude: row.longitude,

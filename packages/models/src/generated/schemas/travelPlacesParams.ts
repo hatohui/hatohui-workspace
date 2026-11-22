@@ -24,10 +24,7 @@ areaId?: string;
  */
 countryId?: string;
 spicy?: boolean;
-/**
- * Only dishes that meet every listed diet
- */
-diets?: string[];
+vegetarian?: boolean;
 /**
  * Hide dishes that contain any of these allergens
  */
@@ -37,7 +34,7 @@ excludeAllergens?: string[];
  */
 tags?: string[];
 /**
- * Match name, address or city
+ * Match name or address
  */
 q?: string;
 };

@@ -865,33 +865,36 @@ model CommissionFollower {
 }
 
 model TravelDish {
-  id           String         @id @default(cuid())
-  name         String         @unique
+  id           String   @id @default(cuid())
+  name         String   @unique
   description  String?
   imageKey     String?
   thumbnailKey String?
   previewKey   String?
-  countryId    String?
-  country      TravelCountry? @relation(fields: [countryId], references: [id], onDelete: SetNull)
   createdById  String?
-  createdBy    User?          @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdBy    User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   cuisines        TravelCuisine[]
   recommendations TravelRecommendation[]
-
-  @@index([countryId])
 }
 
 model TravelCuisine {
-  id          String   @id @default(cuid())
-  name        String   @unique
+  id          String         @id @default(cuid())
+  name        String         @unique
+  countryId   String?
+  country     TravelCountry? @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  areaId      String?
+  area        TravelArea?    @relation(fields: [areaId], references: [id], onDelete: SetNull)
   createdById String?
-  createdBy   User?    @relation("TravelCuisineCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt   DateTime @default(now())
+  createdBy   User?          @relation("TravelCuisineCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime       @default(now())
 
   dishes TravelDish[]
+
+  @@index([countryId])
+  @@index([areaId])
 }
 
 model TravelPlace {
@@ -900,7 +903,6 @@ model TravelPlace {
   areaId      String?
   area        TravelArea? @relation(fields: [areaId], references: [id], onDelete: SetNull)
   address     String?
-  city        String?
   mapsUrl     String?
   latitude    Float?
   longitude   Float?
@@ -914,7 +916,6 @@ model TravelPlace {
   events          TravelEvent[]
   activities      TravelActivity[]
 
-  @@index([city])
   @@index([areaId])
 }
 
@@ -926,8 +927,8 @@ model TravelCountry {
   createdBy   User?    @relation("TravelCountryCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
 
-  areas  TravelArea[]
-  dishes TravelDish[]
+  areas    TravelArea[]
+  cuisines TravelCuisine[]
 }
 
 model TravelArea {
@@ -939,14 +940,14 @@ model TravelArea {
   createdBy   User?         @relation("TravelAreaCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime      @default(now())
 
-  places TravelPlace[]
-  events TravelEvent[]
+  places   TravelPlace[]
+  events   TravelEvent[]
+  cuisines TravelCuisine[]
 
   @@unique([countryId, name])
 }
 
 enum TravelTagKind {
-  DIET
   ALLERGEN
   GENERAL
 }
@@ -983,6 +984,7 @@ model TravelRecommendation {
   priceLevel  TravelPriceLevel?
   currency    String            @default("VND")
   spicy       Boolean           @default(false)
+  vegetarian  Boolean           @default(false)
   createdById String?
   createdBy   User?             @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime          @default(now())

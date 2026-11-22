@@ -1,6 +1,5 @@
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelDishDetailDto } from '@hatohui/models';
-import { Globe } from 'lucide-react';
 import type { useConfirmedDelete } from '../../hooks/useConfirmedDelete';
 import { useDialogState } from '../../hooks/useDialogState';
 import CuisineChips from '../shared/CuisineChips';
@@ -30,15 +29,7 @@ function DishHeader({ dish, deletion }: Props) {
         )}
         <div className="min-w-0 flex-1 space-y-3">
           <h1 className="text-3xl font-medium tracking-tight">{dish.name}</h1>
-          <div className="flex flex-wrap items-center gap-2">
-            {dish.country && (
-              <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
-                <Globe className="size-3.5" aria-hidden />
-                {dish.country.name}
-              </span>
-            )}
-            <CuisineChips cuisines={dish.cuisines} />
-          </div>
+          <CuisineChips cuisines={dish.cuisines} />
           {dish.description && (
             <p className="max-w-prose leading-relaxed text-muted-foreground">
               {dish.description}

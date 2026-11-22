@@ -33,11 +33,6 @@ export class TravelRecommendationQueryDto {
   @IsString({ each: true })
   cuisines?: string[];
 
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  city?: string;
-
   @ApiProperty({
     required: false,
     description: 'Only entries added by this @handle',
@@ -73,15 +68,11 @@ export class TravelRecommendationQueryDto {
   @IsBoolean()
   spicy?: boolean;
 
-  @ApiProperty({
-    required: false,
-    type: [String],
-    description: 'Only dishes that meet every listed diet',
-  })
+  @ApiProperty({ required: false })
   @IsOptional()
-  @Transform(toList)
-  @IsString({ each: true })
-  diets?: string[];
+  @Transform(toBoolean)
+  @IsBoolean()
+  vegetarian?: boolean;
 
   @ApiProperty({
     required: false,

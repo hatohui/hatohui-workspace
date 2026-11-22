@@ -42,7 +42,6 @@ const dishInclude = {
   cuisines: travelCuisineNamesSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
-  country: { select: { id: true, name: true } },
   recommendations: {
     select: {
       tags: travelAllergenTagsSelect,
@@ -57,7 +56,7 @@ type DishRow = Prisma.TravelDishGetPayload<{ include: typeof dishInclude }>;
 type DishPlace = DishRow['recommendations'][number]['place'];
 
 interface LocationScope {
-  countryId: string;
+  cuisines: Prisma.TravelCuisineWhereInput;
   where: Prisma.TravelPlaceWhereInput;
   contains: (place: DishPlace) => boolean;
 }
@@ -84,7 +83,7 @@ export class TravelDishesService {
     if (scope) {
       and.push({
         OR: [
-          { countryId: scope.countryId },
+          { cuisines: { some: scope.cuisines } },
           { recommendations: { some: { place: scope.where } } },
         ],
       });
@@ -101,9 +100,10 @@ export class TravelDishesService {
       });
     }
 
-    const requiredTags = [...(query.diets ?? []), ...(query.tags ?? [])];
+    const requiredTags = query.tags ?? [];
     const recMatch: Prisma.TravelRecommendationWhereInput = {
       ...(query.spicy ? { spicy: true } : {}),
+      ...(query.vegetarian ? { vegetarian: true } : {}),
       ...(requiredTags.length
         ? { AND: requiredTags.map((key) => ({ tags: { some: { key } } })) }
         : {}),
@@ -150,7 +150,9 @@ export class TravelDishesService {
       });
       if (!area) throw new NotFoundException('Area not found');
       return {
-        countryId: area.countryId,
+        cuisines: {
+          OR: [{ areaId }, { countryId: area.countryId, areaId: null }],
+        },
         where: { areaId },
         contains: (place) => place.areaId === areaId,
       };
@@ -158,7 +160,7 @@ export class TravelDishesService {
     if (query.countryId) {
       const countryId = query.countryId;
       return {
-        countryId,
+        cuisines: { countryId },
         where: { area: { countryId } },
         contains: (place) => place.area?.countryId === countryId,
       };
@@ -337,12 +339,9 @@ export class TravelDishesService {
         dto.description === undefined
           ? undefined
           : dto.description.trim() || null,
-      countryId:
-        dto.countryId === undefined ? undefined : dto.countryId || null,
     } as {
       name: string;
       description?: string | null;
-      countryId?: string | null;
     };
   }
 
@@ -369,7 +368,6 @@ export class TravelDishesService {
       localPlaceCount: scope
         ? row.recommendations.filter((rec) => scope.contains(rec.place)).length
         : null,
-      country: row.country,
       imageKey: row.imageKey,
       imageUrl,
       thumbnailUrl,

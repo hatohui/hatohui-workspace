@@ -133,8 +133,6 @@
     "description": "描述",
     "deleteTitle": "删除这道菜？",
     "deleteDescription": "{{name}} 及其所有推荐将被删除。",
-    "country": "国家",
-    "noCountry": "无国家",
     "placesHere_one": "此地 {{count}} 家店",
     "placesHere_other": "此地 {{count}} 家店",
     "notFoundHere": "此地暂未找到",
@@ -156,7 +154,6 @@
     "editTitle": "编辑地点",
     "name": "名称",
     "address": "地址",
-    "city": "城市",
     "note": "备注",
     "deleteTitle": "删除这个地点？",
     "deleteDescription": "{{name}} 及其所有推荐将被删除。",
@@ -170,15 +167,6 @@
     "LOW": "低价",
     "MID": "中等价位",
     "HIGH": "高价"
-  },
-  "diet": {
-    "vegetarian": "素食",
-    "vegan": "纯素",
-    "pescatarian": "鱼素",
-    "halal": "清真",
-    "kosher": "犹太洁食",
-    "gluten-free": "无麸质",
-    "dairy-free": "无乳制品"
   },
   "allergen": {
     "peanuts": "花生",
@@ -254,10 +242,13 @@
     "columns": "列",
     "mapsLink": "地图链接",
     "kinds": {
-      "DIET": "饮食",
       "ALLERGEN": "过敏原",
       "GENERAL": "标签"
-    }
+    },
+    "country": "国家",
+    "noCountry": "无国家",
+    "area": "城市 / 地区",
+    "noArea": "未指定地区"
   },
   "settings": {
     "tabs": {

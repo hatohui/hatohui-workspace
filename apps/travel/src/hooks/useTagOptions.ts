@@ -45,7 +45,6 @@ export function useTagOptions() {
     tags,
     isLoading: query.isPending,
     labelOf,
-    dietKeys: keysOf('DIET'),
     allergenKeys: keysOf('ALLERGEN'),
     generalKeys: keysOf('GENERAL'),
     suggestionsOf,

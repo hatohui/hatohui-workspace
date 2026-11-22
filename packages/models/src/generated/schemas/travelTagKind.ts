@@ -10,7 +10,6 @@ export type TravelTagKind = typeof TravelTagKind[keyof typeof TravelTagKind];
 
 
 export const TravelTagKind = {
-  DIET: 'DIET',
   ALLERGEN: 'ALLERGEN',
   GENERAL: 'GENERAL',
 } as const;

@@ -112,15 +112,10 @@ export class CreateTravelRecommendationDto {
   @IsBoolean()
   spicy?: boolean;
 
-  @ApiProperty({
-    required: false,
-    type: [String],
-    description: 'Diet tag keys',
-  })
+  @ApiProperty({ required: false })
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  diets?: string[];
+  @IsBoolean()
+  vegetarian?: boolean;
 
   @ApiProperty({
     required: false,

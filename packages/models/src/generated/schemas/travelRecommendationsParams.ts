@@ -15,7 +15,6 @@ q?: string;
  * Only dishes tagged with any of these cuisines
  */
 cuisines?: string[];
-city?: string;
 /**
  * Only entries added by this @handle
  */
@@ -31,10 +30,7 @@ countryId?: string;
 dishId?: string;
 placeId?: string;
 spicy?: boolean;
-/**
- * Only dishes that meet every listed diet
- */
-diets?: string[];
+vegetarian?: boolean;
 /**
  * Hide dishes that contain any of these allergens
  */

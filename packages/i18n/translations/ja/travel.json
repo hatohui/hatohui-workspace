@@ -133,8 +133,6 @@
     "description": "説明",
     "deleteTitle": "この料理を削除しますか？",
     "deleteDescription": "{{name}} とそのおすすめがすべて削除されます。",
-    "country": "国",
-    "noCountry": "国なし",
     "placesHere_one": "ここに {{count}} 店",
     "placesHere_other": "ここに {{count}} 店",
     "notFoundHere": "このエリアではまだ見つかっていません",
@@ -156,7 +154,6 @@
     "editTitle": "お店を編集",
     "name": "名前",
     "address": "住所",
-    "city": "都市",
     "note": "メモ",
     "deleteTitle": "このお店を削除しますか？",
     "deleteDescription": "{{name}} とそこでのおすすめがすべて削除されます。",
@@ -170,15 +167,6 @@
     "LOW": "安い",
     "MID": "普通",
     "HIGH": "高い"
-  },
-  "diet": {
-    "vegetarian": "ベジタリアン",
-    "vegan": "ヴィーガン",
-    "pescatarian": "ペスカタリアン",
-    "halal": "ハラール",
-    "kosher": "コーシャ",
-    "gluten-free": "グルテンフリー",
-    "dairy-free": "乳製品不使用"
   },
   "allergen": {
     "peanuts": "落花生",
@@ -254,10 +242,13 @@
     "columns": "列",
     "mapsLink": "地図リンク",
     "kinds": {
-      "DIET": "食事制限",
       "ALLERGEN": "アレルゲン",
       "GENERAL": "タグ"
-    }
+    },
+    "country": "国",
+    "noCountry": "国なし",
+    "area": "都市・エリア",
+    "noArea": "エリアなし"
   },
   "settings": {
     "tabs": {

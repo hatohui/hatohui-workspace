@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { Database } from '@/infra/db';
-import { TravelCuisineDto } from '@/modules/travel-cuisines/dto/travel-cuisine.dto';
+import {
+  TravelCuisineDto,
+  UpdateTravelCuisineDto,
+} from '@/modules/travel-cuisines/dto/travel-cuisine.dto';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { UNIQUE_VIOLATION_CODE } from '@/modules/travel-recommendations/travel-recommendations.constants';
 import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names';
@@ -13,6 +16,8 @@ import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names
 const cuisineSelect = {
   id: true,
   name: true,
+  countryId: true,
+  areaId: true,
   createdAt: true,
   _count: { select: { dishes: true } },
 } satisfies Prisma.TravelCuisineSelect;
@@ -46,17 +51,37 @@ export class TravelCuisinesService {
     };
   }
 
-  async rename(id: string, name: string): Promise<TravelCuisineDto> {
+  async update(
+    id: string,
+    dto: UpdateTravelCuisineDto,
+  ): Promise<TravelCuisineDto> {
+    const location = await this.locationOf(dto);
     try {
       const row = await this.db.travelCuisine.update({
         where: { id },
-        data: { name: name.trim() },
+        data: { name: dto.name?.trim(), ...location },
         select: cuisineSelect,
       });
       return this.toDto(row);
     } catch (error) {
       throw this.translate(error);
     }
+  }
+
+  private async locationOf(dto: UpdateTravelCuisineDto) {
+    if (dto.areaId) {
+      const area = await this.db.travelArea.findUnique({
+        where: { id: dto.areaId },
+        select: { countryId: true },
+      });
+      if (!area) throw new NotFoundException('Area not found');
+      return { areaId: dto.areaId, countryId: area.countryId };
+    }
+    return {
+      areaId: dto.areaId === undefined ? undefined : null,
+      countryId:
+        dto.countryId === undefined ? undefined : dto.countryId || null,
+    };
   }
 
   async remove(id: string): Promise<void> {
@@ -110,6 +135,8 @@ export class TravelCuisinesService {
       id: row.id,
       name: row.name,
       dishCount: row._count.dishes,
+      countryId: row.countryId,
+      areaId: row.areaId,
       createdAt: row.createdAt,
     };
   }
