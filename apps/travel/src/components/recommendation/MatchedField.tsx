@@ -18,6 +18,7 @@ interface Props {
   isMatched: boolean;
   disabled: boolean;
   onChange: (value: string) => void;
+  onSelect?: (suggestion: SearchSuggestion) => void;
 }
 
 function MatchedField(props: Props) {
@@ -27,6 +28,12 @@ function MatchedField(props: Props) {
   const suggest = useSearchSuggest({
     value: props.value,
     onChange: props.onChange,
+    onSelect: props.onSelect
+      ? (item) => {
+          props.onChange(item.label);
+          props.onSelect?.(item);
+        }
+      : undefined,
     suggestions: props.options,
   });
 
