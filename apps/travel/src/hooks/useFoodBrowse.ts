@@ -8,8 +8,8 @@ export function useFoodBrowse() {
   const { view, setView, groupByCategory, toggleGroupByCategory } =
     useFoodView();
   const filterState = useTravelFilterState();
-  const dishes = useDishList(filterState, view === 'dishes');
-  const places = usePlaceList(filterState, view === 'places');
+  const dishes = useDishList(filterState, view === 'dishes', groupByCategory);
+  const places = usePlaceList(filterState, view === 'places', groupByCategory);
 
   return {
     view,

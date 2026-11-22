@@ -77,11 +77,8 @@ function FoodPage() {
           {!food.groupByCategory && (
             <PaginationBar
               page={active.pagination.page}
-              pageSize={active.pagination.pageSize}
-              totalItems={active.pagination.totalItems}
               totalPages={active.pagination.totalPages}
               onPageChange={active.pagination.setPage}
-              onPageSizeChange={active.pagination.setPageSize}
             />
           )}
         </div>

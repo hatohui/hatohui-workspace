@@ -67,8 +67,6 @@ export type PriceMode = (typeof PRICE_MODES)[number];
 
 export const SEARCH_DEBOUNCE_MS = 250;
 export const SEARCH_SUGGESTION_LIMIT = 6;
-export const DIRECTORY_PAGE_SIZES = [12, 24, 48] as const;
-export const DEFAULT_DIRECTORY_PAGE_SIZE = 24;
 export const MAX_PHOTOS = 12;
 export const MAX_CUISINES = 6;
 export const MAX_CATEGORIES = 6;

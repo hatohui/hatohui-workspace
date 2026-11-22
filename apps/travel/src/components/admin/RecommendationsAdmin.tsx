@@ -36,11 +36,8 @@ function RecommendationsAdmin() {
       </ListState>
       <PaginationBar
         page={pagination.page}
-        pageSize={pagination.pageSize}
-        totalItems={pagination.totalItems}
         totalPages={pagination.totalPages}
         onPageChange={pagination.setPage}
-        onPageSizeChange={pagination.setPageSize}
       />
     </div>
   );

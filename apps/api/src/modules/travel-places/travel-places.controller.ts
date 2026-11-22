@@ -28,8 +28,10 @@ import { TravelPlacesService } from '@/modules/travel-places/services/travel-pla
 import {
   BulkCreateTravelPlacesDto,
   CreateTravelPlaceDto,
+  PaginatedTravelPlacesDto,
   TravelPlaceDetailDto,
   TravelPlaceDto,
+  TravelPlacePageQueryDto,
   TravelPlaceQueryDto,
   UpdateTravelPlaceDto,
 } from '@/modules/travel-places/dto/travel-place.dto';
@@ -44,6 +46,18 @@ export class TravelPlacesController {
   @ApiOkResponse({ type: TravelPlaceDto, isArray: true })
   list(@Query() query: TravelPlaceQueryDto): Promise<TravelPlaceDto[]> {
     return this.places.list(query);
+  }
+
+  @Get('page')
+  @ApiOperation({
+    operationId: 'travelPlacesPage',
+    summary: 'Paginated places',
+  })
+  @ApiOkResponse({ type: PaginatedTravelPlacesDto })
+  listPage(
+    @Query() query: TravelPlacePageQueryDto,
+  ): Promise<PaginatedTravelPlacesDto> {
+    return this.places.listPage(query);
   }
 
   @Get(':id')

@@ -1,33 +1,79 @@
-import { useMemo } from 'react';
-import { useTravelDishes } from '@hatohui/models';
-import { usePagination } from './usePagination';
+import { useMemo, useState } from 'react';
+import { keepPreviousData } from '@tanstack/react-query';
+import { useTravelDishes, useTravelDishesPage } from '@hatohui/models';
+import { useResponsiveGridCount } from './useResponsiveGridCount';
 import type { SearchSuggestion } from './useSearchSuggest';
 import type { TravelFilterState } from './useTravelFilterState';
 import { useTravelLocation } from './useTravelLocation';
 
-export function useDishList(state: TravelFilterState, enabled: boolean) {
+export function useDishList(
+  state: TravelFilterState,
+  enabled: boolean,
+  groupByCategory: boolean,
+) {
   const location = useTravelLocation();
-  const params = { ...state.queryParams, ...location.filter };
-  const result = useTravelDishes(params, { query: { enabled } });
-  const dishes = useMemo(() => result.data?.data ?? [], [result.data?.data]);
+  const pageSize = useResponsiveGridCount('catalog');
+  const params = useMemo(
+    () => ({ ...state.queryParams, ...location.filter }),
+    [location.filter, state.queryParams],
+  );
+  const resetKey = JSON.stringify({ ...params, pageSize });
+  const [pageState, setPageState] = useState({ key: resetKey, page: 1 });
+  const requestedPage = pageState.key === resetKey ? pageState.page : 1;
+
+  const pagedResult = useTravelDishesPage(
+    { ...params, page: requestedPage, pageSize },
+    {
+      query: {
+        enabled: enabled && !groupByCategory,
+        placeholderData: keepPreviousData,
+      },
+    },
+  );
+  const allResult = useTravelDishes(params, {
+    query: { enabled: enabled && groupByCategory },
+  });
+
+  const pagedItems = useMemo(
+    () => pagedResult.data?.data.items ?? [],
+    [pagedResult.data?.data.items],
+  );
+  const allDishes = useMemo(
+    () => allResult.data?.data ?? [],
+    [allResult.data?.data],
+  );
+  const totalItems = groupByCategory
+    ? allDishes.length
+    : (pagedResult.data?.data.total ?? 0);
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const page =
+    totalItems > 0 ? Math.min(requestedPage, totalPages) : requestedPage;
+
+  const setPage = (next: number) => {
+    setPageState({ key: resetKey, page: next });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const suggestionSource = groupByCategory ? allDishes : pagedItems;
   const suggestions = useMemo<SearchSuggestion[]>(
     () =>
-      dishes.map((dish) => ({
+      suggestionSource.map((dish) => ({
         id: dish.id,
         label: dish.name,
         sublabel: [...dish.categories, ...dish.cuisines].join(', ') || null,
         imageUrl: dish.coverImageUrl,
       })),
-    [dishes],
+    [suggestionSource],
   );
-  const pagination = usePagination(dishes, JSON.stringify(params));
+
+  const active = groupByCategory ? allResult : pagedResult;
   return {
-    allDishes: dishes,
-    dishes: pagination.pagedItems,
-    pagination,
+    allDishes,
+    dishes: pagedItems,
+    pagination: { page, totalItems, totalPages, setPage },
     suggestions,
-    isLoading: result.isLoading,
-    isError: result.isError,
-    refetch: result.refetch,
+    isLoading: active.isLoading,
+    isError: active.isError,
+    refetch: active.refetch,
   };
 }

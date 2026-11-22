@@ -288,6 +288,7 @@
     "perPage": "Rows per page",
     "previous": "Previous",
     "next": "Next",
+    "jumpToPage": "Jump to page",
     "columns": "Columns",
     "mapsLink": "Maps link",
     "kinds": {

@@ -1,16 +1,22 @@
 import { useQueryClient, type QueryKey } from '@tanstack/react-query';
 import {
   getTravelDishQueryKey,
+  getTravelDishesPageQueryKey,
   getTravelDishesQueryKey,
   getTravelPlaceQueryKey,
+  getTravelPlacesPageQueryKey,
   getTravelPlacesQueryKey,
   getTravelRecommendationsQueryKey,
+  type PaginatedTravelDishesDto,
+  type PaginatedTravelPlacesDto,
   type TravelDishDetailDto,
   type TravelDishDto,
+  type TravelDishesPageParams,
   type TravelDishesParams,
   type TravelPlaceAreaDto,
   type TravelPlaceDetailDto,
   type TravelPlaceDto,
+  type TravelPlacesPageParams,
   type TravelPlacesParams,
   type TravelRecommendationDto,
 } from '@hatohui/models';
@@ -43,6 +49,88 @@ const mergeStrings = (current: string[], added: string[]) => [
   ...new Set([...current, ...added]),
 ];
 
+const patchExistingDish = (
+  item: TravelDishDto,
+  dishId: string,
+  allergens: string[],
+  coverImageUrl: string | null,
+  area: TravelPlaceAreaDto | null,
+  queryParams?: TravelDishesParams,
+): TravelDishDto =>
+  item.id === dishId
+    ? {
+        ...item,
+        placeCount: item.placeCount + 1,
+        localPlaceCount:
+          item.localPlaceCount === null
+            ? null
+            : item.localPlaceCount +
+              (areaMatchesLocation(area, queryParams) ? 1 : 0),
+        allergens: mergeStrings(item.allergens, allergens),
+        coverImageUrl: item.coverImageUrl ?? coverImageUrl,
+      }
+    : item;
+
+const patchExistingPlace = (
+  item: TravelPlaceDto,
+  placeId: string,
+  allergens: string[],
+  coverImageUrl: string | null,
+): TravelPlaceDto =>
+  item.id === placeId
+    ? {
+        ...item,
+        dishCount: item.dishCount + 1,
+        allergens: mergeStrings(item.allergens, allergens),
+        coverImageUrl: item.coverImageUrl ?? coverImageUrl,
+      }
+    : item;
+
+const settleDishItem = (
+  item: TravelDishDto,
+  tempDishId: string,
+  saved: TravelRecommendationDto,
+  savedCover: string | null,
+): TravelDishDto =>
+  item.id === tempDishId
+    ? {
+        ...item,
+        id: saved.dish.id,
+        name: saved.dish.name,
+        cuisines: saved.dish.cuisines,
+        categories: saved.dish.categories,
+        imageUrl: saved.dish.imageUrl,
+        thumbnailUrl: saved.dish.thumbnailUrl,
+        previewUrl: saved.dish.previewUrl,
+        coverImageUrl:
+          saved.dish.thumbnailUrl ??
+          saved.dish.imageUrl ??
+          savedCover ??
+          item.coverImageUrl,
+      }
+    : item;
+
+const settlePlaceItem = (
+  item: TravelPlaceDto,
+  tempPlaceId: string,
+  saved: TravelRecommendationDto,
+  savedCover: string | null,
+): TravelPlaceDto =>
+  item.id === tempPlaceId
+    ? {
+        ...item,
+        id: saved.place.id,
+        name: saved.place.name,
+        area: saved.place.area,
+        categories: saved.place.categories,
+        address: saved.place.address,
+        mapsUrl: saved.place.mapsUrl,
+        latitude: saved.place.latitude,
+        longitude: saved.place.longitude,
+        coverImageUrl: savedCover ?? item.coverImageUrl,
+      }
+    : item;
+
 export function useOptimisticRecommendation() {
   const queryClient = useQueryClient();
 
@@ -65,7 +153,9 @@ export function useOptimisticRecommendation() {
 
     const recKey = getTravelRecommendationsQueryKey();
     const dishesKey = getTravelDishesQueryKey();
+    const dishPageKey = getTravelDishesPageQueryKey();
     const placesKey = getTravelPlacesQueryKey();
+    const placePageKey = getTravelPlacesPageQueryKey();
     const dishId = dish?.id ?? existing?.dish.id;
     const placeId = place?.id ?? existing?.place.id;
     const dishDetailKey = dishId ? getTravelDishQueryKey(dishId) : null;
@@ -77,9 +167,15 @@ export function useOptimisticRecommendation() {
     const dishesSnapshots = queryClient.getQueriesData<
       Envelope<TravelDishDto[]>
     >({ queryKey: dishesKey });
+    const dishPageSnapshots = queryClient.getQueriesData<
+      Envelope<PaginatedTravelDishesDto>
+    >({ queryKey: dishPageKey });
     const placesSnapshots = queryClient.getQueriesData<
       Envelope<TravelPlaceDto[]>
     >({ queryKey: placesKey });
+    const placePageSnapshots = queryClient.getQueriesData<
+      Envelope<PaginatedTravelPlacesDto>
+    >({ queryKey: placePageKey });
     const dishDetailSnapshots = dishDetailKey
       ? queryClient.getQueriesData<Envelope<TravelDishDetailDto>>({
           queryKey: dishDetailKey,
@@ -93,7 +189,9 @@ export function useOptimisticRecommendation() {
 
     void queryClient.cancelQueries({ queryKey: recKey });
     void queryClient.cancelQueries({ queryKey: dishesKey });
+    void queryClient.cancelQueries({ queryKey: dishPageKey });
     void queryClient.cancelQueries({ queryKey: placesKey });
+    void queryClient.cancelQueries({ queryKey: placePageKey });
     if (dishDetailKey) {
       void queryClient.cancelQueries({ queryKey: dishDetailKey });
     }
@@ -166,19 +264,14 @@ export function useOptimisticRecommendation() {
           queryClient.setQueryData<Envelope<TravelDishDto[]>>(key, {
             ...current,
             data: current.data.map((item) =>
-              item.id === dish.id
-                ? {
-                    ...item,
-                    placeCount: item.placeCount + 1,
-                    localPlaceCount:
-                      item.localPlaceCount === null
-                        ? null
-                        : item.localPlaceCount +
-                          (areaMatchesLocation(area, queryParams) ? 1 : 0),
-                    allergens: mergeStrings(item.allergens, fields.allergens),
-                    coverImageUrl: item.coverImageUrl ?? coverImageUrl,
-                  }
-                : item,
+              patchExistingDish(
+                item,
+                dish.id,
+                fields.allergens,
+                coverImageUrl,
+                area,
+                queryParams,
+              ),
             ),
           });
         } else if (matchesSearchQuery(fields.dishName, queryParams?.q)) {
@@ -196,6 +289,53 @@ export function useOptimisticRecommendation() {
         }
       }
 
+      for (const [key, current] of dishPageSnapshots) {
+        if (!Array.isArray(current?.data?.items)) continue;
+        const queryParams = key[1] as TravelDishesPageParams | undefined;
+        if (dish) {
+          queryClient.setQueryData<Envelope<PaginatedTravelDishesDto>>(key, {
+            ...current,
+            data: {
+              ...current.data,
+              items: current.data.items.map((item) =>
+                patchExistingDish(
+                  item,
+                  dish.id,
+                  fields.allergens,
+                  coverImageUrl,
+                  area,
+                  queryParams,
+                ),
+              ),
+            },
+          });
+        } else if (
+          (queryParams?.page ?? 1) === 1 &&
+          matchesSearchQuery(fields.dishName, queryParams?.q)
+        ) {
+          const optimisticDish = buildOptimisticDish({
+            id: tempDishId,
+            fields,
+            area,
+            coverImageUrl,
+            queryParams,
+          });
+          const nextTotal = current.data.total + 1;
+          queryClient.setQueryData<Envelope<PaginatedTravelDishesDto>>(key, {
+            ...current,
+            data: {
+              ...current.data,
+              items: [optimisticDish, ...current.data.items].slice(
+                0,
+                current.data.pageSize,
+              ),
+              total: nextTotal,
+              hasMore: nextTotal > current.data.page * current.data.pageSize,
+            },
+          });
+        }
+      }
+
       for (const [key, current] of placesSnapshots) {
         if (!Array.isArray(current?.data)) continue;
         const queryParams = key[1] as TravelPlacesParams | undefined;
@@ -203,14 +343,12 @@ export function useOptimisticRecommendation() {
           queryClient.setQueryData<Envelope<TravelPlaceDto[]>>(key, {
             ...current,
             data: current.data.map((item) =>
-              item.id === place.id
-                ? {
-                    ...item,
-                    dishCount: item.dishCount + 1,
-                    allergens: mergeStrings(item.allergens, fields.allergens),
-                    coverImageUrl: item.coverImageUrl ?? coverImageUrl,
-                  }
-                : item,
+              patchExistingPlace(
+                item,
+                place.id,
+                fields.allergens,
+                coverImageUrl,
+              ),
             ),
           });
         } else if (
@@ -226,6 +364,51 @@ export function useOptimisticRecommendation() {
           queryClient.setQueryData<Envelope<TravelPlaceDto[]>>(key, {
             ...current,
             data: [optimisticPlace, ...current.data],
+          });
+        }
+      }
+
+      for (const [key, current] of placePageSnapshots) {
+        if (!Array.isArray(current?.data?.items)) continue;
+        const queryParams = key[1] as TravelPlacesPageParams | undefined;
+        if (place) {
+          queryClient.setQueryData<Envelope<PaginatedTravelPlacesDto>>(key, {
+            ...current,
+            data: {
+              ...current.data,
+              items: current.data.items.map((item) =>
+                patchExistingPlace(
+                  item,
+                  place.id,
+                  fields.allergens,
+                  coverImageUrl,
+                ),
+              ),
+            },
+          });
+        } else if (
+          (queryParams?.page ?? 1) === 1 &&
+          matchesSearchQuery(fields.placeName, queryParams?.q) &&
+          areaMatchesLocation(area, queryParams)
+        ) {
+          const optimisticPlace = buildOptimisticPlace({
+            id: tempPlaceId,
+            fields,
+            area,
+            coverImageUrl,
+          });
+          const nextTotal = current.data.total + 1;
+          queryClient.setQueryData<Envelope<PaginatedTravelPlacesDto>>(key, {
+            ...current,
+            data: {
+              ...current.data,
+              items: [optimisticPlace, ...current.data.items].slice(
+                0,
+                current.data.pageSize,
+              ),
+              total: nextTotal,
+              hasMore: nextTotal > current.data.page * current.data.pageSize,
+            },
           });
         }
       }
@@ -286,24 +469,23 @@ export function useOptimisticRecommendation() {
         queryClient.setQueryData<Envelope<TravelDishDto[]>>(key, {
           ...current,
           data: current.data.map((item) =>
-            item.id === tempDishId
-              ? {
-                  ...item,
-                  id: saved.dish.id,
-                  name: saved.dish.name,
-                  cuisines: saved.dish.cuisines,
-                  categories: saved.dish.categories,
-                  imageUrl: saved.dish.imageUrl,
-                  thumbnailUrl: saved.dish.thumbnailUrl,
-                  previewUrl: saved.dish.previewUrl,
-                  coverImageUrl:
-                    saved.dish.thumbnailUrl ??
-                    saved.dish.imageUrl ??
-                    savedCover ??
-                    item.coverImageUrl,
-                }
-              : item,
+            settleDishItem(item, tempDishId, saved, savedCover),
           ),
+        });
+      }
+
+      for (const [key, current] of queryClient.getQueriesData<
+        Envelope<PaginatedTravelDishesDto>
+      >({ queryKey: dishPageKey })) {
+        if (!Array.isArray(current?.data?.items)) continue;
+        queryClient.setQueryData<Envelope<PaginatedTravelDishesDto>>(key, {
+          ...current,
+          data: {
+            ...current.data,
+            items: current.data.items.map((item) =>
+              settleDishItem(item, tempDishId, saved, savedCover),
+            ),
+          },
         });
       }
 
@@ -314,21 +496,23 @@ export function useOptimisticRecommendation() {
         queryClient.setQueryData<Envelope<TravelPlaceDto[]>>(key, {
           ...current,
           data: current.data.map((item) =>
-            item.id === tempPlaceId
-              ? {
-                  ...item,
-                  id: saved.place.id,
-                  name: saved.place.name,
-                  area: saved.place.area,
-                  categories: saved.place.categories,
-                  address: saved.place.address,
-                  mapsUrl: saved.place.mapsUrl,
-                  latitude: saved.place.latitude,
-                  longitude: saved.place.longitude,
-                  coverImageUrl: savedCover ?? item.coverImageUrl,
-                }
-              : item,
+            settlePlaceItem(item, tempPlaceId, saved, savedCover),
           ),
+        });
+      }
+
+      for (const [key, current] of queryClient.getQueriesData<
+        Envelope<PaginatedTravelPlacesDto>
+      >({ queryKey: placePageKey })) {
+        if (!Array.isArray(current?.data?.items)) continue;
+        queryClient.setQueryData<Envelope<PaginatedTravelPlacesDto>>(key, {
+          ...current,
+          data: {
+            ...current.data,
+            items: current.data.items.map((item) =>
+              settlePlaceItem(item, tempPlaceId, saved, savedCover),
+            ),
+          },
         });
       }
     };
@@ -337,7 +521,9 @@ export function useOptimisticRecommendation() {
       const allSnapshots: Array<[QueryKey, unknown]> = [
         ...recSnapshots,
         ...dishesSnapshots,
+        ...dishPageSnapshots,
         ...placesSnapshots,
+        ...placePageSnapshots,
         ...dishDetailSnapshots,
         ...placeDetailSnapshots,
       ];

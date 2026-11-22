@@ -26,8 +26,10 @@ import {
 import { TravelDishesService } from '@/modules/travel-dishes/services/travel-dishes.service';
 import {
   CreateTravelDishDto,
+  PaginatedTravelDishesDto,
   TravelDishDetailDto,
   TravelDishDto,
+  TravelDishPageQueryDto,
   TravelDishQueryDto,
   UpdateTravelDishDto,
 } from '@/modules/travel-dishes/dto/travel-dish.dto';
@@ -42,6 +44,18 @@ export class TravelDishesController {
   @ApiOkResponse({ type: TravelDishDto, isArray: true })
   list(@Query() query: TravelDishQueryDto): Promise<TravelDishDto[]> {
     return this.dishes.list(query);
+  }
+
+  @Get('page')
+  @ApiOperation({
+    operationId: 'travelDishesPage',
+    summary: 'Paginated dishes',
+  })
+  @ApiOkResponse({ type: PaginatedTravelDishesDto })
+  listPage(
+    @Query() query: TravelDishPageQueryDto,
+  ): Promise<PaginatedTravelDishesDto> {
+    return this.dishes.listPage(query);
   }
 
   @Get(':id')
