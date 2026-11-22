@@ -28,7 +28,7 @@ function PlacesPage() {
         emptyIcon={MapPin}
         emptyMessage={t('places.empty')}
       >
-        <div className="grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-3">
           {list.places.map((place) => (
             <PlaceCard key={place.id} place={place} />
           ))}

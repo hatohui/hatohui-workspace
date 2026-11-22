@@ -5,8 +5,8 @@ import { Compass } from 'lucide-react';
 import { NAV_ITEMS } from '../../constants/navItems';
 import routes from '../../constants/routes';
 import LocationPicker from '../location/LocationPicker';
-import AdminNavLink from './AdminNavLink';
 import AccountButton from './AccountButton';
+import AdminNavLink from './AdminNavLink';
 import HeaderNavLink from './HeaderNavLink';
 
 function TravelHeader() {
@@ -16,18 +16,20 @@ function TravelHeader() {
       <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2">
         <Link
           to={routes.catalog}
-          className="mr-2 inline-flex items-center gap-2 font-medium tracking-tight"
+          className="mr-auto inline-flex shrink-0 items-center gap-2 font-medium tracking-tight md:mr-2"
         >
           <Compass className="size-5 text-primary" aria-hidden />
-          <span className="hidden sm:inline">{t('brand')}</span>
+          <span>{t('brand')}</span>
         </Link>
-        <nav className="flex flex-1 items-center gap-1 overflow-x-auto">
+        <nav className="hidden flex-1 items-center gap-1 md:flex">
           {NAV_ITEMS.map((item) => (
             <HeaderNavLink key={item.to} item={item} />
           ))}
         </nav>
         <LocationPicker />
-        <AdminNavLink />
+        <div className="hidden md:flex">
+          <AdminNavLink />
+        </div>
         <ThemeToggle />
         <AccountButton />
       </div>

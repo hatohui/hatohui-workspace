@@ -15,7 +15,7 @@ function LocationPicker() {
         <Button
           variant="outline"
           size="sm"
-          className="max-w-44 rounded-full"
+          className="max-w-36 rounded-full sm:max-w-44"
           aria-label={t('location.pick')}
         >
           <MapPinned />
