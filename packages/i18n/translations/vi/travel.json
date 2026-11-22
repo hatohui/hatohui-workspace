@@ -280,6 +280,7 @@
     "perPage": "Số hàng mỗi trang",
     "previous": "Trước",
     "next": "Sau",
+    "jumpToPage": "Chuyển đến trang",
     "columns": "Cột",
     "mapsLink": "Link bản đồ",
     "kinds": {

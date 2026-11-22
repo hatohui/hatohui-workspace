@@ -8,6 +8,7 @@ import {
 import { Prisma, ProcessType } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
+import { paginateList } from '@/common/utils/paginate';
 import { matchesSearch, searchMatchRank } from '@/common/utils/text-search';
 import {
   STAGING_PREFIX,
@@ -37,8 +38,10 @@ import {
 } from '@/modules/travel-recommendations/utils/travel-creator';
 import {
   CreateTravelDishDto,
+  PaginatedTravelDishesDto,
   TravelDishDetailDto,
   TravelDishDto,
+  TravelDishPageQueryDto,
   TravelDishQueryDto,
   UpdateTravelDishDto,
 } from '@/modules/travel-dishes/dto/travel-dish.dto';
@@ -189,6 +192,13 @@ export class TravelDishesService {
         b.id.localeCompare(a.id)
       );
     });
+  }
+
+  async listPage(
+    query: TravelDishPageQueryDto,
+  ): Promise<PaginatedTravelDishesDto> {
+    const all = await this.list(query);
+    return paginateList(all, query.page, query.pageSize);
   }
 
   private async locationScope(

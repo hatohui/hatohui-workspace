@@ -2585,6 +2585,156 @@
         ]
       }
     },
+    "/travel/dishes/page": {
+      "get": {
+        "operationId": "travelDishesPage",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name or cuisine",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cuisines",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these cuisines",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "foodCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these food categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "placeCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes served at places with any of these categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "by",
+            "required": false,
+            "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "excludeAllergens",
+            "required": false,
+            "in": "query",
+            "description": "Hide dishes with any recommendation containing these allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes with a recommendation having every listed tag",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeTags",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes with a recommendation having none of these tag keys",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "description": "Dishes whose cuisines belong to this area or its country, or served in this area; sorted by local availability",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "description": "Dishes whose cuisines belong to this country, or served in it; sorted by local availability",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 16,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTravelDishesDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Paginated dishes",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/dishes/{id}": {
       "get": {
         "operationId": "travelDish",
@@ -7541,6 +7691,156 @@
         ]
       }
     },
+    "/travel/places/page": {
+      "get": {
+        "operationId": "travelPlacesPage",
+        "parameters": [
+          {
+            "name": "cuisines",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these cuisines",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "foodCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes tagged with any of these food categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "placeCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only places tagged with any of these place categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "by",
+            "required": false,
+            "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "description": "Only places in this country",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "excludeAllergens",
+            "required": false,
+            "in": "query",
+            "description": "Hide dishes that contain any of these allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Only entries with every listed tag key",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeTags",
+            "required": false,
+            "in": "query",
+            "description": "Hide entries with any of these tag keys",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name or address",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 16,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTravelPlacesDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Paginated places",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
     "/travel/places/{id}": {
       "get": {
         "operationId": "travelPlace",
@@ -11201,6 +11501,37 @@
           "coverImageUrl",
           "createdBy",
           "createdAt"
+        ]
+      },
+      "PaginatedTravelDishesDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelDishDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "hasMore"
         ]
       },
       "TravelDishSummaryDto": {
@@ -16387,6 +16718,37 @@
           "coverImageUrl",
           "createdBy",
           "createdAt"
+        ]
+      },
+      "PaginatedTravelPlacesDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelPlaceDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "hasMore"
         ]
       },
       "TravelPlaceDetailDto": {

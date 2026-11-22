@@ -37,7 +37,7 @@ function DishResults({
     <ListState
       isLoading={list.isLoading}
       isError={list.isError}
-      isEmpty={!list.allDishes.length}
+      isEmpty={!(isGrouped ? list.allDishes.length : list.dishes.length)}
       onRetry={() => void list.refetch()}
       emptyIcon={Soup}
       emptyMessage={t(isFiltered ? 'catalog.emptyFiltered' : 'dishes.empty')}

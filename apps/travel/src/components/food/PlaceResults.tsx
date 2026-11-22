@@ -37,7 +37,7 @@ function PlaceResults({
     <ListState
       isLoading={list.isLoading}
       isError={list.isError}
-      isEmpty={!list.allPlaces.length}
+      isEmpty={!(isGrouped ? list.allPlaces.length : list.places.length)}
       onRetry={() => void list.refetch()}
       emptyIcon={MapPin}
       emptyMessage={t(isFiltered ? 'catalog.emptyFiltered' : 'places.empty')}

@@ -280,6 +280,7 @@
     "perPage": "表示件数",
     "previous": "前へ",
     "next": "次へ",
+    "jumpToPage": "ページへ移動",
     "columns": "列",
     "mapsLink": "地図リンク",
     "kinds": {

@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { TravelBulkNamesDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel-place-input.dto';
 import { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
@@ -66,4 +67,38 @@ export class BulkCreateTravelPlacesDto extends TravelBulkNamesDto {
   @IsOptional()
   @IsString()
   areaId?: string;
+}
+
+export class TravelPlacePageQueryDto extends TravelPlaceQueryDto {
+  @ApiProperty({ required: false, default: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number;
+
+  @ApiProperty({ required: false, default: 16 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  pageSize?: number;
+}
+
+export class PaginatedTravelPlacesDto {
+  @ApiProperty({ type: TravelPlaceDto, isArray: true })
+  items!: TravelPlaceDto[];
+
+  @ApiProperty()
+  total!: number;
+
+  @ApiProperty()
+  page!: number;
+
+  @ApiProperty()
+  pageSize!: number;
+
+  @ApiProperty({ description: 'Whether another page can be requested' })
+  hasMore!: boolean;
 }

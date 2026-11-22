@@ -1,11 +1,14 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   IsArray,
+  IsInt,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
+  Min,
   MinLength,
 } from 'class-validator';
 import {
@@ -234,4 +237,38 @@ export class TravelDishQueryDto {
   @IsOptional()
   @IsString()
   countryId?: string;
+}
+
+export class TravelDishPageQueryDto extends TravelDishQueryDto {
+  @ApiProperty({ required: false, default: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number;
+
+  @ApiProperty({ required: false, default: 16 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  pageSize?: number;
+}
+
+export class PaginatedTravelDishesDto {
+  @ApiProperty({ type: TravelDishDto, isArray: true })
+  items!: TravelDishDto[];
+
+  @ApiProperty()
+  total!: number;
+
+  @ApiProperty()
+  page!: number;
+
+  @ApiProperty()
+  pageSize!: number;
+
+  @ApiProperty({ description: 'Whether another page can be requested' })
+  hasMore!: boolean;
 }

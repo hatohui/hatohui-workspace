@@ -104,6 +104,11 @@ or place detail page.
   depend on how a place makes the dish.
 - **Dish and place suggestions are searched on the server** as you type
   (`?q=`), so the form never preloads the whole catalog.
+- **Responsive auto-calculated pagination** via `GET /travel/dishes/page` and
+  `GET /travel/places/page`: the client computes `pageSize` from the active
+  grid column breakpoint (`12` for 2/3-column layouts, `16` for 4-column desktop)
+  before issuing the query, and renders numbered page pills with jump-to-page
+  selection instead of a manual page-size dropdown.
 
 ## Personal allergies
 

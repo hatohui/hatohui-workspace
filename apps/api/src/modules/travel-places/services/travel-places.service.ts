@@ -3,6 +3,7 @@ import type { Prisma } from '@prisma/client';
 import { Database } from '@/infra/db';
 import { Storage } from '@/infra/storage';
 import { resolveMapsLocation } from '@/common/utils/maps-coordinates';
+import { paginateList } from '@/common/utils/paginate';
 import { matchesSearch, searchMatchRank } from '@/common/utils/text-search';
 import { MapsLinkPreviewDto } from '@/modules/travel-places/dto/maps-link-preview.dto';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
@@ -29,8 +30,10 @@ import {
 } from '@/modules/travel-recommendations/utils/travel-creator';
 import {
   CreateTravelPlaceDto,
+  PaginatedTravelPlacesDto,
   TravelPlaceDetailDto,
   TravelPlaceDto,
+  TravelPlacePageQueryDto,
   TravelPlaceQueryDto,
   UpdateTravelPlaceDto,
 } from '@/modules/travel-places/dto/travel-place.dto';
@@ -105,6 +108,13 @@ export class TravelPlacesService {
           )
       : rows;
     return matched.map((row) => this.toDto(row));
+  }
+
+  async listPage(
+    query: TravelPlacePageQueryDto,
+  ): Promise<PaginatedTravelPlacesDto> {
+    const all = await this.list(query);
+    return paginateList(all, query.page, query.pageSize);
   }
 
   private servesMatchingFood(

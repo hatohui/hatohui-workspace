@@ -46,6 +46,8 @@ import type {
   MapsLinkPreviewDto,
   MapsLinkPreviewRequestDto,
   MyTravelParticipationsParams,
+  PaginatedTravelDishesDto,
+  PaginatedTravelPlacesDto,
   TransferTravelOwnershipDto,
   TravelAccessDto,
   TravelActivityDto,
@@ -61,6 +63,7 @@ import type {
   TravelCustomHolidayDto,
   TravelDishDetailDto,
   TravelDishDto,
+  TravelDishesPageParams,
   TravelDishesParams,
   TravelEventDto,
   TravelEventsCalendarParams,
@@ -80,6 +83,7 @@ import type {
   TravelPlaceCategoryDto,
   TravelPlaceDetailDto,
   TravelPlaceDto,
+  TravelPlacesPageParams,
   TravelPlacesParams,
   TravelPlanGalleryParams,
   TravelPublicHolidayDto,
@@ -333,7 +337,134 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getCreateTravelDishMutationOptions(options), queryClient);
     }
-    export type travelDishResponse200 = {
+    export type travelDishesPageResponse200 = {
+  data: PaginatedTravelDishesDto
+  status: 200
+}
+
+export type travelDishesPageResponseSuccess = (travelDishesPageResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelDishesPageResponse = (travelDishesPageResponseSuccess)
+
+export const getTravelDishesPageUrl = (params?: TravelDishesPageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    const explodeParameters = ["cuisines","foodCategories","placeCategories","excludeAllergens","tags","excludeTags"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : String(v));
+      });
+      return;
+    }
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/travel/dishes/page?${stringifiedParams}` : `/travel/dishes/page`
+}
+
+/**
+ * @summary Paginated dishes
+ */
+export const travelDishesPage = async (params?: TravelDishesPageParams, options?: RequestInit): Promise<travelDishesPageResponse> => {
+
+  return customFetch<travelDishesPageResponse>(getTravelDishesPageUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelDishesPageQueryKey = (params?: TravelDishesPageParams,) => {
+    return [
+    `/travel/dishes/page`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getTravelDishesPageQueryOptions = <TData = Awaited<ReturnType<typeof travelDishesPage>>, TError = unknown>(params?: TravelDishesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishesPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelDishesPageQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelDishesPage>>> = ({ signal }) => travelDishesPage(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelDishesPage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelDishesPageQueryResult = NonNullable<Awaited<ReturnType<typeof travelDishesPage>>>
+export type TravelDishesPageQueryError = unknown
+
+
+export function useTravelDishesPage<TData = Awaited<ReturnType<typeof travelDishesPage>>, TError = unknown>(
+ params: undefined |  TravelDishesPageParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishesPage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelDishesPage>>,
+          TError,
+          Awaited<ReturnType<typeof travelDishesPage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelDishesPage<TData = Awaited<ReturnType<typeof travelDishesPage>>, TError = unknown>(
+ params?: TravelDishesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishesPage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelDishesPage>>,
+          TError,
+          Awaited<ReturnType<typeof travelDishesPage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelDishesPage<TData = Awaited<ReturnType<typeof travelDishesPage>>, TError = unknown>(
+ params?: TravelDishesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishesPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Paginated dishes
+ */
+
+export function useTravelDishesPage<TData = Awaited<ReturnType<typeof travelDishesPage>>, TError = unknown>(
+ params?: TravelDishesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelDishesPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelDishesPageQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type travelDishResponse200 = {
   data: TravelDishDetailDto
   status: 200
 }
@@ -5288,7 +5419,134 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getCreateTravelPlaceMutationOptions(options), queryClient);
     }
-    export type travelPlaceResponse200 = {
+    export type travelPlacesPageResponse200 = {
+  data: PaginatedTravelPlacesDto
+  status: 200
+}
+
+export type travelPlacesPageResponseSuccess = (travelPlacesPageResponse200) & {
+  headers: Headers;
+};
+;
+
+export type travelPlacesPageResponse = (travelPlacesPageResponseSuccess)
+
+export const getTravelPlacesPageUrl = (params?: TravelPlacesPageParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    const explodeParameters = ["cuisines","foodCategories","placeCategories","excludeAllergens","tags","excludeTags"];
+
+    if (Array.isArray(value) && explodeParameters.includes(key)) {
+      value.forEach((v) => {
+        normalizedParams.append(key, v === null ? 'null' : String(v));
+      });
+      return;
+    }
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/travel/places/page?${stringifiedParams}` : `/travel/places/page`
+}
+
+/**
+ * @summary Paginated places
+ */
+export const travelPlacesPage = async (params?: TravelPlacesPageParams, options?: RequestInit): Promise<travelPlacesPageResponse> => {
+
+  return customFetch<travelPlacesPageResponse>(getTravelPlacesPageUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getTravelPlacesPageQueryKey = (params?: TravelPlacesPageParams,) => {
+    return [
+    `/travel/places/page`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getTravelPlacesPageQueryOptions = <TData = Awaited<ReturnType<typeof travelPlacesPage>>, TError = unknown>(params?: TravelPlacesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelPlacesPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getTravelPlacesPageQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof travelPlacesPage>>> = ({ signal }) => travelPlacesPage(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof travelPlacesPage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type TravelPlacesPageQueryResult = NonNullable<Awaited<ReturnType<typeof travelPlacesPage>>>
+export type TravelPlacesPageQueryError = unknown
+
+
+export function useTravelPlacesPage<TData = Awaited<ReturnType<typeof travelPlacesPage>>, TError = unknown>(
+ params: undefined |  TravelPlacesPageParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelPlacesPage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelPlacesPage>>,
+          TError,
+          Awaited<ReturnType<typeof travelPlacesPage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelPlacesPage<TData = Awaited<ReturnType<typeof travelPlacesPage>>, TError = unknown>(
+ params?: TravelPlacesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelPlacesPage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof travelPlacesPage>>,
+          TError,
+          Awaited<ReturnType<typeof travelPlacesPage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useTravelPlacesPage<TData = Awaited<ReturnType<typeof travelPlacesPage>>, TError = unknown>(
+ params?: TravelPlacesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelPlacesPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Paginated places
+ */
+
+export function useTravelPlacesPage<TData = Awaited<ReturnType<typeof travelPlacesPage>>, TError = unknown>(
+ params?: TravelPlacesPageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof travelPlacesPage>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getTravelPlacesPageQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export type travelPlaceResponse200 = {
   data: TravelPlaceDetailDto
   status: 200
 }
