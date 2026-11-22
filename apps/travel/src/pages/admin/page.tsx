@@ -29,13 +29,17 @@ function AdminPage() {
   }
 
   return (
-    <Tabs defaultValue={ADMIN_TABS[0]}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <TabsList>
+    <Tabs defaultValue={ADMIN_TABS[0]} className="gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
+        <TabsList className="gap-1 rounded-lg border border-border bg-muted/80 p-1">
           {ADMIN_TABS.map((tab) => {
             const Icon = ADMIN_TAB_ICONS[tab];
             return (
-              <TabsTrigger key={tab} value={tab} className="gap-1.5">
+              <TabsTrigger
+                key={tab}
+                value={tab}
+                className="mb-0 gap-1.5 rounded-md border-b-0 px-3 py-1.5 text-foreground/75 hover:bg-background/70 hover:text-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-border"
+              >
                 <Icon className="size-4" aria-hidden />
                 {t(`admin.tabs.${tab}`)}
               </TabsTrigger>
@@ -47,7 +51,7 @@ function AdminPage() {
       {ADMIN_TABS.map((tab) => {
         const Panel = PANELS[tab];
         return (
-          <TabsContent key={tab} value={tab} className="pt-4">
+          <TabsContent key={tab} value={tab}>
             <Panel />
           </TabsContent>
         );
