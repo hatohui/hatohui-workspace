@@ -42,6 +42,9 @@ export const PROCESS_SEGMENT = 'process';
 export const UNASSIGNED_ARTIST_SEGMENT = 'unassigned';
 export const TRAVEL_RECOMMENDATIONS_PREFIX = 'travel/recommendations';
 export const TRAVEL_DISHES_PREFIX = 'travel/dishes';
+export const TRAVEL_EVENTS_PREFIX = 'travel/events';
+export const TRAVEL_GROUPS_PREFIX = 'travel/groups';
+export const TRAVEL_ACTIVITIES_PREFIX = 'travel/activities';
 
 /// Where a freshly signed upload goes before its owning record exists.
 export function stagedUploadKey(owner: string, extension: string): string {
@@ -144,6 +147,54 @@ export function travelRecommendationVariantKeyFor(
 ): string {
   const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
   return `${TRAVEL_RECOMMENDATIONS_PREFIX}/${recommendationId}/${variant}/${randomUUID()}-${base}.webp`;
+}
+
+export function travelEventImageKeyFor(
+  eventId: string,
+  sourceKey: string,
+): string {
+  return `${TRAVEL_EVENTS_PREFIX}/${eventId}/${fileNameOf(sourceKey)}`;
+}
+
+export function travelEventVariantKeyFor(
+  eventId: string,
+  variant: typeof THUMBNAILS_SEGMENT | typeof PREVIEWS_SEGMENT,
+  sourceKey: string,
+): string {
+  const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
+  return `${TRAVEL_EVENTS_PREFIX}/${eventId}/${variant}/${randomUUID()}-${base}.webp`;
+}
+
+export function travelGroupImageKeyFor(
+  groupId: string,
+  sourceKey: string,
+): string {
+  return `${TRAVEL_GROUPS_PREFIX}/${groupId}/${fileNameOf(sourceKey)}`;
+}
+
+export function travelGroupVariantKeyFor(
+  groupId: string,
+  variant: typeof THUMBNAILS_SEGMENT | typeof PREVIEWS_SEGMENT,
+  sourceKey: string,
+): string {
+  const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
+  return `${TRAVEL_GROUPS_PREFIX}/${groupId}/${variant}/${randomUUID()}-${base}.webp`;
+}
+
+export function travelActivityImageKeyFor(
+  activityId: string,
+  sourceKey: string,
+): string {
+  return `${TRAVEL_ACTIVITIES_PREFIX}/${activityId}/${fileNameOf(sourceKey)}`;
+}
+
+export function travelActivityVariantKeyFor(
+  activityId: string,
+  variant: typeof THUMBNAILS_SEGMENT | typeof PREVIEWS_SEGMENT,
+  sourceKey: string,
+): string {
+  const base = fileNameOf(sourceKey).replace(/\.[^.]+$/, '');
+  return `${TRAVEL_ACTIVITIES_PREFIX}/${activityId}/${variant}/${randomUUID()}-${base}.webp`;
 }
 
 function fileNameOf(key: string): string {

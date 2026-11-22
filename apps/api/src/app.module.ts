@@ -44,6 +44,11 @@ import { TravelCuisinesModule } from '@/modules/travel-cuisines/travel-cuisines.
 import { TravelRecommendationsModule } from '@/modules/travel-recommendations/travel-recommendations.module';
 import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module';
 import { TravelPlacesModule } from '@/modules/travel-places/travel-places.module';
+import { TravelScheduleModule } from '@/modules/travel-schedule/travel-schedule.module';
+import { TravelJobProfilesModule } from '@/modules/travel-job-profiles/travel-job-profiles.module';
+import { TravelEventsModule } from '@/modules/travel-events/travel-events.module';
+import { TravelParticipationsModule } from '@/modules/travel-participations/travel-participations.module';
+import { TravelActivitiesModule } from '@/modules/travel-activities/travel-activities.module';
 import { AiModule } from '@/modules/ai/ai.module';
 
 @Module({
@@ -96,6 +101,11 @@ import { AiModule } from '@/modules/ai/ai.module';
     TravelRecommendationsModule,
     TravelDishesModule,
     TravelPlacesModule,
+    TravelScheduleModule,
+    TravelJobProfilesModule,
+    TravelEventsModule,
+    TravelParticipationsModule,
+    TravelActivitiesModule,
     AiModule,
   ],
 })

@@ -14,6 +14,14 @@ import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module
 import { TravelDishThumbnailExecutor } from '@/modules/travel-dishes/services/travel-dish-thumbnail.executor';
 import { TravelRecommendationsModule } from '@/modules/travel-recommendations/travel-recommendations.module';
 import { TravelRecommendationImageThumbnailExecutor } from '@/modules/travel-recommendations/services/travel-recommendation-image-thumbnail.executor';
+import { TravelEventsModule } from '@/modules/travel-events/travel-events.module';
+import { TravelEventThumbnailExecutor } from '@/modules/travel-events/services/travel-event-thumbnail.executor';
+import { TravelActivitiesModule } from '@/modules/travel-activities/travel-activities.module';
+import {
+  TravelActivityImageThumbnailExecutor,
+  TravelActivityMediaThumbnailExecutor,
+  TravelGroupImageThumbnailExecutor,
+} from '@/modules/travel-activities/services/travel-media-thumbnail.executors';
 import { PROCESS_EXECUTORS } from '@/modules/process-queue/process-queue.constants';
 import { BirthdayConfigModule } from './birthday-config.module';
 import { BirthdayCronController } from '@/modules/cron/birthday-cron.controller';
@@ -34,6 +42,8 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
     CommissionPurgeModule,
     TravelDishesModule,
     TravelRecommendationsModule,
+    TravelEventsModule,
+    TravelActivitiesModule,
   ],
   controllers: [BirthdayCronController, ProcessQueueCronController],
   providers: [
@@ -49,6 +59,10 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         commissionPurge: CommissionPurgeExecutor,
         travelDishThumbnail: TravelDishThumbnailExecutor,
         travelRecImageThumbnail: TravelRecommendationImageThumbnailExecutor,
+        travelEventThumbnail: TravelEventThumbnailExecutor,
+        travelGroupImageThumbnail: TravelGroupImageThumbnailExecutor,
+        travelActivityImageThumbnail: TravelActivityImageThumbnailExecutor,
+        travelActivityMediaThumbnail: TravelActivityMediaThumbnailExecutor,
       ) => [
         assetThumbnail,
         notificationEmail,
@@ -56,6 +70,10 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         commissionPurge,
         travelDishThumbnail,
         travelRecImageThumbnail,
+        travelEventThumbnail,
+        travelGroupImageThumbnail,
+        travelActivityImageThumbnail,
+        travelActivityMediaThumbnail,
       ],
       inject: [
         AssetThumbnailExecutor,
@@ -64,6 +82,10 @@ import { ProcessQueueRunnerService } from '@/modules/cron/services/process-queue
         CommissionPurgeExecutor,
         TravelDishThumbnailExecutor,
         TravelRecommendationImageThumbnailExecutor,
+        TravelEventThumbnailExecutor,
+        TravelGroupImageThumbnailExecutor,
+        TravelActivityImageThumbnailExecutor,
+        TravelActivityMediaThumbnailExecutor,
       ],
     },
   ],

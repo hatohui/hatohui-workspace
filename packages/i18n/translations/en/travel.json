@@ -2,9 +2,11 @@
   "brand": "Travel",
   "nav": {
     "food": "Food",
+    "overview": "Overview",
     "dishes": "Dishes",
     "places": "Places",
     "events": "Events",
+    "plans": "Plans",
     "schedule": "Schedule",
     "settings": "Settings",
     "admin": "Admin"
@@ -114,6 +116,7 @@
     "mapPreview": "Map preview"
   },
   "dishes": {
+    "back": "All dishes",
     "title": "Dishes",
     "subtitle": "Every dish, and how many places serve it well.",
     "searchPlaceholder": "Search dishes or cuisines",
@@ -130,6 +133,7 @@
     "deleteDescription": "{{name}} and every recommendation for it will be removed."
   },
   "places": {
+    "back": "All places",
     "title": "Places",
     "subtitle": "Where to go, and what to order there.",
     "searchPlaceholder": "Search places, addresses, cities",
@@ -213,6 +217,7 @@
       "cuisines": "Cuisines",
       "tags": "Tags",
       "events": "Events",
+      "plans": "Plans",
       "jobProfiles": "Job profiles"
     },
     "dish": "Dish",
@@ -263,6 +268,156 @@
       "empty": "No events found.",
       "deleteTitle": "Permanently delete {{title}}?",
       "deleteDescription": "This permanently removes the event, its travel groups, activities, and photos, and notifies participants."
+    },
+    "plans": {
+      "searchPlaceholder": "Search plans or events",
+      "empty": "No travel plans found.",
+      "statsEvents": "Events",
+      "statsPending": "Pending approval",
+      "statsGroups": "Plans",
+      "statsParticipations": "Participations",
+      "members": "{{count}} members",
+      "activities": "{{count}} activities",
+      "deleteTitle": "Delete plan {{name}}?",
+      "deleteDescription": "This permanently removes the travel group, its participations, activities, and photos."
+    }
+  },
+  "overview": {
+    "title": "Travel overview",
+    "subtitle": "Your leave balance, upcoming trips, and quick actions.",
+    "signInPrompt": "Sign in to view your travel dashboard.",
+    "quickActions": "Quick actions",
+    "newPlan": "New travel plan",
+    "browseEvents": "Browse events",
+    "viewSchedule": "Work schedule",
+    "browseFood": "Food catalog",
+    "upcomingPlans": "Upcoming plans",
+    "noUpcoming": "No upcoming travel plans yet.",
+    "viewAllPlans": "View all plans"
+  },
+  "plans": {
+    "title": "Travel plans",
+    "subtitle": "Your solo and group trips.",
+    "create": "New plan",
+    "empty": "You have no travel plans yet.",
+    "signInPrompt": "Sign in to view and manage your travel plans.",
+    "leaveType": {
+      "ANNUAL": "Annual leave",
+      "SICK": "Sick leave",
+      "UNPAID": "Unpaid leave"
+    },
+    "travellers_one": "{{count}} traveller",
+    "travellers_other": "{{count}} travellers",
+    "tabs": {
+      "overview": "Overview",
+      "timeline": "Timeline",
+      "gallery": "Gallery",
+      "members": "Members",
+      "settings": "Settings"
+    },
+    "share": {
+      "copyLink": "Copy share link",
+      "copied": "Share link copied",
+      "viewFullPlan": "View full plan",
+      "travelPlan": "Travel plan",
+      "notFound": "This travel plan is private or no longer exists."
+    },
+    "requestJoin": "Request to join",
+    "requestPending": "Join request pending",
+    "joinRequests": "Join requests",
+    "approve": "Approve",
+    "reject": "Reject",
+    "owner": "Owner",
+    "alreadyHere": "Already on-site",
+    "kick": "Remove",
+    "makeOwner": "Make owner",
+    "leave": "Leave plan",
+    "deletePlan": "Delete plan",
+    "form": {
+      "title": "Create travel plan",
+      "groupName": "Plan name",
+      "groupNamePlaceholder": "Fuvekon squad",
+      "event": "Linked event (optional)",
+      "noEvent": "Standalone trip (no event)",
+      "from": "Arrival / start",
+      "to": "Departure / end",
+      "leaveType": "Leave type",
+      "entryFlight": "Arrival flight (optional)",
+      "exitFlight": "Departure flight (optional)",
+      "isAlreadyHere": "Already at destination",
+      "submit": "Create plan",
+      "saving": "Creating..."
+    },
+    "settings": {
+      "title": "Plan settings",
+      "name": "Plan name",
+      "isPublic": "Publicly viewable",
+      "isMemberInviteAllowed": "Allow members to invite others",
+      "isActivityPublicVisible": "Show activity timeline to non-members",
+      "isMemberListPublicVisible": "Show member list to non-members",
+      "isMediaPublicVisible": "Show photo gallery to non-members",
+      "save": "Save settings",
+      "saving": "Saving..."
+    },
+    "timeline": {
+      "upcomingTitle": "Upcoming",
+      "noUpcoming": "No upcoming items.",
+      "viewTimeline": "Open timeline",
+      "addActivity": "Add activity",
+      "searchPlaceholder": "Search activities, places, members",
+      "showEventMarkers": "Event boundaries",
+      "sortAsc": "Oldest first",
+      "sortDesc": "Newest first",
+      "empty": "No timeline items match your filters.",
+      "arrives": "{{names}} arrive",
+      "departs": "{{names}} depart",
+      "eventStarts": "{{title}} starts",
+      "eventEnds": "{{title}} ends",
+      "excluding": "Everyone except {{names}}",
+      "editDates": "Edit arrival / departure",
+      "form": {
+        "name": "Activity name",
+        "namePlaceholder": "Dinner at 21Grams",
+        "from": "Start",
+        "to": "End",
+        "place": "Food catalog place (optional)",
+        "noPlace": "Custom location",
+        "location": "Location",
+        "mapsUrl": "Google Maps link",
+        "note": "Note",
+        "involved": "Participants",
+        "excludeMode": "Exclude selected members instead",
+        "submit": "Add to timeline",
+        "saving": "Adding..."
+      }
+    },
+    "gallery": {
+      "upload": "Upload photo",
+      "uploading": "Uploading...",
+      "allActivities": "All photos",
+      "groupPhotos": "General plan photos",
+      "allMembers": "All members",
+      "empty": "No photos uploaded yet.",
+      "close": "Close"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "empty": "No notifications yet.",
+    "types": {
+      "TRAVEL_JOIN_REQUEST": "{{actor}} requested to join {{group}}",
+      "TRAVEL_JOIN_REQUEST_APPROVED": "Your request to join {{group}} was approved",
+      "TRAVEL_JOIN_REQUEST_REJECTED": "Your request to join {{group}} was declined",
+      "TRAVEL_INVITED_TO_JOIN": "{{actor}} invited you to join {{group}}",
+      "TRAVEL_INVITE_ACCEPTED": "{{actor}} accepted your invite to {{group}}",
+      "TRAVEL_INVITE_DECLINED": "{{actor}} declined your invite to {{group}}",
+      "TRAVEL_OWNERSHIP_TRANSFERRED": "{{actor}} transferred ownership of {{group}} to you",
+      "TRAVEL_GROUP_PROMOTION": "You are now the owner of {{group}}",
+      "TRAVEL_USER_KICKED": "You were removed from {{group}}",
+      "TRAVEL_USER_LEFT": "{{actor}} left {{group}}",
+      "TRAVEL_EVENT_DELETED": "Event {{event}} was deleted",
+      "TRAVEL_PLAN_DELETED": "Plan {{group}} was deleted"
     }
   },
   "events": {
