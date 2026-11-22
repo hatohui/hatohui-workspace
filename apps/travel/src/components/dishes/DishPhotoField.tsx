@@ -1,11 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import {
-  Button,
-  ImageCropDialog,
-  Label,
-  type CropAspectOption,
-} from '@hatohui/ui';
+import { Button, ImageCropDialog, Label } from '@hatohui/ui';
 import { Crop, ImagePlus, Loader2, X } from 'lucide-react';
 import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
 import type { useDishPhoto } from '../../hooks/useDishPhoto';
@@ -14,11 +9,6 @@ import { useImagePaste } from '../../hooks/useImagePaste';
 interface Props {
   photo: ReturnType<typeof useDishPhoto>;
 }
-
-const DISH_ASPECT_OPTIONS: CropAspectOption[] = [
-  { label: '4:3', value: 4 / 3 },
-  { label: '1:1', value: 1 },
-];
 
 function DishPhotoField({ photo }: Props) {
   const { t } = useTranslation();
@@ -93,7 +83,7 @@ function DishPhotoField({ photo }: Props) {
         open={Boolean(cropFile)}
         file={cropFile}
         aspect={4 / 3}
-        aspectOptions={DISH_ASPECT_OPTIONS}
+        aspectLabel={t('form.cropAspectDish')}
         title={t('form.cropPhoto')}
         hint={t('form.cropHint')}
         cancelLabel={t('form.cancel')}

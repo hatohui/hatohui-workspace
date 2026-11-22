@@ -29,7 +29,14 @@
     "uploadLabel": "Tải ảnh lên",
     "uploading": "Đang tải lên...",
     "uploadError": "Không thể tải ảnh lên. Vui lòng thử lại.",
-    "uploadAuthRequired": "Vui lòng đăng nhập để tải ảnh lên, sau đó thử lại."
+    "uploadAuthRequired": "Vui lòng đăng nhập để tải ảnh lên, sau đó thử lại.",
+    "cropAspect": "1:1 · Ảnh đại diện",
+    "cropTitle": "Cắt ảnh đại diện",
+    "cropHint": "Kéo để di chuyển, cuộn hoặc dùng thanh trượt để phóng to.",
+    "cropCancel": "Hủy",
+    "cropApply": "Áp dụng",
+    "cropZoom": "Phóng to",
+    "cropReset": "Đặt lại"
   },
   "onboarding": {
     "title": "Chào mừng",

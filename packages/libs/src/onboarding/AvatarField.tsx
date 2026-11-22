@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { AvatarUploadInline } from '@hatohui/ui';
+import { AvatarUploadInline, ImageCropDialog } from '@hatohui/ui';
 import { SignImageDtoContentType } from '@hatohui/models';
 
 const AVATAR_ACCEPT = Object.values(SignImageDtoContentType).join(',');
@@ -20,6 +21,7 @@ function AvatarField({
   onFileSelected,
 }: Props) {
   const { t } = useTranslation();
+  const [cropFile, setCropFile] = useState<File | null>(null);
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -33,7 +35,7 @@ function AvatarField({
             : 'common:avatarField.uploadLabel',
         )}
         isUploading={isBusy}
-        onFileSelected={onFileSelected}
+        onFileSelected={setCropFile}
       />
       {error != null && (
         <p role="alert" className="text-sm text-destructive">
@@ -44,6 +46,24 @@ function AvatarField({
           )}
         </p>
       )}
+      <ImageCropDialog
+        open={Boolean(cropFile)}
+        file={cropFile}
+        aspect={1}
+        shape="circle"
+        aspectLabel={t('common:avatarField.cropAspect')}
+        title={t('common:avatarField.cropTitle')}
+        hint={t('common:avatarField.cropHint')}
+        cancelLabel={t('common:avatarField.cropCancel')}
+        confirmLabel={t('common:avatarField.cropApply')}
+        zoomLabel={t('common:avatarField.cropZoom')}
+        resetLabel={t('common:avatarField.cropReset')}
+        onCancel={() => setCropFile(null)}
+        onConfirm={(cropped) => {
+          onFileSelected(cropped);
+          setCropFile(null);
+        }}
+      />
     </div>
   );
 }

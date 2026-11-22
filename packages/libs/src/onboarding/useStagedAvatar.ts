@@ -5,10 +5,6 @@ import { useImageUpload } from '../images/useImageUpload';
 
 type StageError = 'unauthorized' | 'unknown';
 
-/// Stages a resized avatar file locally (object-URL preview only) instead of
-/// uploading it right away, so picking a file — then never hitting Save —
-/// never creates an orphaned storage object. The actual upload happens in
-/// `commit()`, called from the form's submit handler.
 export function useStagedAvatar(initialUrl: string | null) {
   const [previewUrl, setPreviewUrl] = useState(initialUrl);
   const [isStaging, setIsStaging] = useState(false);

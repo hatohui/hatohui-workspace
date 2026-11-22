@@ -24,7 +24,7 @@ function DishHeader({ dish, deletion }: Props) {
           <img
             src={photoSrc}
             alt={dish.name}
-            className="aspect-square w-36 shrink-0 rounded-xl border border-border/60 bg-card object-cover sm:size-32"
+            className="aspect-[4/3] w-44 shrink-0 rounded-xl border border-border/60 bg-card object-cover"
           />
         )}
         <div className="min-w-0 flex-1 space-y-3">

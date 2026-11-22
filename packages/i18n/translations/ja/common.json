@@ -29,7 +29,14 @@
     "uploadLabel": "写真をアップロード",
     "uploading": "アップロード中...",
     "uploadError": "写真をアップロードできませんでした。もう一度お試しください。",
-    "uploadAuthRequired": "写真をアップロードするにはサインインしてから、もう一度お試しください。"
+    "uploadAuthRequired": "写真をアップロードするにはサインインしてから、もう一度お試しください。",
+    "cropAspect": "1:1 · アバター",
+    "cropTitle": "アバターをトリミング",
+    "cropHint": "ドラッグで位置調整、スクロールまたはスライダーで拡大縮小できます。",
+    "cropCancel": "キャンセル",
+    "cropApply": "トリミングを適用",
+    "cropZoom": "ズーム",
+    "cropReset": "リセット"
   },
   "onboarding": {
     "title": "ようこそ",

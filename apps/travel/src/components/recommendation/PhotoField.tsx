@@ -11,12 +11,6 @@ interface Props {
   photos: ReturnType<typeof usePhotoList>;
 }
 
-const ASPECT_OPTIONS: CropAspectOption[] = [
-  { label: '1:1', value: 1 },
-  { label: '4:3', value: 4 / 3 },
-  { label: '16:9', value: 16 / 9 },
-];
-
 function PhotoField({ photos }: Props) {
   const { t } = useTranslation();
   const [croppingId, setCroppingId] = useState<string | null>(null);
@@ -24,9 +18,17 @@ function PhotoField({ photos }: Props) {
   const addFiles = (files: File[]) => void photos.addFiles(files);
   useImagePaste(addFiles, !photos.isFull && !croppingId);
 
-  const croppingPhoto = croppingId
-    ? (photos.photos.find((item) => item.id === croppingId) ?? null)
-    : null;
+  const croppingIndex = croppingId
+    ? photos.photos.findIndex((item) => item.id === croppingId)
+    : -1;
+  const croppingPhoto =
+    croppingIndex >= 0 ? photos.photos[croppingIndex] : null;
+  const isCroppingCover = croppingIndex === 0;
+
+  const coverAspectOptions: CropAspectOption[] = [
+    { label: t('form.cropAspectCard'), value: 1 },
+    { label: t('form.cropAspectDetail'), value: 4 / 3 },
+  ];
 
   return (
     <div className="space-y-2">
@@ -53,8 +55,9 @@ function PhotoField({ photos }: Props) {
       <ImageCropDialog
         open={Boolean(croppingPhoto?.file)}
         file={croppingPhoto?.file ?? null}
-        aspect={1}
-        aspectOptions={ASPECT_OPTIONS}
+        aspect={isCroppingCover ? 1 : 4 / 3}
+        aspectLabel={isCroppingCover ? undefined : t('form.cropAspectDetail')}
+        aspectOptions={isCroppingCover ? coverAspectOptions : undefined}
         title={t('form.cropPhoto')}
         hint={t('form.cropHint')}
         cancelLabel={t('form.cancel')}

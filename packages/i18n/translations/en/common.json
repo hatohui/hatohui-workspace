@@ -29,7 +29,14 @@
     "uploadLabel": "Upload photo",
     "uploading": "Uploading...",
     "uploadError": "Couldn't upload that photo. Please try again.",
-    "uploadAuthRequired": "Sign in to upload a photo, then try again."
+    "uploadAuthRequired": "Sign in to upload a photo, then try again.",
+    "cropAspect": "1:1 · Avatar",
+    "cropTitle": "Crop avatar",
+    "cropHint": "Drag to reposition, scroll or use the slider to zoom.",
+    "cropCancel": "Cancel",
+    "cropApply": "Apply crop",
+    "cropZoom": "Zoom",
+    "cropReset": "Reset"
   },
   "onboarding": {
     "title": "Welcome",

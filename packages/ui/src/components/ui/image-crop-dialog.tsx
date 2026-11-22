@@ -20,7 +20,9 @@ export interface ImageCropDialogProps {
   open: boolean;
   file: File | null;
   aspect?: number;
+  aspectLabel?: string;
   aspectOptions?: CropAspectOption[];
+  shape?: 'rect' | 'circle';
   title?: string;
   hint?: string;
   cancelLabel?: string;
@@ -42,7 +44,9 @@ function ImageCropDialog({
   open,
   file,
   aspect = 1,
+  aspectLabel,
   aspectOptions,
+  shape = 'rect',
   title = 'Crop photo',
   hint = 'Drag to reposition, scroll or use the slider to zoom.',
   cancelLabel = 'Cancel',
@@ -229,7 +233,7 @@ function ImageCropDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          {aspectOptions && aspectOptions.length > 1 && (
+          {aspectOptions && aspectOptions.length > 1 ? (
             <div className="flex flex-wrap items-center justify-center gap-1.5">
               {aspectOptions.map((option) => {
                 const selected = Math.abs(option.value - activeAspect) < 0.01;
@@ -250,6 +254,14 @@ function ImageCropDialog({
                 );
               })}
             </div>
+          ) : (
+            aspectLabel && (
+              <div className="flex justify-center">
+                <span className="rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-medium text-muted-foreground">
+                  {aspectLabel}
+                </span>
+              </div>
+            )
           )}
 
           <div className="flex justify-center">
@@ -296,24 +308,31 @@ function ImageCropDialog({
                 />
               )}
 
-              {/* Subtle rule-of-thirds grid */}
-              <div
-                aria-hidden
-                className={cn(
-                  'pointer-events-none absolute inset-0 grid grid-cols-3 grid-rows-3 transition-opacity duration-150',
-                  isDragging ? 'opacity-70' : 'opacity-25',
-                )}
-              >
-                <div className="border-r border-b border-white/60" />
-                <div className="border-r border-b border-white/60" />
-                <div className="border-b border-white/60" />
-                <div className="border-r border-b border-white/60" />
-                <div className="border-r border-b border-white/60" />
-                <div className="border-b border-white/60" />
-                <div className="border-r border-white/60" />
-                <div className="border-r border-white/60" />
-                <div />
-              </div>
+              {shape === 'circle' ? (
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-full ring-[999px] ring-black/55 outline outline-1 -outline-offset-1 outline-white/70"
+                />
+              ) : (
+                /* Subtle rule-of-thirds grid */
+                <div
+                  aria-hidden
+                  className={cn(
+                    'pointer-events-none absolute inset-0 grid grid-cols-3 grid-rows-3 transition-opacity duration-150',
+                    isDragging ? 'opacity-70' : 'opacity-25',
+                  )}
+                >
+                  <div className="border-r border-b border-white/60" />
+                  <div className="border-r border-b border-white/60" />
+                  <div className="border-b border-white/60" />
+                  <div className="border-r border-b border-white/60" />
+                  <div className="border-r border-b border-white/60" />
+                  <div className="border-b border-white/60" />
+                  <div className="border-r border-white/60" />
+                  <div className="border-r border-white/60" />
+                  <div />
+                </div>
+              )}
             </div>
           </div>
 
