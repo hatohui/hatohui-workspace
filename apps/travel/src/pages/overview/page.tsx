@@ -3,13 +3,8 @@ import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
 import { useTravelLeaveBalance } from '@hatohui/models';
 import { Button, Skeleton } from '@hatohui/ui';
-import {
-  CalendarDays,
-  CalendarRange,
-  Compass,
-  Plus,
-  UtensilsCrossed,
-} from 'lucide-react';
+import { CalendarDays, CalendarRange, Compass, Plus } from 'lucide-react';
+import BrowseFoodCard from '../../components/food/BrowseFoodCard';
 import PlanCard from '../../components/plans/PlanCard';
 import LeaveBalanceCards from '../../components/schedule/LeaveBalanceCards';
 import EmptyState from '../../components/shared/EmptyState';
@@ -46,6 +41,8 @@ function OverviewPage() {
         </p>
       </div>
 
+      <BrowseFoodCard />
+
       <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
         <aside className="space-y-2 rounded-xl border border-border bg-card p-4">
           <h2 className="text-sm font-medium">{t('overview.quickActions')}</h2>
@@ -76,17 +73,6 @@ function OverviewPage() {
               <Link to={routes.schedule}>
                 <CalendarDays className="size-4" aria-hidden />
                 {t('overview.viewSchedule')}
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="justify-start"
-            >
-              <Link to={routes.catalog}>
-                <UtensilsCrossed className="size-4" aria-hidden />
-                {t('overview.browseFood')}
               </Link>
             </Button>
           </div>

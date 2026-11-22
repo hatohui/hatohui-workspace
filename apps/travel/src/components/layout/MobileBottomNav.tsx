@@ -1,33 +1,18 @@
 import { NavLink } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { cn } from '@hatohui/ui';
-import { TableProperties } from 'lucide-react';
 import { NAV_ITEMS } from '../../constants/navItems';
-import routes from '../../constants/routes';
-import { useCanEdit } from '../../hooks/useCanEdit';
 
 function MobileBottomNav() {
   const { t } = useTranslation();
-  const canEdit = useCanEdit();
-  const items = canEdit
-    ? [
-        ...NAV_ITEMS,
-        { to: routes.admin, labelKey: 'admin.title', icon: TableProperties },
-      ]
-    : NAV_ITEMS;
 
   return (
     <nav
       aria-label={t('brand')}
       className="fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
-      <div
-        className={cn(
-          'mx-auto grid max-w-lg px-2 py-1',
-          canEdit ? 'grid-cols-4' : 'grid-cols-3',
-        )}
-      >
-        {items.map((item) => {
+      <div className="mx-auto grid max-w-lg auto-cols-fr grid-flow-col px-2 py-1">
+        {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink

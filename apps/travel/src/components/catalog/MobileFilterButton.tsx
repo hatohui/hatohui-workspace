@@ -9,7 +9,7 @@ import {
   SheetTitle,
 } from '@hatohui/ui';
 import { SlidersHorizontal } from 'lucide-react';
-import type { CatalogFilters as Filters } from '../../hooks/useCatalog';
+import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
 import CatalogFilters from './CatalogFilters';
 
 function MobileFilterButton({ filters }: { filters: Filters }) {

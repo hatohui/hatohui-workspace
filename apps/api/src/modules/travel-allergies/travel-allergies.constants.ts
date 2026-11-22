@@ -1,0 +1,1 @@
+export const TRAVEL_MAX_USER_ALLERGENS = 50;

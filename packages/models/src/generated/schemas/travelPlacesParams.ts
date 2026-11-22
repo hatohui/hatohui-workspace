@@ -8,9 +8,9 @@
 
 export type TravelPlacesParams = {
 /**
- * Match name, address or city
+ * Only dishes tagged with any of these cuisines
  */
-q?: string;
+cuisines?: string[];
 /**
  * Only entries added by this @handle
  */
@@ -23,4 +23,21 @@ areaId?: string;
  * Only places in this country
  */
 countryId?: string;
+spicy?: boolean;
+/**
+ * Only dishes that meet every listed diet
+ */
+diets?: string[];
+/**
+ * Hide dishes that contain any of these allergens
+ */
+excludeAllergens?: string[];
+/**
+ * Only dishes with every listed general tag
+ */
+tags?: string[];
+/**
+ * Match name, address or city
+ */
+q?: string;
 };

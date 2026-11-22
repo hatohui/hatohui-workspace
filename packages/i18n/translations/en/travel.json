@@ -3,22 +3,19 @@
   "nav": {
     "food": "Food",
     "overview": "Overview",
-    "dishes": "Dishes",
-    "places": "Places",
     "events": "Events",
     "plans": "Plans",
     "schedule": "Schedule",
     "settings": "Settings",
-    "admin": "Admin"
+    "admin": "Admin",
+    "quickMenu": "Quick menu"
   },
   "catalog": {
     "title": "Food catalog",
-    "subtitle": "Dishes worth the trip, and where to eat them.",
+    "subtitle": "Find a dish and where to eat it, or a place and what to order.",
     "searchPlaceholder": "Search dishes, places, notes",
     "spicy": "Spicy",
     "add": "Add food",
-    "count_one": "{{count}} pick",
-    "count_other": "{{count}} picks",
     "empty": "Nothing here yet.",
     "emptyFiltered": "No food matches these filters.",
     "clearFilters": "Clear filters",
@@ -27,7 +24,12 @@
     "avoidAllergens": "Avoid allergens",
     "avoiding_one": "Avoiding {{count}}",
     "avoiding_other": "Avoiding {{count}}",
-    "avoidHint": "Hide dishes that contain:"
+    "avoidHint": "Hide dishes that contain:",
+    "viewLabel": "Browse by",
+    "byDish": "By dish",
+    "byPlace": "By place",
+    "vegetarian": "Vegetarian",
+    "hideMyAllergens": "Hide my allergens ({{count}})"
   },
   "recommendation": {
     "noEstimate": "No price yet",
@@ -83,7 +85,6 @@
     "dietsPlaceholder": "Search or add diet…",
     "allergens": "Contains allergens",
     "allergensPlaceholder": "Search or add allergen…",
-    "noticeTags": "Notice tags",
     "otherTags": "Other tags",
     "otherTagsPlaceholder": "Bread, meat, noodles…",
     "tagCreate": "Add \"{{tag}}\"",
@@ -292,10 +293,11 @@
     "newPlan": "New travel plan",
     "browseEvents": "Browse events",
     "viewSchedule": "Work schedule",
-    "browseFood": "Food catalog",
     "upcomingPlans": "Upcoming plans",
     "noUpcoming": "No upcoming travel plans yet.",
-    "viewAllPlans": "View all plans"
+    "viewAllPlans": "View all plans",
+    "browseFoodTitle": "Browse food and places",
+    "browseFoodBody": "Find a dish and where to eat it, or pick a place and see what to order."
   },
   "plans": {
     "title": "Travel plans",
@@ -508,7 +510,8 @@
     "tabs": {
       "leave": "Leave allowance",
       "schedule": "Work schedule",
-      "holidays": "Holidays"
+      "holidays": "Holidays",
+      "food": "Food"
     },
     "leave": {
       "title": "Leave allowance",
@@ -553,6 +556,10 @@
       "noCustom": "No custom holidays yet.",
       "publicTitle": "Public holidays ({{year}})",
       "noPublic": "No public holidays found for this country."
+    },
+    "allergies": {
+      "title": "My allergies",
+      "description": "Food containing these gets a warning badge, and you can hide it from the food catalog."
     }
   }
 }

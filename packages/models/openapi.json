@@ -7117,12 +7117,15 @@
         "operationId": "travelPlaces",
         "parameters": [
           {
-            "name": "q",
+            "name": "cuisines",
             "required": false,
             "in": "query",
-            "description": "Match name, address or city",
+            "description": "Only dishes tagged with any of these cuisines",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -7149,6 +7152,59 @@
             "required": false,
             "in": "query",
             "description": "Only places in this country",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "spicy",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "diets",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes that meet every listed diet",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeAllergens",
+            "required": false,
+            "in": "query",
+            "description": "Hide dishes that contain any of these allergens",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Only dishes with every listed general tag",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name, address or city",
             "schema": {
               "type": "string"
             }
@@ -7917,6 +7973,58 @@
         "responses": {
           "204": {
             "description": ""
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/allergies": {
+      "get": {
+        "operationId": "travelAllergies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelAllergiesDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Allergens the signed-in user avoids",
+        "tags": [
+          "travel"
+        ]
+      },
+      "put": {
+        "operationId": "updateTravelAllergies",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelAllergiesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelAllergiesDto"
+                }
+              }
+            }
           }
         },
         "summary": "",
@@ -10738,6 +10846,13 @@
             "type": "string",
             "nullable": true
           },
+          "allergens": {
+            "description": "Allergen tag keys found in any recommendation of this dish",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "placeCount": {
             "type": "number",
             "description": "Places recommended for this dish"
@@ -10781,6 +10896,7 @@
           "name",
           "cuisines",
           "description",
+          "allergens",
           "placeCount",
           "imageKey",
           "imageUrl",
@@ -11073,6 +11189,13 @@
             "type": "string",
             "nullable": true
           },
+          "allergens": {
+            "description": "Allergen tag keys found in any recommendation of this dish",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "placeCount": {
             "type": "number",
             "description": "Places recommended for this dish"
@@ -11122,6 +11245,7 @@
           "name",
           "cuisines",
           "description",
+          "allergens",
           "placeCount",
           "imageKey",
           "imageUrl",
@@ -15772,6 +15896,13 @@
             "type": "string",
             "nullable": true
           },
+          "allergens": {
+            "description": "Allergen tag keys found in any dish recommended here",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "dishCount": {
             "type": "number",
             "description": "Dishes recommended here"
@@ -15800,6 +15931,7 @@
           "latitude",
           "longitude",
           "note",
+          "allergens",
           "dishCount",
           "coverImageUrl",
           "createdBy"
@@ -15848,6 +15980,13 @@
             "type": "string",
             "nullable": true
           },
+          "allergens": {
+            "description": "Allergen tag keys found in any dish recommended here",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "dishCount": {
             "type": "number",
             "description": "Dishes recommended here"
@@ -15882,6 +16021,7 @@
           "latitude",
           "longitude",
           "note",
+          "allergens",
           "dishCount",
           "coverImageUrl",
           "createdBy",
@@ -16408,6 +16548,42 @@
           "daysOfLeave",
           "daysOfSickLeave",
           "userId"
+        ]
+      },
+      "TravelAllergiesDto": {
+        "type": "object",
+        "properties": {
+          "allergens": {
+            "description": "Allergen tag keys the signed-in user avoids",
+            "example": [
+              "peanuts",
+              "shellfish"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "allergens"
+        ]
+      },
+      "UpdateTravelAllergiesDto": {
+        "type": "object",
+        "properties": {
+          "allergens": {
+            "example": [
+              "peanuts"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "allergens"
         ]
       },
       "TravelParticipationEventDto": {

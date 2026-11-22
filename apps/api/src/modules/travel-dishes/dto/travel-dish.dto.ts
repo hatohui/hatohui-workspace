@@ -32,6 +32,12 @@ export class TravelDishDto {
   @ApiProperty({ nullable: true, type: String })
   description!: string | null;
 
+  @ApiProperty({
+    type: [String],
+    description: 'Allergen tag keys found in any recommendation of this dish',
+  })
+  allergens!: string[];
+
   @ApiProperty({ description: 'Places recommended for this dish' })
   placeCount!: number;
 

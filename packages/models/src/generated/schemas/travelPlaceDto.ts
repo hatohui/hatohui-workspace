@@ -25,6 +25,8 @@ export interface TravelPlaceDto {
   longitude: number | null;
   /** @nullable */
   note: string | null;
+  /** Allergen tag keys found in any dish recommended here */
+  allergens: string[];
   /** Dishes recommended here */
   dishCount: number;
   /** @nullable */

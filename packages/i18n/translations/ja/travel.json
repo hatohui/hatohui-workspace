@@ -2,18 +2,15 @@
   "brand": "トラベル",
   "nav": {
     "food": "グルメ",
-    "dishes": "料理",
-    "places": "お店",
-    "admin": "管理"
+    "admin": "管理",
+    "quickMenu": "クイックメニュー"
   },
   "catalog": {
     "title": "グルメカタログ",
-    "subtitle": "わざわざ行く価値のある料理と、食べられる場所。",
+    "subtitle": "料理から食べられるお店を、お店から頼むべき料理を探そう。",
     "searchPlaceholder": "料理、お店、メモを検索",
     "spicy": "辛い",
     "add": "料理を追加",
-    "count_one": "{{count}} 件",
-    "count_other": "{{count}} 件",
     "empty": "まだ何もありません。",
     "emptyFiltered": "条件に合う料理がありません。",
     "clearFilters": "絞り込みを解除",
@@ -22,7 +19,12 @@
     "avoidAllergens": "アレルゲンを除外",
     "avoiding_one": "{{count}} 件を除外中",
     "avoiding_other": "{{count}} 件を除外中",
-    "avoidHint": "次を含む料理を非表示："
+    "avoidHint": "次を含む料理を非表示：",
+    "viewLabel": "表示",
+    "byDish": "料理から",
+    "byPlace": "お店から",
+    "vegetarian": "ベジタリアン",
+    "hideMyAllergens": "自分のアレルゲンを隠す（{{count}}）"
   },
   "recommendation": {
     "noEstimate": "価格未登録",
@@ -78,7 +80,6 @@
     "dietsPlaceholder": "食事制限を検索・追加…",
     "allergens": "含まれるアレルゲン",
     "allergensPlaceholder": "アレルゲンを検索・追加…",
-    "noticeTags": "注意タグ",
     "otherTags": "その他のタグ",
     "otherTagsPlaceholder": "パン、肉、麺…",
     "tagCreate": "「{{tag}}」を追加",
@@ -243,5 +244,18 @@
       "ALLERGEN": "アレルゲン",
       "GENERAL": "タグ"
     }
+  },
+  "settings": {
+    "tabs": {
+      "food": "食べ物"
+    },
+    "allergies": {
+      "title": "自分のアレルギー",
+      "description": "これらを含む料理には警告バッジが付き、カタログで非表示にできます。"
+    }
+  },
+  "overview": {
+    "browseFoodTitle": "料理とお店を探す",
+    "browseFoodBody": "料理から食べられるお店を、お店から頼むべき料理を探そう。"
   }
 }

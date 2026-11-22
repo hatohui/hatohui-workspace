@@ -46,6 +46,7 @@ import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module
 import { TravelPlacesModule } from '@/modules/travel-places/travel-places.module';
 import { TravelScheduleModule } from '@/modules/travel-schedule/travel-schedule.module';
 import { TravelJobProfilesModule } from '@/modules/travel-job-profiles/travel-job-profiles.module';
+import { TravelAllergiesModule } from '@/modules/travel-allergies/travel-allergies.module';
 import { TravelEventsModule } from '@/modules/travel-events/travel-events.module';
 import { TravelParticipationsModule } from '@/modules/travel-participations/travel-participations.module';
 import { TravelActivitiesModule } from '@/modules/travel-activities/travel-activities.module';
@@ -103,6 +104,7 @@ import { AiModule } from '@/modules/ai/ai.module';
     TravelPlacesModule,
     TravelScheduleModule,
     TravelJobProfilesModule,
+    TravelAllergiesModule,
     TravelEventsModule,
     TravelParticipationsModule,
     TravelActivitiesModule,

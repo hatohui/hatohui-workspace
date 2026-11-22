@@ -1,10 +1,12 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Label, TagInput } from '@hatohui/ui';
-import { Flame } from 'lucide-react';
+import { Flame, Leaf } from 'lucide-react';
+import { VEGETARIAN_TAG } from '../../constants/food';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
+import { withTag } from '../../lib/withTag';
 import FilterChip from '../catalog/FilterChip';
 import FormSection from '../shared/FormSection';
+import TagGroupInput from './TagGroupInput';
 
 type FieldsApi = ReturnType<typeof useRecommendationFields>;
 
@@ -16,59 +18,44 @@ interface Props {
 function TagFields({ fields, set }: Props) {
   const { t } = useTranslation();
   const tags = useTagOptions();
-  const createLabel = (tag: string) => t('form.tagCreate', { tag });
-  const removeLabel = (tag: string) => t('form.tagRemove', { tag });
 
   return (
-    <div className="space-y-5">
-      <FormSection title={t('form.noticeTags')}>
-        <div className="space-y-3">
-          <FilterChip
-            icon={Flame}
-            label={t('catalog.spicy')}
-            pressed={fields.spicy}
-            onChange={(spicy) => set('spicy', spicy)}
-          />
-          <div className="space-y-1.5">
-            <Label htmlFor="rec-diets">{t('form.diets')}</Label>
-            <TagInput
-              id="rec-diets"
-              value={tags.toLabels(fields.diets)}
-              onChange={(next) => set('diets', tags.toKeys(next, 'DIET'))}
-              suggestions={tags.suggestionsOf('DIET')}
-              placeholder={t('form.dietsPlaceholder')}
-              createLabel={createLabel}
-              removeLabel={removeLabel}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="rec-allergens">{t('form.allergens')}</Label>
-            <TagInput
-              id="rec-allergens"
-              value={tags.toLabels(fields.allergens)}
-              onChange={(next) =>
-                set('allergens', tags.toKeys(next, 'ALLERGEN'))
-              }
-              suggestions={tags.suggestionsOf('ALLERGEN')}
-              placeholder={t('form.allergensPlaceholder')}
-              createLabel={createLabel}
-              removeLabel={removeLabel}
-            />
-          </div>
-        </div>
-      </FormSection>
-      <FormSection title={t('form.otherTags')}>
-        <TagInput
-          id="rec-tags"
-          value={tags.toLabels(fields.tags)}
-          onChange={(next) => set('tags', tags.toKeys(next, 'GENERAL'))}
-          suggestions={tags.suggestionsOf('GENERAL')}
-          placeholder={t('form.otherTagsPlaceholder')}
-          createLabel={createLabel}
-          removeLabel={removeLabel}
+    <FormSection title={t('form.sectionTags')}>
+      <div className="flex flex-wrap gap-2">
+        <FilterChip
+          icon={Flame}
+          label={t('catalog.spicy')}
+          pressed={fields.spicy}
+          onChange={(spicy) => set('spicy', spicy)}
         />
-      </FormSection>
-    </div>
+        <FilterChip
+          icon={Leaf}
+          label={t('catalog.vegetarian')}
+          pressed={fields.diets.includes(VEGETARIAN_TAG)}
+          onChange={(on) =>
+            set('diets', withTag(fields.diets, VEGETARIAN_TAG, on))
+          }
+        />
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <TagGroupInput
+          id="rec-allergens"
+          label={t('form.allergens')}
+          placeholder={t('form.allergensPlaceholder')}
+          value={tags.toLabels(fields.allergens)}
+          suggestions={tags.suggestionsOf('ALLERGEN')}
+          onChange={(next) => set('allergens', tags.toKeys(next, 'ALLERGEN'))}
+        />
+        <TagGroupInput
+          id="rec-tags"
+          label={t('form.otherTags')}
+          placeholder={t('form.otherTagsPlaceholder')}
+          value={tags.toLabels(fields.tags)}
+          suggestions={tags.suggestionsOf('GENERAL')}
+          onChange={(next) => set('tags', tags.toKeys(next, 'GENERAL'))}
+        />
+      </div>
+    </FormSection>
   );
 }
 

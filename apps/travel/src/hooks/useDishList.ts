@@ -2,11 +2,13 @@ import { useMemo } from 'react';
 import { useTravelDishes } from '@hatohui/models';
 import { usePagination } from './usePagination';
 import type { SearchSuggestion } from './useSearchSuggest';
-import { useTravelFilterState } from './useTravelFilterState';
+import type { TravelFilterState } from './useTravelFilterState';
+import { useTravelLocation } from './useTravelLocation';
 
-export function useDishList() {
-  const { queryParams, filters, isFiltered } = useTravelFilterState();
-  const result = useTravelDishes(queryParams);
+export function useDishList(state: TravelFilterState, enabled: boolean) {
+  const location = useTravelLocation();
+  const params = { ...state.queryParams, ...location.filter };
+  const result = useTravelDishes(params, { query: { enabled } });
   const dishes = useMemo(() => result.data?.data ?? [], [result.data?.data]);
   const suggestions = useMemo<SearchSuggestion[]>(
     () =>
@@ -18,7 +20,7 @@ export function useDishList() {
       })),
     [dishes],
   );
-  const pagination = usePagination(dishes, JSON.stringify(queryParams));
+  const pagination = usePagination(dishes, JSON.stringify(params));
   return {
     dishes: pagination.pagedItems,
     pagination,
@@ -26,7 +28,5 @@ export function useDishList() {
     isLoading: result.isLoading,
     isError: result.isError,
     refetch: result.refetch,
-    filters,
-    isFiltered,
   };
 }

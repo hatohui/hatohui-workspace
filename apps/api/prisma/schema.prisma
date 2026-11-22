@@ -49,46 +49,47 @@ model User {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  profile                 Profile?                    @relation("ProfileOwner")
-  addedProfiles           Profile[]                   @relation("AddedBy")
-  sentConnections         Connection[]                @relation("ConnectionRequester")
-  receivedConnections     Connection[]                @relation("ConnectionAddressee")
-  notifications           Notification[]              @relation("NotificationRecipient")
-  actedNotifications      Notification[]              @relation("NotificationActor")
-  uploadedAssets          Asset[]
-  roles                   UserRole[]
-  settings                UserSetting[]
-  queuedEmails            EmailOutbox[]               @relation("EmailOutboxRecipient")
-  commissions             Commission[]                @relation("CommissionArtist")
-  commissionOpenings      CommissionOpening[]         @relation("ArtistCommissionOpenings")
-  commissionGroups        CommissionGroup[]           @relation("ArtistCommissionGroups")
-  projects                Project[]                   @relation("ArtistProjects")
-  commissionTypes         ArtistCommissionType[]      @relation("ArtistCommissionTypes")
-  commissionOptions       CommissionOption[]          @relation("ArtistCommissionOptions")
-  commissionAddons        CommissionAddon[]           @relation("ArtistCommissionAddons")
-  commissionFollowers     CommissionFollower[]        @relation("ArtistFollowers")
-  clientAccount           Client?                     @relation("ClientAccount")
-  commissionStatusChanges CommissionStatusHistory[]   @relation("CommissionStatusChangedBy")
-  travelDishes            TravelDish[]                @relation("TravelDishCreator")
-  travelCuisines          TravelCuisine[]             @relation("TravelCuisineCreator")
-  travelCountries         TravelCountry[]             @relation("TravelCountryCreator")
-  travelAreas             TravelArea[]                @relation("TravelAreaCreator")
-  travelPlaces            TravelPlace[]               @relation("TravelPlaceCreator")
-  travelRecommendations   TravelRecommendation[]      @relation("TravelRecommendationCreator")
-  travelImages            TravelRecommendationImage[] @relation("TravelImageUploader")
-  travelJobProfile        TravelJobProfile?
-  travelWorkSchedule      TravelWorkSchedule?
-  travelScheduleExceptions TravelScheduleException[]
-  travelCustomHolidays    TravelCustomHoliday[]
-  travelEventsCreated     TravelEvent[]               @relation("TravelEventCreator")
-  travelEventInvites      TravelEventInvitee[]
-  travelOwnedGroups       TravelParticipationGroup[]  @relation("TravelGroupOwner")
-  travelParticipations    TravelParticipation[]       @relation("TravelParticipationUser")
-  travelParticipationsCreated TravelParticipation[]   @relation("TravelParticipationCreator")
-  travelJoinRequests      TravelJoinRequest[]
-  travelGroupImages       TravelGroupImage[]          @relation("TravelGroupImageUploader")
-  travelActivitiesCreated TravelActivity[]            @relation("TravelActivityCreator")
-  travelActivityMedia     TravelActivityMedia[]       @relation("TravelActivityMediaUploader")
+  profile                     Profile?                    @relation("ProfileOwner")
+  addedProfiles               Profile[]                   @relation("AddedBy")
+  sentConnections             Connection[]                @relation("ConnectionRequester")
+  receivedConnections         Connection[]                @relation("ConnectionAddressee")
+  notifications               Notification[]              @relation("NotificationRecipient")
+  actedNotifications          Notification[]              @relation("NotificationActor")
+  uploadedAssets              Asset[]
+  roles                       UserRole[]
+  settings                    UserSetting[]
+  queuedEmails                EmailOutbox[]               @relation("EmailOutboxRecipient")
+  commissions                 Commission[]                @relation("CommissionArtist")
+  commissionOpenings          CommissionOpening[]         @relation("ArtistCommissionOpenings")
+  commissionGroups            CommissionGroup[]           @relation("ArtistCommissionGroups")
+  projects                    Project[]                   @relation("ArtistProjects")
+  commissionTypes             ArtistCommissionType[]      @relation("ArtistCommissionTypes")
+  commissionOptions           CommissionOption[]          @relation("ArtistCommissionOptions")
+  commissionAddons            CommissionAddon[]           @relation("ArtistCommissionAddons")
+  commissionFollowers         CommissionFollower[]        @relation("ArtistFollowers")
+  clientAccount               Client?                     @relation("ClientAccount")
+  commissionStatusChanges     CommissionStatusHistory[]   @relation("CommissionStatusChangedBy")
+  travelDishes                TravelDish[]                @relation("TravelDishCreator")
+  travelCuisines              TravelCuisine[]             @relation("TravelCuisineCreator")
+  travelCountries             TravelCountry[]             @relation("TravelCountryCreator")
+  travelAreas                 TravelArea[]                @relation("TravelAreaCreator")
+  travelPlaces                TravelPlace[]               @relation("TravelPlaceCreator")
+  travelRecommendations       TravelRecommendation[]      @relation("TravelRecommendationCreator")
+  travelImages                TravelRecommendationImage[] @relation("TravelImageUploader")
+  travelJobProfile            TravelJobProfile?
+  travelWorkSchedule          TravelWorkSchedule?
+  travelAllergens             TravelTag[]                 @relation("TravelUserAllergens")
+  travelScheduleExceptions    TravelScheduleException[]
+  travelCustomHolidays        TravelCustomHoliday[]
+  travelEventsCreated         TravelEvent[]               @relation("TravelEventCreator")
+  travelEventInvites          TravelEventInvitee[]
+  travelOwnedGroups           TravelParticipationGroup[]  @relation("TravelGroupOwner")
+  travelParticipations        TravelParticipation[]       @relation("TravelParticipationUser")
+  travelParticipationsCreated TravelParticipation[]       @relation("TravelParticipationCreator")
+  travelJoinRequests          TravelJoinRequest[]
+  travelGroupImages           TravelGroupImage[]          @relation("TravelGroupImageUploader")
+  travelActivitiesCreated     TravelActivity[]            @relation("TravelActivityCreator")
+  travelActivityMedia         TravelActivityMedia[]       @relation("TravelActivityMediaUploader")
 }
 
 enum AppScope {
@@ -871,9 +872,9 @@ model TravelDish {
   thumbnailKey String?
   previewKey   String?
   createdById  String?
-  createdBy   User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdBy    User?    @relation("TravelDishCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   cuisines        TravelCuisine[]
   recommendations TravelRecommendation[]
@@ -954,6 +955,7 @@ model TravelTag {
   createdAt DateTime      @default(now())
 
   recommendations TravelRecommendation[]
+  allergicUsers   User[]                 @relation("TravelUserAllergens")
 
   @@index([kind, position])
 }

@@ -20,6 +20,10 @@ import { TravelCuisinesService } from '@/modules/travel-cuisines/services/travel
 import { travelCuisineNamesSelect } from '@/modules/travel-recommendations/utils/travel-recommendation.mapper';
 import { TravelBulkResultDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { travelAreaFilter } from '@/modules/travel-recommendations/utils/travel-place-area';
+import {
+  travelAllergenTagsSelect,
+  uniqueAllergenKeys,
+} from '@/modules/travel-recommendations/utils/travel-allergen-keys';
 import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names';
 import { UNIQUE_VIOLATION_CODE } from '@/modules/travel-recommendations/travel-recommendations.constants';
 import {
@@ -39,6 +43,7 @@ const dishInclude = {
   cuisines: travelCuisineNamesSelect,
   createdBy: { select: travelCreatorSelect },
   _count: { select: { recommendations: true } },
+  recommendations: { select: { tags: travelAllergenTagsSelect } },
 } satisfies Prisma.TravelDishInclude;
 
 type DishRow = Prisma.TravelDishGetPayload<{ include: typeof dishInclude }>;
@@ -296,6 +301,7 @@ export class TravelDishesService {
       name: row.name,
       cuisines: row.cuisines.map((cuisine) => cuisine.name),
       description: row.description,
+      allergens: uniqueAllergenKeys(row.recommendations),
       placeCount: row._count.recommendations,
       imageKey: row.imageKey,
       imageUrl,
