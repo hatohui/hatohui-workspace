@@ -13,7 +13,11 @@ function AddRecommendationButton() {
 
   return (
     <>
-      <Button className="rounded-full" onClick={dialog.show}>
+      <Button
+        size="sm"
+        className="h-9 shrink-0 rounded-full text-xs sm:h-8"
+        onClick={dialog.show}
+      >
         <Plus />
         {t('catalog.add')}
       </Button>

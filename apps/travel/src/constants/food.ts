@@ -8,16 +8,18 @@ export const DEFAULT_FOOD_VIEW: FoodView = 'dishes';
 
 export const FOOD_VIEW_OPTIONS: Record<
   FoodView,
-  { labelKey: string; searchKey: string; icon: LucideIcon }
+  { labelKey: string; searchKey: string; countKey: string; icon: LucideIcon }
 > = {
   dishes: {
     labelKey: 'catalog.byDish',
     searchKey: 'dishes.searchPlaceholder',
+    countKey: 'catalog.dishTotal',
     icon: Soup,
   },
   places: {
     labelKey: 'catalog.byPlace',
     searchKey: 'places.searchPlaceholder',
+    countKey: 'catalog.placeTotal',
     icon: MapPin,
   },
 };

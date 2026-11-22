@@ -112,3 +112,8 @@ export const FILTER_CHIP_SKELETON_WIDTHS = [
 export const APPLE_PLATFORM_PATTERN = /Mac|iPhone|iPad/;
 
 export const INITIAL_LOCATION_KEY = 'default';
+
+export const FILTER_CHIP_PREVIEW_LIMIT = 6;
+
+export const CARD_GRID_CLASS =
+  'grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';

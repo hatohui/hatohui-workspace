@@ -14,6 +14,7 @@ export function useFoodBrowse() {
     view,
     setView,
     searchKey: FOOD_VIEW_OPTIONS[view].searchKey,
+    countKey: FOOD_VIEW_OPTIONS[view].countKey,
     filters: filterState.filters,
     isFiltered: filterState.isFiltered,
     dishes,

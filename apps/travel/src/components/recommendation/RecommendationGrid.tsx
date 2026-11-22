@@ -3,6 +3,7 @@ import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
 import { ErrorState } from '@hatohui/ui';
 import { UtensilsCrossed } from 'lucide-react';
+import { CARD_GRID_CLASS } from '../../constants/travel';
 import { useOpenRecommendation } from '../../hooks/useOpenRecommendation';
 import CardGridSkeleton from '../shared/CardGridSkeleton';
 import EmptyState from '../shared/EmptyState';
@@ -43,7 +44,7 @@ function RecommendationGrid(props: Props) {
   }
   return (
     <>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4">
+      <div className={CARD_GRID_CLASS}>
         {props.recommendations.map((rec) => (
           <FoodCard
             key={rec.id}

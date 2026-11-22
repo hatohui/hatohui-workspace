@@ -23,7 +23,7 @@ function ChoiceChips<T extends string>({
     <div
       role="radiogroup"
       aria-label={label}
-      className="inline-flex flex-wrap gap-1 rounded-full bg-secondary p-1"
+      className="inline-flex flex-wrap gap-0.5 rounded-full bg-secondary p-0.5"
     >
       {options.map((option) => (
         <button
@@ -33,7 +33,7 @@ function ChoiceChips<T extends string>({
           aria-checked={value === option.value}
           onClick={() => onChange(option.value)}
           className={cn(
-            'inline-flex h-9 cursor-pointer items-center gap-1 rounded-full px-3 text-sm transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none sm:h-8',
+            'inline-flex h-8 cursor-pointer items-center gap-1 rounded-full px-2.5 text-xs transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none sm:h-7',
             value === option.value
               ? 'bg-background text-foreground shadow-soft'
               : 'text-muted-foreground hover:text-foreground',

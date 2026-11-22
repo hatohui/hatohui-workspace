@@ -9,8 +9,8 @@ function CautionBadge({ allergens }: { allergens: string[] }) {
   const list = allergens.map(labelOf).join(', ');
 
   return (
-    <span className="absolute top-2 left-2 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-full bg-amber-500 px-2 py-0.5 text-xs font-medium text-amber-950 shadow-sm">
-      <TriangleAlert className="size-3.5 shrink-0" aria-hidden />
+    <span className="absolute top-1.5 left-1.5 inline-flex max-w-[calc(100%-0.75rem)] items-center gap-0.5 rounded-full bg-amber-500 px-1.5 py-px text-[10px] font-medium text-amber-950">
+      <TriangleAlert className="size-3 shrink-0" aria-hidden />
       <span className="truncate">{t('recommendation.contains', { list })}</span>
     </span>
   );

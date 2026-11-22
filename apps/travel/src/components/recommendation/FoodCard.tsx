@@ -31,7 +31,7 @@ function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
       disabled={isOptimistic}
       aria-busy={isOptimistic || undefined}
       className={cn(
-        'group flex flex-col gap-2 rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        'group flex flex-col gap-1.5 rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
         isOptimistic ? 'cursor-wait opacity-85' : 'cursor-pointer',
       )}
     >
@@ -56,7 +56,7 @@ function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
         )}
       </div>
       <div className="space-y-0.5">
-        <span className="line-clamp-2 block font-medium tracking-tight group-hover:underline">
+        <span className="line-clamp-2 block text-sm font-medium group-hover:underline">
           {title}
         </span>
         {sublabel && (

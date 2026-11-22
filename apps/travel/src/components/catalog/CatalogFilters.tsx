@@ -2,7 +2,10 @@ import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
 import { Flame, Leaf, ShieldAlert } from 'lucide-react';
 import { VEGETARIAN_TAG } from '../../constants/food';
-import { ALLERGEN_ICONS } from '../../constants/travel';
+import {
+  ALLERGEN_ICONS,
+  FILTER_CHIP_PREVIEW_LIMIT,
+} from '../../constants/travel';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
 import { useCuisineNames } from '../../hooks/useCuisineNames';
@@ -18,9 +21,9 @@ function CatalogFilters({ filters }: { filters: Filters }) {
   const tags = useTagOptions();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <FilterSection title={t('filters.taste')}>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1">
           <FilterChip
             icon={Flame}
             label={t('catalog.spicy')}
@@ -48,6 +51,7 @@ function CatalogFilters({ filters }: { filters: Filters }) {
             selected={filters.cuisines}
             labelOf={(name) => name}
             onToggle={filters.toggleCuisine}
+            limit={FILTER_CHIP_PREVIEW_LIMIT}
           />
         </FilterSection>
       )}
@@ -59,6 +63,7 @@ function CatalogFilters({ filters }: { filters: Filters }) {
             selected={filters.tags}
             labelOf={tags.labelOf}
             onToggle={filters.toggleTag}
+            limit={FILTER_CHIP_PREVIEW_LIMIT}
           />
         </FilterSection>
       )}
@@ -84,6 +89,7 @@ function CatalogFilters({ filters }: { filters: Filters }) {
             labelOf={tags.labelOf}
             iconOf={(tag) => ALLERGEN_ICONS[tag]}
             onToggle={filters.toggleAvoid}
+            limit={FILTER_CHIP_PREVIEW_LIMIT}
           />
         )}
       </FilterSection>

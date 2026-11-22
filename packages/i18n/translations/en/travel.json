@@ -29,7 +29,11 @@
     "byDish": "By dish",
     "byPlace": "By place",
     "vegetarian": "Vegetarian",
-    "hideMyAllergens": "Hide my allergens ({{count}})"
+    "hideMyAllergens": "Hide my allergens ({{count}})",
+    "dishTotal_one": "{{count}} dish",
+    "dishTotal_other": "{{count}} dishes",
+    "placeTotal_one": "{{count}} place",
+    "placeTotal_other": "{{count}} places"
   },
   "recommendation": {
     "noEstimate": "No price yet",
@@ -198,7 +202,9 @@
     "title": "Filters",
     "taste": "Taste",
     "addedBy": "Added by",
-    "handlePlaceholder": "handle"
+    "handlePlaceholder": "handle",
+    "showMore": "+{{count}} more",
+    "showLess": "Show less"
   },
   "admin": {
     "title": "Admin",
