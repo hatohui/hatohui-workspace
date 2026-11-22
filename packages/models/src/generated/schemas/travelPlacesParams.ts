@@ -5,6 +5,7 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
+import type { TravelCatalogSort } from './travelCatalogSort';
 
 export type TravelPlacesParams = {
 /**
@@ -43,6 +44,10 @@ tags?: string[];
  * Hide entries with any of these tag keys
  */
 excludeTags?: string[];
+/**
+ * relevance keeps local and search-matched entries first; popular ranks by recommendation count
+ */
+sort?: TravelCatalogSort;
 /**
  * Match name or address
  */

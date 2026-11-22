@@ -21,3 +21,12 @@ export const SWITCH_ACTIVE =
 
 export const NAV_ACTIVE =
   'bg-primary/15 font-medium text-[#8f4429] dark:bg-primary/25 dark:text-[#e9a487]';
+
+export const CATEGORY_PILL_BASE =
+  'inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none';
+
+export const CATEGORY_PILL_IDLE =
+  'bg-foreground/[0.06] text-foreground/75 hover:bg-foreground/[0.11] hover:text-foreground dark:bg-foreground/[0.08] dark:hover:bg-foreground/[0.14]';
+
+export const CATEGORY_PILL_SELECTED =
+  'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90';

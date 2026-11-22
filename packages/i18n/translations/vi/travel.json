@@ -14,6 +14,8 @@
     "empty": "Chưa có gì ở đây.",
     "emptyFiltered": "Không có món nào khớp bộ lọc.",
     "clearFilters": "Xóa bộ lọc",
+    "clearFiltersCount_one": "Xóa {{count}} bộ lọc",
+    "clearFiltersCount_other": "Xóa {{count}} bộ lọc",
     "searchSuggestions": "Gợi ý",
     "clearSearch": "Xóa tìm kiếm",
     "avoidAllergens": "Tránh chất gây dị ứng",
@@ -30,7 +32,16 @@
     "placeTotal_one": "{{count}} quán",
     "placeTotal_other": "{{count}} quán",
     "groupByCategory": "Nhóm theo danh mục",
-    "uncategorized": "Chưa phân loại"
+    "uncategorized": "Chưa phân loại",
+    "sort": {
+      "label": "Sắp xếp",
+      "relevance": "Đề xuất",
+      "popularDishes": "Nhiều quán nhất",
+      "popularPlaces": "Nhiều món nhất",
+      "newest": "Mới nhất",
+      "oldest": "Cũ nhất",
+      "name": "Tên A–Z"
+    }
   },
   "recommendation": {
     "noEstimate": "Chưa có giá",
@@ -226,7 +237,9 @@
     "addedBy": "Người thêm",
     "handlePlaceholder": "tên người dùng",
     "showMore": "+{{count}} nữa",
-    "showLess": "Thu gọn"
+    "showLess": "Thu gọn",
+    "allCategories": "Tất cả",
+    "removeCategory": "Bỏ lọc {{name}}"
   },
   "admin": {
     "title": "Quản trị",

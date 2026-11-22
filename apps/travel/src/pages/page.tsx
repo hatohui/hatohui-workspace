@@ -1,8 +1,10 @@
 import { useTranslation } from '@hatohui/i18n';
 import AddRecommendationButton from '../components/catalog/AddRecommendationButton';
 import CatalogSidebar from '../components/catalog/CatalogSidebar';
+import ClearFiltersButton from '../components/catalog/ClearFiltersButton';
 import FoodCategoryBar from '../components/catalog/FoodCategoryBar';
 import MobileFilterButton from '../components/catalog/MobileFilterButton';
+import CatalogSortSelect from '../components/food/CatalogSortSelect';
 import DishResults from '../components/food/DishResults';
 import FoodViewSwitch from '../components/food/FoodViewSwitch';
 import GroupByCategoryToggle from '../components/food/GroupByCategoryToggle';
@@ -26,6 +28,7 @@ function FoodPage() {
       <FoodCategoryBar
         selected={filters.foodCategories}
         onToggle={filters.toggleFoodCategory}
+        onClear={filters.clearFoodCategories}
       />
       <div className="grid gap-6 lg:grid-cols-[192px_minmax(0,1fr)]">
         <CatalogSidebar filters={filters} />
@@ -47,11 +50,27 @@ function FoodPage() {
             </div>
             <AddRecommendationButton />
           </div>
-          {!active.isLoading && !active.isError && (
-            <p className="text-xs text-muted-foreground tabular-nums">
-              {t(food.countKey, { count: active.pagination.totalItems })}
-            </p>
-          )}
+          <div className="flex min-h-9 flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-1">
+              {!active.isLoading && !active.isError && (
+                <p className="text-xs text-muted-foreground tabular-nums">
+                  {t(food.countKey, { count: active.pagination.totalItems })}
+                </p>
+              )}
+              {food.isFiltered && (
+                <ClearFiltersButton
+                  variant="ghost"
+                  count={filters.activeCount}
+                  onClick={filters.clearFilters}
+                />
+              )}
+            </div>
+            <CatalogSortSelect
+              view={food.view}
+              value={filters.sort}
+              onChange={filters.setSort}
+            />
+          </div>
           {food.view === 'dishes' ? (
             <DishResults
               list={food.dishes}

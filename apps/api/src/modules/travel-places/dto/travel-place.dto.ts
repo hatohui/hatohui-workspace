@@ -1,6 +1,12 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  IntersectionType,
+  PartialType,
+  PickType,
+} from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { TravelCatalogSortQueryDto } from '@/modules/travel-recommendations/dto/travel-catalog-sort-query.dto';
 import { TravelBulkNamesDto } from '@/modules/travel-recommendations/dto/travel-bulk.dto';
 import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel-place-input.dto';
 import { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
@@ -42,9 +48,8 @@ export class CreateTravelPlaceDto extends TravelPlaceInputDto {}
 
 export class UpdateTravelPlaceDto extends PartialType(CreateTravelPlaceDto) {}
 
-export class TravelPlaceQueryDto extends PickType(
-  TravelRecommendationQueryDto,
-  [
+export class TravelPlaceQueryDto extends IntersectionType(
+  PickType(TravelRecommendationQueryDto, [
     'by',
     'areaId',
     'countryId',
@@ -54,7 +59,8 @@ export class TravelPlaceQueryDto extends PickType(
     'excludeAllergens',
     'tags',
     'excludeTags',
-  ] as const,
+  ] as const),
+  TravelCatalogSortQueryDto,
 ) {
   @ApiProperty({ required: false, description: 'Match name or address' })
   @IsOptional()

@@ -2425,6 +2425,15 @@
         "operationId": "travelDishes",
         "parameters": [
           {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "relevance keeps local and search-matched entries first; popular ranks by recommendation count",
+            "schema": {
+              "$ref": "#/components/schemas/TravelCatalogSort"
+            }
+          },
+          {
             "name": "q",
             "required": false,
             "in": "query",
@@ -2589,6 +2598,15 @@
       "get": {
         "operationId": "travelDishesPage",
         "parameters": [
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "relevance keeps local and search-matched entries first; popular ranks by recommendation count",
+            "schema": {
+              "$ref": "#/components/schemas/TravelCatalogSort"
+            }
+          },
           {
             "name": "q",
             "required": false,
@@ -7631,6 +7649,15 @@
             }
           },
           {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "relevance keeps local and search-matched entries first; popular ranks by recommendation count",
+            "schema": {
+              "$ref": "#/components/schemas/TravelCatalogSort"
+            }
+          },
+          {
             "name": "q",
             "required": false,
             "in": "query",
@@ -7793,6 +7820,15 @@
               "items": {
                 "type": "string"
               }
+            }
+          },
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "relevance keeps local and search-matched entries first; popular ranks by recommendation count",
+            "schema": {
+              "$ref": "#/components/schemas/TravelCatalogSort"
             }
           },
           {
@@ -11375,6 +11411,16 @@
             "description": "Hide this piece from everyone but you"
           }
         }
+      },
+      "TravelCatalogSort": {
+        "type": "string",
+        "enum": [
+          "relevance",
+          "newest",
+          "oldest",
+          "name",
+          "popular"
+        ]
       },
       "TravelCreatorDto": {
         "type": "object",

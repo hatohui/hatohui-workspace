@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { keepPreviousData } from '@tanstack/react-query';
 import { useTravelPlaces, useTravelPlacesPage } from '@hatohui/models';
+import { useCatalogPage } from './useCatalogPage';
 import { useResponsiveGridCount } from './useResponsiveGridCount';
 import type { SearchSuggestion } from './useSearchSuggest';
 import type { TravelFilterState } from './useTravelFilterState';
@@ -18,8 +19,8 @@ export function usePlaceList(
     [location.filter, state.queryParams],
   );
   const resetKey = JSON.stringify({ ...params, pageSize });
-  const [pageState, setPageState] = useState({ key: resetKey, page: 1 });
-  const requestedPage = pageState.key === resetKey ? pageState.page : 1;
+  const pageState = useCatalogPage(resetKey);
+  const requestedPage = pageState.page;
 
   const pagedResult = useTravelPlacesPage(
     { ...params, page: requestedPage, pageSize },
@@ -50,7 +51,7 @@ export function usePlaceList(
     totalItems > 0 ? Math.min(requestedPage, totalPages) : requestedPage;
 
   const setPage = (next: number) => {
-    setPageState({ key: resetKey, page: next });
+    pageState.setPage(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

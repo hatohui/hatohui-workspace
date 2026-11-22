@@ -14,6 +14,7 @@
     "empty": "まだ何もありません。",
     "emptyFiltered": "条件に合う料理がありません。",
     "clearFilters": "絞り込みを解除",
+    "clearFiltersCount_other": "{{count}}件の絞り込みを解除",
     "searchSuggestions": "候補",
     "clearSearch": "検索をクリア",
     "avoidAllergens": "アレルゲンを除外",
@@ -30,7 +31,16 @@
     "placeTotal_one": "{{count}} 店",
     "placeTotal_other": "{{count}} 店",
     "groupByCategory": "カテゴリーでグループ化",
-    "uncategorized": "未分類"
+    "uncategorized": "未分類",
+    "sort": {
+      "label": "並び替え",
+      "relevance": "おすすめ順",
+      "popularDishes": "店舗数が多い順",
+      "popularPlaces": "料理数が多い順",
+      "newest": "新しい順",
+      "oldest": "古い順",
+      "name": "名前順"
+    }
   },
   "recommendation": {
     "noEstimate": "価格未登録",
@@ -226,7 +236,9 @@
     "addedBy": "追加した人",
     "handlePlaceholder": "ハンドル",
     "showMore": "他 {{count}} 件",
-    "showLess": "閉じる"
+    "showLess": "閉じる",
+    "allCategories": "すべて",
+    "removeCategory": "{{name}}の絞り込みを解除"
   },
   "admin": {
     "title": "管理",
