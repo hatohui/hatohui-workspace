@@ -208,6 +208,8 @@
     "perPage": "表示件数",
     "previous": "前へ",
     "next": "次へ",
+    "columns": "列",
+    "mapsLink": "地図リンク",
     "kinds": {
       "DIET": "食事制限",
       "ALLERGEN": "アレルゲン"

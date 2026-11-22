@@ -21,14 +21,17 @@ import {
 import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useAdminTableControls } from './useAdminTableControls';
+import { useColumnVisibility } from './useColumnVisibility';
 import { useRowDeletion } from './useRowDeletion';
 import { useTagOptions } from './useTagOptions';
+import { useTravelLocation } from './useTravelLocation';
 
 export interface AdminRecommendationRow {
   id: string;
   name: string;
-  dishId: string;
-  placeId: string;
+  dish: string;
+  place: string;
+  mapsUrl: string;
   spicy: string;
   diets: string;
   allergens: string;
@@ -40,6 +43,8 @@ export interface AdminRecommendationRow {
 }
 
 const DRAFT_PREFIX = 'draft:';
+const STORAGE_KEY = 'travel-admin-recommendations';
+const DEFAULT_HIDDEN = ['price', 'currency', 'mapsUrl', 'createdAt'] as const;
 
 function formatPriceCell(rec: TravelRecommendationDto): string {
   if (rec.priceLevel) return rec.priceLevel;
@@ -87,6 +92,7 @@ const parseList = (raw: string) =>
 
 export function useAdminRecommendations() {
   const { t } = useTranslation();
+  const location = useTravelLocation();
   const query = useTravelRecommendations();
   const dishesQuery = useTravelDishes();
   const placesQuery = useTravelPlaces();
@@ -107,30 +113,16 @@ export function useAdminRecommendations() {
     [placesQuery.data?.data],
   );
 
-  const dishOptions = useMemo(
-    () => dishes.map((dish) => ({ value: dish.id, label: dish.name })),
+  const dishSuggestions = useMemo(
+    () => dishes.map((dish) => ({ value: dish.name })),
     [dishes],
   );
-  const placeOptions = useMemo(
+  const placeSuggestions = useMemo(
     () =>
       places.map((place) => ({
-        value: place.id,
-        label: place.area ? `${place.name} (${place.area.name})` : place.name,
+        value: place.name,
+        hint: place.area?.name,
       })),
-    [places],
-  );
-  const dishNames = useMemo(
-    () => new Map(dishes.map((d) => [d.id, d.name])),
-    [dishes],
-  );
-  const placeNames = useMemo(
-    () =>
-      new Map(
-        places.map((p) => [
-          p.id,
-          p.area ? `${p.name} (${p.area.name})` : p.name,
-        ]),
-      ),
     [places],
   );
 
@@ -139,8 +131,9 @@ export function useAdminRecommendations() {
       items.map((rec) => ({
         id: rec.id,
         name: `${rec.dish.name} — ${rec.place.name}`,
-        dishId: rec.dish.id,
-        placeId: rec.place.id,
+        dish: rec.dish.name,
+        place: rec.place.name,
+        mapsUrl: rec.place.mapsUrl ?? '',
         spicy: String(rec.spicy),
         diets: rec.diets.join(', '),
         allergens: rec.allergens.join(', '),
@@ -157,22 +150,32 @@ export function useAdminRecommendations() {
   const columns = useMemo<EditableColumn<AdminRecommendationRow>[]>(
     () => [
       {
-        key: 'dishId',
+        key: 'dish',
         label: t('admin.dish'),
         editable: (row) => Boolean(row.isDraft),
         sortable: true,
-        options: dishOptions,
-        render: (row) => dishNames.get(row.dishId) ?? '',
-        size: 180,
+        suggestions: dishSuggestions,
+        maxTags: 1,
+        createLabel: (tag) => t('form.cuisineCreate', { tag }),
+        removeLabel: (tag) => t('form.cuisineRemove', { tag }),
+        size: 160,
       },
       {
-        key: 'placeId',
+        key: 'place',
         label: t('admin.place'),
         editable: (row) => Boolean(row.isDraft),
         sortable: true,
-        options: placeOptions,
-        render: (row) => placeNames.get(row.placeId) ?? '',
-        size: 200,
+        suggestions: placeSuggestions,
+        maxTags: 1,
+        createLabel: (tag) => t('form.cuisineCreate', { tag }),
+        removeLabel: (tag) => t('form.cuisineRemove', { tag }),
+        size: 170,
+      },
+      {
+        key: 'mapsUrl',
+        label: t('admin.mapsLink'),
+        editable: (row) => Boolean(row.isDraft),
+        size: 160,
       },
       {
         key: 'spicy',
@@ -185,21 +188,21 @@ export function useAdminRecommendations() {
         label: t('form.diets'),
         editable: true,
         suggestions: tags.dietKeys.map((key) => ({ value: key })),
-        size: 160,
+        size: 140,
       },
       {
         key: 'allergens',
         label: t('form.allergens'),
         editable: true,
         suggestions: tags.allergenKeys.map((key) => ({ value: key })),
-        size: 160,
+        size: 140,
       },
       {
         key: 'price',
         label: t('form.sectionPrice'),
         editable: true,
         sortable: true,
-        size: 130,
+        size: 120,
       },
       {
         key: 'currency',
@@ -207,38 +210,31 @@ export function useAdminRecommendations() {
         editable: true,
         sortable: true,
         options: CURRENCIES.map((c) => ({ value: c, label: c })),
-        size: 90,
+        size: 80,
       },
       {
         key: 'note',
         label: t('admin.note'),
         editable: true,
         sortable: true,
-        size: 220,
+        size: 200,
       },
       {
         key: 'createdAt',
         label: t('admin.added'),
         sortable: true,
         render: (row) => formatAddedDate(row.createdAt),
-        size: 130,
+        size: 120,
       },
     ],
-    [
-      dishNames,
-      dishOptions,
-      placeNames,
-      placeOptions,
-      t,
-      tags.allergenKeys,
-      tags.dietKeys,
-    ],
+    [dishSuggestions, placeSuggestions, t, tags.allergenKeys, tags.dietKeys],
   );
 
   const controls = useAdminTableControls(rows, columns, {
     key: 'createdAt',
     direction: 'desc',
   });
+  const visibility = useColumnVisibility(STORAGE_KEY, columns, DEFAULT_HIDDEN);
   const queryKey = getTravelRecommendationsQueryKey();
 
   const deletion = useRowDeletion<AdminRecommendationRow>(
@@ -267,8 +263,9 @@ export function useAdminRecommendations() {
       {
         id: `${DRAFT_PREFIX}${crypto.randomUUID()}`,
         name: '',
-        dishId: '',
-        placeId: '',
+        dish: '',
+        place: '',
+        mapsUrl: '',
         spicy: 'false',
         diets: '',
         allergens: '',
@@ -291,13 +288,29 @@ export function useAdminRecommendations() {
       if (!existing) return;
       const next = { ...existing, [key]: value };
       setDrafts((current) => current.map((d) => (d.id === id ? next : d)));
-      if (next.dishId && next.placeId) {
+      const dishName = next.dish.trim();
+      const placeName = next.place.trim();
+      if (dishName && placeName) {
+        const matchedDish = dishes.find(
+          (d) => d.name.toLowerCase() === dishName.toLowerCase(),
+        );
+        const matchedPlace = places.find(
+          (p) => p.name.toLowerCase() === placeName.toLowerCase(),
+        );
         const price = parsePriceCell(next.price);
         void run(async () => {
           await create.mutateAsync({
             data: {
-              dishId: next.dishId,
-              placeId: next.placeId,
+              dishId: matchedDish?.id,
+              dishName: matchedDish ? undefined : dishName,
+              placeId: matchedPlace?.id,
+              place: matchedPlace
+                ? undefined
+                : {
+                    name: placeName,
+                    mapsUrl: next.mapsUrl.trim() || undefined,
+                    areaId: location.area?.id,
+                  },
               spicy: next.spicy === 'true',
               diets: parseList(next.diets),
               allergens: parseList(next.allergens),
@@ -340,8 +353,12 @@ export function useAdminRecommendations() {
   };
 
   return {
+    storageKey: STORAGE_KEY,
     rows: controls.pagedRows,
-    columns,
+    allColumns: columns,
+    columns: visibility.visibleColumns,
+    hiddenColumns: visibility.hiddenSet,
+    toggleColumn: visibility.toggle,
     isLoading: query.isLoading,
     search: controls.search,
     setSearch: controls.setSearch,

@@ -2,11 +2,15 @@ import type { ReactNode } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import { EditableDataTable, Skeleton, type EditableColumn } from '@hatohui/ui';
 import { useAdminTableControls } from '../../hooks/useAdminTableControls';
+import { useColumnVisibility } from '../../hooks/useColumnVisibility';
 import type { useRowDeletion } from '../../hooks/useRowDeletion';
 import SearchField from '../shared/SearchField';
+import ColumnToggle from './ColumnToggle';
 import DeleteRowDialog from './DeleteRowDialog';
 import QuickAddBar from './QuickAddBar';
 import TablePagination from './TablePagination';
+
+const DEFAULT_HIDDEN_COLUMNS = ['createdAt'] as const;
 
 interface Props<T extends { id: string; name: string }> {
   storageKey: string;
@@ -24,25 +28,37 @@ interface Props<T extends { id: string; name: string }> {
 function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
   const { t } = useTranslation();
   const controls = useAdminTableControls(props.rows, props.columns);
+  const visibility = useColumnVisibility(
+    props.storageKey,
+    props.columns,
+    DEFAULT_HIDDEN_COLUMNS,
+  );
 
   return (
     <div className="space-y-4">
       <QuickAddBar placeholder={props.addPlaceholder} onAdd={props.add}>
         {props.addControls}
       </QuickAddBar>
-      <SearchField
-        value={controls.search}
-        placeholder={t('admin.searchPlaceholder')}
-        onChange={controls.setSearch}
-        suggestions={controls.suggestions}
-      />
+      <div className="flex items-center gap-2">
+        <SearchField
+          value={controls.search}
+          placeholder={t('admin.searchPlaceholder')}
+          onChange={controls.setSearch}
+          suggestions={controls.suggestions}
+        />
+        <ColumnToggle
+          columns={props.columns}
+          hiddenSet={visibility.hiddenSet}
+          onToggle={visibility.toggle}
+        />
+      </div>
       {props.isLoading ? (
         <Skeleton className="h-48 w-full" />
       ) : (
         <>
           <EditableDataTable
             storageKey={props.storageKey}
-            columns={props.columns}
+            columns={visibility.visibleColumns}
             rows={controls.pagedRows}
             sortBy={controls.sortBy}
             sortDirection={controls.sortDirection}

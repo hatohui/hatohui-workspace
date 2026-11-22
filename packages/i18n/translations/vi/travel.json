@@ -208,6 +208,8 @@
     "perPage": "Số hàng mỗi trang",
     "previous": "Trước",
     "next": "Sau",
+    "columns": "Cột",
+    "mapsLink": "Link bản đồ",
     "kinds": {
       "DIET": "Chế độ ăn",
       "ALLERGEN": "Dị ứng"

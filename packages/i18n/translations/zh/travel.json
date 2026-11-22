@@ -208,6 +208,8 @@
     "perPage": "每页行数",
     "previous": "上一页",
     "next": "下一页",
+    "columns": "列",
+    "mapsLink": "地图链接",
     "kinds": {
       "DIET": "饮食",
       "ALLERGEN": "过敏原"

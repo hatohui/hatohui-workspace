@@ -208,6 +208,8 @@
     "perPage": "Rows per page",
     "previous": "Previous",
     "next": "Next",
+    "columns": "Columns",
+    "mapsLink": "Maps link",
     "kinds": {
       "DIET": "Diet",
       "ALLERGEN": "Allergen"

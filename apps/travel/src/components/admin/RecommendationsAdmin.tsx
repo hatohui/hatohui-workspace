@@ -2,6 +2,7 @@ import { useTranslation } from '@hatohui/i18n';
 import { EditableDataTable, Skeleton } from '@hatohui/ui';
 import { useAdminRecommendations } from '../../hooks/useAdminRecommendations';
 import SearchField from '../shared/SearchField';
+import ColumnToggle from './ColumnToggle';
 import DeleteRowDialog from './DeleteRowDialog';
 import TablePagination from './TablePagination';
 
@@ -11,18 +12,25 @@ function RecommendationsAdmin() {
 
   return (
     <div className="space-y-4">
-      <SearchField
-        value={admin.search}
-        placeholder={t('admin.searchPlaceholder')}
-        onChange={admin.setSearch}
-        suggestions={admin.suggestions}
-      />
+      <div className="flex items-center gap-2">
+        <SearchField
+          value={admin.search}
+          placeholder={t('admin.searchPlaceholder')}
+          onChange={admin.setSearch}
+          suggestions={admin.suggestions}
+        />
+        <ColumnToggle
+          columns={admin.allColumns}
+          hiddenSet={admin.hiddenColumns}
+          onToggle={admin.toggleColumn}
+        />
+      </div>
       {admin.isLoading ? (
         <Skeleton className="h-48 w-full" />
       ) : (
         <>
           <EditableDataTable
-            storageKey="travel-admin-recommendations"
+            storageKey={admin.storageKey}
             columns={admin.columns}
             rows={admin.rows}
             sortBy={admin.sortBy}
