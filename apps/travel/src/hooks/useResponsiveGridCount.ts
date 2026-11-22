@@ -3,13 +3,16 @@ import { useEffect, useState } from 'react';
 export type ResponsiveGridVariant = 'catalog' | 'adminCards';
 
 function gridCountFor(variant: ResponsiveGridVariant): number {
-  if (typeof window === 'undefined') return variant === 'adminCards' ? 24 : 16;
+  if (typeof window === 'undefined') return variant === 'adminCards' ? 24 : 20;
   if (variant === 'adminCards') {
     if (window.matchMedia('(min-width: 1280px)').matches) return 24;
     if (window.matchMedia('(min-width: 1024px)').matches) return 16;
     return 12;
   }
-  return window.matchMedia('(min-width: 1280px)').matches ? 16 : 12;
+  if (window.matchMedia('(min-width: 1536px)').matches) return 24;
+  if (window.matchMedia('(min-width: 1280px)').matches) return 20;
+  if (window.matchMedia('(min-width: 1024px)').matches) return 16;
+  return 12;
 }
 
 export function useResponsiveGridCount(
@@ -24,7 +27,11 @@ export function useResponsiveGridCount(
             window.matchMedia('(min-width: 1280px)'),
             window.matchMedia('(min-width: 1024px)'),
           ]
-        : [window.matchMedia('(min-width: 1280px)')];
+        : [
+            window.matchMedia('(min-width: 1536px)'),
+            window.matchMedia('(min-width: 1280px)'),
+            window.matchMedia('(min-width: 1024px)'),
+          ];
     const update = () => setCount(gridCountFor(variant));
     update();
     for (const mql of queries) mql.addEventListener('change', update);
