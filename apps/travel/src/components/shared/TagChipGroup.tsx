@@ -1,5 +1,11 @@
 import { Check, type LucideIcon } from 'lucide-react';
 import { cn } from '@hatohui/ui';
+import {
+  CHIP_BASE,
+  CHIP_IDLE,
+  CHIP_SELECTED,
+  CHIP_SELECTED_WARNING,
+} from '../../constants/chips';
 import { useChipOverflow } from '../../hooks/useChipOverflow';
 import MoreChip from './MoreChip';
 import TagChipIcon from './TagChipIcon';
@@ -30,26 +36,24 @@ function TagChipGroup<T extends string>({
     <div role="group" aria-label={label} className="flex flex-wrap gap-1">
       {overflow.visible.map((option) => {
         const isOn = selected.includes(option);
+        const icon = iconOf?.(option);
+        const text = labelOf(option);
         return (
           <button
             key={option}
             type="button"
             aria-pressed={isOn}
             onClick={() => onToggle(option)}
+            title={text}
             className={cn(
-              'inline-flex h-8 cursor-pointer items-center gap-1 rounded-full border px-2.5 text-xs transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none sm:h-7',
-              !isOn &&
-                'border-border text-muted-foreground hover:text-foreground',
-              isOn &&
-                tone === 'default' &&
-                'border-primary bg-primary/10 text-foreground',
-              isOn &&
-                tone === 'warning' &&
-                'border-amber-500/60 bg-amber-500/10 text-amber-800 dark:text-amber-300',
+              CHIP_BASE,
+              !isOn && CHIP_IDLE,
+              isOn && tone === 'default' && CHIP_SELECTED,
+              isOn && tone === 'warning' && CHIP_SELECTED_WARNING,
             )}
           >
-            <TagChipIcon icon={isOn ? Check : iconOf?.(option)} />
-            {labelOf(option)}
+            <TagChipIcon icon={icon && isOn ? Check : icon} />
+            <span className="truncate">{text}</span>
           </button>
         );
       })}
