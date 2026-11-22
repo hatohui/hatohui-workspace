@@ -23,6 +23,7 @@ interface Props<T extends { id: string; name: string }> {
   commit: (id: string, key: keyof T & string, value: string) => void;
   add: (names: string[]) => Promise<boolean>;
   addControls?: ReactNode;
+  toolbarActions?: ReactNode;
 }
 
 function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
@@ -45,13 +46,14 @@ function AdminTable<T extends { id: string; name: string }>(props: Props<T>) {
       <QuickAddBar placeholder={props.addPlaceholder} onAdd={handleAdd}>
         {props.addControls}
       </QuickAddBar>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <SearchField
           value={controls.search}
           placeholder={t('admin.searchPlaceholder')}
           onChange={controls.setSearch}
           suggestions={controls.suggestions}
         />
+        {props.toolbarActions}
         <ColumnToggle
           columns={props.columns}
           hiddenSet={visibility.hiddenSet}

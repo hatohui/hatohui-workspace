@@ -3,18 +3,21 @@ import {
   getTravelDishesQueryKey,
   useBulkCreateTravelDishes,
   useDeleteTravelDish,
+  useGenerateTravelDishDescriptions,
   useTravelDishes,
   useUpdateTravelDish,
   type TravelDishDto,
 } from '@hatohui/models';
-import type { EditableColumn } from '@hatohui/ui';
+import { useToast, type EditableColumn } from '@hatohui/ui';
 import { CUISINE_LIST_SEPARATOR } from '../constants/admin';
 import { MAX_CATEGORIES, MAX_CUISINES } from '../constants/travel';
 import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useAdminDishPhotos } from './useAdminDishPhotos';
 import { useCuisineSuggestions } from './useCuisineSuggestions';
+import { useErrorMessage } from './useErrorMessage';
 import { useFoodCategorySuggestions } from './useFoodCategorySuggestions';
+import { useInvalidateTravel } from './useInvalidateTravel';
 import { useRowDeletion } from './useRowDeletion';
 
 export interface DishRow {
@@ -40,10 +43,14 @@ export function useAdminDishes() {
   const update = useUpdateTravelDish();
   const remove = useDeleteTravelDish();
   const bulk = useBulkCreateTravelDishes();
+  const generateMissing = useGenerateTravelDishDescriptions();
   const suggestions = useCuisineSuggestions();
   const categorySuggestions = useFoodCategorySuggestions();
   const { run, runBulk } = useAdminAction();
   const photo = useAdminDishPhotos(run);
+  const toast = useToast();
+  const errorMessage = useErrorMessage();
+  const invalidate = useInvalidateTravel();
 
   const rows: DishRow[] = (query.data?.data ?? []).map((dish) => ({
     id: dish.id,
@@ -55,6 +62,40 @@ export function useAdminDishes() {
     placeCount: dish.placeCount,
     createdAt: dish.createdAt,
   }));
+
+  const missingDescriptionCount = rows.filter(
+    (row) => !row.description.trim(),
+  ).length;
+
+  const generateDescriptions = async () => {
+    if (generateMissing.isPending || missingDescriptionCount === 0) return;
+    const toastId = toast.loading(t('admin.generatingDescriptions'), 0.2);
+    try {
+      const { data } = await generateMissing.mutateAsync({ data: {} });
+      toast.update(toastId, t('form.refreshingCatalog'), 'loading', 0.85);
+      await invalidate();
+      if (data.updated === 0 && data.failed === 0) {
+        toast.update(toastId, t('admin.noMissingDescriptions'), 'info');
+      } else if (data.failed > 0) {
+        toast.update(
+          toastId,
+          t('admin.generatedDescriptionsPartial', {
+            updated: data.updated,
+            failed: data.failed,
+          }),
+          data.updated > 0 ? 'info' : 'error',
+        );
+      } else {
+        toast.update(
+          toastId,
+          t('admin.generatedDescriptions', { updated: data.updated }),
+          'success',
+        );
+      }
+    } catch (error) {
+      toast.update(toastId, errorMessage(error), 'error');
+    }
+  };
 
   const columns: EditableColumn<DishRow>[] = [
     {
@@ -158,5 +199,8 @@ export function useAdminDishes() {
     add: (names: string[]) =>
       runBulk(() => bulk.mutateAsync({ data: { names } })),
     photo,
+    missingDescriptionCount,
+    isGeneratingDescriptions: generateMissing.isPending,
+    generateDescriptions,
   };
 }

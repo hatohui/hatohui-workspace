@@ -306,7 +306,12 @@
     "noCountry": "国なし",
     "area": "都市・エリア",
     "noArea": "エリアなし",
-    "photo": "写真"
+    "photo": "写真",
+    "generateDescriptions": "説明を生成 ({{count}})",
+    "generatingDescriptions": "料理の説明を生成中…",
+    "generatedDescriptions": "{{updated}}件の説明を生成しました",
+    "generatedDescriptionsPartial": "{{updated}}件生成（{{failed}}件失敗）",
+    "noMissingDescriptions": "すべての料理に説明があります。"
   },
   "settings": {
     "tabs": {

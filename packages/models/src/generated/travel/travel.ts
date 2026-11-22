@@ -41,6 +41,8 @@ import type {
   CreateTravelPlaceDto,
   CreateTravelRecommendationDto,
   CreateTravelScheduleExceptionDto,
+  GenerateTravelDishDescriptionsDto,
+  GenerateTravelDishDescriptionsResultDto,
   InviteTravelMemberDto,
   KickTravelMemberDto,
   MapsLinkPreviewDto,
@@ -816,6 +818,88 @@ export const useBulkCreateTravelDishes = <TError = unknown,
         TContext
       > => {
       return useMutation(getBulkCreateTravelDishesMutationOptions(options), queryClient);
+    }
+    export type generateTravelDishDescriptionsResponse200 = {
+  data: GenerateTravelDishDescriptionsResultDto
+  status: 200
+}
+
+export type generateTravelDishDescriptionsResponseSuccess = (generateTravelDishDescriptionsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type generateTravelDishDescriptionsResponse = (generateTravelDishDescriptionsResponseSuccess)
+
+export const getGenerateTravelDishDescriptionsUrl = () => {
+
+
+
+
+  return `/travel/dishes/generate-descriptions`
+}
+
+/**
+ * @summary Generate concise English descriptions for dishes missing one
+ */
+export const generateTravelDishDescriptions = async (generateTravelDishDescriptionsDto: GenerateTravelDishDescriptionsDto, options?: RequestInit): Promise<generateTravelDishDescriptionsResponse> => {
+
+  return customFetch<generateTravelDishDescriptionsResponse>(getGenerateTravelDishDescriptionsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(generateTravelDishDescriptionsDto)
+  }
+);}
+
+
+
+
+
+export const getGenerateTravelDishDescriptionsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateTravelDishDescriptions>>, TError,{data: GenerateTravelDishDescriptionsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof generateTravelDishDescriptions>>, TError,{data: GenerateTravelDishDescriptionsDto}, TContext> => {
+
+const mutationKey = ['generateTravelDishDescriptions'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateTravelDishDescriptions>>, {data: GenerateTravelDishDescriptionsDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  generateTravelDishDescriptions(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GenerateTravelDishDescriptionsMutationResult = NonNullable<Awaited<ReturnType<typeof generateTravelDishDescriptions>>>
+    export type GenerateTravelDishDescriptionsMutationBody = GenerateTravelDishDescriptionsDto
+    export type GenerateTravelDishDescriptionsMutationError = unknown
+
+    /**
+ * @summary Generate concise English descriptions for dishes missing one
+ */
+export const useGenerateTravelDishDescriptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateTravelDishDescriptions>>, TError,{data: GenerateTravelDishDescriptionsDto}, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof generateTravelDishDescriptions>>,
+        TError,
+        {data: GenerateTravelDishDescriptionsDto},
+        TContext
+      > => {
+      return useMutation(getGenerateTravelDishDescriptionsMutationOptions(options), queryClient);
     }
     export type travelAccessResponse200 = {
   data: TravelAccessDto

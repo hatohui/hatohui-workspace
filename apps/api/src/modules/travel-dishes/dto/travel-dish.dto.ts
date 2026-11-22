@@ -273,3 +273,28 @@ export class PaginatedTravelDishesDto {
   @ApiProperty({ description: 'Whether another page can be requested' })
   hasMore!: boolean;
 }
+
+export class GenerateTravelDishDescriptionsDto {
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description:
+      'Optional dish ids to fill; omit to generate for all dishes missing a description',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(100)
+  @IsString({ each: true })
+  dishIds?: string[];
+}
+
+export class GenerateTravelDishDescriptionsResultDto {
+  @ApiProperty({ description: 'Dishes given an AI-generated description' })
+  updated!: number;
+
+  @ApiProperty({ description: 'Dishes skipped because they already had one' })
+  skipped!: number;
+
+  @ApiProperty({ description: 'Dishes that could not be generated' })
+  failed!: number;
+}
