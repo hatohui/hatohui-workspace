@@ -1,7 +1,12 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
-import { Button, Label } from '@hatohui/ui';
-import { ImagePlus, Loader2, X } from 'lucide-react';
+import {
+  Button,
+  ImageCropDialog,
+  Label,
+  type CropAspectOption,
+} from '@hatohui/ui';
+import { Crop, ImagePlus, Loader2, X } from 'lucide-react';
 import { ACCEPTED_IMAGE_TYPES } from '../../constants/travel';
 import type { useDishPhoto } from '../../hooks/useDishPhoto';
 import { useImagePaste } from '../../hooks/useImagePaste';
@@ -10,12 +15,19 @@ interface Props {
   photo: ReturnType<typeof useDishPhoto>;
 }
 
+const DISH_ASPECT_OPTIONS: CropAspectOption[] = [
+  { label: '4:3', value: 4 / 3 },
+  { label: '1:1', value: 1 },
+];
+
 function DishPhotoField({ photo }: Props) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+
   useImagePaste((files) => {
-    if (files[0]) photo.pickFile(files[0]);
-  }, !photo.isUploading);
+    if (files[0]) setCropFile(files[0]);
+  }, !photo.isUploading && !cropFile);
 
   return (
     <div className="space-y-1.5">
@@ -28,7 +40,7 @@ function DishPhotoField({ photo }: Props) {
         onChange={(event) => {
           const file = event.target.files?.[0];
           event.target.value = '';
-          if (file) photo.pickFile(file);
+          if (file) setCropFile(file);
         }}
       />
       {photo.previewUrl ? (
@@ -43,16 +55,28 @@ function DishPhotoField({ photo }: Props) {
               <Loader2 className="size-5 animate-spin" />
             </div>
           )}
-          <Button
-            type="button"
-            variant="secondary"
-            size="icon-sm"
-            aria-label={t('dishes.removePhoto')}
-            onClick={photo.remove}
-            className="absolute top-1.5 right-1.5"
-          >
-            <X className="size-3.5" />
-          </Button>
+          <div className="absolute top-1.5 right-1.5 flex gap-1">
+            {photo.pendingFile && !photo.isUploading && (
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon-sm"
+                aria-label={t('form.cropPhoto')}
+                onClick={() => setCropFile(photo.pendingFile)}
+              >
+                <Crop className="size-3.5" />
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon-sm"
+              aria-label={t('dishes.removePhoto')}
+              onClick={photo.remove}
+            >
+              <X className="size-3.5" />
+            </Button>
+          </div>
         </div>
       ) : (
         <Button
@@ -65,6 +89,23 @@ function DishPhotoField({ photo }: Props) {
           {t('form.addPhotos')}
         </Button>
       )}
+      <ImageCropDialog
+        open={Boolean(cropFile)}
+        file={cropFile}
+        aspect={4 / 3}
+        aspectOptions={DISH_ASPECT_OPTIONS}
+        title={t('form.cropPhoto')}
+        hint={t('form.cropHint')}
+        cancelLabel={t('form.cancel')}
+        confirmLabel={t('form.cropApply')}
+        zoomLabel={t('form.cropZoom')}
+        resetLabel={t('form.cropReset')}
+        onCancel={() => setCropFile(null)}
+        onConfirm={(cropped) => {
+          photo.pickFile(cropped);
+          setCropFile(null);
+        }}
+      />
     </div>
   );
 }

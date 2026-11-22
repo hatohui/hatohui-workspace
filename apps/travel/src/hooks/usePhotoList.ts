@@ -83,6 +83,20 @@ export function usePhotoList(initial: TravelImageDto[]) {
     });
   };
 
+  const replaceFile = (id: string, file: File) =>
+    setPhotos((list) =>
+      list.map((photo) => {
+        if (photo.id !== id) return photo;
+        if (photo.url.startsWith('blob:')) URL.revokeObjectURL(photo.url);
+        return {
+          ...photo,
+          key: null,
+          file,
+          url: URL.createObjectURL(file),
+        };
+      }),
+    );
+
   const makeCover = (id: string) =>
     setPhotos((list) => {
       const photo = list.find((item) => item.id === id);
@@ -97,6 +111,7 @@ export function usePhotoList(initial: TravelImageDto[]) {
   return {
     photos,
     addFiles,
+    replaceFile,
     uploadPending,
     remove: (id: string) => patch(id, null),
     makeCover,

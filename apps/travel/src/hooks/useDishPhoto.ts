@@ -45,5 +45,12 @@ export function useDishPhoto(
     }
   };
 
-  return { previewUrl, isUploading, pickFile, remove, uploadPending };
+  return {
+    previewUrl,
+    pendingFile,
+    isUploading,
+    pickFile,
+    remove,
+    uploadPending,
+  };
 }

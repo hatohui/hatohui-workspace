@@ -1,6 +1,6 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Spinner } from '@hatohui/ui';
-import { Star, X } from 'lucide-react';
+import { Crop, Star, X } from 'lucide-react';
 import type { PhotoItem } from '../../hooks/usePhotoList';
 
 interface Props {
@@ -8,12 +8,13 @@ interface Props {
   isCover: boolean;
   onRemove: () => void;
   onMakeCover: () => void;
+  onCrop?: () => void;
 }
 
 const actionClass =
   'flex size-7 cursor-pointer items-center justify-center rounded-full bg-background/90 shadow-soft';
 
-function PhotoThumb({ photo, isCover, onRemove, onMakeCover }: Props) {
+function PhotoThumb({ photo, isCover, onRemove, onMakeCover, onCrop }: Props) {
   const { t } = useTranslation();
   return (
     <div className="relative aspect-square overflow-hidden rounded-lg bg-card">
@@ -32,6 +33,16 @@ function PhotoThumb({ photo, isCover, onRemove, onMakeCover }: Props) {
         </span>
       )}
       <div className="absolute top-1 right-1 flex gap-1">
+        {onCrop && !photo.uploading && (
+          <button
+            type="button"
+            className={actionClass}
+            aria-label={t('form.cropPhoto')}
+            onClick={onCrop}
+          >
+            <Crop className="size-3.5" aria-hidden />
+          </button>
+        )}
         {!isCover && !photo.uploading && (
           <button
             type="button"

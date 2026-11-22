@@ -12,6 +12,7 @@ export * from './components/ui/searchable-select';
 export * from './components/ui/tag-input';
 export * from './components/ui/avatar';
 export * from './components/ui/avatar-upload-inline';
+export * from './components/ui/image-crop-dialog';
 export * from './components/ui/popover';
 export * from './components/ui/calendar';
 export * from './components/ui/date-time-field';

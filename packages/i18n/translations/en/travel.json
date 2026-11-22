@@ -4,6 +4,9 @@
     "food": "Food",
     "dishes": "Dishes",
     "places": "Places",
+    "events": "Events",
+    "schedule": "Schedule",
+    "settings": "Settings",
     "admin": "Admin"
   },
   "catalog": {
@@ -90,6 +93,11 @@
     "browsePhotos": "or click to browse",
     "photosHint": "Up to {{count}} photos. Paste, drop, or click. First is cover.",
     "cover": "Cover",
+    "cropPhoto": "Crop photo",
+    "cropHint": "Drag to reposition, scroll or use the slider to zoom.",
+    "cropApply": "Apply crop",
+    "cropZoom": "Zoom",
+    "cropReset": "Reset",
     "uploadingPhotos_one": "Uploading {{count}} photo…",
     "uploadingPhotos_other": "Uploading {{count}} photos…",
     "savingItem": "Saving {{name}}…",
@@ -200,7 +208,9 @@
       "areas": "Areas",
       "dishes": "Dishes",
       "cuisines": "Cuisines",
-      "tags": "Tags"
+      "tags": "Tags",
+      "events": "Events",
+      "jobProfiles": "Job profiles"
     },
     "dish": "Dish",
     "place": "Place",
@@ -230,6 +240,159 @@
       "DIET": "Diet",
       "ALLERGEN": "Allergen",
       "GENERAL": "Tag"
+    },
+    "jobProfiles": {
+      "user": "User",
+      "jobTitle": "Title",
+      "annual": "Annual days",
+      "sick": "Sick days",
+      "cycleStart": "Cycle start",
+      "empty": "No job profiles yet.",
+      "deleteDescription": "Remove this user's leave profile. They can create a new one anytime."
+    },
+    "events": {
+      "all": "All",
+      "pending": "Pending",
+      "approved": "Approved",
+      "approve": "Approve",
+      "approvedBadge": "Approved",
+      "pendingBadge": "Pending",
+      "empty": "No events found.",
+      "deleteTitle": "Permanently delete {{title}}?",
+      "deleteDescription": "This permanently removes the event, its travel groups, activities, and photos, and notifies participants."
+    }
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Conventions, furmeets, and group gatherings.",
+    "create": "Create event",
+    "searchPlaceholder": "Search events",
+    "count_one": "{{count}} event",
+    "count_other": "{{count}} events",
+    "empty": "No events yet.",
+    "views": {
+      "timeline": "Timeline",
+      "calendar": "Calendar",
+      "list": "List"
+    },
+    "badges": {
+      "yearly": "Yearly",
+      "private": "Private",
+      "pending": "Pending approval"
+    },
+    "detail": {
+      "openReference": "Event website",
+      "edit": "Edit event",
+      "close": "Close"
+    },
+    "form": {
+      "createTitle": "Create event",
+      "editTitle": "Edit event",
+      "title": "Event title",
+      "titlePlaceholder": "Fuvekon 2026",
+      "description": "Description",
+      "descriptionPlaceholder": "What is this event about?",
+      "startAt": "Start",
+      "endAt": "End",
+      "visibility": "Visibility",
+      "public": "Public (requires editor approval)",
+      "private": "Private (auto-approved, invite-only)",
+      "isYearly": "Repeats yearly",
+      "location": "Location",
+      "locationPlaceholder": "Venue or city",
+      "mapsUrl": "Google Maps link",
+      "reference": "Website / reference URL",
+      "coverPhoto": "Cover photo",
+      "save": "Save event",
+      "saving": "Saving...",
+      "delete": "Delete event",
+      "signInPrompt": "Sign in to create or edit events."
+    }
+  },
+  "schedule": {
+    "title": "Work schedule & leave",
+    "subtitle": "Track your leave balance, work days, and holidays.",
+    "signInPrompt": "Sign in to view your leave balance and work schedule.",
+    "configure": "Configure",
+    "annualLeave": "Annual leave",
+    "sickLeave": "Sick leave",
+    "daysRemaining": "{{remaining}} of {{total}} days left",
+    "daysUsed": "{{used}} used",
+    "cycleRange": "Cycle {{from}} – {{to}}",
+    "noProfileTitle": "Set up your leave profile",
+    "noProfileHint": "Add your annual and sick leave allowance to track remaining days.",
+    "setupProfile": "Set up leave",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "today": "Today",
+    "workDay": "Work day",
+    "offDay": "Day off",
+    "holiday": "Holiday",
+    "forcedWork": "Forced work day",
+    "forcedOff": "Forced day off",
+    "heatmapTitle": "Leave activity ({{year}})",
+    "heatmapEmpty": "No leave recorded in {{year}}.",
+    "weekdays": {
+      "sunday": "Sun",
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat"
+    }
+  },
+  "settings": {
+    "title": "Travel settings",
+    "signInPrompt": "Sign in to manage your travel settings.",
+    "tabs": {
+      "leave": "Leave allowance",
+      "schedule": "Work schedule",
+      "holidays": "Holidays"
+    },
+    "leave": {
+      "title": "Leave allowance",
+      "description": "Configure your annual and sick leave days and when your leave year starts.",
+      "jobTitle": "Role / title (optional)",
+      "jobTitlePlaceholder": "Software Engineer",
+      "annualDays": "Annual leave days",
+      "sickDays": "Sick leave days",
+      "cycleStart": "Leave cycle start",
+      "save": "Save allowance",
+      "saving": "Saving...",
+      "confirm": "Confirm for this cycle",
+      "confirmedAt": "Last confirmed {{date}}"
+    },
+    "workSchedule": {
+      "title": "Weekly work days",
+      "description": "Select the days you normally work. Off days never count against leave.",
+      "save": "Save schedule",
+      "saving": "Saving...",
+      "exceptionsTitle": "Schedule exceptions",
+      "exceptionsDescription": "Override specific dates as forced work days or forced days off.",
+      "date": "Date",
+      "type": "Override",
+      "forcedWork": "Forced work day",
+      "forcedOff": "Forced day off",
+      "reason": "Reason (optional)",
+      "reasonPlaceholder": "Swap day, company retreat...",
+      "addException": "Add exception",
+      "noExceptions": "No schedule exceptions yet.",
+      "remove": "Remove"
+    },
+    "holidays": {
+      "countryTitle": "Public holiday country",
+      "countryDescription": "Public holidays for this country are automatically excluded from leave.",
+      "country": "Country",
+      "customTitle": "Custom holidays",
+      "customDescription": "Personal or company holidays that won't count against your balance.",
+      "date": "Date",
+      "name": "Holiday name",
+      "namePlaceholder": "Company anniversary",
+      "add": "Add holiday",
+      "noCustom": "No custom holidays yet.",
+      "publicTitle": "Public holidays ({{year}})",
+      "noPublic": "No public holidays found for this country."
     }
   }
 }
