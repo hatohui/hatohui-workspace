@@ -103,7 +103,7 @@
     "photosHint": "Up to {{count}} photos. Paste, drop, or click. First is cover.",
     "cover": "Cover",
     "cropPhoto": "Crop photo",
-    "cropHint": "Drag to reposition, scroll or use the slider to zoom.",
+    "cropHint": "Drag to reposition, scroll or use the slider to zoom. Zoom out to fit the whole photo.",
     "cropApply": "Apply crop",
     "cropZoom": "Zoom",
     "cropReset": "Reset",
@@ -120,7 +120,8 @@
     "areaNone": "No area",
     "linkNoLocation": "Couldn't find a location in this link.",
     "useLinkName": "Use \"{{name}}\" as the name",
-    "mapPreview": "Map preview"
+    "mapPreview": "Map preview",
+    "cropFit": "Fit whole photo"
   },
   "dishes": {
     "back": "All dishes",

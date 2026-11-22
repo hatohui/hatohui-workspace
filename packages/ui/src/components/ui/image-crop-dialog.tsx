@@ -1,6 +1,11 @@
 import * as React from 'react';
-import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
-import { computeCropArea, exportCroppedFile } from '../../lib/crop-image';
+import { RotateCcw, Shrink, ZoomIn, ZoomOut } from 'lucide-react';
+import {
+  computeCropLayout,
+  coverScale,
+  exportCroppedFile,
+  fitZoom,
+} from '../../lib/crop-image';
 import { cn } from '../../lib/utils';
 import { Button } from './button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './dialog';
@@ -24,11 +29,11 @@ export interface ImageCropDialogProps {
   confirmLabel?: string;
   zoomLabel?: string;
   resetLabel?: string;
+  fitLabel?: string;
   onCancel: () => void;
   onConfirm: (croppedFile: File) => void;
 }
 
-const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.05;
 
@@ -48,6 +53,7 @@ function ImageCropDialog({
   confirmLabel = 'Apply crop',
   zoomLabel = 'Zoom',
   resetLabel = 'Reset',
+  fitLabel = 'Fit whole photo',
   onCancel,
   onConfirm,
 }: ImageCropDialogProps) {
@@ -66,7 +72,7 @@ function ImageCropDialog({
   const [isDragging, setIsDragging] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
 
-  const viewportRef = React.useRef<HTMLDivElement>(null);
+  const [viewport, setViewport] = React.useState<HTMLDivElement | null>(null);
   const imageRef = React.useRef<HTMLImageElement>(null);
   const dragStartRef = React.useRef<{
     pointerX: number;
@@ -93,38 +99,46 @@ function ImageCropDialog({
   }, [file, open]);
 
   React.useEffect(() => {
-    const node = viewportRef.current;
-    if (!node || !open) return;
+    if (!viewport) return;
     const measure = () => {
-      const rect = node.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        setBoxSize({ width: rect.width, height: rect.height });
+      const width = viewport.clientWidth;
+      const height = viewport.clientHeight;
+      if (width > 0 && height > 0) {
+        setBoxSize({ width, height });
       }
     };
     measure();
     const observer = new ResizeObserver(measure);
-    observer.observe(node);
+    observer.observe(viewport);
     return () => observer.disconnect();
-  }, [open, activeAspect]);
+  }, [viewport]);
+
+  const frame = React.useMemo(
+    () =>
+      naturalSize && {
+        naturalWidth: naturalSize.width,
+        naturalHeight: naturalSize.height,
+        boxWidth: boxSize.width,
+        boxHeight: boxSize.height,
+      },
+    [boxSize.height, boxSize.width, naturalSize],
+  );
+  const minZoom = frame ? Math.min(1, fitZoom(frame)) : 1;
 
   const computeBounds = React.useCallback(
     (nextZoom: number) => {
-      if (!naturalSize) return { maxX: 0, maxY: 0, renderedW: 0, renderedH: 0 };
-      const baseScale = Math.max(
-        boxSize.width / naturalSize.width,
-        boxSize.height / naturalSize.height,
-      );
-      const displayScale = baseScale * nextZoom;
-      const renderedW = naturalSize.width * displayScale;
-      const renderedH = naturalSize.height * displayScale;
+      if (!frame) return { maxX: 0, maxY: 0, renderedW: 0, renderedH: 0 };
+      const displayScale = coverScale(frame) * nextZoom;
+      const renderedW = frame.naturalWidth * displayScale;
+      const renderedH = frame.naturalHeight * displayScale;
       return {
         renderedW,
         renderedH,
-        maxX: Math.max(0, (renderedW - boxSize.width) / 2),
-        maxY: Math.max(0, (renderedH - boxSize.height) / 2),
+        maxX: Math.abs(renderedW - frame.boxWidth) / 2,
+        maxY: Math.abs(renderedH - frame.boxHeight) / 2,
       };
     },
-    [boxSize.height, boxSize.width, naturalSize],
+    [frame],
   );
 
   const clampOffset = React.useCallback(
@@ -140,11 +154,11 @@ function ImageCropDialog({
 
   const updateZoom = React.useCallback(
     (nextZoom: number) => {
-      const clampedZoom = clamp(nextZoom, MIN_ZOOM, MAX_ZOOM);
+      const clampedZoom = clamp(nextZoom, minZoom, MAX_ZOOM);
       setZoom(clampedZoom);
       setOffset((current) => clampOffset(current.x, current.y, clampedZoom));
     },
-    [clampOffset],
+    [clampOffset, minZoom],
   );
 
   const handleAspectChange = (nextAspect: number) => {
@@ -170,7 +184,9 @@ function ImageCropDialog({
     if (!start) return;
     const dx = event.clientX - start.pointerX;
     const dy = event.clientY - start.pointerY;
-    setOffset(clampOffset(start.originX + dx, start.originY + dy, zoom));
+    setOffset(
+      clampOffset(start.originX + dx, start.originY + dy, effectiveZoom),
+    );
   };
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -186,7 +202,7 @@ function ImageCropDialog({
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
     const delta = event.deltaY < 0 ? 0.15 : -0.15;
-    updateZoom(zoom + delta);
+    updateZoom(effectiveZoom + delta);
   };
 
   const handleReset = () => {
@@ -194,29 +210,34 @@ function ImageCropDialog({
     setOffset({ x: 0, y: 0 });
   };
 
+  const handleFit = () => {
+    setZoom(minZoom);
+    setOffset({ x: 0, y: 0 });
+  };
+
+  const effectiveZoom = clamp(zoom, minZoom, MAX_ZOOM);
+  const isFitting = effectiveZoom < 1;
+
   const handleConfirm = async () => {
     const image = imageRef.current;
-    if (!file || !image || !naturalSize) return;
+    if (!file || !image || !frame) return;
     setIsExporting(true);
     try {
-      const area = computeCropArea({
-        naturalWidth: naturalSize.width,
-        naturalHeight: naturalSize.height,
-        boxWidth: boxSize.width,
-        boxHeight: boxSize.height,
-        zoom,
-        offsetX: offset.x,
-        offsetY: offset.y,
+      const layout = computeCropLayout({
+        ...frame,
+        zoom: effectiveZoom,
+        offsetX: clamped.x,
+        offsetY: clamped.y,
       });
-      const cropped = await exportCroppedFile(file, image, area);
+      const cropped = await exportCroppedFile(file, image, layout);
       onConfirm(cropped);
     } finally {
       setIsExporting(false);
     }
   };
 
-  const { renderedW, renderedH } = computeBounds(zoom);
-  const clamped = clampOffset(offset.x, offset.y, zoom);
+  const { renderedW, renderedH } = computeBounds(effectiveZoom);
+  const clamped = clampOffset(offset.x, offset.y, effectiveZoom);
   const imgLeft = (boxSize.width - renderedW) / 2 + clamped.x;
   const imgTop = (boxSize.height - renderedH) / 2 + clamped.y;
 
@@ -261,7 +282,7 @@ function ImageCropDialog({
 
           <div className="flex justify-center">
             <div
-              ref={viewportRef}
+              ref={setViewport}
               style={{ aspectRatio: String(activeAspect) }}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
@@ -273,6 +294,15 @@ function ImageCropDialog({
                 isDragging ? 'cursor-grabbing' : 'cursor-grab',
               )}
             >
+              {imageUrl && isFitting && (
+                <img
+                  src={imageUrl}
+                  alt=""
+                  aria-hidden
+                  draggable={false}
+                  className="pointer-events-none absolute inset-0 size-full scale-110 object-cover blur-xl brightness-75"
+                />
+              )}
               {imageUrl && (
                 <img
                   ref={imageRef}
@@ -337,18 +367,18 @@ function ImageCropDialog({
               variant="ghost"
               size="icon-sm"
               aria-label={zoomLabel}
-              onClick={() => updateZoom(zoom - 0.25)}
-              disabled={zoom <= MIN_ZOOM}
+              onClick={() => updateZoom(effectiveZoom - 0.25)}
+              disabled={effectiveZoom <= minZoom}
             >
               <ZoomOut className="size-4" aria-hidden />
             </Button>
             <input
               type="range"
               aria-label={zoomLabel}
-              min={MIN_ZOOM}
+              min={minZoom}
               max={MAX_ZOOM}
               step={ZOOM_STEP}
-              value={zoom}
+              value={effectiveZoom}
               onChange={(event) => updateZoom(Number(event.target.value))}
               className="h-1.5 flex-1 cursor-pointer accent-primary"
             />
@@ -357,10 +387,21 @@ function ImageCropDialog({
               variant="ghost"
               size="icon-sm"
               aria-label={zoomLabel}
-              onClick={() => updateZoom(zoom + 0.25)}
-              disabled={zoom >= MAX_ZOOM}
+              onClick={() => updateZoom(effectiveZoom + 0.25)}
+              disabled={effectiveZoom >= MAX_ZOOM}
             >
               <ZoomIn className="size-4" aria-hidden />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label={fitLabel}
+              title={fitLabel}
+              onClick={handleFit}
+              disabled={minZoom >= 1 || effectiveZoom === minZoom}
+            >
+              <Shrink className="size-3.5" aria-hidden />
             </Button>
             <Button
               type="button"
@@ -369,7 +410,7 @@ function ImageCropDialog({
               aria-label={resetLabel}
               title={resetLabel}
               onClick={handleReset}
-              disabled={zoom === 1 && offset.x === 0 && offset.y === 0}
+              disabled={effectiveZoom === 1 && offset.x === 0 && offset.y === 0}
             >
               <RotateCcw className="size-3.5" aria-hidden />
             </Button>

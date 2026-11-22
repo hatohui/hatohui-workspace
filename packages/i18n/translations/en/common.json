@@ -36,7 +36,8 @@
     "cropCancel": "Cancel",
     "cropApply": "Apply crop",
     "cropZoom": "Zoom",
-    "cropReset": "Reset"
+    "cropReset": "Reset",
+    "cropFit": "Fit whole photo"
   },
   "onboarding": {
     "title": "Welcome",

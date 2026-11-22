@@ -58,6 +58,7 @@ function AvatarField({
         confirmLabel={t('common:avatarField.cropApply')}
         zoomLabel={t('common:avatarField.cropZoom')}
         resetLabel={t('common:avatarField.cropReset')}
+        fitLabel={t('common:avatarField.cropFit')}
         onCancel={() => setCropFile(null)}
         onConfirm={(cropped) => {
           onFileSelected(cropped);

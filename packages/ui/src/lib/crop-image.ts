@@ -1,14 +1,8 @@
 const CANVAS_SAFE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const MAX_OUTPUT_DIMENSION = 2048;
+const BACKDROP_BLUR_RATIO = 0.04;
 
-export interface CropArea {
-  sx: number;
-  sy: number;
-  sw: number;
-  sh: number;
-}
-
-export function computeCropArea(params: {
+export interface CropView {
   naturalWidth: number;
   naturalHeight: number;
   boxWidth: number;
@@ -16,55 +10,106 @@ export function computeCropArea(params: {
   zoom: number;
   offsetX: number;
   offsetY: number;
-}): CropArea {
-  const {
-    naturalWidth,
-    naturalHeight,
-    boxWidth,
-    boxHeight,
-    zoom,
-    offsetX,
-    offsetY,
-  } = params;
-  const baseScale = Math.max(
-    boxWidth / naturalWidth,
-    boxHeight / naturalHeight,
-  );
-  const displayScale = baseScale * zoom;
-  const renderedW = naturalWidth * displayScale;
-  const renderedH = naturalHeight * displayScale;
+}
 
-  const sx = Math.max(0, ((renderedW - boxWidth) / 2 - offsetX) / displayScale);
-  const sy = Math.max(
-    0,
-    ((renderedH - boxHeight) / 2 - offsetY) / displayScale,
-  );
-  const sw = Math.min(naturalWidth - sx, boxWidth / displayScale);
-  const sh = Math.min(naturalHeight - sy, boxHeight / displayScale);
+export interface CropLayout {
+  outWidth: number;
+  outHeight: number;
+  dx: number;
+  dy: number;
+  dw: number;
+  dh: number;
+  coversFrame: boolean;
+}
 
-  return { sx, sy, sw, sh };
+export function coverScale(
+  view: Omit<CropView, 'zoom' | 'offsetX' | 'offsetY'>,
+) {
+  return Math.max(
+    view.boxWidth / view.naturalWidth,
+    view.boxHeight / view.naturalHeight,
+  );
+}
+
+export function fitZoom(view: Omit<CropView, 'zoom' | 'offsetX' | 'offsetY'>) {
+  const contain = Math.min(
+    view.boxWidth / view.naturalWidth,
+    view.boxHeight / view.naturalHeight,
+  );
+  return contain / coverScale(view);
+}
+
+export function computeCropLayout(view: CropView): CropLayout {
+  const displayScale = coverScale(view) * view.zoom;
+  const renderedW = view.naturalWidth * displayScale;
+  const renderedH = view.naturalHeight * displayScale;
+  const left = (view.boxWidth - renderedW) / 2 + view.offsetX;
+  const top = (view.boxHeight - renderedH) / 2 + view.offsetY;
+
+  const toOutput = Math.min(
+    1 / displayScale,
+    MAX_OUTPUT_DIMENSION / Math.max(view.boxWidth, view.boxHeight),
+  );
+  const tolerance = 0.5;
+
+  return {
+    outWidth: Math.max(1, Math.round(view.boxWidth * toOutput)),
+    outHeight: Math.max(1, Math.round(view.boxHeight * toOutput)),
+    dx: left * toOutput,
+    dy: top * toOutput,
+    dw: renderedW * toOutput,
+    dh: renderedH * toOutput,
+    coversFrame:
+      left <= tolerance &&
+      top <= tolerance &&
+      left + renderedW >= view.boxWidth - tolerance &&
+      top + renderedH >= view.boxHeight - tolerance,
+  };
+}
+
+function drawBackdrop(
+  ctx: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  width: number,
+  height: number,
+) {
+  const scale = Math.max(
+    width / image.naturalWidth,
+    height / image.naturalHeight,
+  );
+  const w = image.naturalWidth * scale;
+  const h = image.naturalHeight * scale;
+  const blur = Math.round(Math.max(width, height) * BACKDROP_BLUR_RATIO);
+  ctx.save();
+  ctx.filter = 'brightness(0.8)';
+  ctx.drawImage(image, (width - w) / 2, (height - h) / 2, w, h);
+  ctx.filter = `blur(${blur}px) brightness(0.8)`;
+  ctx.drawImage(
+    image,
+    (width - w) / 2 - blur,
+    (height - h) / 2 - blur,
+    w + blur * 2,
+    h + blur * 2,
+  );
+  ctx.restore();
 }
 
 export async function exportCroppedFile(
   file: File,
   image: HTMLImageElement,
-  area: CropArea,
+  layout: CropLayout,
 ): Promise<File> {
-  const scale = Math.min(
-    1,
-    MAX_OUTPUT_DIMENSION / Math.max(area.sw, area.sh, 1),
-  );
-  const outW = Math.max(1, Math.round(area.sw * scale));
-  const outH = Math.max(1, Math.round(area.sh * scale));
-
   const canvas = document.createElement('canvas');
-  canvas.width = outW;
-  canvas.height = outH;
+  canvas.width = layout.outWidth;
+  canvas.height = layout.outHeight;
   const ctx = canvas.getContext('2d');
   if (!ctx) {
     throw new Error('Canvas 2D context is not supported');
   }
-  ctx.drawImage(image, area.sx, area.sy, area.sw, area.sh, 0, 0, outW, outH);
+  if (!layout.coversFrame) {
+    drawBackdrop(ctx, image, layout.outWidth, layout.outHeight);
+  }
+  ctx.drawImage(image, layout.dx, layout.dy, layout.dw, layout.dh);
 
   const outputType = CANVAS_SAFE_TYPES.has(file.type)
     ? file.type

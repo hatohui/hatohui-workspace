@@ -98,7 +98,7 @@
     "photosHint": "最多 {{count}} 张照片，支持粘贴、拖拽或点击，第一张为封面。",
     "cover": "封面",
     "cropPhoto": "裁剪照片",
-    "cropHint": "拖动调整位置，滚轮或滑块缩放。",
+    "cropHint": "拖动调整位置，滚动或拖动滑块缩放。缩小可显示完整照片。",
     "cropApply": "应用裁剪",
     "cropZoom": "缩放",
     "cropReset": "重置",
@@ -115,7 +115,8 @@
     "areaNone": "未指定地区",
     "linkNoLocation": "无法从此链接中找到位置。",
     "useLinkName": "使用“{{name}}”作为名称",
-    "mapPreview": "地图预览"
+    "mapPreview": "地图预览",
+    "cropFit": "显示完整照片"
   },
   "dishes": {
     "back": "全部菜品",

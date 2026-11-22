@@ -91,6 +91,7 @@ function DishPhotoField({ photo }: Props) {
         confirmLabel={t('form.cropApply')}
         zoomLabel={t('form.cropZoom')}
         resetLabel={t('form.cropReset')}
+        fitLabel={t('form.cropFit')}
         onCancel={() => setCropFile(null)}
         onConfirm={(cropped) => {
           photo.pickFile(cropped);
