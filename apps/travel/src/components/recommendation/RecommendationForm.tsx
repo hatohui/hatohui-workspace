@@ -26,22 +26,18 @@ function RecommendationForm({ recommendation, onClose }: Props) {
       isSaving={form.isSaving}
       onCancel={onClose}
     >
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-x-8 lg:[grid-template-areas:'main_media'_'details_media'_'details_note']">
-        <div className="space-y-5 lg:[grid-area:main]">
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-x-8">
+        <div className="space-y-5">
           <FormSection title={t('form.sectionDish')}>
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <DishInputs form={form} />
               <PlaceInputs form={form} />
             </div>
           </FormSection>
-        </div>
-        <div className="lg:[grid-area:media]">
-          <PhotoField photos={form.photos} />
-        </div>
-        <div className="space-y-5 lg:[grid-area:details]">
           <TagFields fields={form.fields} set={form.set} />
         </div>
-        <div className="lg:[grid-area:note]">
+        <div className="space-y-5">
+          <PhotoField photos={form.photos} />
           <TextField
             id="note"
             multiline

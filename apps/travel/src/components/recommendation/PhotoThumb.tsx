@@ -26,6 +26,11 @@ function PhotoThumb({ photo, isCover, onRemove, onMakeCover }: Props) {
           <Spinner />
         </div>
       )}
+      {isCover && !photo.uploading && (
+        <span className="absolute bottom-1 left-1 rounded-full bg-background/85 px-2 py-0.5 text-[10px] font-medium text-foreground shadow-soft backdrop-blur-sm">
+          {t('form.cover')}
+        </span>
+      )}
       <div className="absolute top-1 right-1 flex gap-1">
         {!isCover && !photo.uploading && (
           <button

@@ -1,4 +1,7 @@
+import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
+import { Spinner, cn } from '@hatohui/ui';
+import { isOptimisticId } from '../../lib/optimistic';
 import ImageFrame from '../shared/ImageFrame';
 
 interface Props {
@@ -7,23 +10,39 @@ interface Props {
 }
 
 function FoodCard({ recommendation: rec, onOpen }: Props) {
+  const { t } = useTranslation();
+  const isOptimistic = isOptimisticId(rec.id);
+
   return (
     <button
       type="button"
       onClick={onOpen}
-      className="group flex cursor-pointer flex-col gap-2 rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      disabled={isOptimistic}
+      aria-busy={isOptimistic || undefined}
+      className={cn(
+        'group flex flex-col gap-2 rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        isOptimistic ? 'cursor-wait opacity-85' : 'cursor-pointer',
+      )}
     >
-      <ImageFrame
-        src={
-          rec.images[0]?.thumbnailUrl ??
-          rec.images[0]?.url ??
-          rec.dish.thumbnailUrl ??
-          rec.dish.imageUrl ??
-          null
-        }
-        alt={rec.dish.name}
-        square
-      />
+      <div className="relative w-full">
+        <ImageFrame
+          src={
+            rec.images[0]?.thumbnailUrl ??
+            rec.images[0]?.url ??
+            rec.dish.thumbnailUrl ??
+            rec.dish.imageUrl ??
+            null
+          }
+          alt={rec.dish.name}
+          square
+        />
+        {isOptimistic && (
+          <span className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-background/85 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm">
+            <Spinner className="size-3" />
+            {t('form.saving')}
+          </span>
+        )}
+      </div>
       <span className="line-clamp-2 font-medium tracking-tight group-hover:underline">
         {rec.dish.name}
       </span>

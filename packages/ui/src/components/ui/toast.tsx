@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { CheckCircle2, Info, TriangleAlert, X } from 'lucide-react';
+import { CheckCircle2, Info, Loader2, TriangleAlert, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-type ToastVariant = 'success' | 'error' | 'info';
+type ToastVariant = 'success' | 'error' | 'info' | 'loading';
 
 interface ToastRecord {
   id: number;
@@ -13,9 +13,12 @@ interface ToastRecord {
 }
 
 interface ToastApi {
-  success: (message: string) => void;
-  error: (message: string) => void;
-  info: (message: string) => void;
+  success: (message: string) => number;
+  error: (message: string) => number;
+  info: (message: string) => number;
+  loading: (message: string) => number;
+  update: (id: number, message: string, variant?: ToastVariant) => void;
+  dismiss: (id: number) => void;
 }
 
 const ToastContext = React.createContext<ToastApi | null>(null);
@@ -35,16 +38,44 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const push = React.useCallback(
-    (message: string, variant: ToastVariant) => {
-      const id = Date.now() + Math.random();
-      setToasts((current) => [...current, { id, message, variant }]);
+  const scheduleDismiss = React.useCallback(
+    (id: number) => {
+      const existing = timers.current.get(id);
+      if (existing) clearTimeout(existing);
       timers.current.set(
         id,
         setTimeout(() => dismiss(id), AUTO_DISMISS_MS),
       );
     },
     [dismiss],
+  );
+
+  const push = React.useCallback(
+    (message: string, variant: ToastVariant) => {
+      const id = Date.now() + Math.random();
+      setToasts((current) => [...current, { id, message, variant }]);
+      if (variant !== 'loading') {
+        scheduleDismiss(id);
+      }
+      return id;
+    },
+    [scheduleDismiss],
+  );
+
+  const update = React.useCallback(
+    (id: number, message: string, variant?: ToastVariant) => {
+      setToasts((current) =>
+        current.map((toast) =>
+          toast.id === id
+            ? { ...toast, message, variant: variant ?? toast.variant }
+            : toast,
+        ),
+      );
+      if (variant && variant !== 'loading') {
+        scheduleDismiss(id);
+      }
+    },
+    [scheduleDismiss],
   );
 
   React.useEffect(() => {
@@ -57,8 +88,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       success: (message) => push(message, 'success'),
       error: (message) => push(message, 'error'),
       info: (message) => push(message, 'info'),
+      loading: (message) => push(message, 'loading'),
+      update,
+      dismiss,
     }),
-    [push],
+    [dismiss, push, update],
   );
 
   return (
@@ -81,6 +115,7 @@ const VARIANT_ICON = {
   success: CheckCircle2,
   error: TriangleAlert,
   info: Info,
+  loading: Loader2,
 } as const;
 
 function ToastItem({
@@ -105,6 +140,8 @@ function ToastItem({
           toast.variant === 'success' && 'text-primary',
           toast.variant === 'error' && 'text-destructive',
           toast.variant === 'info' && 'text-muted-foreground',
+          toast.variant === 'loading' &&
+            'animate-spin text-primary motion-reduce:animate-none',
         )}
         aria-hidden
       />
