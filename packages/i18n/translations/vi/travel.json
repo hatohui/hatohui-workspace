@@ -312,7 +312,16 @@
     "generatingDescriptions": "Đang tạo mô tả món ăn…",
     "generatedDescriptions": "Đã tạo {{updated}} mô tả",
     "generatedDescriptionsPartial": "Đã tạo {{updated}} mô tả ({{failed}} lỗi)",
-    "noMissingDescriptions": "Tất cả món ăn đều đã có mô tả."
+    "noMissingDescriptions": "Tất cả món ăn đều đã có mô tả.",
+    "autoPageSize": "Tự động ({{count}})",
+    "filter": {
+      "button": "Lọc",
+      "empty": "(trống)",
+      "none": "Không có",
+      "some": "Có",
+      "remove": "Bỏ lọc {{label}}",
+      "clear": "Xóa bộ lọc"
+    }
   },
   "settings": {
     "tabs": {

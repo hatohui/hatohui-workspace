@@ -8,20 +8,26 @@ import {
   SelectValue,
 } from '@hatohui/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { ADMIN_PAGE_SIZES } from '../../constants/admin';
+import {
+  ADMIN_AUTO_PAGE_SIZE,
+  ADMIN_PAGE_SIZES,
+  type AdminPageSize,
+} from '../../constants/admin';
 
 interface Props {
   page: number;
   pageSize: number;
+  pageSizeChoice: AdminPageSize;
   totalRows: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  onPageSizeChange: (size: number) => void;
+  onPageSizeChange: (size: AdminPageSize) => void;
 }
 
 function TablePagination({
   page,
   pageSize,
+  pageSizeChoice,
   totalRows,
   totalPages,
   onPageChange,
@@ -38,16 +44,22 @@ function TablePagination({
       <span>{t('admin.showing', { from, to, total: totalRows })}</span>
       <div className="flex items-center gap-3">
         <Select
-          value={String(pageSize)}
-          onValueChange={(value) => onPageSizeChange(Number(value))}
+          value={String(pageSizeChoice)}
+          onValueChange={(value) =>
+            onPageSizeChange(
+              value === ADMIN_AUTO_PAGE_SIZE ? value : Number(value),
+            )
+          }
         >
-          <SelectTrigger className="h-8 w-20" aria-label={t('admin.perPage')}>
+          <SelectTrigger className="h-8 w-28" aria-label={t('admin.perPage')}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {ADMIN_PAGE_SIZES.map((size) => (
               <SelectItem key={size} value={String(size)}>
-                {size}
+                {size === ADMIN_AUTO_PAGE_SIZE
+                  ? t('admin.autoPageSize', { count: pageSize })
+                  : size}
               </SelectItem>
             ))}
           </SelectContent>
