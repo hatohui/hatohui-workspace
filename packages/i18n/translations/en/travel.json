@@ -333,7 +333,8 @@
     "countriesPlaceholder": "Select countries…",
     "noCountry": "No country",
     "area": "City / area",
-    "noArea": "No area"
+    "noArea": "No area",
+    "photo": "Photo"
   },
   "overview": {
     "title": "Travel overview",
