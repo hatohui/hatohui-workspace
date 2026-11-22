@@ -311,7 +311,16 @@
     "generatingDescriptions": "料理の説明を生成中…",
     "generatedDescriptions": "{{updated}}件の説明を生成しました",
     "generatedDescriptionsPartial": "{{updated}}件生成（{{failed}}件失敗）",
-    "noMissingDescriptions": "すべての料理に説明があります。"
+    "noMissingDescriptions": "すべての料理に説明があります。",
+    "autoPageSize": "自動 ({{count}})",
+    "filter": {
+      "button": "絞り込み",
+      "empty": "(空)",
+      "none": "なし",
+      "some": "あり",
+      "remove": "{{label}} の絞り込みを解除",
+      "clear": "絞り込みを解除"
+    }
   },
   "settings": {
     "tabs": {

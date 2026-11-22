@@ -1,6 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router';
 import { useTravelCountries } from '@hatohui/models';
-import { LOCATION_STORAGE_KEY } from '../constants/location';
+import {
+  LOCATION_AREA_PARAM,
+  LOCATION_COUNTRY_PARAM,
+  LOCATION_STORAGE_KEY,
+} from '../constants/location';
 
 interface Selection {
   countryId: string | null;
@@ -18,35 +23,72 @@ function readStored(): Selection {
   }
 }
 
+function writeStored(selection: Selection) {
+  try {
+    window.localStorage.setItem(
+      LOCATION_STORAGE_KEY,
+      JSON.stringify(selection),
+    );
+  } catch {
+    // Remembering the location is a convenience; private mode can refuse it.
+  }
+}
+
+function withSelection(prev: URLSearchParams, selection: Selection) {
+  const updated = new URLSearchParams(prev);
+  if (selection.countryId) {
+    updated.set(LOCATION_COUNTRY_PARAM, selection.countryId);
+  } else {
+    updated.delete(LOCATION_COUNTRY_PARAM);
+  }
+  if (selection.countryId && selection.areaId) {
+    updated.set(LOCATION_AREA_PARAM, selection.areaId);
+  } else {
+    updated.delete(LOCATION_AREA_PARAM);
+  }
+  return updated;
+}
+
 export function useTravelLocationState() {
-  const [selection, setSelection] = useState<Selection>(readStored);
+  const [params, setParams] = useSearchParams();
   const countries = useTravelCountries().data?.data ?? [];
+  const urlCountryId = params.get(LOCATION_COUNTRY_PARAM);
+  const urlAreaId = params.get(LOCATION_AREA_PARAM);
+  const selection: Selection = urlCountryId
+    ? { countryId: urlCountryId, areaId: urlAreaId }
+    : readStored();
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(
-        LOCATION_STORAGE_KEY,
-        JSON.stringify(selection),
-      );
-    } catch {
-      // Remembering the location is a convenience; private mode can refuse it.
+    if (urlCountryId) {
+      writeStored({ countryId: urlCountryId, areaId: urlAreaId });
+      return;
     }
-  }, [selection]);
+    const stored = readStored();
+    if (stored.countryId) {
+      setParams((prev) => withSelection(prev, stored), { replace: true });
+    }
+  }, [urlCountryId, urlAreaId, setParams]);
+
+  const select = (next: Selection) => {
+    writeStored(next);
+    setParams((prev) => withSelection(prev, next), { replace: true });
+  };
 
   const country = countries.find((c) => c.id === selection.countryId) ?? null;
   const area = country?.areas.find((a) => a.id === selection.areaId) ?? null;
+  const areaId = countries.length ? area?.id : (selection.areaId ?? undefined);
 
   return {
     countries,
     country,
     area,
     setCountry: (countryId: string | null) =>
-      setSelection({ countryId, areaId: null }),
+      select({ countryId, areaId: null }),
     setArea: (areaId: string | null) =>
-      setSelection((current) => ({ ...current, areaId })),
+      select({ countryId: selection.countryId, areaId }),
     filter: {
-      countryId: area ? undefined : (country?.id ?? undefined),
-      areaId: area?.id ?? undefined,
+      countryId: areaId ? undefined : (selection.countryId ?? undefined),
+      areaId,
     },
   };
 }

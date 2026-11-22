@@ -9,7 +9,6 @@ import './index.css';
 import './config/i18n';
 import { persistOptions, queryClient } from './config/queryClient';
 import router from './config/router';
-import TravelLocationProvider from './components/location/TravelLocationProvider';
 
 setApiBaseUrl(import.meta.env.VITE_API_URL);
 
@@ -25,9 +24,7 @@ createRoot(document.getElementById('root')!).render(
       >
         <TooltipProvider>
           <ToastProvider>
-            <TravelLocationProvider>
-              <RouterProvider router={router} />
-            </TravelLocationProvider>
+            <RouterProvider router={router} />
           </ToastProvider>
         </TooltipProvider>
       </AuthProvider>

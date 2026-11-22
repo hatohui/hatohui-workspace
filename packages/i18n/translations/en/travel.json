@@ -352,7 +352,16 @@
     "generatingDescriptions": "Generating dish descriptions…",
     "generatedDescriptions": "Generated {{updated}} descriptions",
     "generatedDescriptionsPartial": "Generated {{updated}} descriptions ({{failed}} failed)",
-    "noMissingDescriptions": "Every dish already has a description."
+    "noMissingDescriptions": "Every dish already has a description.",
+    "autoPageSize": "Auto ({{count}})",
+    "filter": {
+      "button": "Filter",
+      "empty": "(empty)",
+      "none": "None",
+      "some": "Has any",
+      "remove": "Remove filter {{label}}",
+      "clear": "Clear filters"
+    }
   },
   "overview": {
     "title": "Travel overview",

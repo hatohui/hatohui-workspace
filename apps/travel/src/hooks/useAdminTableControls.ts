@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react';
 import type { EditableColumn } from '@hatohui/ui';
-import { DEFAULT_ADMIN_PAGE_SIZE } from '../constants/admin';
+import {
+  ADMIN_AUTO_PAGE_SIZE,
+  DEFAULT_ADMIN_PAGE_SIZE,
+  type AdminPageSize,
+} from '../constants/admin';
 import { useAdminTableSearch } from './useAdminTableSearch';
 
 type SortDirection = 'asc' | 'desc';
@@ -42,6 +46,7 @@ function compareValues<T>(
 export function useAdminTableControls<T extends SortableRow>(
   rows: T[],
   columns: EditableColumn<T>[],
+  autoPageSize: number,
   defaultSort?: { key: keyof T & string; direction: SortDirection },
 ) {
   const tableSearch = useAdminTableSearch(rows, columns);
@@ -57,7 +62,11 @@ export function useAdminTableControls<T extends SortableRow>(
     resolvedDefaultSort?.direction ?? 'asc',
   );
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(DEFAULT_ADMIN_PAGE_SIZE);
+  const [pageSizeChoice, setPageSizeChoice] = useState<AdminPageSize>(
+    DEFAULT_ADMIN_PAGE_SIZE,
+  );
+  const pageSize =
+    pageSizeChoice === ADMIN_AUTO_PAGE_SIZE ? autoPageSize : pageSizeChoice;
 
   const onSortChange = (key: keyof T & string) => {
     setPage(1);
@@ -83,9 +92,9 @@ export function useAdminTableControls<T extends SortableRow>(
     tableSearch.setSearch(value);
   };
 
-  const changePageSize = (size: number) => {
+  const changePageSize = (size: AdminPageSize) => {
     setPage(1);
-    setPageSize(size);
+    setPageSizeChoice(size);
   };
 
   const sortedRows = useMemo(() => {
@@ -122,6 +131,7 @@ export function useAdminTableControls<T extends SortableRow>(
     page: safePage,
     setPage,
     pageSize,
+    pageSizeChoice,
     setPageSize: changePageSize,
     totalRows,
     totalPages,

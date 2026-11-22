@@ -311,7 +311,16 @@
     "generatingDescriptions": "正在生成菜品描述…",
     "generatedDescriptions": "已生成 {{updated}} 条描述",
     "generatedDescriptionsPartial": "已生成 {{updated}} 条描述（{{failed}} 条失败）",
-    "noMissingDescriptions": "所有菜品都已有描述。"
+    "noMissingDescriptions": "所有菜品都已有描述。",
+    "autoPageSize": "自动 ({{count}})",
+    "filter": {
+      "button": "筛选",
+      "empty": "(空)",
+      "none": "无",
+      "some": "有",
+      "remove": "移除筛选 {{label}}",
+      "clear": "清除筛选"
+    }
   },
   "settings": {
     "tabs": {

@@ -16,8 +16,19 @@ import {
 
 export const QUICK_ADD_SEPARATOR = /[,\n]/;
 export const CUISINE_LIST_SEPARATOR = ',';
-export const ADMIN_PAGE_SIZES = [20, 50, 100] as const;
-export const DEFAULT_ADMIN_PAGE_SIZE = 20;
+export const ADMIN_AUTO_PAGE_SIZE = 'auto';
+export type AdminPageSize = number | typeof ADMIN_AUTO_PAGE_SIZE;
+export const ADMIN_PAGE_SIZES = [ADMIN_AUTO_PAGE_SIZE, 20, 50, 100] as const;
+export const DEFAULT_ADMIN_PAGE_SIZE: AdminPageSize = ADMIN_AUTO_PAGE_SIZE;
+export const ADMIN_FALLBACK_PAGE_SIZE = 20;
+export const ADMIN_AUTO_MIN_ROWS = 5;
+export const ADMIN_ROW_HEIGHT_FALLBACK = 45;
+export const ADMIN_HEADER_HEIGHT_FALLBACK = 37;
+export const ADMIN_TABLE_BOTTOM_SPACE = 88;
+
+export const ADMIN_FILTER_EMPTY = '__empty';
+export const ADMIN_FILTER_NONE = '__none';
+export const ADMIN_FILTER_SOME = '__some';
 
 export const ADMIN_TABS = [
   'recommendations',
