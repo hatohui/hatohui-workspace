@@ -8,16 +8,9 @@ import {
   useTravelPlaces,
   useTravelRecommendations,
   useUpdateTravelRecommendation,
-  type CreateTravelRecommendationDtoCurrency,
-  type TravelPriceLevel,
   type TravelRecommendationDto,
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
-import {
-  CURRENCIES,
-  DEFAULT_CURRENCY,
-  PRICE_LEVELS,
-} from '../constants/travel';
 import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useAdminTableControls } from './useAdminTableControls';
@@ -35,8 +28,6 @@ export interface AdminRecommendationRow {
   spicy: string;
   diets: string;
   allergens: string;
-  price: string;
-  currency: string;
   note: string;
   createdAt: string;
   isDraft?: boolean;
@@ -44,45 +35,7 @@ export interface AdminRecommendationRow {
 
 const DRAFT_PREFIX = 'draft:';
 const STORAGE_KEY = 'travel-admin-recommendations';
-const DEFAULT_HIDDEN = ['price', 'currency', 'mapsUrl', 'createdAt'] as const;
-
-function formatPriceCell(rec: TravelRecommendationDto): string {
-  if (rec.priceLevel) return rec.priceLevel;
-  if (rec.priceMin != null && rec.priceMax != null) {
-    return rec.priceMin === rec.priceMax
-      ? String(rec.priceMin)
-      : `${rec.priceMin}-${rec.priceMax}`;
-  }
-  if (rec.priceMin != null) return String(rec.priceMin);
-  if (rec.priceMax != null) return String(rec.priceMax);
-  return '';
-}
-
-function parsePriceCell(raw: string): {
-  priceMin: number | null;
-  priceMax: number | null;
-  priceLevel: TravelPriceLevel | null;
-} {
-  const trimmed = raw.trim().toUpperCase();
-  if (!trimmed) return { priceMin: null, priceMax: null, priceLevel: null };
-  if ((PRICE_LEVELS as readonly string[]).includes(trimmed)) {
-    return {
-      priceMin: null,
-      priceMax: null,
-      priceLevel: trimmed as TravelPriceLevel,
-    };
-  }
-  const parts = trimmed
-    .split(/[-–—]/)
-    .map((part) => Number(part.replace(/[^0-9.]/g, '')))
-    .filter((num) => Number.isFinite(num) && num >= 0);
-  if (parts.length === 0) {
-    return { priceMin: null, priceMax: null, priceLevel: null };
-  }
-  const min = Math.round(parts[0]);
-  const max = Math.round(parts[1] ?? parts[0]);
-  return { priceMin: min, priceMax: max, priceLevel: null };
-}
+const DEFAULT_HIDDEN = ['mapsUrl', 'createdAt'] as const;
 
 const parseList = (raw: string) =>
   raw
@@ -137,8 +90,6 @@ export function useAdminRecommendations() {
         spicy: String(rec.spicy),
         diets: rec.diets.join(', '),
         allergens: rec.allergens.join(', '),
-        price: formatPriceCell(rec),
-        currency: rec.currency,
         note: rec.note ?? '',
         createdAt: rec.createdAt,
       })),
@@ -198,21 +149,6 @@ export function useAdminRecommendations() {
         size: 140,
       },
       {
-        key: 'price',
-        label: t('form.sectionPrice'),
-        editable: true,
-        sortable: true,
-        size: 120,
-      },
-      {
-        key: 'currency',
-        label: t('admin.code'),
-        editable: true,
-        sortable: true,
-        options: CURRENCIES.map((c) => ({ value: c, label: c })),
-        size: 80,
-      },
-      {
         key: 'note',
         label: t('admin.note'),
         editable: true,
@@ -269,8 +205,6 @@ export function useAdminRecommendations() {
         spicy: 'false',
         diets: '',
         allergens: '',
-        price: '',
-        currency: DEFAULT_CURRENCY,
         note: '',
         createdAt: '',
         isDraft: true,
@@ -297,7 +231,6 @@ export function useAdminRecommendations() {
         const matchedPlace = places.find(
           (p) => p.name.toLowerCase() === placeName.toLowerCase(),
         );
-        const price = parsePriceCell(next.price);
         void run(async () => {
           await create.mutateAsync({
             data: {
@@ -314,9 +247,7 @@ export function useAdminRecommendations() {
               spicy: next.spicy === 'true',
               diets: parseList(next.diets),
               allergens: parseList(next.allergens),
-              currency: next.currency as CreateTravelRecommendationDtoCurrency,
               note: next.note || undefined,
-              ...price,
             },
           });
           setDrafts((current) => current.filter((d) => d.id !== id));
@@ -332,11 +263,7 @@ export function useAdminRecommendations() {
           ? { diets: parseList(value) }
           : key === 'allergens'
             ? { allergens: parseList(value) }
-            : key === 'price'
-              ? parsePriceCell(value)
-              : key === 'currency'
-                ? { currency: value as CreateTravelRecommendationDtoCurrency }
-                : { note: value };
+            : { note: value };
 
     void run<{ data: TravelRecommendationDto[] }>(
       () => update.mutateAsync({ id, data: patch }),
