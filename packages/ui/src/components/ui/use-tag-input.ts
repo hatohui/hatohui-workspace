@@ -97,7 +97,28 @@ export function useTagInput({
     }
   };
 
+  const onBlur = () => {
+    if (needle === '') return;
+    const matched = suggestions.find((s) => sameTag(s.value, needle))?.value;
+    if (matched) add(matched);
+    else {
+      setDraft('');
+      setHighlighted(0);
+    }
+  };
+
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Tab' && !event.shiftKey) {
+      if (needle !== '') {
+        const current = options[highlighted];
+        const suggestion = current && !current.isNew ? current : matches[0];
+        if (suggestion) {
+          event.preventDefault();
+          add(suggestion.value);
+        }
+      }
+      return;
+    }
     if (event.key === 'Enter') {
       event.preventDefault();
       const option = options[highlighted];
@@ -127,6 +148,7 @@ export function useTagInput({
     remove,
     isAccent,
     changeDraft,
+    onBlur,
     onKeyDown,
   };
 }
