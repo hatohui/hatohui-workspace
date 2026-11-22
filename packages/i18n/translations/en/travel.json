@@ -65,6 +65,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
+    "optional": "Optional",
+    "saveShortcut": "{{modifier}} + Enter to save",
     "existing": "Saved",
     "new": "New",
     "duplicate": "This place already has a pick for that dish.",
@@ -114,6 +116,7 @@
     "mapPreview": "Map preview"
   },
   "dishes": {
+    "back": "All dishes",
     "title": "Dishes",
     "subtitle": "Every dish, and how many places serve it well.",
     "searchPlaceholder": "Search dishes or cuisines",
@@ -130,6 +133,7 @@
     "deleteDescription": "{{name}} and every recommendation for it will be removed."
   },
   "places": {
+    "back": "All places",
     "title": "Places",
     "subtitle": "Where to go, and what to order there.",
     "searchPlaceholder": "Search places, addresses, cities",

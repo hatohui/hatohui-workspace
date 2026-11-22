@@ -6,7 +6,8 @@ import { TAG_KIND_NAMESPACE } from '../constants/travel';
 
 export function useTagOptions() {
   const { t } = useTranslation();
-  const tags = useTravelTags().data?.data ?? [];
+  const query = useTravelTags();
+  const tags = query.data?.data ?? [];
 
   const labelOf = useCallback(
     (key: string) => {
@@ -42,6 +43,7 @@ export function useTagOptions() {
 
   return {
     tags,
+    isLoading: query.isPending,
     labelOf,
     dietKeys: keysOf('DIET'),
     allergenKeys: keysOf('ALLERGEN'),

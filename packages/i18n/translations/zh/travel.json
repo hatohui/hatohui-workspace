@@ -62,6 +62,8 @@
     "cancel": "取消",
     "save": "保存",
     "saving": "保存中...",
+    "optional": "可选",
+    "saveShortcut": "{{modifier}} + Enter 保存",
     "existing": "已保存",
     "new": "新的",
     "duplicate": "该地点已有这道菜的推荐。",
@@ -111,6 +113,7 @@
     "mapPreview": "地图预览"
   },
   "dishes": {
+    "back": "全部菜品",
     "title": "菜品",
     "subtitle": "所有菜品，以及有多少地方做得好。",
     "searchPlaceholder": "搜索菜品或菜系",
@@ -127,6 +130,7 @@
     "deleteDescription": "{{name}} 及其所有推荐将被删除。"
   },
   "places": {
+    "back": "全部地点",
     "title": "地点",
     "subtitle": "去哪里，以及在那里点什么。",
     "searchPlaceholder": "搜索地点、地址、城市",

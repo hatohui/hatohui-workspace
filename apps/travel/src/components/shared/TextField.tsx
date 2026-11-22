@@ -1,4 +1,5 @@
-import { Input, Label, Textarea } from '@hatohui/ui';
+import { Input, Textarea } from '@hatohui/ui';
+import FieldLabel from './FieldLabel';
 
 interface Props {
   id: string;
@@ -9,6 +10,7 @@ interface Props {
   type?: 'text' | 'url';
   multiline?: boolean;
   required?: boolean;
+  optional?: boolean;
 }
 
 function TextField({
@@ -20,10 +22,13 @@ function TextField({
   type = 'text',
   multiline = false,
   required = false,
+  optional = false,
 }: Props) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id}>{label}</Label>
+      <FieldLabel htmlFor={id} required={required} optional={optional}>
+        {label}
+      </FieldLabel>
       {multiline ? (
         <Textarea
           id={id}

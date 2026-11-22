@@ -1,21 +1,25 @@
 import { useTranslation } from '@hatohui/i18n';
-import { Label, TagInput } from '@hatohui/ui';
+import { TagInput } from '@hatohui/ui';
 import { MAX_CUISINES } from '../../constants/travel';
 import { useCuisineSuggestions } from '../../hooks/useCuisineSuggestions';
+import FieldLabel from './FieldLabel';
 
 interface Props {
   id: string;
   value: string[];
   onChange: (value: string[]) => void;
+  optional?: boolean;
 }
 
-function CuisineField({ id, value, onChange }: Props) {
+function CuisineField({ id, value, onChange, optional }: Props) {
   const { t } = useTranslation();
   const suggestions = useCuisineSuggestions();
 
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id}>{t('form.cuisines')}</Label>
+      <FieldLabel htmlFor={id} optional={optional}>
+        {t('form.cuisines')}
+      </FieldLabel>
       <TagInput
         id={id}
         value={value}

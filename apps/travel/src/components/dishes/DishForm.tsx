@@ -33,12 +33,14 @@ function DishForm({ dish, onClose }: Props) {
         />
         <CuisineField
           id="dish-cuisines"
+          optional
           value={form.values.cuisines}
           onChange={(value) => form.set('cuisines', value)}
         />
         <TextField
           id="dish-description"
           multiline
+          optional
           label={t('dishes.description')}
           value={form.values.description}
           onChange={(value) => form.set('description', value)}
