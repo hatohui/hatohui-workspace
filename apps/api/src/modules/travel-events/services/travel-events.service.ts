@@ -22,6 +22,7 @@ import {
   travelEventImageKeyFor,
 } from '@/common/utils/asset-paths';
 import { resolveMapsLocation } from '@/common/utils/maps-coordinates';
+import { matchesSearch } from '@/common/utils/text-search';
 import { ProcessQueueService } from '@/modules/process-queue/services/process-queue.service';
 import { StorageCleanupService } from '@/modules/storage-cleanup/services/storage-cleanup.service';
 import { TravelAccessService } from '@/modules/travel-access/services/travel-access.service';
@@ -91,21 +92,29 @@ export class TravelEventsService {
       );
     }
 
+    const limit = query.limit ?? DEFAULT_EVENTS_LIST_LIMIT;
     const rows = await this.db.travelEvent.findMany({
       where: {
         isDeleted: false,
         ...areaFilter,
-        ...(q ? { title: { contains: q, mode: 'insensitive' } } : {}),
         ...(query.from ? { endAt: { gte: new Date(query.from) } } : {}),
         ...(query.to ? { startAt: { lte: new Date(query.to) } } : {}),
         OR: visibilityOr,
       },
       include: eventInclude,
       orderBy: { startAt: 'asc' },
-      take: query.limit ?? DEFAULT_EVENTS_LIST_LIMIT,
+      ...(q ? {} : { take: limit }),
     });
 
-    return rows.map((row) => this.toDto(row));
+    const filtered = q
+      ? rows
+          .filter((row) =>
+            matchesSearch(q, [row.title, row.location, row.description]),
+          )
+          .slice(0, limit)
+      : rows;
+
+    return filtered.map((row) => this.toDto(row));
   }
 
   async listUpcoming(

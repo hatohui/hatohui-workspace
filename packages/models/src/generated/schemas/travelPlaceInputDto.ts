@@ -24,4 +24,9 @@ export interface TravelPlaceInputDto {
   longitude?: number;
   /** @maxLength 2000 */
   note?: string;
+  /**
+     * Location category tags, found or created by name
+     * @maxItems 6
+     */
+  categories?: string[];
 }

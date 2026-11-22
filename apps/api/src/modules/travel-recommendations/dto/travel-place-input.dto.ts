@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayMaxSize,
+  IsArray,
   IsLatitude,
   IsLongitude,
   IsOptional,
@@ -8,6 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 import {
+  TRAVEL_MAX_CATEGORIES,
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
   TRAVEL_URL_MAX_LENGTH,
@@ -66,4 +69,17 @@ export class TravelPlaceInputDto {
   @IsString()
   @MaxLength(TRAVEL_NOTE_MAX_LENGTH)
   note?: string;
+
+  @ApiProperty({
+    type: [String],
+    required: false,
+    maxItems: TRAVEL_MAX_CATEGORIES,
+    description: 'Location category tags, found or created by name',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(TRAVEL_MAX_CATEGORIES)
+  @IsString({ each: true })
+  @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
+  categories?: string[];
 }

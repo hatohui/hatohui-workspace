@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { travelMapsLinkPreview } from '@hatohui/models';
 import { useDebouncedValue } from '@hatohui/libs';
@@ -9,7 +10,9 @@ import {
 import type { MapTarget } from '../lib/mapsEmbedUrl';
 
 export function useMapsLinkPreview(url: string, fallbackName: string) {
-  const debounced = useDebouncedValue(url.trim(), MAPS_LINK_DEBOUNCE_MS);
+  const [appliedForUrl, setAppliedForUrl] = useState<string | null>(null);
+  const trimmedUrl = url.trim();
+  const debounced = useDebouncedValue(trimmedUrl, MAPS_LINK_DEBOUNCE_MS);
   const name = useDebouncedValue(fallbackName.trim(), MAPS_LINK_DEBOUNCE_MS);
   const isLink = MAPS_LINK_PATTERN.test(debounced);
 
@@ -27,11 +30,19 @@ export function useMapsLinkPreview(url: string, fallbackName: string) {
     : data?.name || name
       ? { name: data?.name || name }
       : null;
+  const linkName = data?.name ?? null;
+  const suggestedName =
+    linkName && linkName !== fallbackName.trim() && appliedForUrl !== trimmedUrl
+      ? linkName
+      : null;
 
   return {
     target,
-    linkName: data?.name ?? null,
+    linkName,
+    suggestedName,
     isLoading: isLink && preview.isFetching,
     notFound: isLink && Boolean(data) && !hasLocation && !data?.name,
+    markNameApplied: () => setAppliedForUrl(trimmedUrl),
+    clearAppliedName: () => setAppliedForUrl(null),
   };
 }

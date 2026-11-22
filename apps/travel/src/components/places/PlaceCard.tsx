@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
+import { cn } from '@hatohui/ui';
 import type { TravelPlaceDto } from '@hatohui/models';
 import { MapPin } from 'lucide-react';
 import routes from '../../constants/routes';
@@ -8,7 +9,10 @@ import {
   formatPlaceLocation,
   hasPlaceCoordinates,
 } from '../../lib/formatPlaceLocation';
+import { isOptimisticId } from '../../lib/optimistic';
+import CategoryChips from '../shared/CategoryChips';
 import ImageFrame from '../shared/ImageFrame';
+import OptimisticBadge from '../shared/OptimisticBadge';
 
 function PlaceCard({ place }: { place: TravelPlaceDto }) {
   const { t } = useTranslation();
@@ -17,19 +21,25 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
   const fallback = hasPlaceCoordinates(place)
     ? t('places.pinnedOnMap')
     : t('places.noLocation');
+  const isOptimistic = isOptimisticId(place.id);
+  const cardClass = cn(
+    'group flex flex-col overflow-hidden rounded-xl border border-border bg-card text-left transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+    isOptimistic ? 'cursor-wait opacity-85' : 'hover:border-primary/50',
+  );
 
-  return (
-    <Link
-      to={routes.place(place.id)}
-      className="group flex flex-col gap-1.5 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-    >
-      <ImageFrame
-        src={place.coverImageUrl}
-        alt={place.name}
-        caution={cautionFor(place.allergens)}
-      />
-      <div className="min-w-0">
-        <h2 className="truncate text-sm font-medium group-hover:underline">
+  const body = (
+    <>
+      <div className="relative w-full">
+        <ImageFrame
+          src={place.coverImageUrl}
+          alt={place.name}
+          flush
+          caution={cautionFor(place.allergens)}
+        />
+        {isOptimistic && <OptimisticBadge />}
+      </div>
+      <div className="flex flex-1 flex-col gap-1.5 p-3">
+        <h2 className="truncate text-sm font-medium transition-colors group-hover:text-primary">
           {place.name}
         </h2>
         <p className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -40,7 +50,22 @@ function PlaceCard({ place }: { place: TravelPlaceDto }) {
             {t('places.dishCount', { count: place.dishCount })}
           </span>
         </p>
+        <CategoryChips categories={place.categories} />
       </div>
+    </>
+  );
+
+  if (isOptimistic) {
+    return (
+      <div aria-busy="true" className={cardClass}>
+        {body}
+      </div>
+    );
+  }
+
+  return (
+    <Link to={routes.place(place.id)} className={cardClass}>
+      {body}
     </Link>
   );
 }

@@ -16,6 +16,7 @@ type Props = {
   removeLabel: (tag: string) => string;
   className?: string;
   showOnEmpty?: boolean;
+  allowCreate?: boolean;
 };
 
 function TagInput({
@@ -28,8 +29,15 @@ function TagInput({
   removeLabel,
   className,
   showOnEmpty,
+  allowCreate,
 }: Props) {
-  const tags = useTagInput({ value, onChange, suggestions, showOnEmpty });
+  const tags = useTagInput({
+    value,
+    onChange,
+    suggestions,
+    showOnEmpty,
+    allowCreate,
+  });
   const anchorRef = useRef<HTMLDivElement>(null);
   const listId = id ? `${id}-suggestions` : undefined;
 
@@ -39,7 +47,7 @@ function TagInput({
         <div
           ref={anchorRef}
           className={cn(
-            'flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-md border border-input bg-transparent px-2 py-1.5 text-sm shadow-xs focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50',
+            'flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-md border border-input bg-background px-2 py-1.5 text-sm shadow-xs focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30',
             className,
           )}
         >
@@ -50,7 +58,7 @@ function TagInput({
                 'inline-flex items-center gap-1 rounded-full py-0.5 pr-1 pl-2 text-xs',
                 tags.isAccent(tag)
                   ? 'bg-primary/15 text-primary ring-1 ring-primary/30 ring-inset'
-                  : 'bg-secondary',
+                  : 'bg-secondary ring-1 ring-border ring-inset',
               )}
             >
               {tag}

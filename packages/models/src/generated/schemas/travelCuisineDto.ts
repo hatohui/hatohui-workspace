@@ -11,11 +11,8 @@ export interface TravelCuisineDto {
   name: string;
   /** Dishes tagged with this cuisine */
   dishCount: number;
-  /**
-     * Country this cuisine belongs to; null for styles like cafe
-     * @nullable
-     */
-  countryId: string | null;
+  /** Countries this cuisine belongs to; empty for styles like cafe */
+  countryIds: string[];
   /**
      * Area for a regional cuisine; implies its country
      * @nullable

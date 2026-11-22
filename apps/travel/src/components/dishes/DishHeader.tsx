@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { useTranslation } from '@hatohui/i18n';
 import type { TravelDishDetailDto } from '@hatohui/models';
 import type { useConfirmedDelete } from '../../hooks/useConfirmedDelete';
 import { useDialogState } from '../../hooks/useDialogState';
+import CategoryChips from '../shared/CategoryChips';
 import CuisineChips from '../shared/CuisineChips';
 import CreatorBadge from '../shared/CreatorBadge';
 import EntityActions from '../shared/EntityActions';
+import ImageViewer from '../shared/ImageViewer';
 import DishDialog from './DishDialog';
 
 interface Props {
@@ -15,21 +18,35 @@ interface Props {
 function DishHeader({ dish, deletion }: Props) {
   const { t } = useTranslation();
   const editor = useDialogState();
+  const [viewerOpen, setViewerOpen] = useState(false);
   const photoSrc = dish.previewUrl ?? dish.thumbnailUrl ?? dish.imageUrl;
+  const fullSrc = dish.previewUrl ?? dish.imageUrl ?? dish.thumbnailUrl;
 
   return (
     <header className="space-y-4 border-b border-border/60 pb-6">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
         {photoSrc && (
-          <img
-            src={photoSrc}
-            alt={dish.name}
-            className="aspect-[4/3] w-44 shrink-0 rounded-xl border border-border/60 bg-card object-cover"
-          />
+          <button
+            type="button"
+            onClick={() => setViewerOpen(true)}
+            aria-label={t('common:imageViewer.openFull')}
+            className="shrink-0 cursor-zoom-in rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          >
+            <img
+              src={photoSrc}
+              alt={dish.name}
+              className="aspect-[4/3] w-44 rounded-xl border border-border/60 bg-card object-cover"
+            />
+          </button>
         )}
         <div className="min-w-0 flex-1 space-y-3">
           <h1 className="text-3xl font-medium tracking-tight">{dish.name}</h1>
-          <CuisineChips cuisines={dish.cuisines} />
+          {(dish.categories.length > 0 || dish.cuisines.length > 0) && (
+            <div className="flex flex-wrap gap-1.5">
+              <CategoryChips categories={dish.categories} />
+              <CuisineChips cuisines={dish.cuisines} />
+            </div>
+          )}
           {dish.description && (
             <p className="max-w-prose leading-relaxed text-muted-foreground">
               {dish.description}
@@ -49,6 +66,13 @@ function DishHeader({ dish, deletion }: Props) {
         </div>
       </div>
       <DishDialog key={editor.version} state={editor} dish={dish} />
+      <ImageViewer
+        src={viewerOpen ? fullSrc : null}
+        alt={dish.name}
+        caption={{ title: dish.name }}
+        originalUrl={dish.imageUrl}
+        onClose={() => setViewerOpen(false)}
+      />
     </header>
   );
 }

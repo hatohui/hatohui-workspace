@@ -15,13 +15,14 @@ export function useDishList(state: TravelFilterState, enabled: boolean) {
       dishes.map((dish) => ({
         id: dish.id,
         label: dish.name,
-        sublabel: dish.cuisines.join(', ') || null,
+        sublabel: [...dish.categories, ...dish.cuisines].join(', ') || null,
         imageUrl: dish.coverImageUrl,
       })),
     [dishes],
   );
   const pagination = usePagination(dishes, JSON.stringify(params));
   return {
+    allDishes: dishes,
     dishes: pagination.pagedItems,
     pagination,
     suggestions,

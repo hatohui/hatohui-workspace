@@ -6,7 +6,10 @@ import CountriesAdmin from '../../components/admin/CountriesAdmin';
 import CuisinesAdmin from '../../components/admin/CuisinesAdmin';
 import DishesAdmin from '../../components/admin/DishesAdmin';
 import EventsAdmin from '../../components/admin/EventsAdmin';
+import FoodCategoriesAdmin from '../../components/admin/FoodCategoriesAdmin';
 import JobProfilesAdmin from '../../components/admin/JobProfilesAdmin';
+import PlaceCategoriesAdmin from '../../components/admin/PlaceCategoriesAdmin';
+import PlacesAdmin from '../../components/admin/PlacesAdmin';
 import PlansAdmin from '../../components/admin/PlansAdmin';
 import RecommendationsAdmin from '../../components/admin/RecommendationsAdmin';
 import TagsAdmin from '../../components/admin/TagsAdmin';
@@ -20,6 +23,9 @@ const PANELS = {
   countries: CountriesAdmin,
   areas: AreasAdmin,
   dishes: DishesAdmin,
+  foodCategories: FoodCategoriesAdmin,
+  places: PlacesAdmin,
+  placeCategories: PlaceCategoriesAdmin,
   cuisines: CuisinesAdmin,
   tags: TagsAdmin,
   events: EventsAdmin,

@@ -1,8 +1,11 @@
 'use client';
 
-import { Dialog, DialogContent, DialogTitle } from '@hatohui/ui';
-import type { ImageViewerCaption } from '@/hooks/useImageViewer';
-import { ImageViewerStage } from './ImageViewerStage';
+import Link from 'next/link';
+import { useTranslation } from '@hatohui/i18n';
+import {
+  ImageViewer as SharedImageViewer,
+  type ImageViewerCaption,
+} from '@hatohui/ui';
 
 export function ImageViewer({
   src,
@@ -23,28 +26,30 @@ export function ImageViewer({
   onNext?: () => void;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('art');
+
   return (
-    <Dialog open={src !== null} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent
-        showCloseButton={false}
-        aria-describedby={undefined}
-        className="top-0 left-0 block h-dvh w-screen max-w-none translate-x-0 translate-y-0 rounded-none border-0 bg-black/90 p-0 text-white shadow-none sm:max-w-none"
-      >
-        <DialogTitle className="sr-only">{alt}</DialogTitle>
-        {src && (
-          <ImageViewerStage
-            key={src}
-            src={src}
-            alt={alt}
-            caption={caption}
-            originalUrl={originalUrl}
-            detailsUrl={detailsUrl}
-            onPrevious={onPrevious}
-            onNext={onNext}
-            onClose={onClose}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+    <SharedImageViewer
+      src={src}
+      alt={alt}
+      caption={caption}
+      originalUrl={originalUrl}
+      detailsUrl={detailsUrl}
+      onPrevious={onPrevious}
+      onNext={onNext}
+      onClose={onClose}
+      LinkComponent={Link}
+      labels={{
+        zoomIn: t('imageViewer.zoomIn'),
+        zoomOut: t('imageViewer.zoomOut'),
+        reset: t('imageViewer.reset'),
+        close: t('imageViewer.close'),
+        download: t('imageViewer.download'),
+        toggleCaption: t('imageViewer.toggleCaption'),
+        openDetails: t('imageViewer.openDetails'),
+        previous: t('imageViewer.previous'),
+        next: t('imageViewer.next'),
+      }}
+    />
   );
 }

@@ -5,6 +5,8 @@ export type FoodView = (typeof FOOD_VIEWS)[number];
 
 export const FOOD_VIEW_PARAM = 'view';
 export const DEFAULT_FOOD_VIEW: FoodView = 'dishes';
+export const FOOD_GROUP_PARAM = 'group';
+export const FOOD_GROUP_CATEGORY = 'category';
 
 export const FOOD_VIEW_OPTIONS: Record<
   FoodView,

@@ -71,6 +71,8 @@ model User {
   commissionStatusChanges     CommissionStatusHistory[]   @relation("CommissionStatusChangedBy")
   travelDishes                TravelDish[]                @relation("TravelDishCreator")
   travelCuisines              TravelCuisine[]             @relation("TravelCuisineCreator")
+  travelFoodCategories        TravelFoodCategory[]        @relation("TravelFoodCategoryCreator")
+  travelPlaceCategories       TravelPlaceCategory[]       @relation("TravelPlaceCategoryCreator")
   travelCountries             TravelCountry[]             @relation("TravelCountryCreator")
   travelAreas                 TravelArea[]                @relation("TravelAreaCreator")
   travelPlaces                TravelPlace[]               @relation("TravelPlaceCreator")
@@ -877,23 +879,32 @@ model TravelDish {
   updatedAt    DateTime @updatedAt
 
   cuisines        TravelCuisine[]
+  categories      TravelFoodCategory[]
   recommendations TravelRecommendation[]
 }
 
-model TravelCuisine {
-  id          String         @id @default(cuid())
-  name        String         @unique
-  countryId   String?
-  country     TravelCountry? @relation(fields: [countryId], references: [id], onDelete: SetNull)
-  areaId      String?
-  area        TravelArea?    @relation(fields: [areaId], references: [id], onDelete: SetNull)
+model TravelFoodCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
   createdById String?
-  createdBy   User?          @relation("TravelCuisineCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt   DateTime       @default(now())
+  createdBy   User?    @relation("TravelFoodCategoryCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
 
   dishes TravelDish[]
+}
 
-  @@index([countryId])
+model TravelCuisine {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  areaId      String?
+  area        TravelArea? @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  createdById String?
+  createdBy   User?       @relation("TravelCuisineCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+
+  countries TravelCountry[]
+  dishes    TravelDish[]
+
   @@index([areaId])
 }
 
@@ -912,11 +923,22 @@ model TravelPlace {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
+  categories      TravelPlaceCategory[]
   recommendations TravelRecommendation[]
   events          TravelEvent[]
   activities      TravelActivity[]
 
   @@index([areaId])
+}
+
+model TravelPlaceCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  createdById String?
+  createdBy   User?    @relation("TravelPlaceCategoryCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  places TravelPlace[]
 }
 
 model TravelCountry {
@@ -950,6 +972,7 @@ model TravelArea {
 enum TravelTagKind {
   ALLERGEN
   GENERAL
+  SPECIAL
 }
 
 model TravelTag {
@@ -983,8 +1006,6 @@ model TravelRecommendation {
   priceMax    Int?
   priceLevel  TravelPriceLevel?
   currency    String            @default("VND")
-  spicy       Boolean           @default(false)
-  vegetarian  Boolean           @default(false)
   createdById String?
   createdBy   User?             @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime          @default(now())

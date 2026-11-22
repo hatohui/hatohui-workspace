@@ -1,14 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { cn } from '@hatohui/ui';
-import { useZoomPan } from '@/hooks/useZoomPan';
-import type { ImageViewerCaption as Caption } from '@/hooks/useImageViewer';
-import { ImageViewerControls } from './ImageViewerControls';
-import { ImageViewerCaption } from './ImageViewerCaption';
-import { ImageViewerNavButton } from './ImageViewerNavButton';
+import { cn } from '../../../lib/utils';
+import { ImageViewerCaption } from './image-viewer-caption';
+import { ImageViewerControls } from './image-viewer-controls';
+import { ImageViewerNavButton } from './image-viewer-nav-button';
+import type {
+  ImageViewerCaption as Caption,
+  ImageViewerLabels,
+  ImageViewerLink,
+} from './image-viewer-types';
+import { useZoomPan } from './use-zoom-pan';
 
-export function ImageViewerStage({
+function ImageViewerStage({
   src,
   alt,
   caption,
@@ -17,6 +21,8 @@ export function ImageViewerStage({
   onPrevious,
   onNext,
   onClose,
+  labels,
+  LinkComponent,
 }: {
   src: string;
   alt: string;
@@ -26,6 +32,8 @@ export function ImageViewerStage({
   onPrevious?: () => void;
   onNext?: () => void;
   onClose: () => void;
+  labels: ImageViewerLabels;
+  LinkComponent?: ImageViewerLink;
 }) {
   const zoom = useZoomPan();
   const [isCaptionOpen, setIsCaptionOpen] = useState(true);
@@ -69,14 +77,26 @@ export function ImageViewerStage({
         <ImageViewerCaption caption={caption} />
       )}
       {onPrevious && (
-        <ImageViewerNavButton direction="previous" onClick={onPrevious} />
+        <ImageViewerNavButton
+          direction="previous"
+          label={labels.previous}
+          onClick={onPrevious}
+        />
       )}
-      {onNext && <ImageViewerNavButton direction="next" onClick={onNext} />}
+      {onNext && (
+        <ImageViewerNavButton
+          direction="next"
+          label={labels.next}
+          onClick={onNext}
+        />
+      )}
       <ImageViewerControls
         zoom={zoom}
         originalUrl={originalUrl}
         detailsUrl={detailsUrl}
         onClose={onClose}
+        labels={labels}
+        LinkComponent={LinkComponent}
         caption={
           hasCaption
             ? {
@@ -89,3 +109,5 @@ export function ImageViewerStage({
     </div>
   );
 }
+
+export { ImageViewerStage };

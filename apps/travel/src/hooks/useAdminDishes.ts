@@ -9,22 +9,24 @@ import {
 } from '@hatohui/models';
 import type { EditableColumn } from '@hatohui/ui';
 import { CUISINE_LIST_SEPARATOR } from '../constants/admin';
-import { MAX_CUISINES } from '../constants/travel';
+import { MAX_CATEGORIES, MAX_CUISINES } from '../constants/travel';
 import { formatAddedDate } from '../lib/formatDate';
 import { useAdminAction } from './useAdminAction';
 import { useCuisineSuggestions } from './useCuisineSuggestions';
+import { useFoodCategorySuggestions } from './useFoodCategorySuggestions';
 import { useRowDeletion } from './useRowDeletion';
 
 export interface DishRow {
   id: string;
   name: string;
   cuisines: string;
+  categories: string;
   description: string;
   placeCount: number;
   createdAt: string;
 }
 
-const toCuisineList = (value: string) =>
+const toTagList = (value: string) =>
   value
     .split(CUISINE_LIST_SEPARATOR)
     .map((name) => name.trim())
@@ -37,12 +39,14 @@ export function useAdminDishes() {
   const remove = useDeleteTravelDish();
   const bulk = useBulkCreateTravelDishes();
   const suggestions = useCuisineSuggestions();
+  const categorySuggestions = useFoodCategorySuggestions();
   const { run, runBulk } = useAdminAction();
 
   const rows: DishRow[] = (query.data?.data ?? []).map((dish) => ({
     id: dish.id,
     name: dish.name,
     cuisines: dish.cuisines.join(`${CUISINE_LIST_SEPARATOR} `),
+    categories: dish.categories.join(`${CUISINE_LIST_SEPARATOR} `),
     description: dish.description ?? '',
     placeCount: dish.placeCount,
     createdAt: dish.createdAt,
@@ -54,6 +58,18 @@ export function useAdminDishes() {
       label: t('admin.name'),
       editable: true,
       sortable: true,
+      size: 200,
+    },
+    {
+      key: 'categories',
+      label: t('admin.categories'),
+      editable: true,
+      sortable: true,
+      suggestions: categorySuggestions,
+      maxTags: MAX_CATEGORIES,
+      selectPlaceholder: t('form.foodCategoriesPlaceholder'),
+      createLabel: (tag) => t('form.categoryCreate', { tag }),
+      removeLabel: (tag) => t('form.categoryRemove', { tag }),
       size: 200,
     },
     {
@@ -92,33 +108,24 @@ export function useAdminDishes() {
 
   const dishesQueryKey = getTravelDishesQueryKey();
 
-  const commit = (id: string, key: keyof DishRow, value: string) =>
+  const commit = (id: string, key: keyof DishRow, value: string) => {
+    const patch =
+      key === 'cuisines' || key === 'categories'
+        ? { [key]: toTagList(value) }
+        : { [key]: value };
     void run<{ data: TravelDishDto[] }>(
-      () =>
-        update.mutateAsync({
-          id,
-          data:
-            key === 'cuisines'
-              ? { cuisines: toCuisineList(value) }
-              : { [key]: value },
-        }),
+      () => update.mutateAsync({ id, data: patch }),
       {
         queryKey: dishesQueryKey,
         apply: (current) => ({
           ...current,
           data: current.data.map((dish) =>
-            dish.id === id
-              ? {
-                  ...dish,
-                  ...(key === 'cuisines'
-                    ? { cuisines: toCuisineList(value) }
-                    : { [key]: value }),
-                }
-              : dish,
+            dish.id === id ? { ...dish, ...patch } : dish,
           ),
         }),
       },
     );
+  };
 
   const deletion = useRowDeletion<DishRow>(
     (row) =>

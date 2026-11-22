@@ -9,10 +9,10 @@
 export interface UpdateTravelCuisineDto {
   /** @maxLength 120 */
   name?: string;
-  /** @nullable */
-  countryId?: string | null;
+  /** Countries this cuisine belongs to; empty clears them */
+  countryIds?: string[];
   /**
-     * Setting an area also sets its country
+     * Setting an area also includes its country
      * @nullable
      */
   areaId?: string | null;

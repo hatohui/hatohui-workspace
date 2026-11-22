@@ -14,6 +14,11 @@ export interface CreateTravelDishDto {
      * @maxItems 6
      */
   cuisines?: string[];
+  /**
+     * Food category tags, found or created by name
+     * @maxItems 6
+     */
+  categories?: string[];
   /** @maxLength 2000 */
   description?: string;
   /**

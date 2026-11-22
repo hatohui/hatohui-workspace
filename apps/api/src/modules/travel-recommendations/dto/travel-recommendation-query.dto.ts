@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
-
-const toBoolean = ({ value }: { value: unknown }) =>
-  value === undefined ? undefined : [true, 'true'].includes(value as string);
+import { IsOptional, IsString } from 'class-validator';
 
 const toList = ({ value }: { value: unknown }) =>
   value === undefined
@@ -35,6 +32,26 @@ export class TravelRecommendationQueryDto {
 
   @ApiProperty({
     required: false,
+    type: [String],
+    description: 'Only dishes tagged with any of these food categories',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsString({ each: true })
+  foodCategories?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Only places tagged with any of these place categories',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsString({ each: true })
+  placeCategories?: string[];
+
+  @ApiProperty({
+    required: false,
     description: 'Only entries added by this @handle',
     example: 'hatohui',
   })
@@ -62,18 +79,6 @@ export class TravelRecommendationQueryDto {
   @IsString()
   placeId?: string;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @Transform(toBoolean)
-  @IsBoolean()
-  spicy?: boolean;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @Transform(toBoolean)
-  @IsBoolean()
-  vegetarian?: boolean;
-
   @ApiProperty({
     required: false,
     type: [String],
@@ -87,10 +92,20 @@ export class TravelRecommendationQueryDto {
   @ApiProperty({
     required: false,
     type: [String],
-    description: 'Only dishes with every listed general tag',
+    description: 'Only entries with every listed tag key',
   })
   @IsOptional()
   @Transform(toList)
   @IsString({ each: true })
   tags?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Hide entries with any of these tag keys',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsString({ each: true })
+  excludeTags?: string[];
 }

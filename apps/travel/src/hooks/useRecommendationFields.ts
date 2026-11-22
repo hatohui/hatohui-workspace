@@ -12,7 +12,9 @@ import {
 export interface RecommendationFields {
   dishName: string;
   cuisines: string[];
+  foodCategories: string[];
   placeName: string;
+  placeCategories: string[];
   areaId: string;
   mapsUrl: string;
   priceMode: PriceMode;
@@ -21,8 +23,7 @@ export interface RecommendationFields {
   priceLevel: TravelPriceLevel | null;
   currency: Currency;
   note: string;
-  spicy: boolean;
-  vegetarian: boolean;
+  specials: string[];
   allergens: string[];
   tags: string[];
 }
@@ -37,7 +38,9 @@ const fieldsFrom = (
 ): RecommendationFields => ({
   dishName: rec?.dish.name ?? initialDishName ?? '',
   cuisines: rec?.dish.cuisines ?? [],
+  foodCategories: rec?.dish.categories ?? [],
   placeName: rec?.place.name ?? '',
+  placeCategories: rec?.place.categories ?? [],
   areaId: rec?.place.area?.id ?? defaultAreaId ?? '',
   mapsUrl: rec?.place.mapsUrl ?? '',
   priceMode: rec?.priceLevel && rec.priceMin == null ? 'level' : 'range',
@@ -46,8 +49,7 @@ const fieldsFrom = (
   priceLevel: rec?.priceLevel ?? null,
   currency: (rec?.currency as Currency | undefined) ?? DEFAULT_CURRENCY,
   note: rec?.note ?? '',
-  spicy: rec?.spicy ?? false,
-  vegetarian: rec?.vegetarian ?? false,
+  specials: rec?.specials ?? [],
   allergens: rec?.allergens ?? [],
   tags: rec?.tags ?? [],
 });

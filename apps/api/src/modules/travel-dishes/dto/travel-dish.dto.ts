@@ -3,13 +3,13 @@ import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,
   IsArray,
-  IsBoolean,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
 import {
+  TRAVEL_MAX_CATEGORIES,
   TRAVEL_MAX_CUISINES,
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
@@ -28,6 +28,9 @@ export class TravelDishDto {
 
   @ApiProperty({ type: [String], example: ['Vietnamese'] })
   cuisines!: string[];
+
+  @ApiProperty({ type: [String], example: ['Coffee'] })
+  categories!: string[];
 
   @ApiProperty({ nullable: true, type: String })
   description!: string | null;
@@ -96,6 +99,19 @@ export class CreateTravelDishDto {
   @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
   cuisines?: string[];
 
+  @ApiProperty({
+    type: [String],
+    required: false,
+    maxItems: TRAVEL_MAX_CATEGORIES,
+    description: 'Food category tags, found or created by name',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(TRAVEL_MAX_CATEGORIES)
+  @IsString({ each: true })
+  @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
+  categories?: string[];
+
   @ApiProperty({ required: false, maxLength: TRAVEL_NOTE_MAX_LENGTH })
   @IsOptional()
   @IsString()
@@ -114,9 +130,6 @@ export class CreateTravelDishDto {
 }
 
 export class UpdateTravelDishDto extends PartialType(CreateTravelDishDto) {}
-
-const toBoolean = ({ value }: { value: unknown }) =>
-  value === undefined ? undefined : [true, 'true'].includes(value as string);
 
 const toList = ({ value }: { value: unknown }) =>
   value === undefined
@@ -145,27 +158,32 @@ export class TravelDishQueryDto {
 
   @ApiProperty({
     required: false,
+    type: [String],
+    description: 'Only dishes tagged with any of these food categories',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsString({ each: true })
+  foodCategories?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Only dishes served at places with any of these categories',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsString({ each: true })
+  placeCategories?: string[];
+
+  @ApiProperty({
+    required: false,
     description: 'Only entries added by this @handle',
     example: 'hatohui',
   })
   @IsOptional()
   @IsString()
   by?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @Transform(toBoolean)
-  @IsBoolean()
-  spicy?: boolean;
-
-  @ApiProperty({
-    required: false,
-    description: 'Only dishes with a vegetarian recommendation',
-  })
-  @IsOptional()
-  @Transform(toBoolean)
-  @IsBoolean()
-  vegetarian?: boolean;
 
   @ApiProperty({
     required: false,
@@ -187,6 +205,17 @@ export class TravelDishQueryDto {
   @Transform(toList)
   @IsString({ each: true })
   tags?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description:
+      'Only dishes with a recommendation having none of these tag keys',
+  })
+  @IsOptional()
+  @Transform(toList)
+  @IsString({ each: true })
+  excludeTags?: string[];
 
   @ApiProperty({
     required: false,

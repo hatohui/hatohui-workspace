@@ -1,9 +1,7 @@
-import { useQueryClient, type QueryKey } from '@tanstack/react-query';
 import { useTranslation } from '@hatohui/i18n';
 import { useImageUpload } from '@hatohui/libs';
 import {
   createTravelRecommendation,
-  getTravelRecommendationsQueryKey,
   updateTravelRecommendation,
   type TravelDishDto,
   type TravelPlaceAreaDto,
@@ -11,13 +9,9 @@ import {
   type TravelRecommendationDto,
 } from '@hatohui/models';
 import { useToast } from '@hatohui/ui';
-import {
-  buildOptimisticRecommendation,
-  createOptimisticId,
-  shouldPrependToQuery,
-} from '../lib/optimistic';
 import { useErrorMessage } from './useErrorMessage';
 import { useInvalidateTravel } from './useInvalidateTravel';
+import { useOptimisticRecommendation } from './useOptimisticRecommendation';
 import type { PhotoItem } from './usePhotoList';
 import type { RecommendationFields } from './useRecommendationFields';
 import { useTravelLocation } from './useTravelLocation';
@@ -25,10 +19,6 @@ import { useTravelLocation } from './useTravelLocation';
 interface Matches {
   dish?: TravelDishDto;
   place?: TravelPlaceDto;
-}
-
-interface RecommendationsCache {
-  data: TravelRecommendationDto[];
 }
 
 const toAmount = (value: string) => (value === '' ? null : Number(value));
@@ -41,8 +31,7 @@ const detailsOf = (fields: RecommendationFields, imageKeys: string[]) => {
     priceMax: isRange ? toAmount(fields.priceMax || fields.priceMin) : null,
     priceLevel: isRange ? null : fields.priceLevel,
     currency: fields.currency,
-    spicy: fields.spicy,
-    vegetarian: fields.vegetarian,
+    specials: fields.specials,
     allergens: fields.allergens,
     tags: fields.tags,
     imageKeys,
@@ -62,10 +51,10 @@ export function useSaveRecommendation(
   onSaved: () => void,
 ) {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const location = useTravelLocation();
   const { uploadImage } = useImageUpload();
   const invalidate = useInvalidateTravel();
+  const optimistic = useOptimisticRecommendation();
   const toast = useToast();
   const errorMessage = useErrorMessage();
 
@@ -74,9 +63,8 @@ export function useSaveRecommendation(
     matches: Matches,
     photos: PhotoItem[],
   ) => {
-    const queryKeyPrefix = getTravelRecommendationsQueryKey();
     const dishLabel = matches.dish?.name ?? fields.dishName.trim();
-    const tempId = existing?.id ?? createOptimisticId();
+    const placeLabel = matches.place?.name ?? fields.placeName.trim();
 
     let resolvedArea: TravelPlaceAreaDto | null = null;
     if (fields.areaId) {
@@ -94,8 +82,7 @@ export function useSaveRecommendation(
       }
     }
 
-    const optimistic = buildOptimisticRecommendation({
-      id: tempId,
+    const optimisticTx = optimistic.apply({
       existing,
       fields,
       dish: matches.dish,
@@ -104,57 +91,44 @@ export function useSaveRecommendation(
       photos,
     });
 
-    const snapshots: Array<[QueryKey, RecommendationsCache | undefined]> =
-      queryClient.getQueriesData<RecommendationsCache>({
-        queryKey: queryKeyPrefix,
-      });
-
-    void queryClient.cancelQueries({ queryKey: queryKeyPrefix });
-
-    for (const [key, current] of snapshots) {
-      if (!current?.data) continue;
-      if (existing) {
-        queryClient.setQueryData<RecommendationsCache>(key, {
-          ...current,
-          data: current.data.map((item) =>
-            item.id === existing.id ? optimistic : item,
-          ),
-        });
-      } else if (
-        shouldPrependToQuery(key, matches.dish?.id, matches.place?.id)
-      ) {
-        queryClient.setQueryData<RecommendationsCache>(key, {
-          ...current,
-          data: [optimistic, ...current.data],
-        });
-      }
-    }
-
     onSaved();
 
     const pendingPhotos = photos.filter((photo) => !photo.key && photo.file);
+    const totalPhotos = pendingPhotos.length;
+    const savingLabel = t(existing ? 'form.updatingPick' : 'form.addingPick', {
+      dish: dishLabel,
+      place: placeLabel,
+    });
+    const uploadText = (done: number) =>
+      totalPhotos === 1
+        ? t('form.uploadingPhoto')
+        : t('form.uploadingPhotosProgress', { done, total: totalPhotos });
+
     const toastId = toast.loading(
-      pendingPhotos.length > 0
-        ? t('form.uploadingPhotos', { count: pendingPhotos.length })
-        : t('form.savingItem', { name: dishLabel }),
+      totalPhotos > 0 ? uploadText(0) : savingLabel,
+      totalPhotos > 0 ? 0.08 : 0.35,
     );
 
     void (async () => {
       try {
         const uploadedKeys = new Map<string, string>();
-        if (pendingPhotos.length > 0) {
+        if (totalPhotos > 0) {
+          let uploadedCount = 0;
           await Promise.all(
             pendingPhotos.map(async (photo) => {
               if (!photo.file) return;
               const { key } = await uploadImage(photo.file);
               uploadedKeys.set(photo.id, key);
+              uploadedCount += 1;
+              toast.update(
+                toastId,
+                uploadText(uploadedCount),
+                'loading',
+                0.08 + (uploadedCount / totalPhotos) * 0.52,
+              );
             }),
           );
-          toast.update(
-            toastId,
-            t('form.savingItem', { name: dishLabel }),
-            'loading',
-          );
+          toast.update(toastId, savingLabel, 'loading', 0.72);
         }
 
         const imageKeys = photos.flatMap((photo) => {
@@ -172,6 +146,9 @@ export function useSaveRecommendation(
               dishId: matches.dish?.id,
               dishName: matches.dish?.id ? undefined : fields.dishName,
               cuisines: matches.dish?.id ? undefined : fields.cuisines,
+              foodCategories: matches.dish?.id
+                ? undefined
+                : fields.foodCategories,
               placeId: matches.place?.id,
               place: matches.place?.id
                 ? undefined
@@ -179,35 +156,24 @@ export function useSaveRecommendation(
                     name: fields.placeName,
                     mapsUrl: fields.mapsUrl || undefined,
                     areaId: fields.areaId || undefined,
+                    categories: fields.placeCategories,
                   },
             });
 
         const saved = response.data;
-        const currentQueries = queryClient.getQueriesData<RecommendationsCache>(
-          {
-            queryKey: queryKeyPrefix,
-          },
-        );
-        for (const [key, current] of currentQueries) {
-          if (!current?.data) continue;
-          queryClient.setQueryData<RecommendationsCache>(key, {
-            ...current,
-            data: current.data.map((item) =>
-              item.id === tempId ? saved : item,
-            ),
-          });
-        }
-
+        optimisticTx.settle(saved);
+        toast.update(toastId, t('form.refreshingCatalog'), 'loading', 0.88);
+        await invalidate();
         toast.update(
           toastId,
-          t('form.savedItem', { name: saved.dish.name }),
+          t(existing ? 'form.updatedPick' : 'form.addedPick', {
+            dish: saved.dish.name,
+            place: saved.place.name,
+          }),
           'success',
         );
-        await invalidate();
       } catch (error) {
-        for (const [key, previous] of snapshots) {
-          queryClient.setQueryData(key, previous);
-        }
+        optimisticTx.rollback();
         toast.update(toastId, errorMessage(error), 'error');
       } finally {
         revokeBlobUrls(photos);

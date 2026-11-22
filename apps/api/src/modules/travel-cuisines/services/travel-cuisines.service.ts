@@ -16,7 +16,7 @@ import { uniqueNames } from '@/modules/travel-recommendations/utils/unique-names
 const cuisineSelect = {
   id: true,
   name: true,
-  countryId: true,
+  countries: { orderBy: { name: 'asc' }, select: { id: true } },
   areaId: true,
   createdAt: true,
   _count: { select: { dishes: true } },
@@ -55,7 +55,7 @@ export class TravelCuisinesService {
     id: string,
     dto: UpdateTravelCuisineDto,
   ): Promise<TravelCuisineDto> {
-    const location = await this.locationOf(dto);
+    const location = await this.locationOf(id, dto);
     try {
       const row = await this.db.travelCuisine.update({
         where: { id },
@@ -68,20 +68,60 @@ export class TravelCuisinesService {
     }
   }
 
-  private async locationOf(dto: UpdateTravelCuisineDto) {
+  private async locationOf(
+    id: string,
+    dto: UpdateTravelCuisineDto,
+  ): Promise<Prisma.TravelCuisineUpdateInput> {
+    const countryIds =
+      dto.countryIds === undefined
+        ? undefined
+        : [...new Set(dto.countryIds.map((cid) => cid.trim()).filter(Boolean))];
+    if (countryIds?.length) {
+      const found = await this.db.travelCountry.count({
+        where: { id: { in: countryIds } },
+      });
+      if (found !== countryIds.length) {
+        throw new NotFoundException('Country not found');
+      }
+    }
+
     if (dto.areaId) {
       const area = await this.db.travelArea.findUnique({
         where: { id: dto.areaId },
         select: { countryId: true },
       });
       if (!area) throw new NotFoundException('Area not found');
-      return { areaId: dto.areaId, countryId: area.countryId };
+      const nextCountries = countryIds
+        ? {
+            set: [...new Set([...countryIds, area.countryId])].map((cid) => ({
+              id: cid,
+            })),
+          }
+        : { connect: { id: area.countryId } };
+      return {
+        area: { connect: { id: dto.areaId } },
+        countries: nextCountries,
+      };
     }
-    return {
-      areaId: dto.areaId === undefined ? undefined : null,
-      countryId:
-        dto.countryId === undefined ? undefined : dto.countryId || null,
-    };
+
+    if (countryIds !== undefined) {
+      let clearArea = dto.areaId !== undefined;
+      if (!clearArea) {
+        const current = await this.db.travelCuisine.findUnique({
+          where: { id },
+          select: { area: { select: { countryId: true } } },
+        });
+        if (current?.area && !countryIds.includes(current.area.countryId)) {
+          clearArea = true;
+        }
+      }
+      return {
+        ...(clearArea ? { area: { disconnect: true } } : {}),
+        countries: { set: countryIds.map((cid) => ({ id: cid })) },
+      };
+    }
+
+    return dto.areaId === undefined ? {} : { area: { disconnect: true } };
   }
 
   async remove(id: string): Promise<void> {
@@ -135,7 +175,7 @@ export class TravelCuisinesService {
       id: row.id,
       name: row.name,
       dishCount: row._count.dishes,
-      countryId: row.countryId,
+      countryIds: row.countries.map((country) => country.id),
       areaId: row.areaId,
       createdAt: row.createdAt,
     };

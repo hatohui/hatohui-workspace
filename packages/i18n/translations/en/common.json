@@ -75,5 +75,17 @@
       "system": "System"
     }
   },
-  "preferences": "Preferences"
+  "preferences": "Preferences",
+  "imageViewer": {
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "reset": "Reset zoom",
+    "close": "Close",
+    "download": "Download original",
+    "toggleCaption": "Show or hide details",
+    "openDetails": "View details",
+    "openFull": "View full image",
+    "previous": "Previous image",
+    "next": "Next image"
+  }
 }

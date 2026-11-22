@@ -2,11 +2,9 @@
 
 import { useState } from 'react';
 import type { AssetDto } from '@hatohui/models';
+import type { ImageViewerCaption } from '@hatohui/ui';
 
-export interface ImageViewerCaption {
-  title?: string | null;
-  description?: string | null;
-}
+export type { ImageViewerCaption };
 
 interface ImageViewerEntry {
   src: string;

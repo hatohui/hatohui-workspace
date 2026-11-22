@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsArray,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { TRAVEL_NAME_MAX_LENGTH } from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 export class TravelCuisineDto {
@@ -13,11 +19,11 @@ export class TravelCuisineDto {
   dishCount!: number;
 
   @ApiProperty({
-    nullable: true,
-    type: String,
-    description: 'Country this cuisine belongs to; null for styles like cafe',
+    type: [String],
+    description:
+      'Countries this cuisine belongs to; empty for styles like cafe',
   })
-  countryId!: string | null;
+  countryIds!: string[];
 
   @ApiProperty({
     nullable: true,
@@ -38,16 +44,21 @@ export class UpdateTravelCuisineDto {
   @MaxLength(TRAVEL_NAME_MAX_LENGTH)
   name?: string;
 
-  @ApiProperty({ required: false, nullable: true, type: String })
+  @ApiProperty({
+    required: false,
+    type: [String],
+    description: 'Countries this cuisine belongs to; empty clears them',
+  })
   @IsOptional()
-  @IsString()
-  countryId?: string | null;
+  @IsArray()
+  @IsString({ each: true })
+  countryIds?: string[];
 
   @ApiProperty({
     required: false,
     nullable: true,
     type: String,
-    description: 'Setting an area also sets its country',
+    description: 'Setting an area also includes its country',
   })
   @IsOptional()
   @IsString()

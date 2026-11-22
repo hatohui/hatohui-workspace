@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { useAuth } from '@hatohui/libs';
@@ -12,6 +13,7 @@ import {
 import { Calendar, ExternalLink, MapPin, Pencil } from 'lucide-react';
 import routes from '../../constants/routes';
 import { useCanEdit } from '../../hooks/useCanEdit';
+import ImageViewer from '../shared/ImageViewer';
 
 interface EventDetailDialogProps {
   event: TravelEventDto | null;
@@ -22,11 +24,17 @@ function EventDetailDialog({ event, onClose }: EventDetailDialogProps) {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const isEditor = useCanEdit();
+  const [viewerEventId, setViewerEventId] = useState<string | null>(null);
 
   if (!event) return null;
 
   const canModify =
     isEditor || Boolean(user && event.createdBy?.id === user.id);
+  const viewerOpen = viewerEventId === event.id;
+  const closeDialog = () => {
+    setViewerEventId(null);
+    onClose();
+  };
 
   const fmt = new Intl.DateTimeFormat(i18n.language, {
     dateStyle: 'medium',
@@ -34,20 +42,25 @@ function EventDetailDialog({ event, onClose }: EventDetailDialogProps) {
   });
 
   return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
+    <Dialog open onOpenChange={(open) => !open && closeDialog()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>{event.title}</DialogTitle>
         </DialogHeader>
 
         {event.previewUrl && (
-          <div className="aspect-[16/9] overflow-hidden rounded-lg bg-muted">
+          <button
+            type="button"
+            onClick={() => setViewerEventId(event.id)}
+            aria-label={t('common:imageViewer.openFull')}
+            className="block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-lg bg-muted outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          >
             <img
               src={event.previewUrl}
               alt={event.title}
               className="size-full object-cover"
             />
-          </div>
+          </button>
         )}
 
         <div className="space-y-3 text-sm">
@@ -101,10 +114,18 @@ function EventDetailDialog({ event, onClose }: EventDetailDialogProps) {
               </Link>
             </Button>
           )}
-          <Button size="sm" onClick={onClose}>
+          <Button size="sm" onClick={closeDialog}>
             {t('events.detail.close')}
           </Button>
         </div>
+
+        <ImageViewer
+          src={viewerOpen ? (event.previewUrl ?? null) : null}
+          alt={event.title}
+          caption={{ title: event.title }}
+          originalUrl={event.imageUrl ?? event.previewUrl ?? null}
+          onClose={() => setViewerEventId(null)}
+        />
       </DialogContent>
     </Dialog>
   );

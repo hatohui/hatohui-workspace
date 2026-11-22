@@ -3,6 +3,7 @@ import type { TravelDishDto } from '@hatohui/models';
 import { useDishForm } from '../../hooks/useDishForm';
 import CuisineField from '../shared/CuisineField';
 import DialogForm from '../shared/DialogForm';
+import FoodCategoryField from '../shared/FoodCategoryField';
 import TextField from '../shared/TextField';
 import DishPhotoField from './DishPhotoField';
 
@@ -36,6 +37,12 @@ function DishForm({ dish, onClose }: Props) {
           optional
           value={form.values.cuisines}
           onChange={(value) => form.set('cuisines', value)}
+        />
+        <FoodCategoryField
+          id="dish-categories"
+          optional
+          value={form.values.categories}
+          onChange={(value) => form.set('categories', value)}
         />
         <TextField
           id="dish-description"

@@ -1,3 +1,4 @@
+import { useTranslation } from '@hatohui/i18n';
 import {
   getTravelDishesQueryKey,
   getTravelDishQueryKey,
@@ -11,6 +12,7 @@ import { useOptimisticEntityPatch } from './useOptimisticEntityPatch';
 const DISHES_LIST_KEY = getTravelDishesQueryKey();
 
 export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
+  const { t } = useTranslation();
   const photo = useDishPhoto(dish.imageKey, dish.thumbnailUrl ?? dish.imageUrl);
   const patch = useOptimisticEntityPatch<TravelDishDto>(
     getTravelDishQueryKey(dish.id),
@@ -21,11 +23,16 @@ export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
     {
       name: dish.name,
       cuisines: dish.cuisines,
+      categories: dish.categories,
       description: dish.description ?? '',
     },
-    async (data) => {
+    async (data, report) => {
+      if (photo.pendingFile) {
+        report(t('form.uploadingPhoto'), 0.25);
+      }
       const result = await photo.uploadPending();
       if (!result.ok) throw new Error('Image upload failed');
+      report(t('form.savingItem', { name: data.name.trim() }), 0.65);
       await updateTravelDish(dish.id, {
         ...data,
         name: data.name.trim(),
@@ -37,11 +44,13 @@ export function useDishForm(dish: TravelDishDto, onSaved: () => void) {
       patch(dish.id, {
         name: data.name.trim(),
         cuisines: data.cuisines,
+        categories: data.categories,
         description: data.description || null,
         ...(photo.isChanged && {
           imageUrl: photo.previewUrl,
           thumbnailUrl: photo.previewUrl,
           previewUrl: photo.previewUrl,
+          coverImageUrl: photo.previewUrl,
         }),
       }),
   );

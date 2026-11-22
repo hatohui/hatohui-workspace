@@ -10,7 +10,10 @@ interface NamedValues {
 
 export function useEntityForm<T extends NamedValues>(
   initial: T,
-  persist: (values: T) => Promise<unknown>,
+  persist: (
+    values: T,
+    report: (message: string, progress?: number) => void,
+  ) => Promise<unknown>,
   onSaved: () => void,
   applyOptimistic?: (values: T) => () => void,
 ) {
@@ -27,9 +30,15 @@ export function useEntityForm<T extends NamedValues>(
   const saveInBackground = async (submitted: T, rollback: () => void) => {
     const toastId = toast.loading(
       t('form.savingItem', { name: submitted.name }),
+      0.35,
     );
+    const report = (message: string, progress?: number) =>
+      toast.update(toastId, message, 'loading', progress);
+
     try {
-      await persist(submitted);
+      await persist(submitted, report);
+      toast.update(toastId, t('form.refreshingCatalog'), 'loading', 0.85);
+      await invalidate();
       toast.update(
         toastId,
         t('form.savedItem', { name: submitted.name }),
@@ -38,7 +47,6 @@ export function useEntityForm<T extends NamedValues>(
     } catch (error) {
       rollback();
       toast.update(toastId, errorMessage(error), 'error');
-    } finally {
       void invalidate();
     }
   };
@@ -53,7 +61,7 @@ export function useEntityForm<T extends NamedValues>(
     }
     setIsSaving(true);
     try {
-      await persist(values);
+      await persist(values, () => {});
       await invalidate();
       onSaved();
     } catch (error) {

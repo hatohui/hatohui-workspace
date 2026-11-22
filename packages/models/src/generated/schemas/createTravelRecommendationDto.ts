@@ -22,6 +22,11 @@ export interface CreateTravelRecommendationDto {
      * @maxItems 6
      */
   cuisines?: string[];
+  /**
+     * Food category tags for a newly created dish, found or created
+     * @maxItems 6
+     */
+  foodCategories?: string[];
   /** An existing place */
   placeId?: string;
   /** A new place, created when placeId is absent */
@@ -41,8 +46,8 @@ export interface CreateTravelRecommendationDto {
   priceMax?: number | null;
   priceLevel?: TravelPriceLevel | null;
   currency?: CreateTravelRecommendationDtoCurrency;
-  spicy?: boolean;
-  vegetarian?: boolean;
+  /** Special tag keys or names (e.g. spicy, vegetarian, michelin) */
+  specials?: string[];
   /** Allergen tag keys or names */
   allergens?: string[];
   /** General tag keys or names (e.g. bread, meat) */

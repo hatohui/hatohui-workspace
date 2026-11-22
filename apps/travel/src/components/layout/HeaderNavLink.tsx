@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router';
 import { useTranslation } from '@hatohui/i18n';
 import { cn } from '@hatohui/ui';
+import { NAV_ACTIVE } from '../../constants/chips';
 import type { NavItem } from '../../constants/navItems';
 
 function HeaderNavLink({ item }: { item: NavItem }) {
@@ -14,8 +15,8 @@ function HeaderNavLink({ item }: { item: NavItem }) {
         cn(
           'inline-flex h-11 items-center gap-2 rounded-full px-3 text-sm transition-colors duration-150 motion-reduce:transition-none sm:h-9',
           isActive
-            ? 'bg-secondary text-foreground'
-            : 'text-muted-foreground hover:text-foreground',
+            ? NAV_ACTIVE
+            : 'text-foreground/75 hover:bg-foreground/5 hover:text-foreground',
         )
       }
     >

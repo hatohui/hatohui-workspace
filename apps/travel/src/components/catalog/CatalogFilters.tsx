@@ -1,42 +1,103 @@
 import { useTranslation } from '@hatohui/i18n';
 import { Button } from '@hatohui/ui';
-import { Flame, Leaf, ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Sparkles } from 'lucide-react';
+import type { FoodView } from '../../constants/food';
 import {
   ALLERGEN_ICONS,
   FILTER_CHIP_PREVIEW_LIMIT,
+  SPECIAL_ICONS,
 } from '../../constants/travel';
+import { useCuisineNames } from '../../hooks/useCuisineNames';
+import { useFoodCategoryNames } from '../../hooks/useFoodCategoryNames';
+import { usePlaceCategoryNames } from '../../hooks/usePlaceCategoryNames';
 import { useTagOptions } from '../../hooks/useTagOptions';
 import type { CatalogFilters as Filters } from '../../hooks/useTravelFilterState';
-import { useCuisineNames } from '../../hooks/useCuisineNames';
 import TagChipGroup from '../shared/TagChipGroup';
+import TriStateChipGroup from '../shared/TriStateChipGroup';
 import CreatorFilter from './CreatorFilter';
 import FilterChip from './FilterChip';
 import FilterChipsSkeleton from './FilterChipsSkeleton';
 import FilterSection from './FilterSection';
 
-function CatalogFilters({ filters }: { filters: Filters }) {
+function CatalogFilters({
+  filters,
+  view = 'dishes',
+  hideClear = false,
+}: {
+  filters: Filters;
+  view?: FoodView;
+  hideClear?: boolean;
+}) {
   const { t } = useTranslation();
   const cuisines = useCuisineNames();
+  const foodCategories = useFoodCategoryNames();
+  const placeCategories = usePlaceCategoryNames();
   const tags = useTagOptions();
+
+  const foodCategorySection =
+    foodCategories.isLoading || foodCategories.names.length > 0 ? (
+      <FilterSection key="foodCategories" title={t('filters.foodCategories')}>
+        {foodCategories.isLoading ? (
+          <FilterChipsSkeleton />
+        ) : (
+          <TagChipGroup
+            label={t('filters.foodCategories')}
+            options={foodCategories.names}
+            selected={filters.foodCategories}
+            labelOf={(name) => name}
+            onToggle={filters.toggleFoodCategory}
+            limit={FILTER_CHIP_PREVIEW_LIMIT}
+          />
+        )}
+      </FilterSection>
+    ) : null;
+
+  const placeCategorySection =
+    placeCategories.isLoading || placeCategories.names.length > 0 ? (
+      <FilterSection key="placeCategories" title={t('filters.placeCategories')}>
+        {placeCategories.isLoading ? (
+          <FilterChipsSkeleton />
+        ) : (
+          <TagChipGroup
+            label={t('filters.placeCategories')}
+            options={placeCategories.names}
+            selected={filters.placeCategories}
+            labelOf={(name) => name}
+            onToggle={filters.togglePlaceCategory}
+            limit={FILTER_CHIP_PREVIEW_LIMIT}
+          />
+        )}
+      </FilterSection>
+    ) : null;
+
+  const orderedCategorySections =
+    view === 'places'
+      ? [placeCategorySection, foodCategorySection]
+      : [foodCategorySection, placeCategorySection];
 
   return (
     <div className="space-y-4">
-      <FilterSection title={t('filters.taste')}>
-        <div className="flex flex-wrap gap-1">
-          <FilterChip
-            icon={Flame}
-            label={t('catalog.spicy')}
-            pressed={filters.spicy}
-            onChange={filters.setSpicy}
+      <FilterSection title={t('filters.special')}>
+        {tags.isLoading ? (
+          <FilterChipsSkeleton />
+        ) : (
+          <TriStateChipGroup
+            label={t('filters.special')}
+            options={tags.specialKeys}
+            included={filters.includeSpecials}
+            excluded={filters.excludeSpecials}
+            labelOf={tags.labelOf}
+            iconOf={(key) => SPECIAL_ICONS[key]}
+            fallbackIcon={Sparkles}
+            onCycle={filters.cycleSpecial}
+            limit={FILTER_CHIP_PREVIEW_LIMIT}
           />
-          <FilterChip
-            icon={Leaf}
-            label={t('catalog.vegetarian')}
-            pressed={filters.vegetarian}
-            onChange={filters.setVegetarian}
-          />
-        </div>
+        )}
+        <p className="text-[11px] text-muted-foreground">
+          {t('filters.specialHint')}
+        </p>
       </FilterSection>
+      {orderedCategorySections}
       {cuisines.isLoading && (
         <FilterSection title={t('form.cuisines')}>
           <FilterChipsSkeleton />
@@ -95,7 +156,7 @@ function CatalogFilters({ filters }: { filters: Filters }) {
       <FilterSection title={t('filters.addedBy')}>
         <CreatorFilter value={filters.by} onChange={filters.setBy} />
       </FilterSection>
-      {filters.activeCount > 0 && (
+      {!hideClear && filters.activeCount > 0 && (
         <Button variant="outline" size="sm" onClick={filters.clearFilters}>
           {t('catalog.clearFilters')}
         </Button>

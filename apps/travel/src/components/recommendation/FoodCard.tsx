@@ -1,10 +1,10 @@
-import { useTranslation } from '@hatohui/i18n';
 import type { TravelRecommendationDto } from '@hatohui/models';
-import { Spinner, cn } from '@hatohui/ui';
+import { cn } from '@hatohui/ui';
 import { useMyAllergies } from '../../hooks/useMyAllergies';
 import { formatPlaceLocation } from '../../lib/formatPlaceLocation';
 import { isOptimisticId } from '../../lib/optimistic';
 import ImageFrame from '../shared/ImageFrame';
+import OptimisticBadge from '../shared/OptimisticBadge';
 
 interface Props {
   recommendation: TravelRecommendationDto;
@@ -13,7 +13,6 @@ interface Props {
 }
 
 function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
-  const { t } = useTranslation();
   const { cautionFor } = useMyAllergies();
   const isOptimistic = isOptimisticId(rec.id);
   const title = labelMode === 'place' ? rec.place.name : rec.dish.name;
@@ -31,7 +30,7 @@ function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
       disabled={isOptimistic}
       aria-busy={isOptimistic || undefined}
       className={cn(
-        'group flex flex-col gap-1.5 rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        'group flex flex-col overflow-hidden rounded-xl border border-border bg-card text-left transition-colors outline-none hover:border-primary/50 focus-visible:ring-[3px] focus-visible:ring-ring/50',
         isOptimistic ? 'cursor-wait opacity-85' : 'cursor-pointer',
       )}
     >
@@ -46,17 +45,13 @@ function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
           }
           alt={title}
           square
+          flush
           caution={cautionFor(rec.allergens)}
         />
-        {isOptimistic && (
-          <span className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-background/85 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm">
-            <Spinner className="size-3" />
-            {t('form.saving')}
-          </span>
-        )}
+        {isOptimistic && <OptimisticBadge />}
       </div>
-      <div className="space-y-0.5">
-        <span className="line-clamp-2 block text-sm font-medium group-hover:underline">
+      <div className="flex flex-1 flex-col gap-0.5 p-3">
+        <span className="line-clamp-2 block text-sm font-medium transition-colors group-hover:text-primary">
           {title}
         </span>
         {sublabel && (

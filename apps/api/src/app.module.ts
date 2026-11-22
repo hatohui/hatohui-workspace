@@ -41,6 +41,8 @@ import { TravelCountriesModule } from '@/modules/travel-countries/travel-countri
 import { TravelAreasModule } from '@/modules/travel-areas/travel-areas.module';
 import { TravelTagsModule } from '@/modules/travel-tags/travel-tags.module';
 import { TravelCuisinesModule } from '@/modules/travel-cuisines/travel-cuisines.module';
+import { TravelFoodCategoriesModule } from '@/modules/travel-food-categories/travel-food-categories.module';
+import { TravelPlaceCategoriesModule } from '@/modules/travel-place-categories/travel-place-categories.module';
 import { TravelRecommendationsModule } from '@/modules/travel-recommendations/travel-recommendations.module';
 import { TravelDishesModule } from '@/modules/travel-dishes/travel-dishes.module';
 import { TravelPlacesModule } from '@/modules/travel-places/travel-places.module';
@@ -99,6 +101,8 @@ import { AiModule } from '@/modules/ai/ai.module';
     TravelAreasModule,
     TravelTagsModule,
     TravelCuisinesModule,
+    TravelFoodCategoriesModule,
+    TravelPlaceCategoriesModule,
     TravelRecommendationsModule,
     TravelDishesModule,
     TravelPlacesModule,

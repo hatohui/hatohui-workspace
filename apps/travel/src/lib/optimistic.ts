@@ -1,11 +1,13 @@
 import type {
   TravelDishDto,
+  TravelDishesParams,
   TravelImageDto,
   TravelPlaceAreaDto,
   TravelPlaceDto,
   TravelRecommendationDto,
   TravelRecommendationsParams,
 } from '@hatohui/models';
+import { matchesSearch } from '@hatohui/tools';
 import type { PhotoItem } from '../hooks/usePhotoList';
 import type { RecommendationFields } from '../hooks/useRecommendationFields';
 
@@ -15,6 +17,20 @@ export const isOptimisticId = (id: string) => id.startsWith(OPTIMISTIC_PREFIX);
 
 export const createOptimisticId = () =>
   `${OPTIMISTIC_PREFIX}${crypto.randomUUID()}`;
+
+export function matchesSearchQuery(text: string, q?: string): boolean {
+  return matchesSearch(q ?? '', [text]);
+}
+
+export function areaMatchesLocation(
+  area: TravelPlaceAreaDto | null,
+  params?: { areaId?: string; countryId?: string },
+): boolean {
+  if (!params?.areaId && !params?.countryId) return true;
+  if (!area) return false;
+  if (params.areaId) return area.id === params.areaId;
+  return area.countryId === params.countryId;
+}
 
 const toOptimisticImages = (photos: PhotoItem[]): TravelImageDto[] =>
   photos.map((photo) => ({
@@ -45,8 +61,7 @@ export function buildOptimisticRecommendation(params: {
         area,
       },
       note: fields.note || null,
-      spicy: fields.spicy,
-      vegetarian: fields.vegetarian,
+      specials: fields.specials,
       allergens: fields.allergens,
       tags: fields.tags,
       images,
@@ -60,6 +75,7 @@ export function buildOptimisticRecommendation(params: {
           id: dish.id,
           name: dish.name,
           cuisines: dish.cuisines,
+          categories: dish.categories,
           imageUrl: dish.coverImageUrl,
           thumbnailUrl: dish.coverImageUrl,
           previewUrl: dish.coverImageUrl,
@@ -68,6 +84,7 @@ export function buildOptimisticRecommendation(params: {
           id: `${OPTIMISTIC_PREFIX}dish`,
           name: fields.dishName.trim(),
           cuisines: fields.cuisines,
+          categories: fields.foodCategories,
           imageUrl: null,
           thumbnailUrl: null,
           previewUrl: null,
@@ -77,6 +94,7 @@ export function buildOptimisticRecommendation(params: {
           id: place.id,
           name: place.name,
           area: place.area,
+          categories: place.categories,
           address: place.address,
           mapsUrl: place.mapsUrl,
           latitude: place.latitude,
@@ -86,6 +104,7 @@ export function buildOptimisticRecommendation(params: {
           id: `${OPTIMISTIC_PREFIX}place`,
           name: fields.placeName.trim(),
           area,
+          categories: fields.placeCategories,
           address: null,
           mapsUrl: fields.mapsUrl || null,
           latitude: null,
@@ -96,11 +115,69 @@ export function buildOptimisticRecommendation(params: {
     priceMax: null,
     priceLevel: null,
     currency: fields.currency,
-    spicy: fields.spicy,
-    vegetarian: fields.vegetarian,
+    specials: fields.specials,
     allergens: fields.allergens,
     tags: fields.tags,
     images,
+    createdBy: null,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+export function buildOptimisticDish(params: {
+  id: string;
+  fields: RecommendationFields;
+  area: TravelPlaceAreaDto | null;
+  coverImageUrl: string | null;
+  queryParams?: TravelDishesParams;
+}): TravelDishDto {
+  const { id, fields, area, coverImageUrl, queryParams } = params;
+  const hasLocation = Boolean(queryParams?.areaId || queryParams?.countryId);
+  const localPlaceCount = hasLocation
+    ? areaMatchesLocation(area, queryParams)
+      ? 1
+      : 0
+    : null;
+
+  return {
+    id,
+    name: fields.dishName.trim(),
+    cuisines: fields.cuisines,
+    categories: fields.foodCategories,
+    description: null,
+    allergens: fields.allergens,
+    placeCount: 1,
+    localPlaceCount,
+    imageKey: null,
+    imageUrl: coverImageUrl,
+    thumbnailUrl: coverImageUrl,
+    previewUrl: coverImageUrl,
+    coverImageUrl,
+    createdBy: null,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+export function buildOptimisticPlace(params: {
+  id: string;
+  fields: RecommendationFields;
+  area: TravelPlaceAreaDto | null;
+  coverImageUrl: string | null;
+}): TravelPlaceDto {
+  const { id, fields, area, coverImageUrl } = params;
+  return {
+    id,
+    name: fields.placeName.trim(),
+    area,
+    categories: fields.placeCategories,
+    address: null,
+    mapsUrl: fields.mapsUrl || null,
+    latitude: null,
+    longitude: null,
+    note: null,
+    allergens: fields.allergens,
+    dishCount: 1,
+    coverImageUrl,
     createdBy: null,
     createdAt: new Date().toISOString(),
   };

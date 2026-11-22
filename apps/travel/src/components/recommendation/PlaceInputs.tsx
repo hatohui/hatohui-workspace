@@ -4,6 +4,7 @@ import { MapPin } from 'lucide-react';
 import type { useRecommendationForm } from '../../hooks/useRecommendationForm';
 import AreaSelect from '../location/AreaSelect';
 import MapsLinkField from '../maps/MapsLinkField';
+import PlaceCategoryField from '../shared/PlaceCategoryField';
 import MatchedField from './MatchedField';
 
 interface Props {
@@ -43,15 +44,25 @@ function PlaceInputs({ form }: Props) {
         />
       )}
       {isNewPlace && (
-        <div className="sm:col-span-2">
-          <MapsLinkField
-            id="mapsUrl"
-            url={fields.mapsUrl}
-            placeName={fields.placeName}
-            onUrlChange={(value) => set('mapsUrl', value)}
-            onUseName={(name) => set('placeName', name)}
-          />
-        </div>
+        <>
+          <div className="sm:col-span-2">
+            <MapsLinkField
+              id="mapsUrl"
+              url={fields.mapsUrl}
+              placeName={fields.placeName}
+              onUrlChange={(value) => set('mapsUrl', value)}
+              onUseName={(name) => set('placeName', name)}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <PlaceCategoryField
+              id="placeCategories"
+              optional
+              value={fields.placeCategories}
+              onChange={(value) => set('placeCategories', value)}
+            />
+          </div>
+        </>
       )}
     </div>
   );
