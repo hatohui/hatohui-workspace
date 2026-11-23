@@ -3,27 +3,20 @@ import {
   ArrayMaxSize,
   ArrayNotEmpty,
   IsArray,
-  IsIn,
-  IsInt,
   IsOptional,
   IsString,
   MaxLength,
-  Min,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TravelPlaceInputDto } from '@/modules/travel-recommendations/dto/travel-place-input.dto';
-import type { TravelPriceLevel } from '@prisma/client';
 import {
-  TRAVEL_CURRENCIES,
   TRAVEL_MAX_CATEGORIES,
   TRAVEL_MAX_CUISINES,
   TRAVEL_MAX_IMAGES,
   TRAVEL_MAX_VISIT_DISHES,
   TRAVEL_NAME_MAX_LENGTH,
   TRAVEL_NOTE_MAX_LENGTH,
-  TRAVEL_PRICE_LEVELS,
-  type TravelCurrency,
 } from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 export class TravelRecommendationDishInputDto {
@@ -69,34 +62,6 @@ export class TravelRecommendationDishInputDto {
   @MaxLength(TRAVEL_NAME_MAX_LENGTH, { each: true })
   foodCategories?: string[];
 
-  @ApiProperty({ required: false, nullable: true, type: Number, minimum: 0 })
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  priceMin?: number | null;
-
-  @ApiProperty({
-    required: false,
-    nullable: true,
-    type: Number,
-    minimum: 0,
-    description: 'Leave equal to priceMin, or empty, for a single price',
-  })
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  priceMax?: number | null;
-
-  @ApiProperty({
-    required: false,
-    nullable: true,
-    enum: TRAVEL_PRICE_LEVELS,
-    enumName: 'TravelPriceLevel',
-  })
-  @IsOptional()
-  @IsIn(TRAVEL_PRICE_LEVELS)
-  priceLevel?: TravelPriceLevel | null;
-
   @ApiProperty({
     required: false,
     type: [String],
@@ -128,7 +93,7 @@ export class CreateTravelRecommendationDto {
     type: TravelRecommendationDishInputDto,
     isArray: true,
     maxItems: TRAVEL_MAX_VISIT_DISHES,
-    description: 'Dishes worth ordering on this visit, in order',
+    description: 'Dishes worth ordering at this place, in order',
   })
   @IsArray()
   @ArrayNotEmpty()
@@ -142,11 +107,6 @@ export class CreateTravelRecommendationDto {
   @IsString()
   @MaxLength(TRAVEL_NOTE_MAX_LENGTH)
   note?: string;
-
-  @ApiProperty({ required: false, enum: TRAVEL_CURRENCIES })
-  @IsOptional()
-  @IsIn(TRAVEL_CURRENCIES)
-  currency?: TravelCurrency;
 
   @ApiProperty({
     required: false,

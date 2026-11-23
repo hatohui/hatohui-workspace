@@ -57,7 +57,7 @@ const dishSummaryOf = (line: DishLine): TravelDishSummaryDto =>
     previewUrl: null,
   };
 
-export const visitAllergens = (lines: DishLine[]) => [
+export const lineAllergens = (lines: DishLine[]) => [
   ...new Set(lines.flatMap((line) => line.allergens)),
 ];
 
@@ -74,15 +74,11 @@ export function buildOptimisticRecommendation(params: {
   const dishes = lines.map((line) => ({
     id: line.key,
     dish: dishSummaryOf(line),
-    priceMin: line.priceMin,
-    priceMax: line.priceMax,
-    priceLevel: line.priceLevel,
     allergens: line.allergens,
   }));
   const shared = {
     dishes,
     note: fields.note || null,
-    currency: fields.currency,
     specials: fields.specials,
     tags: fields.tags,
     images: toOptimisticImages(photos),
@@ -173,7 +169,7 @@ export function buildOptimisticPlace(params: {
     latitude: null,
     longitude: null,
     note: null,
-    allergens: visitAllergens(lines),
+    allergens: lineAllergens(lines),
     dishCount: lines.length,
     coverImageUrl,
     createdBy: null,

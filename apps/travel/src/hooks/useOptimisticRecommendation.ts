@@ -31,7 +31,7 @@ import {
   createOptimisticId,
   matchesSearchQuery,
   shouldPrependToQuery,
-  visitAllergens,
+  lineAllergens,
 } from '../lib/optimistic';
 import type { PhotoItem } from './usePhotoList';
 import {
@@ -110,7 +110,7 @@ export function useOptimisticRecommendation() {
     const tempId = existing?.id ?? createOptimisticId();
     const tempPlaceId = createOptimisticId();
     const coverImageUrl = photos[0]?.url ?? null;
-    const allergens = visitAllergens(lines);
+    const allergens = lineAllergens(lines);
     const pickedIds = lines.flatMap((line): string[] => {
       const picked = pickedDishOf(line);
       return picked ? [picked.id] : [];

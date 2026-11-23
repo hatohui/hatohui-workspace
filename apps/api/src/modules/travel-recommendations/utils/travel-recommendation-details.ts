@@ -1,29 +1,11 @@
 import type { TravelTagKind } from '@prisma/client';
-import type {
-  TravelRecommendationDishInputDto,
-  UpdateTravelRecommendationDto,
-} from '@/modules/travel-recommendations/dto/travel-recommendation-input.dto';
-
-export function travelPriceRange(
-  dto: Pick<TravelRecommendationDishInputDto, 'priceMin' | 'priceMax'>,
-): { priceMin: number | null; priceMax: number | null } {
-  const values = [dto.priceMin, dto.priceMax].filter(
-    (value): value is number => typeof value === 'number',
-  );
-  if (!values.length) return { priceMin: null, priceMax: null };
-  return { priceMin: Math.min(...values), priceMax: Math.max(...values) };
-}
-
-export function travelDishLinePrice(line: TravelRecommendationDishInputDto) {
-  return { ...travelPriceRange(line), priceLevel: line.priceLevel ?? null };
-}
+import type { UpdateTravelRecommendationDto } from '@/modules/travel-recommendations/dto/travel-recommendation-input.dto';
 
 export function travelRecommendationDetails(
   dto: UpdateTravelRecommendationDto,
 ) {
   return {
     note: dto.note === undefined ? undefined : dto.note.trim() || null,
-    currency: dto.currency,
   };
 }
 

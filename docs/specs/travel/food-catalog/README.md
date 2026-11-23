@@ -17,22 +17,24 @@ TravelFoodCategory >──< TravelDish ──< TravelRecommendationDish >──�
                                                       └──< TravelTag (special / general)
 ```
 
-- **A recommendation is one visit to a place, with many dishes.** A
-  restaurant serves many things and one meal covers several of them, so
-  `TravelRecommendation` holds the place and what the visit shares (note,
-  currency, photos, special and general tags), and each dish ordered is a
-  `TravelRecommendationDish` line. The first version paired one dish with one
-  place, which made a meal of three dishes three copies of the same note and
-  photos.
-- **What differs per dish lives on the line:** price and allergens. A
-  vegetarian restaurant's version of a dish is vegetarian even when the dish
-  usually is not, so none of those can sit on the dish itself.
-- **A dish is listed once per place.** The line carries a copy of the visit's
-  `placeId` so the database can keep `(placeId, dishId)` unique across visits,
-  and the visit's place change updates its lines. Dish `placeCount` and place
-  `dishCount` count lines. `travel_recommendation_dishes` turned each existing
-  recommendation into a visit with one line, moving its price and allergen tags
-  onto the line.
+- **A recommendation is a place with the dishes worth ordering there.** A
+  restaurant serves many things, so `TravelRecommendation` holds the place and
+  what its dishes share (note, photos, special and general tags), and each dish
+  is a `TravelRecommendationDish` line. The first version paired one dish with
+  one place, which made three dishes at one restaurant three copies of the same
+  note and photos. A recommendation is not a visit: tracking who went where and
+  how often is a separate concern.
+- **Allergens live on the dish line.** A vegetarian restaurant's version of a
+  dish is vegetarian even when the dish usually is not, so none of those can
+  sit on the dish itself.
+- **A dish is listed once per place.** The line carries a copy of the
+  recommendation's `placeId` so the database can keep `(placeId, dishId)`
+  unique across recommendations, and changing the recommendation's place
+  updates its lines. Dish `placeCount` and place `dishCount` count lines.
+  `travel_recommendation_dishes` turned each existing recommendation into one
+  with a single line, moving its allergen tags onto the line.
+- **There are no prices.** `travel_remove_prices` dropped the price range,
+  price level and currency columns; the form never offered them.
 - **Food categories and place categories are master-data tables**, both
   many-to-many with dishes and places respectively (`TravelFoodCategory` with
   `TravelDish`, `TravelPlaceCategory` with `TravelPlace`). A dish such as Egg
@@ -62,9 +64,6 @@ TravelFoodCategory >──< TravelDish ──< TravelRecommendationDish >──�
 - **A place's location is its area.** The free-text `city` column was removed;
   `travel_catalog_cleanup` matched it to an area by name and otherwise kept it
   in `address`. The forms require an area whenever areas exist.
-- **Price is a range or a level.** `priceMin`/`priceMax` hold an amount range
-  (a single price stores min = max); `priceLevel` (`LOW`, `MID`, `HIGH`) is for
-  when only a rough level is known. The API normalises a reversed range.
 - **Dish names are unique** (matched case-insensitively), so typing an existing
   name reuses the dish. Place names are not unique (chains, same name in
   another city), so a place is reused only when picked by id. The form matches
@@ -75,7 +74,7 @@ TravelFoodCategory >──< TravelDish ──< TravelRecommendationDish >──�
   uploader.
 - **Deleting a dish or place cascades** to its recommendations and their images,
   and the stored objects are removed after the database delete succeeds.
-  Deleting a dish removes only its lines; a visit left with no dishes is
+  Deleting a dish removes only its lines; a recommendation left with no dishes is
   deleted with its photos.
 
 The `travel_cuisines_tags_price` migration converted the first version's
@@ -137,8 +136,8 @@ no admin key, since the travel app has no key to send). Reads are public.
 
 `POST /travel/recommendations` accepts `placeId` or `place` (`name`, `mapsUrl`,
 `areaId`, `categories`) and a `dishes` list, each with `dishId` or `dishName`
-(+ `cuisines`, `foodCategories`), price and allergens, so one form submission
-records a whole meal, creating the dishes, place, and category links on the
+(+ `cuisines`, `foodCategories`) and allergens, so one form submission
+records several dishes at a place, creating the dishes, place, and category links on the
 way. `PATCH` replaces the dish list when `dishes` is sent. Pasting a Google
 Maps link into the place name moves it to the link field and fills the name
 from the link.

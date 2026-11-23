@@ -44,7 +44,6 @@
     }
   },
   "recommendation": {
-    "noEstimate": "暂无价格",
     "addedBy": "由 {{name}} 添加",
     "photos_one": "{{count}} 张照片",
     "photos_other": "{{count}} 张照片",
@@ -55,8 +54,6 @@
     "deleteDescription": "{{place}} 的 {{dish}} 及其照片将被删除。菜品和地点会保留。",
     "previousPhoto": "上一张",
     "nextPhoto": "下一张",
-    "priceSingle": "约 {{price}}",
-    "priceRange": "{{min}} – {{max}}",
     "contains": "含有 {{list}}"
   },
   "form": {
@@ -70,7 +67,6 @@
     "placeHint": "选择已保存的地点、输入新地点，或粘贴 Google 地图链接。",
     "mapsUrl": "Google 地图链接",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "currency": "货币",
     "note": "备注",
     "notePlaceholder": "点什么、什么时候去、好在哪里",
     "photos": "照片",
@@ -92,7 +88,6 @@
     "cuisineCreate": "添加“{{tag}}”",
     "cuisineRemove": "移除 {{tag}}",
     "sectionDish": "菜品和地点",
-    "sectionPrice": "价格",
     "sectionTags": "标签",
     "diets": "饮食",
     "dietsPlaceholder": "搜索或添加饮食标签…",
@@ -102,11 +97,6 @@
     "otherTagsPlaceholder": "面包、肉类、面条…",
     "tagCreate": "添加“{{tag}}”",
     "tagRemove": "移除 {{tag}}",
-    "priceRange": "金额",
-    "priceLevel": "价位",
-    "priceFrom": "从",
-    "priceTo": "到（可选）",
-    "priceLevelHint": "不知道确切价格时，选择价位。",
     "dropPhotos": "将照片拖到这里",
     "browsePhotos": "或点击选择",
     "photosHint": "最多 {{count}} 张照片，支持粘贴、拖拽或点击，第一张为封面。",
@@ -226,11 +216,6 @@
   "notFound": {
     "title": "页面不存在",
     "back": "返回美食目录"
-  },
-  "priceLevel": {
-    "LOW": "低价",
-    "MID": "中等价位",
-    "HIGH": "高价"
   },
   "allergen": {
     "peanuts": "花生",

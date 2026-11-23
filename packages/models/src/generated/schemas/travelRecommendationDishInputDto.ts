@@ -5,7 +5,6 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { TravelPriceLevel } from './travelPriceLevel';
 
 export interface TravelRecommendationDishInputDto {
   /** An existing dish */
@@ -25,18 +24,6 @@ export interface TravelRecommendationDishInputDto {
      * @maxItems 6
      */
   foodCategories?: string[];
-  /**
-     * @minimum 0
-     * @nullable
-     */
-  priceMin?: number | null;
-  /**
-     * Leave equal to priceMin, or empty, for a single price
-     * @minimum 0
-     * @nullable
-     */
-  priceMax?: number | null;
-  priceLevel?: TravelPriceLevel | null;
   /** Allergen tag keys or names this dish contains */
   allergens?: string[];
 }

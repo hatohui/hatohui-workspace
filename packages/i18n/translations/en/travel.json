@@ -50,7 +50,6 @@
     }
   },
   "recommendation": {
-    "noEstimate": "No price yet",
     "addedBy": "Added by {{name}}",
     "photos_one": "{{count}} photo",
     "photos_other": "{{count}} photos",
@@ -61,8 +60,6 @@
     "deleteDescription": "{{dish}} at {{place}} and its photos will be removed. The dish and the place stay.",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
-    "priceSingle": "About {{price}}",
-    "priceRange": "{{min}} – {{max}}",
     "contains": "Contains {{list}}"
   },
   "form": {
@@ -76,7 +73,6 @@
     "placeHint": "Pick a saved place, type a new one, or paste a Google Maps link.",
     "mapsUrl": "Google Maps link",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "currency": "Currency",
     "note": "Note",
     "notePlaceholder": "What to order, when to go, what makes it good",
     "photos": "Photos",
@@ -98,7 +94,6 @@
     "cuisineCreate": "Add \"{{tag}}\"",
     "cuisineRemove": "Remove {{tag}}",
     "sectionDish": "Dish and place",
-    "sectionPrice": "Price",
     "sectionTags": "Tags",
     "diets": "Diet",
     "dietsPlaceholder": "Search or add diet…",
@@ -108,11 +103,6 @@
     "otherTagsPlaceholder": "Bread, meat, noodles…",
     "tagCreate": "Add \"{{tag}}\"",
     "tagRemove": "Remove {{tag}}",
-    "priceRange": "Amount",
-    "priceLevel": "Level",
-    "priceFrom": "From",
-    "priceTo": "To (optional)",
-    "priceLevelHint": "Use a level when you don't know the exact price.",
     "dropPhotos": "Drop photos here",
     "browsePhotos": "or click to browse",
     "photosHint": "Up to {{count}} photos. Paste, drop, or click. First is cover.",
@@ -233,11 +223,6 @@
   "notFound": {
     "title": "Page not found",
     "back": "Back to the food catalog"
-  },
-  "priceLevel": {
-    "LOW": "Low price",
-    "MID": "Mid price",
-    "HIGH": "High price"
   },
   "allergen": {
     "peanuts": "Peanuts",

@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import type {
   TravelDishSummaryDto,
-  TravelPriceLevel,
   TravelRecommendationDto,
 } from '@hatohui/models';
-import { DEFAULT_CURRENCY, type Currency } from '../constants/travel';
 import { sameCatalogName } from '../lib/catalogName';
 
 export interface DishLine {
@@ -13,9 +11,6 @@ export interface DishLine {
   picked: TravelDishSummaryDto | null;
   cuisines: string[];
   foodCategories: string[];
-  priceMin: number | null;
-  priceMax: number | null;
-  priceLevel: TravelPriceLevel | null;
   allergens: string[];
 }
 
@@ -24,7 +19,6 @@ export interface RecommendationFields {
   placeCategories: string[];
   areaId: string;
   mapsUrl: string;
-  currency: Currency;
   note: string;
   specials: string[];
   tags: string[];
@@ -41,9 +35,6 @@ export const emptyDishLine = (name = ''): DishLine => ({
   picked: null,
   cuisines: [],
   foodCategories: [],
-  priceMin: null,
-  priceMax: null,
-  priceLevel: null,
   allergens: [],
 });
 
@@ -58,9 +49,6 @@ const linesFrom = (
         picked: line.dish,
         cuisines: line.dish.cuisines,
         foodCategories: line.dish.categories,
-        priceMin: line.priceMin,
-        priceMax: line.priceMax,
-        priceLevel: line.priceLevel,
         allergens: line.allergens,
       }))
     : [emptyDishLine(initialDishName)];
@@ -73,7 +61,6 @@ const fieldsFrom = (
   placeCategories: rec?.place.categories ?? [],
   areaId: rec?.place.area?.id ?? defaultAreaId ?? '',
   mapsUrl: rec?.place.mapsUrl ?? '',
-  currency: (rec?.currency as Currency | undefined) ?? DEFAULT_CURRENCY,
   note: rec?.note ?? '',
   specials: rec?.specials ?? [],
   tags: rec?.tags ?? [],

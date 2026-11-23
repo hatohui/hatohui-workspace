@@ -5,7 +5,6 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CreateTravelRecommendationDtoCurrency } from './createTravelRecommendationDtoCurrency';
 import type { TravelPlaceInputDto } from './travelPlaceInputDto';
 import type { TravelRecommendationDishInputDto } from './travelRecommendationDishInputDto';
 
@@ -21,7 +20,6 @@ export interface CreateTravelRecommendationDto {
   dishes: TravelRecommendationDishInputDto[];
   /** @maxLength 2000 */
   note?: string;
-  currency?: CreateTravelRecommendationDtoCurrency;
   /** Special tag keys or names (e.g. spicy, vegetarian, michelin) */
   specials?: string[];
   /** General tag keys or names (e.g. bread, meat) */

@@ -1045,18 +1045,11 @@ model TravelTag {
   @@index([kind, position])
 }
 
-enum TravelPriceLevel {
-  LOW
-  MID
-  HIGH
-}
-
 model TravelRecommendation {
   id          String      @id @default(cuid())
   placeId     String
   place       TravelPlace @relation(fields: [placeId], references: [id], onDelete: Cascade)
   note        String?
-  currency    String      @default("VND")
   createdById String?
   createdBy   User?       @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
   createdAt   DateTime    @default(now())
@@ -1078,9 +1071,6 @@ model TravelRecommendationDish {
   placeId          String
   place            TravelPlace          @relation(fields: [placeId], references: [id], onDelete: Cascade)
   position         Int
-  priceMin         Int?
-  priceMax         Int?
-  priceLevel       TravelPriceLevel?
 
   allergens TravelTag[] @relation("TravelRecommendationDishAllergens")
 

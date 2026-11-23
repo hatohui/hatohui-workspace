@@ -44,7 +44,6 @@
     }
   },
   "recommendation": {
-    "noEstimate": "価格未登録",
     "addedBy": "{{name}} が追加",
     "photos_one": "写真 {{count}} 枚",
     "photos_other": "写真 {{count}} 枚",
@@ -55,8 +54,6 @@
     "deleteDescription": "{{place}} の {{dish}} とその写真が削除されます。料理とお店は残ります。",
     "previousPhoto": "前の写真",
     "nextPhoto": "次の写真",
-    "priceSingle": "約 {{price}}",
-    "priceRange": "{{min}} – {{max}}",
     "contains": "{{list}} を含む"
   },
   "form": {
@@ -70,7 +67,6 @@
     "placeHint": "保存済みのお店を選ぶか、新しく入力するか、Google マップのリンクを貼り付けてください。",
     "mapsUrl": "Google マップのリンク",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "currency": "通貨",
     "note": "メモ",
     "notePlaceholder": "何を頼むか、いつ行くか、どこが良いか",
     "photos": "写真",
@@ -92,7 +88,6 @@
     "cuisineCreate": "「{{tag}}」を追加",
     "cuisineRemove": "{{tag}} を削除",
     "sectionDish": "料理とお店",
-    "sectionPrice": "価格",
     "sectionTags": "タグ",
     "diets": "食事制限",
     "dietsPlaceholder": "食事制限を検索・追加…",
@@ -102,11 +97,6 @@
     "otherTagsPlaceholder": "パン、肉、麺…",
     "tagCreate": "「{{tag}}」を追加",
     "tagRemove": "{{tag}}を削除",
-    "priceRange": "金額",
-    "priceLevel": "価格帯",
-    "priceFrom": "から",
-    "priceTo": "まで（任意）",
-    "priceLevelHint": "正確な価格がわからない場合は価格帯を選んでください。",
     "dropPhotos": "ここに写真をドロップ",
     "browsePhotos": "またはクリックして選択",
     "photosHint": "最大 {{count}} 枚。貼り付け・ドロップ・クリックで追加。1 枚目がカバー写真です。",
@@ -226,11 +216,6 @@
   "notFound": {
     "title": "ページが見つかりません",
     "back": "グルメカタログに戻る"
-  },
-  "priceLevel": {
-    "LOW": "安い",
-    "MID": "普通",
-    "HIGH": "高い"
   },
   "allergen": {
     "peanuts": "落花生",

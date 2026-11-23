@@ -1,6 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import type { TravelPriceLevel } from '@prisma/client';
-import { TRAVEL_PRICE_LEVELS } from '@/modules/travel-recommendations/travel-recommendations.constants';
 
 export class TravelImageDto {
   @ApiProperty({ description: 'Storage key; send it back to keep the image' })
@@ -108,28 +106,6 @@ export class TravelRecommendationDishDto {
   dish!: TravelDishSummaryDto;
 
   @ApiProperty({
-    nullable: true,
-    type: Number,
-    description: 'Lowest price per person, in currency units',
-  })
-  priceMin!: number | null;
-
-  @ApiProperty({
-    nullable: true,
-    type: Number,
-    description: 'Highest price per person; equal to priceMin for one price',
-  })
-  priceMax!: number | null;
-
-  @ApiProperty({
-    nullable: true,
-    enum: TRAVEL_PRICE_LEVELS,
-    enumName: 'TravelPriceLevel',
-    description: 'Rough price level when no amount is known',
-  })
-  priceLevel!: TravelPriceLevel | null;
-
-  @ApiProperty({
     type: [String],
     description: 'Allergen tag keys the dish contains, e.g. peanuts',
   })
@@ -146,15 +122,12 @@ export class TravelRecommendationDto {
   @ApiProperty({
     type: TravelRecommendationDishDto,
     isArray: true,
-    description: 'Dishes worth ordering on this visit, in order',
+    description: 'Dishes worth ordering at this place, in order',
   })
   dishes!: TravelRecommendationDishDto[];
 
   @ApiProperty({ nullable: true, type: String })
   note!: string | null;
-
-  @ApiProperty({ example: 'VND' })
-  currency!: string;
 
   @ApiProperty({
     type: [String],

@@ -1,14 +1,14 @@
 import { Link } from 'react-router';
 import type { TravelRecommendationDto } from '@hatohui/models';
 import routes from '../../constants/routes';
-import { visitDishNames } from '../../lib/visitView';
+import { recommendationDishNames } from '../../lib/recommendationView';
 import PlaceMap from '../maps/PlaceMap';
 import PlaceMapsChip from '../maps/PlaceMapsChip';
 import CreatorBadge from '../shared/CreatorBadge';
 import PhotoCarousel from './PhotoCarousel';
 import RecommendationActions from './RecommendationActions';
 import RecommendationTags from './RecommendationTags';
-import VisitDishList from './VisitDishList';
+import RecommendationDishList from './RecommendationDishList';
 
 interface Props {
   recommendation: TravelRecommendationDto;
@@ -19,7 +19,7 @@ function RecommendationDetails({ recommendation: rec }: Props) {
     <div className="space-y-4">
       <PhotoCarousel
         images={rec.images}
-        alt={`${visitDishNames(rec)}, ${rec.place.name}`}
+        alt={`${recommendationDishNames(rec)}, ${rec.place.name}`}
       />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 space-y-2">
@@ -40,7 +40,7 @@ function RecommendationDetails({ recommendation: rec }: Props) {
         </div>
         <RecommendationActions recommendation={rec} />
       </div>
-      <VisitDishList recommendation={rec} />
+      <RecommendationDishList recommendation={rec} />
       <RecommendationTags tags={rec} />
       {rec.note && (
         <p className="text-sm leading-relaxed whitespace-pre-line text-muted-foreground">

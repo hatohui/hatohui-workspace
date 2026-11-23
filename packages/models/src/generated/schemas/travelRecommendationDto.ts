@@ -17,7 +17,6 @@ export interface TravelRecommendationDto {
   dishes: TravelRecommendationDishDto[];
   /** @nullable */
   note: string | null;
-  currency: string;
   /** Special tag keys, e.g. spicy, vegetarian, michelin */
   specials: string[];
   /** General tag keys, e.g. bread, meat */

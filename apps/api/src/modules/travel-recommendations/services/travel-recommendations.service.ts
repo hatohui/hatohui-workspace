@@ -27,7 +27,6 @@ import { TravelFoodCategoriesService } from '@/modules/travel-food-categories/se
 import { TravelPlaceCategoriesService } from '@/modules/travel-place-categories/services/travel-place-categories.service';
 import { travelRecommendationWhere } from '@/modules/travel-recommendations/utils/travel-recommendation-filters';
 import {
-  travelDishLinePrice,
   travelRecommendationDetails,
   travelTagKeys,
 } from '@/modules/travel-recommendations/utils/travel-recommendation-details';
@@ -223,7 +222,6 @@ export class TravelRecommendationsService {
       seen.add(dishId);
       lines.push({
         dishId,
-        ...travelDishLinePrice(input),
         allergens: await this.resolveTagsOfKind(
           'ALLERGEN',
           input.allergens ?? [],

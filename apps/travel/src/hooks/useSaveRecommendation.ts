@@ -27,9 +27,6 @@ const lineInput = (line: DishLine): TravelRecommendationDishInputDto => {
     dishName: picked ? undefined : line.name.trim(),
     cuisines: picked ? undefined : line.cuisines,
     foodCategories: picked ? undefined : line.foodCategories,
-    priceMin: line.priceMin,
-    priceMax: line.priceMax,
-    priceLevel: line.priceLevel,
     allergens: line.allergens,
   };
 };
@@ -40,7 +37,6 @@ const detailsOf = (
   imageKeys: string[],
 ) => ({
   note: fields.note,
-  currency: fields.currency,
   specials: fields.specials,
   tags: fields.tags,
   dishes: lines.map(lineInput),

@@ -6,7 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { TravelRecommendationDishInputDto } from './travelRecommendationDishInputDto';
-import type { UpdateTravelRecommendationDtoCurrency } from './updateTravelRecommendationDtoCurrency';
 
 export interface UpdateTravelRecommendationDto {
   /** An existing place */
@@ -18,7 +17,6 @@ export interface UpdateTravelRecommendationDto {
   dishes?: TravelRecommendationDishInputDto[];
   /** @maxLength 2000 */
   note?: string;
-  currency?: UpdateTravelRecommendationDtoCurrency;
   /** Special tag keys or names (e.g. spicy, vegetarian, michelin) */
   specials?: string[];
   /** General tag keys or names (e.g. bread, meat) */

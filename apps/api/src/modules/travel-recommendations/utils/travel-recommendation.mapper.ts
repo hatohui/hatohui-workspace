@@ -47,9 +47,6 @@ export const travelRecommendationInclude = {
     orderBy: { position: 'asc' },
     select: {
       id: true,
-      priceMin: true,
-      priceMax: true,
-      priceLevel: true,
       dish: { select: travelDishSummarySelect },
       allergens: travelAllergenTagsSelect,
     },
@@ -119,13 +116,9 @@ export function toTravelRecommendationDto(
     dishes: row.dishes.map((line) => ({
       id: line.id,
       dish: toDishSummaryDto(line.dish, publicUrlOf),
-      priceMin: line.priceMin,
-      priceMax: line.priceMax,
-      priceLevel: line.priceLevel,
       allergens: line.allergens.map((tag) => tag.key),
     })),
     note: row.note,
-    currency: row.currency,
     specials: tagsOf('SPECIAL'),
     tags: tagsOf('GENERAL'),
     images: row.images.map(

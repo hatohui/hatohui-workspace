@@ -6,7 +6,10 @@ import { cn } from '@hatohui/ui';
 import { useMyAllergies } from '../../hooks/useMyAllergies';
 import { formatPlaceLocation } from '../../lib/formatPlaceLocation';
 import { isOptimisticId } from '../../lib/optimistic';
-import { visitAllergenKeys, visitDishNames } from '../../lib/visitView';
+import {
+  recommendationAllergenKeys,
+  recommendationDishNames,
+} from '../../lib/recommendationView';
 import ImageFrame from '../shared/ImageFrame';
 import OptimisticBadge from '../shared/OptimisticBadge';
 
@@ -25,7 +28,7 @@ function FoodCard({
 }: Props) {
   const { cautionFor } = useMyAllergies();
   const isOptimistic = isOptimisticId(rec.id);
-  const dishLabel = line?.dish.name ?? visitDishNames(rec);
+  const dishLabel = line?.dish.name ?? recommendationDishNames(rec);
   const title = labelMode === 'place' ? rec.place.name : dishLabel;
   const sublabel =
     labelMode === 'place'
@@ -57,7 +60,9 @@ function FoodCard({
           }
           alt={title}
           square
-          caution={cautionFor(line?.allergens ?? visitAllergenKeys(rec))}
+          caution={cautionFor(
+            line?.allergens ?? recommendationAllergenKeys(rec),
+          )}
         />
         {isOptimistic && <OptimisticBadge />}
       </div>
