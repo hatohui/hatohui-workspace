@@ -69,6 +69,7 @@ export function useSpotList(state: SpotFilterState, groupByCategory: boolean) {
   return {
     allSpots,
     spots: pagedItems,
+    pageSize,
     pagination: { page, totalItems, totalPages, setPage },
     suggestions,
     isLoading: active.isLoading,
