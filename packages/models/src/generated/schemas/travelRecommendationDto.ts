@@ -13,7 +13,7 @@ import type { TravelRecommendationDishDto } from './travelRecommendationDishDto'
 export interface TravelRecommendationDto {
   id: string;
   place: TravelPlaceSummaryDto;
-  /** Dishes worth ordering on this visit, in order */
+  /** Dishes worth ordering at this place, in order */
   dishes: TravelRecommendationDishDto[];
   /** @nullable */
   note: string | null;

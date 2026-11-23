@@ -11,7 +11,7 @@ export interface UpdateTravelRecommendationDto {
   /** An existing place */
   placeId?: string;
   /**
-     * Dishes worth ordering on this visit, in order
+     * Dishes worth ordering at this place, in order
      * @maxItems 30
      */
   dishes?: TravelRecommendationDishInputDto[];

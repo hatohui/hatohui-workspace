@@ -14,7 +14,7 @@ export interface CreateTravelRecommendationDto {
   /** A new place, created when placeId is absent */
   place?: TravelPlaceInputDto;
   /**
-     * Dishes worth ordering on this visit, in order
+     * Dishes worth ordering at this place, in order
      * @maxItems 30
      */
   dishes: TravelRecommendationDishInputDto[];

@@ -12461,7 +12461,7 @@
             "$ref": "#/components/schemas/TravelPlaceSummaryDto"
           },
           "dishes": {
-            "description": "Dishes worth ordering on this visit, in order",
+            "description": "Dishes worth ordering at this place, in order",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TravelRecommendationDishDto"
@@ -12882,7 +12882,7 @@
           },
           "dishes": {
             "maxItems": 30,
-            "description": "Dishes worth ordering on this visit, in order",
+            "description": "Dishes worth ordering at this place, in order",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TravelRecommendationDishInputDto"
@@ -12928,7 +12928,7 @@
           },
           "dishes": {
             "maxItems": 30,
-            "description": "Dishes worth ordering on this visit, in order",
+            "description": "Dishes worth ordering at this place, in order",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TravelRecommendationDishInputDto"
