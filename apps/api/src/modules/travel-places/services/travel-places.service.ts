@@ -43,11 +43,11 @@ const placeInclude = {
   area: travelPlaceAreaSelect,
   categories: travelPlaceCategoryNamesSelect,
   createdBy: { select: travelCreatorSelect },
-  _count: { select: { recommendations: true } },
+  _count: { select: { recommendationDishes: true } },
+  recommendationDishes: { select: { allergens: travelAllergenTagsSelect } },
   recommendations: {
     orderBy: { createdAt: 'desc' },
     select: {
-      tags: travelAllergenTagsSelect,
       images: {
         orderBy: { position: 'asc' },
         take: 1,
@@ -278,8 +278,8 @@ export class TravelPlacesService {
       latitude: row.latitude,
       longitude: row.longitude,
       note: row.note,
-      allergens: uniqueAllergenKeys(row.recommendations),
-      dishCount: row._count.recommendations,
+      allergens: uniqueAllergenKeys(row.recommendationDishes),
+      dishCount: row._count.recommendationDishes,
       coverImageUrl: coverKey ? this.storage.getPublicUrl(coverKey) : null,
       createdBy: toTravelCreatorDto(row.createdBy),
       createdAt: row.createdAt,

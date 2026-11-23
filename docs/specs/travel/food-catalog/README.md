@@ -10,20 +10,29 @@ Cuisine, Location, spicy, vegetarian, Estimate and Note.
 TravelCountry ──< TravelArea ──< TravelPlace >──< TravelPlaceCategory
       │               │                │
       └──>──< TravelCuisine >┘          │
-TravelFoodCategory >──< TravelDish ──< TravelRecommendation >──┘
-                            │          │        │
-                            │          │        └──< TravelRecommendationImage (ordered)
-                            └────< TravelCuisine
-                                       └──< TravelTag (allergen / special / general)
+TravelFoodCategory >──< TravelDish ──< TravelRecommendationDish >──┐
+                            │                 │      └──< TravelTag (allergen)
+                            │                 └──> TravelRecommendation >──┘ (place)
+                            └────< TravelCuisine      ├──< TravelRecommendationImage (ordered)
+                                                      └──< TravelTag (special / general)
 ```
 
-- **A dish belongs to many places, and a place serves many dishes.** The
-  spreadsheet row is neither a dish nor a place: it is the pairing, so it gets
-  its own table, `TravelRecommendation`, unique on `(placeId, dishId)`.
-- **Everything that differs per place lives on the recommendation:** the note,
-  the price, the photos, and the tags (special, allergen, general). A
+- **A recommendation is one visit to a place, with many dishes.** A
+  restaurant serves many things and one meal covers several of them, so
+  `TravelRecommendation` holds the place and what the visit shares (note,
+  currency, photos, special and general tags), and each dish ordered is a
+  `TravelRecommendationDish` line. The first version paired one dish with one
+  place, which made a meal of three dishes three copies of the same note and
+  photos.
+- **What differs per dish lives on the line:** price and allergens. A
   vegetarian restaurant's version of a dish is vegetarian even when the dish
-  usually is not, so none of those can sit on the dish.
+  usually is not, so none of those can sit on the dish itself.
+- **A dish is listed once per place.** The line carries a copy of the visit's
+  `placeId` so the database can keep `(placeId, dishId)` unique across visits,
+  and the visit's place change updates its lines. Dish `placeCount` and place
+  `dishCount` count lines. `travel_recommendation_dishes` turned each existing
+  recommendation into a visit with one line, moving its price and allergen tags
+  onto the line.
 - **Food categories and place categories are master-data tables**, both
   many-to-many with dishes and places respectively (`TravelFoodCategory` with
   `TravelDish`, `TravelPlaceCategory` with `TravelPlace`). A dish such as Egg
@@ -66,6 +75,8 @@ TravelFoodCategory >──< TravelDish ──< TravelRecommendation >──┘
   uploader.
 - **Deleting a dish or place cascades** to its recommendations and their images,
   and the stored objects are removed after the database delete succeeds.
+  Deleting a dish removes only its lines; a visit left with no dishes is
+  deleted with its photos.
 
 The `travel_cuisines_tags_price` migration converted the first version's
 columns in place: comma-separated `cuisine` text became cuisine rows, a single
@@ -115,7 +126,7 @@ or place detail page.
 A signed-in user can save the allergens they avoid (`GET/PUT
 /travel/allergies`, a many-to-many between `User` and allergen `TravelTag`
 rows). Dish and place list items carry `allergens`, the union of allergen tags
-across their recommendations. Cards whose allergens overlap the user's get a
+across their dish lines. Cards whose allergens overlap the user's get a
 warning ring and a "Contains …" badge, and a "Hide my allergens" filter adds
 the saved list to `excludeAllergens`.
 
@@ -124,10 +135,13 @@ the saved list to `excludeAllergens`.
 Only users with the `admin` role can write (`AdminRoleGuard`: session plus role,
 no admin key, since the travel app has no key to send). Reads are public.
 
-`POST /travel/recommendations` accepts `dishId` or `dishName` (+ `cuisines`,
-`foodCategories`) and `placeId` or `place` (`name`, `mapsUrl`, `areaId`,
-`categories`), so one form submission can add a whole spreadsheet row, creating
-the dish, place, and category links on the way.
+`POST /travel/recommendations` accepts `placeId` or `place` (`name`, `mapsUrl`,
+`areaId`, `categories`) and a `dishes` list, each with `dishId` or `dishName`
+(+ `cuisines`, `foodCategories`), price and allergens, so one form submission
+records a whole meal, creating the dishes, place, and category links on the
+way. `PATCH` replaces the dish list when `dishes` is sent. Pasting a Google
+Maps link into the place name moves it to the link field and fills the name
+from the link.
 
 ## Photos
 

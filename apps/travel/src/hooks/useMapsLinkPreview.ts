@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { travelMapsLinkPreview } from '@hatohui/models';
 import { useDebouncedValue } from '@hatohui/libs';
@@ -9,7 +9,11 @@ import {
 } from '../constants/maps';
 import type { MapTarget } from '../lib/mapsEmbedUrl';
 
-export function useMapsLinkPreview(url: string, fallbackName: string) {
+export function useMapsLinkPreview(
+  url: string,
+  fallbackName: string,
+  onAutoFillName?: (name: string) => void,
+) {
   const [appliedForUrl, setAppliedForUrl] = useState<string | null>(null);
   const trimmedUrl = url.trim();
   const debounced = useDebouncedValue(trimmedUrl, MAPS_LINK_DEBOUNCE_MS);
@@ -31,6 +35,18 @@ export function useMapsLinkPreview(url: string, fallbackName: string) {
       ? { name: data?.name || name }
       : null;
   const linkName = data?.name ?? null;
+  const shouldAutoFill =
+    Boolean(linkName) &&
+    debounced === trimmedUrl &&
+    fallbackName.trim() === '' &&
+    appliedForUrl !== trimmedUrl;
+
+  useEffect(() => {
+    if (!shouldAutoFill || !linkName) return;
+    setAppliedForUrl(trimmedUrl);
+    onAutoFillName?.(linkName);
+  }, [shouldAutoFill, linkName, trimmedUrl, onAutoFillName]);
+
   const suggestedName =
     linkName && linkName !== fallbackName.trim() && appliedForUrl !== trimmedUrl
       ? linkName

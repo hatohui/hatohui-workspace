@@ -5,33 +5,22 @@
  * OpenAPI specification for the Hatohui workspace API
  * OpenAPI spec version: 0.1.0
  */
-import type { TravelPriceLevel } from './travelPriceLevel';
+import type { TravelRecommendationDishInputDto } from './travelRecommendationDishInputDto';
 import type { UpdateTravelRecommendationDtoCurrency } from './updateTravelRecommendationDtoCurrency';
 
 export interface UpdateTravelRecommendationDto {
-  /** An existing dish */
-  dishId?: string;
   /** An existing place */
   placeId?: string;
+  /**
+     * Dishes worth ordering on this visit, in order
+     * @maxItems 30
+     */
+  dishes?: TravelRecommendationDishInputDto[];
   /** @maxLength 2000 */
   note?: string;
-  /**
-     * @minimum 0
-     * @nullable
-     */
-  priceMin?: number | null;
-  /**
-     * Leave equal to priceMin, or empty, for a single price
-     * @minimum 0
-     * @nullable
-     */
-  priceMax?: number | null;
-  priceLevel?: TravelPriceLevel | null;
   currency?: UpdateTravelRecommendationDtoCurrency;
   /** Special tag keys or names (e.g. spicy, vegetarian, michelin) */
   specials?: string[];
-  /** Allergen tag keys or names */
-  allergens?: string[];
   /** General tag keys or names (e.g. bread, meat) */
   tags?: string[];
   /**

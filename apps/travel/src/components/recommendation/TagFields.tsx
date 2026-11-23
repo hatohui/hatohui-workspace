@@ -23,24 +23,14 @@ function TagFields({ fields, set }: Props) {
         value={fields.specials}
         onChange={(next) => set('specials', next)}
       />
-      <div className="grid gap-4 md:grid-cols-2">
-        <TagGroupInput
-          id="rec-allergens"
-          label={t('form.allergens')}
-          placeholder={t('form.allergensPlaceholder')}
-          value={tags.toLabels(fields.allergens)}
-          suggestions={tags.suggestionsOf('ALLERGEN')}
-          onChange={(next) => set('allergens', tags.toKeys(next, 'ALLERGEN'))}
-        />
-        <TagGroupInput
-          id="rec-tags"
-          label={t('form.otherTags')}
-          placeholder={t('form.otherTagsPlaceholder')}
-          value={tags.toLabels(fields.tags)}
-          suggestions={tags.suggestionsOf('GENERAL')}
-          onChange={(next) => set('tags', tags.toKeys(next, 'GENERAL'))}
-        />
-      </div>
+      <TagGroupInput
+        id="rec-tags"
+        label={t('form.otherTags')}
+        placeholder={t('form.otherTagsPlaceholder')}
+        value={tags.toLabels(fields.tags)}
+        suggestions={tags.suggestionsOf('GENERAL')}
+        onChange={(next) => set('tags', tags.toKeys(next, 'GENERAL'))}
+      />
     </FormSection>
   );
 }

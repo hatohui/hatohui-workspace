@@ -12264,57 +12264,6 @@
           "lastBatchErrors"
         ]
       },
-      "TravelDishSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Egg coffee"
-          },
-          "cuisines": {
-            "example": [
-              "Vietnamese"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "categories": {
-            "example": [
-              "Coffee"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "imageUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "thumbnailUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "previewUrl": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "cuisines",
-          "categories",
-          "imageUrl",
-          "thumbnailUrl",
-          "previewUrl"
-        ]
-      },
       "TravelPlaceAreaDto": {
         "type": "object",
         "properties": {
@@ -12396,6 +12345,57 @@
           "longitude"
         ]
       },
+      "TravelDishSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categories": {
+            "example": [
+              "Coffee"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisines",
+          "categories",
+          "imageUrl",
+          "thumbnailUrl",
+          "previewUrl"
+        ]
+      },
       "TravelPriceLevel": {
         "type": "string",
         "enum": [
@@ -12404,6 +12404,51 @@
           "HIGH"
         ],
         "description": "Rough price level when no amount is known"
+      },
+      "TravelRecommendationDishDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dish": {
+            "$ref": "#/components/schemas/TravelDishSummaryDto"
+          },
+          "priceMin": {
+            "type": "number",
+            "nullable": true,
+            "description": "Lowest price per person, in currency units"
+          },
+          "priceMax": {
+            "type": "number",
+            "nullable": true,
+            "description": "Highest price per person; equal to priceMin for one price"
+          },
+          "priceLevel": {
+            "nullable": true,
+            "description": "Rough price level when no amount is known",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPriceLevel"
+              }
+            ]
+          },
+          "allergens": {
+            "description": "Allergen tag keys the dish contains, e.g. peanuts",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "dish",
+          "priceMin",
+          "priceMax",
+          "priceLevel",
+          "allergens"
+        ]
       },
       "TravelImageDto": {
         "type": "object",
@@ -12443,34 +12488,19 @@
           "id": {
             "type": "string"
           },
-          "dish": {
-            "$ref": "#/components/schemas/TravelDishSummaryDto"
-          },
           "place": {
             "$ref": "#/components/schemas/TravelPlaceSummaryDto"
+          },
+          "dishes": {
+            "description": "Dishes worth ordering on this visit, in order",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDishDto"
+            }
           },
           "note": {
             "type": "string",
             "nullable": true
-          },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "description": "Lowest price per person, in currency units"
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "description": "Highest price per person; equal to priceMin for one price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "description": "Rough price level when no amount is known",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
           },
           "currency": {
             "type": "string",
@@ -12478,13 +12508,6 @@
           },
           "specials": {
             "description": "Special tag keys, e.g. spicy, vegetarian, michelin",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys the dish contains, e.g. peanuts",
             "type": "array",
             "items": {
               "type": "string"
@@ -12519,15 +12542,11 @@
         },
         "required": [
           "id",
-          "dish",
           "place",
+          "dishes",
           "note",
-          "priceMin",
-          "priceMax",
-          "priceLevel",
           "currency",
           "specials",
-          "allergens",
           "tags",
           "images",
           "createdBy",
@@ -12845,7 +12864,7 @@
           "name"
         ]
       },
-      "CreateTravelRecommendationDto": {
+      "TravelRecommendationDishInputDto": {
         "type": "object",
         "properties": {
           "dishId": {
@@ -12873,22 +12892,6 @@
               "type": "string"
             }
           },
-          "placeId": {
-            "type": "string",
-            "description": "An existing place"
-          },
-          "place": {
-            "description": "A new place, created when placeId is absent",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPlaceInputDto"
-              }
-            ]
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 2000
-          },
           "priceMin": {
             "type": "number",
             "nullable": true,
@@ -12908,6 +12911,42 @@
               }
             ]
           },
+          "allergens": {
+            "description": "Allergen tag keys or names this dish contains",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateTravelRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string",
+            "description": "An existing place"
+          },
+          "place": {
+            "description": "A new place, created when placeId is absent",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceInputDto"
+              }
+            ]
+          },
+          "dishes": {
+            "maxItems": 30,
+            "description": "Dishes worth ordering on this visit, in order",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDishInputDto"
+            }
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
           "currency": {
             "type": "string",
             "enum": [
@@ -12920,13 +12959,6 @@
           },
           "specials": {
             "description": "Special tag keys or names (e.g. spicy, vegetarian, michelin)",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys or names",
             "type": "array",
             "items": {
               "type": "string"
@@ -12947,41 +12979,29 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "dishes"
+        ]
       },
       "UpdateTravelRecommendationDto": {
         "type": "object",
         "properties": {
-          "dishId": {
-            "type": "string",
-            "description": "An existing dish"
-          },
           "placeId": {
             "type": "string",
             "description": "An existing place"
           },
+          "dishes": {
+            "maxItems": 30,
+            "description": "Dishes worth ordering on this visit, in order",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDishInputDto"
+            }
+          },
           "note": {
             "type": "string",
             "maxLength": 2000
-          },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0,
-            "description": "Leave equal to priceMin, or empty, for a single price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
           },
           "currency": {
             "type": "string",
@@ -12995,13 +13015,6 @@
           },
           "specials": {
             "description": "Special tag keys or names (e.g. spicy, vegetarian, michelin)",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys or names",
             "type": "array",
             "items": {
               "type": "string"

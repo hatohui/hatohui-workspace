@@ -882,9 +882,9 @@ model TravelDish {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  cuisines        TravelCuisine[]
-  categories      TravelFoodCategory[]
-  recommendations TravelRecommendation[]
+  cuisines             TravelCuisine[]
+  categories           TravelFoodCategory[]
+  recommendationDishes TravelRecommendationDish[]
 }
 
 model TravelFoodCategory {
@@ -927,10 +927,11 @@ model TravelPlace {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  categories      TravelPlaceCategory[]
-  recommendations TravelRecommendation[]
-  events          TravelEvent[]
-  activities      TravelActivity[]
+  categories           TravelPlaceCategory[]
+  recommendations      TravelRecommendation[]
+  recommendationDishes TravelRecommendationDish[]
+  events               TravelEvent[]
+  activities           TravelActivity[]
 
   @@index([areaId])
 }
@@ -1036,9 +1037,10 @@ model TravelTag {
   position  Int
   createdAt DateTime      @default(now())
 
-  recommendations TravelRecommendation[]
-  spots           TravelSpot[]
-  allergicUsers   User[]                 @relation("TravelUserAllergens")
+  recommendations      TravelRecommendation[]
+  recommendationDishes TravelRecommendationDish[] @relation("TravelRecommendationDishAllergens")
+  spots                TravelSpot[]
+  allergicUsers        User[]                     @relation("TravelUserAllergens")
 
   @@index([kind, position])
 }
@@ -1050,25 +1052,40 @@ enum TravelPriceLevel {
 }
 
 model TravelRecommendation {
-  id          String            @id @default(cuid())
-  dishId      String
-  dish        TravelDish        @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  id          String      @id @default(cuid())
   placeId     String
-  place       TravelPlace       @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  place       TravelPlace @relation(fields: [placeId], references: [id], onDelete: Cascade)
   note        String?
-  priceMin    Int?
-  priceMax    Int?
-  priceLevel  TravelPriceLevel?
-  currency    String            @default("VND")
+  currency    String      @default("VND")
   createdById String?
-  createdBy   User?             @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  createdBy   User?       @relation("TravelRecommendationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
+  dishes TravelRecommendationDish[]
   images TravelRecommendationImage[]
   tags   TravelTag[]
 
+  @@index([placeId])
+}
+
+model TravelRecommendationDish {
+  id               String               @id @default(cuid())
+  recommendationId String
+  recommendation   TravelRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+  dishId           String
+  dish             TravelDish           @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  placeId          String
+  place            TravelPlace          @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  position         Int
+  priceMin         Int?
+  priceMax         Int?
+  priceLevel       TravelPriceLevel?
+
+  allergens TravelTag[] @relation("TravelRecommendationDishAllergens")
+
   @@unique([placeId, dishId])
+  @@unique([recommendationId, dishId])
   @@index([dishId])
 }
 

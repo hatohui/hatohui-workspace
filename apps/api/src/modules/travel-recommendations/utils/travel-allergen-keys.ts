@@ -1,14 +1,14 @@
-import { TravelTagKind, type Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 export const travelAllergenTagsSelect = {
-  where: { kind: TravelTagKind.ALLERGEN },
+  orderBy: { position: 'asc' },
   select: { key: true },
-} satisfies Prisma.TravelRecommendation$tagsArgs;
+} satisfies Prisma.TravelRecommendationDish$allergensArgs;
 
 export function uniqueAllergenKeys(
-  recommendations: { tags: { key: string }[] }[],
+  dishLines: { allergens: { key: string }[] }[],
 ): string[] {
   return [
-    ...new Set(recommendations.flatMap((rec) => rec.tags.map((t) => t.key))),
+    ...new Set(dishLines.flatMap((line) => line.allergens.map((t) => t.key))),
   ];
 }

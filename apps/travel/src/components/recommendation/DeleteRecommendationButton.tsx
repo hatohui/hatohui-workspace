@@ -6,6 +6,7 @@ import {
 import { Button, ConfirmDialog, cn } from '@hatohui/ui';
 import { Trash2 } from 'lucide-react';
 import { useConfirmedDelete } from '../../hooks/useConfirmedDelete';
+import { visitDishNames } from '../../lib/visitView';
 
 interface Props {
   recommendation: TravelRecommendationDto;
@@ -31,7 +32,7 @@ function DeleteRecommendationButton({ recommendation: rec, className }: Props) {
         open={deletion.open}
         title={t('recommendation.deleteTitle')}
         description={t('recommendation.deleteDescription', {
-          dish: rec.dish.name,
+          dish: visitDishNames(rec),
           place: rec.place.name,
         })}
         cancelLabel={t('form.cancel')}

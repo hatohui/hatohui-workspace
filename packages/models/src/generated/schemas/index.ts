@@ -314,6 +314,8 @@ export * from './travelPlaceSummaryDto';
 export * from './travelPlanGalleryParams';
 export * from './travelPriceLevel';
 export * from './travelPublicHolidayDto';
+export * from './travelRecommendationDishDto';
+export * from './travelRecommendationDishInputDto';
 export * from './travelRecommendationDto';
 export * from './travelRecommendationsParams';
 export * from './travelScheduleExceptionDto';

@@ -7,49 +7,23 @@
  */
 import type { CreateTravelRecommendationDtoCurrency } from './createTravelRecommendationDtoCurrency';
 import type { TravelPlaceInputDto } from './travelPlaceInputDto';
-import type { TravelPriceLevel } from './travelPriceLevel';
+import type { TravelRecommendationDishInputDto } from './travelRecommendationDishInputDto';
 
 export interface CreateTravelRecommendationDto {
-  /** An existing dish */
-  dishId?: string;
-  /**
-     * Dish name, found or created when dishId is absent
-     * @maxLength 120
-     */
-  dishName?: string;
-  /**
-     * Cuisine tags for a newly created dish, found or created
-     * @maxItems 6
-     */
-  cuisines?: string[];
-  /**
-     * Food category tags for a newly created dish, found or created
-     * @maxItems 6
-     */
-  foodCategories?: string[];
   /** An existing place */
   placeId?: string;
   /** A new place, created when placeId is absent */
   place?: TravelPlaceInputDto;
+  /**
+     * Dishes worth ordering on this visit, in order
+     * @maxItems 30
+     */
+  dishes: TravelRecommendationDishInputDto[];
   /** @maxLength 2000 */
   note?: string;
-  /**
-     * @minimum 0
-     * @nullable
-     */
-  priceMin?: number | null;
-  /**
-     * Leave equal to priceMin, or empty, for a single price
-     * @minimum 0
-     * @nullable
-     */
-  priceMax?: number | null;
-  priceLevel?: TravelPriceLevel | null;
   currency?: CreateTravelRecommendationDtoCurrency;
   /** Special tag keys or names (e.g. spicy, vegetarian, michelin) */
   specials?: string[];
-  /** Allergen tag keys or names */
-  allergens?: string[];
   /** General tag keys or names (e.g. bread, meat) */
   tags?: string[];
   /**

@@ -1,15 +1,13 @@
 import { useTranslation } from '@hatohui/i18n';
 import { PRICE_MODES } from '../../constants/travel';
-import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
+import type { PriceFields, SetPriceField } from '../../lib/priceFields';
 import ChoiceChips from '../shared/ChoiceChips';
 import PriceLevelInput from './PriceLevelInput';
 import PriceRangeInput from './PriceRangeInput';
 
-type FieldsApi = ReturnType<typeof useRecommendationFields>;
-
 interface Props {
-  fields: FieldsApi['fields'];
-  set: FieldsApi['set'];
+  fields: PriceFields;
+  set: SetPriceField;
 }
 
 function PriceField({ fields, set }: Props) {

@@ -5,6 +5,7 @@ export const TRAVEL_MAX_IMAGES = 12;
 export const TRAVEL_MAX_CUISINES = 6;
 export const TRAVEL_MAX_CATEGORIES = 6;
 export const TRAVEL_MAX_TAGS = 16;
+export const TRAVEL_MAX_VISIT_DISHES = 30;
 export const TRAVEL_CATALOG_LIMIT = 500;
 export const TRAVEL_DEFAULT_CURRENCY = 'VND';
 export const TRAVEL_CURRENCIES = ['VND', 'USD', 'JPY', 'EUR', 'THB'] as const;

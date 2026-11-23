@@ -4,7 +4,7 @@ import { useRecommendationForm } from '../../hooks/useRecommendationForm';
 import DialogForm from '../shared/DialogForm';
 import FormSection from '../shared/FormSection';
 import TextField from '../shared/TextField';
-import DishInputs from './DishInputs';
+import DishLinesField from './DishLinesField';
 import PhotoField from './PhotoField';
 import PlaceInputs from './PlaceInputs';
 import TagFields from './TagFields';
@@ -35,8 +35,8 @@ function RecommendationForm({
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-x-8">
           <FormSection title={t('form.sectionDish')}>
             <div className="space-y-4">
-              <DishInputs form={form} />
               <PlaceInputs form={form} />
+              <DishLinesField form={form} />
               <TextField
                 id="note"
                 multiline

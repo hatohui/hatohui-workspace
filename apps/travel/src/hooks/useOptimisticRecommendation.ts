@@ -1,4 +1,8 @@
-import { useQueryClient, type QueryKey } from '@tanstack/react-query';
+import {
+  useQueryClient,
+  type QueryClient,
+  type QueryKey,
+} from '@tanstack/react-query';
 import {
   getTravelDishQueryKey,
   getTravelDishesPageQueryKey,
@@ -12,14 +16,13 @@ import {
   type TravelDishDetailDto,
   type TravelDishDto,
   type TravelDishesPageParams,
-  type TravelDishesParams,
   type TravelPlaceAreaDto,
   type TravelPlaceDetailDto,
   type TravelPlaceDto,
   type TravelPlacesPageParams,
-  type TravelPlacesParams,
   type TravelRecommendationDto,
 } from '@hatohui/models';
+import { sameCatalogName } from '../lib/catalogName';
 import {
   areaMatchesLocation,
   buildOptimisticDish,
@@ -28,508 +31,367 @@ import {
   createOptimisticId,
   matchesSearchQuery,
   shouldPrependToQuery,
+  visitAllergens,
 } from '../lib/optimistic';
 import type { PhotoItem } from './usePhotoList';
-import type { RecommendationFields } from './useRecommendationFields';
+import {
+  type DishLine,
+  type RecommendationFields,
+  pickedDishOf,
+} from './useRecommendationFields';
 
 interface Envelope<T> {
   data: T;
 }
 
+interface Page<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+
 interface ApplyParams {
   existing?: TravelRecommendationDto;
   fields: RecommendationFields;
-  dish?: TravelDishDto;
+  lines: DishLine[];
   place?: TravelPlaceDto;
   area: TravelPlaceAreaDto | null;
   photos: PhotoItem[];
 }
 
+type Snapshot = [QueryKey, unknown];
+
 const mergeStrings = (current: string[], added: string[]) => [
   ...new Set([...current, ...added]),
 ];
 
-const patchExistingDish = (
-  item: TravelDishDto,
-  dishId: string,
-  allergens: string[],
-  coverImageUrl: string | null,
-  area: TravelPlaceAreaDto | null,
-  queryParams?: TravelDishesParams,
-): TravelDishDto =>
-  item.id === dishId
-    ? {
-        ...item,
-        placeCount: item.placeCount + 1,
-        localPlaceCount:
-          item.localPlaceCount === null
-            ? null
-            : item.localPlaceCount +
-              (areaMatchesLocation(area, queryParams) ? 1 : 0),
-        allergens: mergeStrings(item.allergens, allergens),
-        coverImageUrl: item.coverImageUrl ?? coverImageUrl,
-      }
-    : item;
+function snapshot<T>(client: QueryClient, queryKey: QueryKey) {
+  void client.cancelQueries({ queryKey });
+  return client.getQueriesData<T>({ queryKey });
+}
 
-const patchExistingPlace = (
-  item: TravelPlaceDto,
-  placeId: string,
-  allergens: string[],
-  coverImageUrl: string | null,
-): TravelPlaceDto =>
-  item.id === placeId
-    ? {
-        ...item,
-        dishCount: item.dishCount + 1,
-        allergens: mergeStrings(item.allergens, allergens),
-        coverImageUrl: item.coverImageUrl ?? coverImageUrl,
-      }
-    : item;
+const isEnvelope = (value: unknown): boolean => {
+  const data = (value as Envelope<unknown> | undefined)?.data;
+  if (!data) return false;
+  if (Array.isArray(data)) return true;
+  const items = (data as Partial<Page<unknown>>).items;
+  return items === undefined || Array.isArray(items);
+};
 
-const settleDishItem = (
-  item: TravelDishDto,
-  tempDishId: string,
-  saved: TravelRecommendationDto,
-  savedCover: string | null,
-): TravelDishDto =>
-  item.id === tempDishId
-    ? {
-        ...item,
-        id: saved.dish.id,
-        name: saved.dish.name,
-        cuisines: saved.dish.cuisines,
-        categories: saved.dish.categories,
-        imageUrl: saved.dish.imageUrl,
-        thumbnailUrl: saved.dish.thumbnailUrl,
-        previewUrl: saved.dish.previewUrl,
-        coverImageUrl:
-          saved.dish.thumbnailUrl ??
-          saved.dish.imageUrl ??
-          savedCover ??
-          item.coverImageUrl,
-      }
-    : item;
+function patchEach<T>(
+  client: QueryClient,
+  entries: [QueryKey, T | undefined][],
+  patch: (current: T, key: QueryKey) => T | undefined,
+) {
+  for (const [key, current] of entries) {
+    if (!current || !isEnvelope(current)) continue;
+    const next = patch(current, key);
+    if (next) client.setQueryData<T>(key, next);
+  }
+}
 
-const settlePlaceItem = (
-  item: TravelPlaceDto,
-  tempPlaceId: string,
-  saved: TravelRecommendationDto,
-  savedCover: string | null,
-): TravelPlaceDto =>
-  item.id === tempPlaceId
-    ? {
-        ...item,
-        id: saved.place.id,
-        name: saved.place.name,
-        area: saved.place.area,
-        categories: saved.place.categories,
-        address: saved.place.address,
-        mapsUrl: saved.place.mapsUrl,
-        latitude: saved.place.latitude,
-        longitude: saved.place.longitude,
-        coverImageUrl: savedCover ?? item.coverImageUrl,
-      }
-    : item;
+function prependToPage<T>(page: Page<T>, item: T): Page<T> {
+  const total = page.total + 1;
+  return {
+    ...page,
+    items: [item, ...page.items].slice(0, page.pageSize),
+    total,
+    hasMore: total > page.page * page.pageSize,
+  };
+}
 
 export function useOptimisticRecommendation() {
-  const queryClient = useQueryClient();
+  const client = useQueryClient();
 
   const apply = (params: ApplyParams) => {
-    const { existing, fields, dish, place, area, photos } = params;
+    const { existing, fields, lines, place, area, photos } = params;
     const tempId = existing?.id ?? createOptimisticId();
-    const tempDishId = createOptimisticId();
     const tempPlaceId = createOptimisticId();
     const coverImageUrl = photos[0]?.url ?? null;
+    const allergens = visitAllergens(lines);
+    const pickedIds = lines.flatMap((line): string[] => {
+      const picked = pickedDishOf(line);
+      return picked ? [picked.id] : [];
+    });
+    const newDishes = lines
+      .filter((line) => !pickedDishOf(line))
+      .map((line) => ({ line, tempId: createOptimisticId() }));
+    const placeId = place?.id ?? existing?.place.id;
 
     const optimistic = buildOptimisticRecommendation({
       id: tempId,
       existing,
       fields,
-      dish,
+      lines,
       place,
       area,
       photos,
     });
+    const replaceOrPrepend = (list: TravelRecommendationDto[]) =>
+      existing
+        ? list.map((item) => (item.id === existing.id ? optimistic : item))
+        : [optimistic, ...list];
 
-    const recKey = getTravelRecommendationsQueryKey();
-    const dishesKey = getTravelDishesQueryKey();
-    const dishPageKey = getTravelDishesPageQueryKey();
-    const placesKey = getTravelPlacesQueryKey();
-    const placePageKey = getTravelPlacesPageQueryKey();
-    const dishId = dish?.id ?? existing?.dish.id;
-    const placeId = place?.id ?? existing?.place.id;
-    const dishDetailKey = dishId ? getTravelDishQueryKey(dishId) : null;
-    const placeDetailKey = placeId ? getTravelPlaceQueryKey(placeId) : null;
-
-    const recSnapshots = queryClient.getQueriesData<
-      Envelope<TravelRecommendationDto[]>
-    >({ queryKey: recKey });
-    const dishesSnapshots = queryClient.getQueriesData<
-      Envelope<TravelDishDto[]>
-    >({ queryKey: dishesKey });
-    const dishPageSnapshots = queryClient.getQueriesData<
-      Envelope<PaginatedTravelDishesDto>
-    >({ queryKey: dishPageKey });
-    const placesSnapshots = queryClient.getQueriesData<
-      Envelope<TravelPlaceDto[]>
-    >({ queryKey: placesKey });
-    const placePageSnapshots = queryClient.getQueriesData<
-      Envelope<PaginatedTravelPlacesDto>
-    >({ queryKey: placePageKey });
-    const dishDetailSnapshots = dishDetailKey
-      ? queryClient.getQueriesData<Envelope<TravelDishDetailDto>>({
-          queryKey: dishDetailKey,
-        })
+    const recs = snapshot<Envelope<TravelRecommendationDto[]>>(
+      client,
+      getTravelRecommendationsQueryKey(),
+    );
+    const dishDetails = pickedIds.flatMap((id) =>
+      snapshot<Envelope<TravelDishDetailDto>>(
+        client,
+        getTravelDishQueryKey(id),
+      ),
+    );
+    const placeDetails = placeId
+      ? snapshot<Envelope<TravelPlaceDetailDto>>(
+          client,
+          getTravelPlaceQueryKey(placeId),
+        )
       : [];
-    const placeDetailSnapshots = placeDetailKey
-      ? queryClient.getQueriesData<Envelope<TravelPlaceDetailDto>>({
-          queryKey: placeDetailKey,
-        })
-      : [];
+    const dishLists = snapshot<Envelope<TravelDishDto[]>>(
+      client,
+      getTravelDishesQueryKey(),
+    );
+    const dishPages = snapshot<Envelope<PaginatedTravelDishesDto>>(
+      client,
+      getTravelDishesPageQueryKey(),
+    );
+    const placeLists = snapshot<Envelope<TravelPlaceDto[]>>(
+      client,
+      getTravelPlacesQueryKey(),
+    );
+    const placePages = snapshot<Envelope<PaginatedTravelPlacesDto>>(
+      client,
+      getTravelPlacesPageQueryKey(),
+    );
 
-    void queryClient.cancelQueries({ queryKey: recKey });
-    void queryClient.cancelQueries({ queryKey: dishesKey });
-    void queryClient.cancelQueries({ queryKey: dishPageKey });
-    void queryClient.cancelQueries({ queryKey: placesKey });
-    void queryClient.cancelQueries({ queryKey: placePageKey });
-    if (dishDetailKey) {
-      void queryClient.cancelQueries({ queryKey: dishDetailKey });
-    }
-    if (placeDetailKey) {
-      void queryClient.cancelQueries({ queryKey: placeDetailKey });
-    }
-
-    for (const [key, current] of recSnapshots) {
-      if (!current?.data) continue;
-      if (existing) {
-        queryClient.setQueryData<Envelope<TravelRecommendationDto[]>>(key, {
-          ...current,
-          data: current.data.map((item) =>
-            item.id === existing.id ? optimistic : item,
-          ),
-        });
-      } else if (shouldPrependToQuery(key, dish?.id, place?.id)) {
-        queryClient.setQueryData<Envelope<TravelRecommendationDto[]>>(key, {
-          ...current,
-          data: [optimistic, ...current.data],
-        });
-      }
-    }
-
-    for (const [key, current] of dishDetailSnapshots) {
-      if (!current?.data) continue;
-      queryClient.setQueryData<Envelope<TravelDishDetailDto>>(key, {
-        ...current,
-        data: existing
-          ? {
-              ...current.data,
-              recommendations: current.data.recommendations.map((item) =>
-                item.id === existing.id ? optimistic : item,
-              ),
-            }
-          : {
-              ...current.data,
-              placeCount: current.data.placeCount + 1,
-              allergens: mergeStrings(current.data.allergens, fields.allergens),
-              recommendations: [optimistic, ...current.data.recommendations],
-            },
-      });
-    }
-
-    for (const [key, current] of placeDetailSnapshots) {
-      if (!current?.data) continue;
-      queryClient.setQueryData<Envelope<TravelPlaceDetailDto>>(key, {
-        ...current,
-        data: existing
-          ? {
-              ...current.data,
-              recommendations: current.data.recommendations.map((item) =>
-                item.id === existing.id ? optimistic : item,
-              ),
-            }
-          : {
-              ...current.data,
-              dishCount: current.data.dishCount + 1,
-              allergens: mergeStrings(current.data.allergens, fields.allergens),
-              recommendations: [optimistic, ...current.data.recommendations],
-            },
-      });
-    }
+    patchEach(client, recs, (current, key) =>
+      existing || shouldPrependToQuery(key, pickedIds, place?.id)
+        ? { ...current, data: replaceOrPrepend(current.data) }
+        : undefined,
+    );
+    patchEach(client, dishDetails, (current) => ({
+      ...current,
+      data: {
+        ...current.data,
+        placeCount: current.data.placeCount + (existing ? 0 : 1),
+        allergens: mergeStrings(current.data.allergens, allergens),
+        recommendations: replaceOrPrepend(current.data.recommendations),
+      },
+    }));
+    patchEach(client, placeDetails, (current) => ({
+      ...current,
+      data: {
+        ...current.data,
+        dishCount: current.data.dishCount + (existing ? 0 : lines.length),
+        allergens: mergeStrings(current.data.allergens, allergens),
+        recommendations: replaceOrPrepend(current.data.recommendations),
+      },
+    }));
 
     if (!existing) {
-      for (const [key, current] of dishesSnapshots) {
-        if (!Array.isArray(current?.data)) continue;
-        const queryParams = key[1] as TravelDishesParams | undefined;
-        if (dish) {
-          queryClient.setQueryData<Envelope<TravelDishDto[]>>(key, {
-            ...current,
-            data: current.data.map((item) =>
-              patchExistingDish(
-                item,
-                dish.id,
-                fields.allergens,
-                coverImageUrl,
-                area,
-                queryParams,
-              ),
-            ),
-          });
-        } else if (matchesSearchQuery(fields.dishName, queryParams?.q)) {
-          const optimisticDish = buildOptimisticDish({
-            id: tempDishId,
-            fields,
-            area,
-            coverImageUrl,
-            queryParams,
-          });
-          queryClient.setQueryData<Envelope<TravelDishDto[]>>(key, {
-            ...current,
-            data: [optimisticDish, ...current.data],
-          });
-        }
-      }
+      const patchDish = (item: TravelDishDto, inArea: boolean) => {
+        const line = lines.find((l) => pickedDishOf(l)?.id === item.id);
+        if (!line) return item;
+        return {
+          ...item,
+          placeCount: item.placeCount + 1,
+          localPlaceCount:
+            item.localPlaceCount === null
+              ? null
+              : item.localPlaceCount + (inArea ? 1 : 0),
+          allergens: mergeStrings(item.allergens, line.allergens),
+          coverImageUrl: item.coverImageUrl ?? coverImageUrl,
+        };
+      };
+      const newDishItems = (
+        queryParams: TravelDishesPageParams | undefined,
+      ): TravelDishDto[] =>
+        newDishes
+          .filter(({ line }) => matchesSearchQuery(line.name, queryParams?.q))
+          .map(({ line, tempId: id }) =>
+            buildOptimisticDish({
+              id,
+              line,
+              area,
+              coverImageUrl,
+              queryParams,
+            }),
+          );
 
-      for (const [key, current] of dishPageSnapshots) {
-        if (!Array.isArray(current?.data?.items)) continue;
+      patchEach(client, dishLists, (current, key) => {
         const queryParams = key[1] as TravelDishesPageParams | undefined;
-        if (dish) {
-          queryClient.setQueryData<Envelope<PaginatedTravelDishesDto>>(key, {
-            ...current,
-            data: {
-              ...current.data,
-              items: current.data.items.map((item) =>
-                patchExistingDish(
-                  item,
-                  dish.id,
-                  fields.allergens,
-                  coverImageUrl,
-                  area,
-                  queryParams,
-                ),
-              ),
-            },
-          });
-        } else if (
-          (queryParams?.page ?? 1) === 1 &&
-          matchesSearchQuery(fields.dishName, queryParams?.q)
-        ) {
-          const optimisticDish = buildOptimisticDish({
-            id: tempDishId,
-            fields,
-            area,
-            coverImageUrl,
-            queryParams,
-          });
-          const nextTotal = current.data.total + 1;
-          queryClient.setQueryData<Envelope<PaginatedTravelDishesDto>>(key, {
-            ...current,
-            data: {
-              ...current.data,
-              items: [optimisticDish, ...current.data.items].slice(
-                0,
-                current.data.pageSize,
-              ),
-              total: nextTotal,
-              hasMore: nextTotal > current.data.page * current.data.pageSize,
-            },
-          });
-        }
-      }
+        const inArea = areaMatchesLocation(area, queryParams);
+        return {
+          ...current,
+          data: [
+            ...newDishItems(queryParams),
+            ...current.data.map((item) => patchDish(item, inArea)),
+          ],
+        };
+      });
+      patchEach(client, dishPages, (current, key) => {
+        const queryParams = key[1] as TravelDishesPageParams | undefined;
+        const inArea = areaMatchesLocation(area, queryParams);
+        const patched = {
+          ...current.data,
+          items: current.data.items.map((item) => patchDish(item, inArea)),
+        };
+        const added =
+          (queryParams?.page ?? 1) === 1 ? newDishItems(queryParams) : [];
+        return {
+          ...current,
+          data: added.reduceRight(prependToPage, patched),
+        };
+      });
 
-      for (const [key, current] of placesSnapshots) {
-        if (!Array.isArray(current?.data)) continue;
-        const queryParams = key[1] as TravelPlacesParams | undefined;
-        if (place) {
-          queryClient.setQueryData<Envelope<TravelPlaceDto[]>>(key, {
-            ...current,
-            data: current.data.map((item) =>
-              patchExistingPlace(
-                item,
-                place.id,
-                fields.allergens,
-                coverImageUrl,
-              ),
-            ),
-          });
-        } else if (
-          matchesSearchQuery(fields.placeName, queryParams?.q) &&
-          areaMatchesLocation(area, queryParams)
-        ) {
-          const optimisticPlace = buildOptimisticPlace({
-            id: tempPlaceId,
-            fields,
-            area,
-            coverImageUrl,
-          });
-          queryClient.setQueryData<Envelope<TravelPlaceDto[]>>(key, {
-            ...current,
-            data: [optimisticPlace, ...current.data],
-          });
-        }
-      }
+      const patchPlace = (item: TravelPlaceDto) =>
+        item.id === place?.id
+          ? {
+              ...item,
+              dishCount: item.dishCount + lines.length,
+              allergens: mergeStrings(item.allergens, allergens),
+              coverImageUrl: item.coverImageUrl ?? coverImageUrl,
+            }
+          : item;
+      const newPlace = (queryParams?: TravelPlacesPageParams) =>
+        !place &&
+        matchesSearchQuery(fields.placeName, queryParams?.q) &&
+        areaMatchesLocation(area, queryParams)
+          ? buildOptimisticPlace({
+              id: tempPlaceId,
+              fields,
+              lines,
+              area,
+              coverImageUrl,
+            })
+          : null;
 
-      for (const [key, current] of placePageSnapshots) {
-        if (!Array.isArray(current?.data?.items)) continue;
+      patchEach(client, placeLists, (current, key) => {
+        const added = newPlace(key[1]);
+        const data = current.data.map(patchPlace);
+        return { ...current, data: added ? [added, ...data] : data };
+      });
+      patchEach(client, placePages, (current, key) => {
         const queryParams = key[1] as TravelPlacesPageParams | undefined;
-        if (place) {
-          queryClient.setQueryData<Envelope<PaginatedTravelPlacesDto>>(key, {
-            ...current,
-            data: {
-              ...current.data,
-              items: current.data.items.map((item) =>
-                patchExistingPlace(
-                  item,
-                  place.id,
-                  fields.allergens,
-                  coverImageUrl,
-                ),
-              ),
-            },
-          });
-        } else if (
-          (queryParams?.page ?? 1) === 1 &&
-          matchesSearchQuery(fields.placeName, queryParams?.q) &&
-          areaMatchesLocation(area, queryParams)
-        ) {
-          const optimisticPlace = buildOptimisticPlace({
-            id: tempPlaceId,
-            fields,
-            area,
-            coverImageUrl,
-          });
-          const nextTotal = current.data.total + 1;
-          queryClient.setQueryData<Envelope<PaginatedTravelPlacesDto>>(key, {
-            ...current,
-            data: {
-              ...current.data,
-              items: [optimisticPlace, ...current.data.items].slice(
-                0,
-                current.data.pageSize,
-              ),
-              total: nextTotal,
-              hasMore: nextTotal > current.data.page * current.data.pageSize,
-            },
-          });
-        }
-      }
+        const patched = {
+          ...current.data,
+          items: current.data.items.map(patchPlace),
+        };
+        const added = (queryParams?.page ?? 1) === 1 && newPlace(queryParams);
+        return {
+          ...current,
+          data: added ? prependToPage(patched, added) : patched,
+        };
+      });
     }
 
     const settle = (saved: TravelRecommendationDto) => {
       const savedCover =
         saved.images[0]?.thumbnailUrl ?? saved.images[0]?.url ?? null;
+      const swapVisit = (list: TravelRecommendationDto[]) =>
+        list.map((item) => (item.id === tempId ? saved : item));
+      const settleDish = (item: TravelDishDto): TravelDishDto => {
+        const temp = newDishes.find((entry) => entry.tempId === item.id);
+        const line = temp
+          ? saved.dishes.find((l) => sameCatalogName(l.dish.name, item.name))
+          : undefined;
+        if (!line) return item;
+        return {
+          ...item,
+          id: line.dish.id,
+          name: line.dish.name,
+          cuisines: line.dish.cuisines,
+          categories: line.dish.categories,
+          imageUrl: line.dish.imageUrl,
+          thumbnailUrl: line.dish.thumbnailUrl,
+          previewUrl: line.dish.previewUrl,
+          coverImageUrl:
+            line.dish.thumbnailUrl ?? savedCover ?? item.coverImageUrl,
+        };
+      };
+      const settlePlace = (item: TravelPlaceDto): TravelPlaceDto =>
+        item.id === tempPlaceId
+          ? {
+              ...item,
+              ...saved.place,
+              coverImageUrl: savedCover ?? item.coverImageUrl,
+            }
+          : item;
 
-      for (const [key, current] of queryClient.getQueriesData<
-        Envelope<TravelRecommendationDto[]>
-      >({ queryKey: recKey })) {
-        if (!current?.data) continue;
-        queryClient.setQueryData<Envelope<TravelRecommendationDto[]>>(key, {
+      patchEach(
+        client,
+        client.getQueriesData<Envelope<TravelRecommendationDto[]>>({
+          queryKey: getTravelRecommendationsQueryKey(),
+        }),
+        (current) => ({ ...current, data: swapVisit(current.data) }),
+      );
+      patchEach(client, dishDetails, (current) => ({
+        ...current,
+        data: {
+          ...current.data,
+          recommendations: swapVisit(current.data.recommendations),
+        },
+      }));
+      patchEach(client, placeDetails, (current) => ({
+        ...current,
+        data: {
+          ...current.data,
+          recommendations: swapVisit(current.data.recommendations),
+        },
+      }));
+      patchEach(
+        client,
+        client.getQueriesData<Envelope<TravelDishDto[]>>({
+          queryKey: getTravelDishesQueryKey(),
+        }),
+        (current) => ({ ...current, data: current.data.map(settleDish) }),
+      );
+      patchEach(
+        client,
+        client.getQueriesData<Envelope<PaginatedTravelDishesDto>>({
+          queryKey: getTravelDishesPageQueryKey(),
+        }),
+        (current) => ({
           ...current,
-          data: current.data.map((item) => (item.id === tempId ? saved : item)),
-        });
-      }
-
-      if (dishDetailKey) {
-        for (const [key, current] of queryClient.getQueriesData<
-          Envelope<TravelDishDetailDto>
-        >({ queryKey: dishDetailKey })) {
-          if (!current?.data) continue;
-          queryClient.setQueryData<Envelope<TravelDishDetailDto>>(key, {
-            ...current,
-            data: {
-              ...current.data,
-              recommendations: current.data.recommendations.map((item) =>
-                item.id === tempId ? saved : item,
-              ),
-            },
-          });
-        }
-      }
-
-      if (placeDetailKey) {
-        for (const [key, current] of queryClient.getQueriesData<
-          Envelope<TravelPlaceDetailDto>
-        >({ queryKey: placeDetailKey })) {
-          if (!current?.data) continue;
-          queryClient.setQueryData<Envelope<TravelPlaceDetailDto>>(key, {
-            ...current,
-            data: {
-              ...current.data,
-              recommendations: current.data.recommendations.map((item) =>
-                item.id === tempId ? saved : item,
-              ),
-            },
-          });
-        }
-      }
-
-      for (const [key, current] of queryClient.getQueriesData<
-        Envelope<TravelDishDto[]>
-      >({ queryKey: dishesKey })) {
-        if (!Array.isArray(current?.data)) continue;
-        queryClient.setQueryData<Envelope<TravelDishDto[]>>(key, {
-          ...current,
-          data: current.data.map((item) =>
-            settleDishItem(item, tempDishId, saved, savedCover),
-          ),
-        });
-      }
-
-      for (const [key, current] of queryClient.getQueriesData<
-        Envelope<PaginatedTravelDishesDto>
-      >({ queryKey: dishPageKey })) {
-        if (!Array.isArray(current?.data?.items)) continue;
-        queryClient.setQueryData<Envelope<PaginatedTravelDishesDto>>(key, {
-          ...current,
-          data: {
-            ...current.data,
-            items: current.data.items.map((item) =>
-              settleDishItem(item, tempDishId, saved, savedCover),
-            ),
-          },
-        });
-      }
-
-      for (const [key, current] of queryClient.getQueriesData<
-        Envelope<TravelPlaceDto[]>
-      >({ queryKey: placesKey })) {
-        if (!Array.isArray(current?.data)) continue;
-        queryClient.setQueryData<Envelope<TravelPlaceDto[]>>(key, {
-          ...current,
-          data: current.data.map((item) =>
-            settlePlaceItem(item, tempPlaceId, saved, savedCover),
-          ),
-        });
-      }
-
-      for (const [key, current] of queryClient.getQueriesData<
-        Envelope<PaginatedTravelPlacesDto>
-      >({ queryKey: placePageKey })) {
-        if (!Array.isArray(current?.data?.items)) continue;
-        queryClient.setQueryData<Envelope<PaginatedTravelPlacesDto>>(key, {
+          data: { ...current.data, items: current.data.items.map(settleDish) },
+        }),
+      );
+      patchEach(
+        client,
+        client.getQueriesData<Envelope<TravelPlaceDto[]>>({
+          queryKey: getTravelPlacesQueryKey(),
+        }),
+        (current) => ({ ...current, data: current.data.map(settlePlace) }),
+      );
+      patchEach(
+        client,
+        client.getQueriesData<Envelope<PaginatedTravelPlacesDto>>({
+          queryKey: getTravelPlacesPageQueryKey(),
+        }),
+        (current) => ({
           ...current,
           data: {
             ...current.data,
-            items: current.data.items.map((item) =>
-              settlePlaceItem(item, tempPlaceId, saved, savedCover),
-            ),
+            items: current.data.items.map(settlePlace),
           },
-        });
-      }
+        }),
+      );
     };
 
     const rollback = () => {
-      const allSnapshots: Array<[QueryKey, unknown]> = [
-        ...recSnapshots,
-        ...dishesSnapshots,
-        ...dishPageSnapshots,
-        ...placesSnapshots,
-        ...placePageSnapshots,
-        ...dishDetailSnapshots,
-        ...placeDetailSnapshots,
+      const all: Snapshot[] = [
+        ...recs,
+        ...dishDetails,
+        ...placeDetails,
+        ...dishLists,
+        ...dishPages,
+        ...placeLists,
+        ...placePages,
       ];
-      for (const [key, previous] of allSnapshots) {
-        queryClient.setQueryData(key, previous);
-      }
+      for (const [key, previous] of all) client.setQueryData(key, previous);
     };
 
     return { settle, rollback };

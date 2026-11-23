@@ -2,15 +2,13 @@ import { useTranslation } from '@hatohui/i18n';
 import { Input, Label } from '@hatohui/ui';
 import { PRICE_PRESETS } from '../../constants/travel';
 import { useFormatEstimate } from '../../hooks/useFormatEstimate';
-import type { useRecommendationFields } from '../../hooks/useRecommendationFields';
+import type { PriceFields, SetPriceField } from '../../lib/priceFields';
 import CurrencySelect from './CurrencySelect';
 import PresetChip from './PresetChip';
 
-type FieldsApi = ReturnType<typeof useRecommendationFields>;
-
 interface Props {
-  fields: FieldsApi['fields'];
-  set: FieldsApi['set'];
+  fields: PriceFields;
+  set: SetPriceField;
 }
 
 function PriceRangeInput({ fields, set }: Props) {

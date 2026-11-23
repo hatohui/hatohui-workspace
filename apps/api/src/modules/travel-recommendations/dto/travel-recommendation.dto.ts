@@ -100,18 +100,12 @@ export class TravelPlaceSummaryDto {
   longitude!: number | null;
 }
 
-export class TravelRecommendationDto {
+export class TravelRecommendationDishDto {
   @ApiProperty()
   id!: string;
 
   @ApiProperty({ type: TravelDishSummaryDto })
   dish!: TravelDishSummaryDto;
-
-  @ApiProperty({ type: TravelPlaceSummaryDto })
-  place!: TravelPlaceSummaryDto;
-
-  @ApiProperty({ nullable: true, type: String })
-  note!: string | null;
 
   @ApiProperty({
     nullable: true,
@@ -135,6 +129,30 @@ export class TravelRecommendationDto {
   })
   priceLevel!: TravelPriceLevel | null;
 
+  @ApiProperty({
+    type: [String],
+    description: 'Allergen tag keys the dish contains, e.g. peanuts',
+  })
+  allergens!: string[];
+}
+
+export class TravelRecommendationDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty({ type: TravelPlaceSummaryDto })
+  place!: TravelPlaceSummaryDto;
+
+  @ApiProperty({
+    type: TravelRecommendationDishDto,
+    isArray: true,
+    description: 'Dishes worth ordering on this visit, in order',
+  })
+  dishes!: TravelRecommendationDishDto[];
+
+  @ApiProperty({ nullable: true, type: String })
+  note!: string | null;
+
   @ApiProperty({ example: 'VND' })
   currency!: string;
 
@@ -143,12 +161,6 @@ export class TravelRecommendationDto {
     description: 'Special tag keys, e.g. spicy, vegetarian, michelin',
   })
   specials!: string[];
-
-  @ApiProperty({
-    type: [String],
-    description: 'Allergen tag keys the dish contains, e.g. peanuts',
-  })
-  allergens!: string[];
 
   @ApiProperty({
     type: [String],

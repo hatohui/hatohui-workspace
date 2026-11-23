@@ -1,12 +1,12 @@
 import { useTranslation } from '@hatohui/i18n';
-import type { TravelRecommendationDto } from '@hatohui/models';
+import type { TravelRecommendationDishDto } from '@hatohui/models';
 import { useFormatEstimate } from '../../hooks/useFormatEstimate';
 import PriceLevelSymbol from './PriceLevelSymbol';
 
 type Price = Pick<
-  TravelRecommendationDto,
-  'priceMin' | 'priceMax' | 'priceLevel' | 'currency'
->;
+  TravelRecommendationDishDto,
+  'priceMin' | 'priceMax' | 'priceLevel'
+> & { currency: string };
 
 function PriceLabel({ price }: { price: Price }) {
   const { t } = useTranslation();
