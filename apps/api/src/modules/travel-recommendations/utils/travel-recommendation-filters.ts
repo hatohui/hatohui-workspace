@@ -3,63 +3,52 @@ import { travelCreatorFilter } from '@/modules/travel-recommendations/utils/trav
 import { travelAreaFilter } from '@/modules/travel-recommendations/utils/travel-place-area';
 import type { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
 
+const namedAny = (names: string[]) => ({
+  some: {
+    OR: names.map((name) => ({
+      name: { equals: name, mode: 'insensitive' as const },
+    })),
+  },
+});
+
 export function travelRecommendationWhere(
   query: TravelRecommendationQueryDto,
 ): Prisma.TravelRecommendationWhereInput {
   const and: Prisma.TravelRecommendationWhereInput[] = [
     ...(query.tags ?? []).map((key) => ({ tags: { some: { key } } })),
   ];
-  const excluded = [
-    ...(query.excludeAllergens ?? []),
-    ...(query.excludeTags ?? []),
-  ];
-  if (excluded.length) {
-    and.push({ tags: { none: { key: { in: excluded } } } });
+  if (query.excludeTags?.length) {
+    and.push({ tags: { none: { key: { in: query.excludeTags } } } });
   }
+  if (query.excludeAllergens?.length) {
+    and.push({
+      dishes: {
+        some: {
+          allergens: { none: { key: { in: query.excludeAllergens } } },
+        },
+      },
+    });
+  }
+  if (query.dishId) and.push({ dishes: { some: { dishId: query.dishId } } });
   const inArea = travelAreaFilter(query);
   if (inArea) and.push({ place: inArea });
   if (query.cuisines?.length) {
     and.push({
-      dish: {
-        cuisines: {
-          some: {
-            OR: query.cuisines.map((name) => ({
-              name: { equals: name, mode: 'insensitive' as const },
-            })),
-          },
-        },
-      },
+      dishes: { some: { dish: { cuisines: namedAny(query.cuisines) } } },
     });
   }
   if (query.foodCategories?.length) {
     and.push({
-      dish: {
-        categories: {
-          some: {
-            OR: query.foodCategories.map((name) => ({
-              name: { equals: name, mode: 'insensitive' as const },
-            })),
-          },
-        },
+      dishes: {
+        some: { dish: { categories: namedAny(query.foodCategories) } },
       },
     });
   }
   if (query.placeCategories?.length) {
-    and.push({
-      place: {
-        categories: {
-          some: {
-            OR: query.placeCategories.map((name) => ({
-              name: { equals: name, mode: 'insensitive' as const },
-            })),
-          },
-        },
-      },
-    });
+    and.push({ place: { categories: namedAny(query.placeCategories) } });
   }
 
   return {
-    dishId: query.dishId,
     placeId: query.placeId,
     createdBy: travelCreatorFilter(query.by),
     AND: and.length ? and : undefined,

@@ -1,5 +1,9 @@
 import type { Prisma, TravelTagKind } from '@prisma/client';
-import type { TravelRecommendationDto } from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
+import type {
+  TravelDishSummaryDto,
+  TravelRecommendationDto,
+} from '@/modules/travel-recommendations/dto/travel-recommendation.dto';
+import { travelAllergenTagsSelect } from '@/modules/travel-recommendations/utils/travel-allergen-keys';
 import {
   toTravelCreatorDto,
   travelCreatorSelect,
@@ -24,16 +28,27 @@ export const travelPlaceCategoryNamesSelect = {
   select: { name: true },
 } satisfies Prisma.TravelPlace$categoriesArgs;
 
+const travelDishSummarySelect = {
+  id: true,
+  name: true,
+  imageKey: true,
+  thumbnailKey: true,
+  previewKey: true,
+  cuisines: travelCuisineNamesSelect,
+  categories: travelFoodCategoryNamesSelect,
+} satisfies Prisma.TravelDishSelect;
+
+type TravelDishSummaryRow = Prisma.TravelDishGetPayload<{
+  select: typeof travelDishSummarySelect;
+}>;
+
 export const travelRecommendationInclude = {
-  dish: {
+  dishes: {
+    orderBy: { position: 'asc' },
     select: {
       id: true,
-      name: true,
-      imageKey: true,
-      thumbnailKey: true,
-      previewKey: true,
-      cuisines: travelCuisineNamesSelect,
-      categories: travelFoodCategoryNamesSelect,
+      dish: { select: travelDishSummarySelect },
+      allergens: travelAllergenTagsSelect,
     },
   },
   place: {
@@ -68,6 +83,22 @@ export type TravelRecommendationRow = Prisma.TravelRecommendationGetPayload<{
   include: typeof travelRecommendationInclude;
 }>;
 
+function toDishSummaryDto(
+  dish: TravelDishSummaryRow,
+  publicUrlOf: (key: string) => string,
+): TravelDishSummaryDto {
+  const imageUrl = dish.imageKey ? publicUrlOf(dish.imageKey) : null;
+  return {
+    id: dish.id,
+    name: dish.name,
+    cuisines: dish.cuisines.map((cuisine) => cuisine.name),
+    categories: dish.categories.map((category) => category.name),
+    imageUrl,
+    thumbnailUrl: dish.thumbnailKey ? publicUrlOf(dish.thumbnailKey) : imageUrl,
+    previewUrl: dish.previewKey ? publicUrlOf(dish.previewKey) : imageUrl,
+  };
+}
+
 export function toTravelRecommendationDto(
   row: TravelRecommendationRow,
   publicUrlOf: (key: string) => string,
@@ -77,35 +108,18 @@ export function toTravelRecommendationDto(
 
   return {
     id: row.id,
-    dish: {
-      id: row.dish.id,
-      name: row.dish.name,
-      cuisines: row.dish.cuisines.map((cuisine) => cuisine.name),
-      categories: row.dish.categories.map((category) => category.name),
-      imageUrl: row.dish.imageKey ? publicUrlOf(row.dish.imageKey) : null,
-      thumbnailUrl: row.dish.thumbnailKey
-        ? publicUrlOf(row.dish.thumbnailKey)
-        : row.dish.imageKey
-          ? publicUrlOf(row.dish.imageKey)
-          : null,
-      previewUrl: row.dish.previewKey
-        ? publicUrlOf(row.dish.previewKey)
-        : row.dish.imageKey
-          ? publicUrlOf(row.dish.imageKey)
-          : null,
-    },
     place: {
       ...row.place,
       categories: row.place.categories.map((category) => category.name),
       area: toTravelPlaceAreaDto(row.place.area),
     },
+    dishes: row.dishes.map((line) => ({
+      id: line.id,
+      dish: toDishSummaryDto(line.dish, publicUrlOf),
+      allergens: line.allergens.map((tag) => tag.key),
+    })),
     note: row.note,
-    priceMin: row.priceMin,
-    priceMax: row.priceMax,
-    priceLevel: row.priceLevel,
-    currency: row.currency,
     specials: tagsOf('SPECIAL'),
-    allergens: tagsOf('ALLERGEN'),
     tags: tagsOf('GENERAL'),
     images: row.images.map(
       ({ key, thumbnailKey, previewKey, createdById }) => ({

@@ -1,5 +1,6 @@
 import type {
   TravelDishDto,
+  TravelDishSummaryDto,
   TravelDishesParams,
   TravelImageDto,
   TravelPlaceAreaDto,
@@ -9,7 +10,11 @@ import type {
 } from '@hatohui/models';
 import { matchesSearch } from '@hatohui/tools';
 import type { PhotoItem } from '../hooks/usePhotoList';
-import type { RecommendationFields } from '../hooks/useRecommendationFields';
+import {
+  type DishLine,
+  type RecommendationFields,
+  pickedDishOf,
+} from '../hooks/useRecommendationFields';
 
 const OPTIMISTIC_PREFIX = 'optimistic:';
 
@@ -41,54 +46,50 @@ const toOptimisticImages = (photos: PhotoItem[]): TravelImageDto[] =>
     createdById: null,
   }));
 
+const dishSummaryOf = (line: DishLine): TravelDishSummaryDto =>
+  pickedDishOf(line) ?? {
+    id: `${OPTIMISTIC_PREFIX}dish:${line.key}`,
+    name: line.name.trim(),
+    cuisines: line.cuisines,
+    categories: line.foodCategories,
+    imageUrl: null,
+    thumbnailUrl: null,
+    previewUrl: null,
+  };
+
+export const lineAllergens = (lines: DishLine[]) => [
+  ...new Set(lines.flatMap((line) => line.allergens)),
+];
+
 export function buildOptimisticRecommendation(params: {
   id: string;
   existing?: TravelRecommendationDto;
   fields: RecommendationFields;
-  dish?: TravelDishDto;
+  lines: DishLine[];
   place?: TravelPlaceDto;
   area?: TravelPlaceAreaDto | null;
   photos: PhotoItem[];
 }): TravelRecommendationDto {
-  const { id, existing, fields, dish, place, area = null, photos } = params;
-  const images = toOptimisticImages(photos);
+  const { id, existing, fields, lines, place, area = null, photos } = params;
+  const dishes = lines.map((line) => ({
+    id: line.key,
+    dish: dishSummaryOf(line),
+    allergens: line.allergens,
+  }));
+  const shared = {
+    dishes,
+    note: fields.note || null,
+    specials: fields.specials,
+    tags: fields.tags,
+    images: toOptimisticImages(photos),
+  };
 
   if (existing) {
-    return {
-      ...existing,
-      place: {
-        ...existing.place,
-        area,
-      },
-      note: fields.note || null,
-      specials: fields.specials,
-      allergens: fields.allergens,
-      tags: fields.tags,
-      images,
-    };
+    return { ...existing, ...shared, place: { ...existing.place, area } };
   }
 
   return {
     id,
-    dish: dish
-      ? {
-          id: dish.id,
-          name: dish.name,
-          cuisines: dish.cuisines,
-          categories: dish.categories,
-          imageUrl: dish.coverImageUrl,
-          thumbnailUrl: dish.coverImageUrl,
-          previewUrl: dish.coverImageUrl,
-        }
-      : {
-          id: `${OPTIMISTIC_PREFIX}dish`,
-          name: fields.dishName.trim(),
-          cuisines: fields.cuisines,
-          categories: fields.foodCategories,
-          imageUrl: null,
-          thumbnailUrl: null,
-          previewUrl: null,
-        },
     place: place
       ? {
           id: place.id,
@@ -110,15 +111,7 @@ export function buildOptimisticRecommendation(params: {
           latitude: null,
           longitude: null,
         },
-    note: fields.note || null,
-    priceMin: null,
-    priceMax: null,
-    priceLevel: null,
-    currency: fields.currency,
-    specials: fields.specials,
-    allergens: fields.allergens,
-    tags: fields.tags,
-    images,
+    ...shared,
     createdBy: null,
     createdAt: new Date().toISOString(),
   };
@@ -126,12 +119,12 @@ export function buildOptimisticRecommendation(params: {
 
 export function buildOptimisticDish(params: {
   id: string;
-  fields: RecommendationFields;
+  line: DishLine;
   area: TravelPlaceAreaDto | null;
   coverImageUrl: string | null;
   queryParams?: TravelDishesParams;
 }): TravelDishDto {
-  const { id, fields, area, coverImageUrl, queryParams } = params;
+  const { id, line, area, coverImageUrl, queryParams } = params;
   const hasLocation = Boolean(queryParams?.areaId || queryParams?.countryId);
   const localPlaceCount = hasLocation
     ? areaMatchesLocation(area, queryParams)
@@ -141,11 +134,11 @@ export function buildOptimisticDish(params: {
 
   return {
     id,
-    name: fields.dishName.trim(),
-    cuisines: fields.cuisines,
-    categories: fields.foodCategories,
+    name: line.name.trim(),
+    cuisines: line.cuisines,
+    categories: line.foodCategories,
     description: null,
-    allergens: fields.allergens,
+    allergens: line.allergens,
     placeCount: 1,
     localPlaceCount,
     imageKey: null,
@@ -161,10 +154,11 @@ export function buildOptimisticDish(params: {
 export function buildOptimisticPlace(params: {
   id: string;
   fields: RecommendationFields;
+  lines: DishLine[];
   area: TravelPlaceAreaDto | null;
   coverImageUrl: string | null;
 }): TravelPlaceDto {
-  const { id, fields, area, coverImageUrl } = params;
+  const { id, fields, lines, area, coverImageUrl } = params;
   return {
     id,
     name: fields.placeName.trim(),
@@ -175,8 +169,8 @@ export function buildOptimisticPlace(params: {
     latitude: null,
     longitude: null,
     note: null,
-    allergens: fields.allergens,
-    dishCount: 1,
+    allergens: lineAllergens(lines),
+    dishCount: lines.length,
     coverImageUrl,
     createdBy: null,
     createdAt: new Date().toISOString(),
@@ -185,12 +179,12 @@ export function buildOptimisticPlace(params: {
 
 export function shouldPrependToQuery(
   queryKey: readonly unknown[],
-  dishId?: string,
+  dishIds: string[],
   placeId?: string,
 ): boolean {
   const params = queryKey[1] as TravelRecommendationsParams | undefined;
   if (!params) return true;
-  if (params.dishId && params.dishId !== dishId) return false;
+  if (params.dishId && !dishIds.includes(params.dishId)) return false;
   if (params.placeId && params.placeId !== placeId) return false;
   return true;
 }

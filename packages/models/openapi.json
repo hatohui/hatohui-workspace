@@ -1964,7 +1964,8 @@
                 "TRAVEL_EVENT_THUMBNAIL",
                 "TRAVEL_GROUP_IMAGE_THUMBNAIL",
                 "TRAVEL_ACTIVITY_IMAGE_THUMBNAIL",
-                "TRAVEL_ACTIVITY_MEDIA_THUMBNAIL"
+                "TRAVEL_ACTIVITY_MEDIA_THUMBNAIL",
+                "TRAVEL_SPOT_IMAGE_THUMBNAIL"
               ]
             }
           }
@@ -4368,6 +4369,507 @@
           }
         },
         "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/spots": {
+      "get": {
+        "operationId": "travelSpots",
+        "parameters": [
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "relevance keeps local and search-matched entries first; popular ranks by recommendation count",
+            "schema": {
+              "$ref": "#/components/schemas/TravelCatalogSort"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name, category, address, note, or area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "spotCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only spots tagged with any of these spot categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "by",
+            "required": false,
+            "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Only spots having every listed tag key",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeTags",
+            "required": false,
+            "in": "query",
+            "description": "Only spots having none of these tag keys",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelSpotDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every activity spot",
+        "tags": [
+          "travel"
+        ]
+      },
+      "post": {
+        "operationId": "createTravelSpot",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelSpotDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelSpotDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/spots/page": {
+      "get": {
+        "operationId": "travelSpotsPage",
+        "parameters": [
+          {
+            "name": "sort",
+            "required": false,
+            "in": "query",
+            "description": "relevance keeps local and search-matched entries first; popular ranks by recommendation count",
+            "schema": {
+              "$ref": "#/components/schemas/TravelCatalogSort"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Match name, category, address, note, or area",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "spotCategories",
+            "required": false,
+            "in": "query",
+            "description": "Only spots tagged with any of these spot categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "by",
+            "required": false,
+            "in": "query",
+            "description": "Only entries added by this @handle",
+            "schema": {
+              "example": "hatohui",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tags",
+            "required": false,
+            "in": "query",
+            "description": "Only spots having every listed tag key",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "excludeTags",
+            "required": false,
+            "in": "query",
+            "description": "Only spots having none of these tag keys",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "areaId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 16,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTravelSpotsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Paginated activity spots",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/spots/{id}": {
+      "get": {
+        "operationId": "travelSpot",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelSpotDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "An activity spot with its photos, tags, and location",
+        "tags": [
+          "travel"
+        ]
+      },
+      "patch": {
+        "operationId": "updateTravelSpot",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelSpotDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelSpotDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelSpot",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete an activity spot and its photos",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/spots/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelSpots",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateTravelSpotsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several activity spots by name or Google Maps link",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/spot-categories": {
+      "get": {
+        "operationId": "travelSpotCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TravelSpotCategoryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Every spot category, for suggestions and filters",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/spot-categories/bulk": {
+      "post": {
+        "operationId": "bulkCreateTravelSpotCategories",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TravelBulkNamesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelBulkResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add several spot categories by name",
+        "tags": [
+          "travel"
+        ]
+      }
+    },
+    "/travel/spot-categories/{id}": {
+      "patch": {
+        "operationId": "updateTravelSpotCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelSpotCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelSpotCategoryDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "travel"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteTravelSpotCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a spot category; spots keep their other categories",
         "tags": [
           "travel"
         ]
@@ -11114,7 +11616,8 @@
               "TRAVEL_EVENT_THUMBNAIL",
               "TRAVEL_GROUP_IMAGE_THUMBNAIL",
               "TRAVEL_ACTIVITY_IMAGE_THUMBNAIL",
-              "TRAVEL_ACTIVITY_MEDIA_THUMBNAIL"
+              "TRAVEL_ACTIVITY_MEDIA_THUMBNAIL",
+              "TRAVEL_SPOT_IMAGE_THUMBNAIL"
             ],
             "nullable": true,
             "example": null
@@ -11761,57 +12264,6 @@
           "lastBatchErrors"
         ]
       },
-      "TravelDishSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "example": "Egg coffee"
-          },
-          "cuisines": {
-            "example": [
-              "Vietnamese"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "categories": {
-            "example": [
-              "Coffee"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "imageUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "thumbnailUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "previewUrl": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "cuisines",
-          "categories",
-          "imageUrl",
-          "thumbnailUrl",
-          "previewUrl"
-        ]
-      },
       "TravelPlaceAreaDto": {
         "type": "object",
         "properties": {
@@ -11893,14 +12345,79 @@
           "longitude"
         ]
       },
-      "TravelPriceLevel": {
-        "type": "string",
-        "enum": [
-          "LOW",
-          "MID",
-          "HIGH"
-        ],
-        "description": "Rough price level when no amount is known"
+      "TravelDishSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Egg coffee"
+          },
+          "cuisines": {
+            "example": [
+              "Vietnamese"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categories": {
+            "example": [
+              "Coffee"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "previewUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "cuisines",
+          "categories",
+          "imageUrl",
+          "thumbnailUrl",
+          "previewUrl"
+        ]
+      },
+      "TravelRecommendationDishDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dish": {
+            "$ref": "#/components/schemas/TravelDishSummaryDto"
+          },
+          "allergens": {
+            "description": "Allergen tag keys the dish contains, e.g. peanuts",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "dish",
+          "allergens"
+        ]
       },
       "TravelImageDto": {
         "type": "object",
@@ -11940,48 +12457,22 @@
           "id": {
             "type": "string"
           },
-          "dish": {
-            "$ref": "#/components/schemas/TravelDishSummaryDto"
-          },
           "place": {
             "$ref": "#/components/schemas/TravelPlaceSummaryDto"
+          },
+          "dishes": {
+            "description": "Dishes worth ordering at this place, in order",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDishDto"
+            }
           },
           "note": {
             "type": "string",
             "nullable": true
           },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "description": "Lowest price per person, in currency units"
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "description": "Highest price per person; equal to priceMin for one price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "description": "Rough price level when no amount is known",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
-          },
-          "currency": {
-            "type": "string",
-            "example": "VND"
-          },
           "specials": {
             "description": "Special tag keys, e.g. spicy, vegetarian, michelin",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys the dish contains, e.g. peanuts",
             "type": "array",
             "items": {
               "type": "string"
@@ -12016,15 +12507,10 @@
         },
         "required": [
           "id",
-          "dish",
           "place",
+          "dishes",
           "note",
-          "priceMin",
-          "priceMax",
-          "priceLevel",
-          "currency",
           "specials",
-          "allergens",
           "tags",
           "images",
           "createdBy",
@@ -12342,7 +12828,7 @@
           "name"
         ]
       },
-      "CreateTravelRecommendationDto": {
+      "TravelRecommendationDishInputDto": {
         "type": "object",
         "properties": {
           "dishId": {
@@ -12370,6 +12856,18 @@
               "type": "string"
             }
           },
+          "allergens": {
+            "description": "Allergen tag keys or names this dish contains",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateTravelRecommendationDto": {
+        "type": "object",
+        "properties": {
           "placeId": {
             "type": "string",
             "description": "An existing place"
@@ -12382,48 +12880,20 @@
               }
             ]
           },
+          "dishes": {
+            "maxItems": 30,
+            "description": "Dishes worth ordering at this place, in order",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDishInputDto"
+            }
+          },
           "note": {
             "type": "string",
             "maxLength": 2000
           },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0,
-            "description": "Leave equal to priceMin, or empty, for a single price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "VND",
-              "USD",
-              "JPY",
-              "EUR",
-              "THB"
-            ]
-          },
           "specials": {
             "description": "Special tag keys or names (e.g. spicy, vegetarian, michelin)",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys or names",
             "type": "array",
             "items": {
               "type": "string"
@@ -12444,61 +12914,32 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "dishes"
+        ]
       },
       "UpdateTravelRecommendationDto": {
         "type": "object",
         "properties": {
-          "dishId": {
-            "type": "string",
-            "description": "An existing dish"
-          },
           "placeId": {
             "type": "string",
             "description": "An existing place"
+          },
+          "dishes": {
+            "maxItems": 30,
+            "description": "Dishes worth ordering at this place, in order",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRecommendationDishInputDto"
+            }
           },
           "note": {
             "type": "string",
             "maxLength": 2000
           },
-          "priceMin": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0
-          },
-          "priceMax": {
-            "type": "number",
-            "nullable": true,
-            "minimum": 0,
-            "description": "Leave equal to priceMin, or empty, for a single price"
-          },
-          "priceLevel": {
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TravelPriceLevel"
-              }
-            ]
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "VND",
-              "USD",
-              "JPY",
-              "EUR",
-              "THB"
-            ]
-          },
           "specials": {
             "description": "Special tag keys or names (e.g. spicy, vegetarian, michelin)",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "allergens": {
-            "description": "Allergen tag keys or names",
             "type": "array",
             "items": {
               "type": "string"
@@ -13003,6 +13444,15 @@
               }
             ]
           },
+          "spot": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelActivityPlaceDto"
+              }
+            ]
+          },
           "location": {
             "type": "string",
             "nullable": true
@@ -13095,6 +13545,9 @@
           "placeId": {
             "type": "string"
           },
+          "spotId": {
+            "type": "string"
+          },
           "location": {
             "type": "string",
             "maxLength": 200
@@ -13144,6 +13597,10 @@
             "type": "string",
             "nullable": true
           },
+          "spotId": {
+            "type": "string",
+            "nullable": true
+          },
           "location": {
             "type": "string",
             "nullable": true,
@@ -13188,6 +13645,335 @@
         "required": [
           "key"
         ]
+      },
+      "TravelSpotDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "21Grams Vegetarian"
+          },
+          "area": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelPlaceAreaDto"
+              }
+            ]
+          },
+          "categories": {
+            "example": [
+              "Buffet"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "specials": {
+            "description": "Special tag keys, e.g. must-visit, free-entry",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "description": "General tag keys, e.g. outdoor, museum, family-friendly",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelImageDto"
+            }
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TravelCreatorDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "area",
+          "categories",
+          "address",
+          "mapsUrl",
+          "latitude",
+          "longitude",
+          "note",
+          "specials",
+          "tags",
+          "images",
+          "coverImageUrl",
+          "createdBy",
+          "createdAt"
+        ]
+      },
+      "PaginatedTravelSpotsDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelSpotDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether another page can be requested"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "hasMore"
+        ]
+      },
+      "BulkCreateTravelSpotsDto": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "maxItems": 50,
+            "description": "Names to add; ones that already exist are skipped",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area for every new spot"
+          }
+        },
+        "required": [
+          "names"
+        ]
+      },
+      "CreateTravelSpotDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area the place is in; empty clears it"
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "categories": {
+            "maxItems": 6,
+            "description": "Location category tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "specials": {
+            "maxItems": 16,
+            "description": "Special tag keys or names, found or created",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "maxItems": 16,
+            "description": "General tag keys or names, found or created",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageKeys": {
+            "maxItems": 12,
+            "description": "Staged upload keys or existing spot image keys",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTravelSpotDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "areaId": {
+            "type": "string",
+            "description": "Area the place is in; empty clears it"
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "mapsUrl": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Google Maps link, short maps.app.goo.gl links included; coordinates are read from it when not given"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "categories": {
+            "maxItems": 6,
+            "description": "Location category tags, found or created by name",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "specials": {
+            "maxItems": 16,
+            "description": "Special tag keys or names, found or created",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "maxItems": 16,
+            "description": "General tag keys or names, found or created",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "imageKeys": {
+            "maxItems": 12,
+            "description": "Staged upload keys or existing spot image keys",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TravelSpotCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "example": "Museum"
+          },
+          "spotCount": {
+            "type": "number",
+            "description": "Spots grouped in this spot category"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "spotCount",
+          "createdAt"
+        ]
+      },
+      "UpdateTravelSpotCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          }
+        }
       },
       "AssetProcessStepDto": {
         "type": "object",

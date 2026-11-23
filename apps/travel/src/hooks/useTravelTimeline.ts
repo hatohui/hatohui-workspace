@@ -8,6 +8,7 @@ import {
   useDeleteTravelActivity,
   useTravelActivities,
   useTravelPlaces,
+  useTravelSpots,
   useUpdateTravelParticipationDates,
   type TravelActivityDto,
   type TravelParticipantMemberDto,
@@ -24,6 +25,8 @@ export interface TimelineItem {
   mapsUrl: string | null;
   placeId: string | null;
   placeName: string | null;
+  spotId: string | null;
+  spotName: string | null;
   note: string | null;
   flights: string[];
   involvedPeople: string[];
@@ -41,6 +44,7 @@ export function useTravelTimeline(
 
   const activitiesQuery = useTravelActivities(plan.id);
   const placesQuery = useTravelPlaces({});
+  const spotsQuery = useTravelSpots({});
   const createMutation = useCreateTravelActivity();
   const deleteMutation = useDeleteTravelActivity();
   const updateDatesMutation = useUpdateTravelParticipationDates();
@@ -88,6 +92,8 @@ export function useTravelTimeline(
         mapsUrl: null,
         placeId: null,
         placeName: null,
+        spotId: null,
+        spotName: null,
         note: null,
         flights: members
           .map((m) => m.entryFlight)
@@ -113,6 +119,8 @@ export function useTravelTimeline(
         mapsUrl: null,
         placeId: null,
         placeName: null,
+        spotId: null,
+        spotName: null,
         note: null,
         flights: members
           .map((m) => m.exitFlight)
@@ -135,6 +143,8 @@ export function useTravelTimeline(
           mapsUrl: plan.event.mapsUrl,
           placeId: null,
           placeName: null,
+          spotId: null,
+          spotName: null,
           note: null,
           flights: [],
           involvedPeople: [],
@@ -150,6 +160,8 @@ export function useTravelTimeline(
           mapsUrl: plan.event.mapsUrl,
           placeId: null,
           placeName: null,
+          spotId: null,
+          spotName: null,
           note: null,
           flights: [],
           involvedPeople: [],
@@ -165,10 +177,12 @@ export function useTravelTimeline(
         title: act.name,
         from: act.from,
         to: act.to,
-        location: act.location ?? act.place?.name ?? null,
-        mapsUrl: act.mapsUrl ?? act.place?.mapsUrl ?? null,
+        location: act.location ?? act.spot?.name ?? act.place?.name ?? null,
+        mapsUrl: act.mapsUrl ?? act.spot?.mapsUrl ?? act.place?.mapsUrl ?? null,
         placeId: act.place?.id ?? null,
         placeName: act.place?.name ?? null,
+        spotId: act.spot?.id ?? null,
+        spotName: act.spot?.name ?? null,
         note: act.note,
         flights: [],
         involvedPeople: act.involvedPeople,
@@ -216,6 +230,7 @@ export function useTravelTimeline(
     from: string;
     to: string;
     placeId?: string;
+    spotId?: string;
     location?: string;
     mapsUrl?: string;
     note?: string;
@@ -259,6 +274,7 @@ export function useTravelTimeline(
     visibleItems,
     upcomingItems,
     places: placesQuery.data?.data ?? [],
+    spots: spotsQuery.data?.data ?? [],
     isLoading: activitiesQuery.isLoading,
     search,
     setSearch,

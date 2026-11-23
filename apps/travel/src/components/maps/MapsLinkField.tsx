@@ -15,7 +15,7 @@ interface Props {
 
 function MapsLinkField({ id, url, placeName, onUrlChange, onUseName }: Props) {
   const { t } = useTranslation();
-  const preview = useMapsLinkPreview(url, placeName);
+  const preview = useMapsLinkPreview(url, placeName, onUseName);
 
   return (
     <div className="space-y-2">

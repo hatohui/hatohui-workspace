@@ -74,6 +74,9 @@ export class TravelActivityDto {
   @ApiPropertyOptional({ type: TravelActivityPlaceDto, nullable: true })
   place!: TravelActivityPlaceDto | null;
 
+  @ApiPropertyOptional({ type: TravelActivityPlaceDto, nullable: true })
+  spot!: TravelActivityPlaceDto | null;
+
   @ApiPropertyOptional({ type: String, nullable: true })
   location!: string | null;
 
@@ -140,6 +143,11 @@ export class CreateTravelActivityDto {
   @IsString()
   placeId?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  spotId?: string;
+
   @ApiPropertyOptional({ maxLength: 200 })
   @IsOptional()
   @IsString()
@@ -197,6 +205,11 @@ export class UpdateTravelActivityDto {
   @IsOptional()
   @IsString()
   placeId?: string | null;
+
+  @ApiPropertyOptional({ type: String, nullable: true })
+  @IsOptional()
+  @IsString()
+  spotId?: string | null;
 
   @ApiPropertyOptional({ type: String, nullable: true, maxLength: 200 })
   @IsOptional()

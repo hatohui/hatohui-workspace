@@ -51,10 +51,10 @@ const dishInclude = {
   cuisines: travelCuisineNamesSelect,
   categories: travelFoodCategoryNamesSelect,
   createdBy: { select: travelCreatorSelect },
-  _count: { select: { recommendations: true } },
-  recommendations: {
+  _count: { select: { recommendationDishes: true } },
+  recommendationDishes: {
     select: {
-      tags: travelAllergenTagsSelect,
+      allergens: travelAllergenTagsSelect,
       place: {
         select: { areaId: true, area: { select: { countryId: true } } },
       },
@@ -63,7 +63,7 @@ const dishInclude = {
 } satisfies Prisma.TravelDishInclude;
 
 type DishRow = Prisma.TravelDishGetPayload<{ include: typeof dishInclude }>;
-type DishPlace = DishRow['recommendations'][number]['place'];
+type DishPlace = DishRow['recommendationDishes'][number]['place'];
 
 interface LocationScope {
   cuisines: Prisma.TravelCuisineWhereInput;
@@ -94,7 +94,7 @@ export class TravelDishesService {
       and.push({
         OR: [
           { cuisines: { some: scope.cuisines } },
-          { recommendations: { some: { place: scope.where } } },
+          { recommendationDishes: { some: { place: scope.where } } },
         ],
       });
     }
@@ -122,7 +122,7 @@ export class TravelDishesService {
     }
     if (query.placeCategories?.length) {
       and.push({
-        recommendations: {
+        recommendationDishes: {
           some: {
             place: {
               categories: {
@@ -147,12 +147,16 @@ export class TravelDishesService {
       recAnd.push({ tags: { none: { key: { in: excludedTags } } } });
     }
     if (recAnd.length) {
-      and.push({ recommendations: { some: { AND: recAnd } } });
+      and.push({
+        recommendationDishes: { some: { recommendation: { AND: recAnd } } },
+      });
     }
     if (query.excludeAllergens?.length) {
       and.push({
-        recommendations: {
-          none: { tags: { some: { key: { in: query.excludeAllergens } } } },
+        recommendationDishes: {
+          none: {
+            allergens: { some: { key: { in: query.excludeAllergens } } },
+          },
         },
       });
     }
@@ -356,7 +360,11 @@ export class TravelDishesService {
       select: { imageKey: true, thumbnailKey: true, previewKey: true },
     });
     if (!existing) throw new NotFoundException('Dish not found');
-    const keys = await this.recommendations.imageKeysWhere({ dishId: id });
+    const orphanedVisits = {
+      dishes: { some: { dishId: id }, every: { dishId: id } },
+    } satisfies Prisma.TravelRecommendationWhereInput;
+    const keys = await this.recommendations.imageKeysWhere(orphanedVisits);
+    await this.db.travelRecommendation.deleteMany({ where: orphanedVisits });
     for (const key of [
       existing.imageKey,
       existing.thumbnailKey,
@@ -447,10 +455,11 @@ export class TravelDishesService {
       cuisines: row.cuisines.map((cuisine) => cuisine.name),
       categories: row.categories.map((category) => category.name),
       description: row.description,
-      allergens: uniqueAllergenKeys(row.recommendations),
-      placeCount: row._count.recommendations,
+      allergens: uniqueAllergenKeys(row.recommendationDishes),
+      placeCount: row._count.recommendationDishes,
       localPlaceCount: scope
-        ? row.recommendations.filter((rec) => scope.contains(rec.place)).length
+        ? row.recommendationDishes.filter((line) => scope.contains(line.place))
+            .length
         : null,
       imageKey: row.imageKey,
       imageUrl,

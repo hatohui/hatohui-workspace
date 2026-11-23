@@ -13,6 +13,8 @@ import PlaceCategoriesAdmin from '../../components/admin/PlaceCategoriesAdmin';
 import PlacesAdmin from '../../components/admin/PlacesAdmin';
 import PlansAdmin from '../../components/admin/PlansAdmin';
 import RecommendationsAdmin from '../../components/admin/RecommendationsAdmin';
+import SpotCategoriesAdmin from '../../components/admin/SpotCategoriesAdmin';
+import SpotsAdmin from '../../components/admin/SpotsAdmin';
 import TagsAdmin from '../../components/admin/TagsAdmin';
 import EmptyState from '../../components/shared/EmptyState';
 import { ADMIN_TABS } from '../../constants/admin';
@@ -26,6 +28,8 @@ const PANELS = {
   foodCategories: FoodCategoriesAdmin,
   places: PlacesAdmin,
   placeCategories: PlaceCategoriesAdmin,
+  spots: SpotsAdmin,
+  spotCategories: SpotCategoriesAdmin,
   cuisines: CuisinesAdmin,
   tags: TagsAdmin,
   events: EventsAdmin,

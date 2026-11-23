@@ -2,6 +2,7 @@
   "brand": "トラベル",
   "nav": {
     "food": "グルメ",
+    "spots": "スポット",
     "admin": "管理",
     "quickMenu": "クイックメニュー"
   },
@@ -43,7 +44,6 @@
     }
   },
   "recommendation": {
-    "noEstimate": "価格未登録",
     "addedBy": "{{name}} が追加",
     "photos_one": "写真 {{count}} 枚",
     "photos_other": "写真 {{count}} 枚",
@@ -54,8 +54,6 @@
     "deleteDescription": "{{place}} の {{dish}} とその写真が削除されます。料理とお店は残ります。",
     "previousPhoto": "前の写真",
     "nextPhoto": "次の写真",
-    "priceSingle": "約 {{price}}",
-    "priceRange": "{{min}} – {{max}}",
     "contains": "{{list}} を含む"
   },
   "form": {
@@ -66,10 +64,9 @@
     "dishHint": "一覧から選ぶか、新しい名前を入力してください。",
     "place": "お店",
     "placePlaceholder": "21Grams Vegetarian",
-    "placeHint": "保存済みのお店を選ぶか、新しく入力してください。",
+    "placeHint": "保存済みのお店を選ぶか、新しく入力するか、Google マップのリンクを貼り付けてください。",
     "mapsUrl": "Google マップのリンク",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "currency": "通貨",
     "note": "メモ",
     "notePlaceholder": "何を頼むか、いつ行くか、どこが良いか",
     "photos": "写真",
@@ -83,6 +80,7 @@
     "optional": "任意",
     "saveShortcut": "{{modifier}} + Enter で保存",
     "existing": "保存済み",
+    "searching": "検索中",
     "new": "新規",
     "duplicate": "このお店にはその料理のおすすめがすでにあります。",
     "cuisines": "ジャンル",
@@ -90,7 +88,6 @@
     "cuisineCreate": "「{{tag}}」を追加",
     "cuisineRemove": "{{tag}} を削除",
     "sectionDish": "料理とお店",
-    "sectionPrice": "価格",
     "sectionTags": "タグ",
     "diets": "食事制限",
     "dietsPlaceholder": "食事制限を検索・追加…",
@@ -100,11 +97,6 @@
     "otherTagsPlaceholder": "パン、肉、麺…",
     "tagCreate": "「{{tag}}」を追加",
     "tagRemove": "{{tag}}を削除",
-    "priceRange": "金額",
-    "priceLevel": "価格帯",
-    "priceFrom": "から",
-    "priceTo": "まで（任意）",
-    "priceLevelHint": "正確な価格がわからない場合は価格帯を選んでください。",
     "dropPhotos": "ここに写真をドロップ",
     "browsePhotos": "またはクリックして選択",
     "photosHint": "最大 {{count}} 枚。貼り付け・ドロップ・クリックで追加。1 枚目がカバー写真です。",
@@ -125,6 +117,10 @@
     "updatingPick": "{{place}} の {{dish}} を更新中…",
     "refreshingCatalog": "一覧を更新中…",
     "addedPick": "{{place}} の {{dish}} を追加しました",
+    "removeDish": "{{dish}}を削除",
+    "dishNumber": "料理 {{number}}",
+    "dishCount_other": "{{count}}品",
+    "addDish": "料理を追加",
     "updatedPick": "{{place}} の {{dish}} を更新しました",
     "savingItem": "{{name}} を保存中…",
     "savedItem": "{{name}} を保存しました",
@@ -143,6 +139,8 @@
     "foodCategoriesPlaceholder": "コーヒー、麺類、デザート…",
     "placeCategories": "お店カテゴリー",
     "placeCategoriesPlaceholder": "ビュッフェ、セルフサービス、セルフ選択…",
+    "spotCategories": "スポットカテゴリー",
+    "spotCategoriesPlaceholder": "美術館、公園、ナイトライフ、ショッピング…",
     "categoryCreate": "「{{tag}}」を追加",
     "categoryRemove": "{{tag}} を削除"
   },
@@ -190,14 +188,34 @@
     "deleteDescription": "{{name}} とそこでのおすすめがすべて削除されます。",
     "mapTitle": "{{name}} の地図"
   },
+  "spots": {
+    "back": "スポット一覧",
+    "title": "アクティビティスポット",
+    "subtitle": "訪れるべきおすすめの場所・観光・遊び場。",
+    "searchPlaceholder": "スポット、カテゴリー、タグ、都市を検索",
+    "add": "スポットを追加",
+    "createTitle": "スポットを追加",
+    "editTitle": "スポットを編集",
+    "name": "スポット名",
+    "namePlaceholder": "ベンタイン市場",
+    "address": "住所",
+    "addressPlaceholder": "住所または目印",
+    "note": "メモ・ポイント",
+    "notePlaceholder": "おすすめの時間帯、チケット情報、見どころ",
+    "empty": "まだスポットがありません。",
+    "emptyFiltered": "条件に合うスポットがありません。",
+    "spotTotal_one": "{{count}} スポット",
+    "spotTotal_other": "{{count}} スポット",
+    "noLocation": "場所未登録",
+    "pinnedOnMap": "地図にピン留め済み",
+    "deleteTitle": "このスポットを削除しますか？",
+    "deleteDescription": "{{name}} とその写真が削除されます。",
+    "mapTitle": "{{name}} の地図",
+    "popular": "写真が多い順"
+  },
   "notFound": {
     "title": "ページが見つかりません",
     "back": "グルメカタログに戻る"
-  },
-  "priceLevel": {
-    "LOW": "安い",
-    "MID": "普通",
-    "HIGH": "高い"
   },
   "allergen": {
     "peanuts": "落花生",
@@ -229,6 +247,7 @@
     "title": "絞り込み",
     "foodCategories": "料理カテゴリー",
     "placeCategories": "お店カテゴリー",
+    "spotCategories": "スポットカテゴリー",
     "special": "特徴",
     "specialHint": "1回で含める・2回で除外",
     "stateIncluded": "{{label}} を含む（クリックで除外）",
@@ -249,6 +268,7 @@
     "code": "コード",
     "areas": "エリア",
     "places": "お店",
+    "spots": "スポット",
     "dishes": "料理",
     "kind": "種類",
     "uses": "使用数",
@@ -260,6 +280,8 @@
       "foodCategories": "料理カテゴリー",
       "places": "お店",
       "placeCategories": "お店カテゴリー",
+      "spots": "スポット",
+      "spotCategories": "スポットカテゴリー",
       "cuisines": "ジャンル",
       "tags": "タグ"
     },
@@ -274,6 +296,8 @@
     "addFoodCategories": "料理カテゴリーを追加（カンマ区切り）",
     "addPlaces": "お店または Google マップのリンクを追加（カンマ区切り）",
     "addPlaceCategories": "お店カテゴリーを追加（カンマ区切り）",
+    "addSpots": "スポットまたは Google マップのリンクを追加（カンマ区切り）",
+    "addSpotCategories": "スポットカテゴリーを追加（カンマ区切り）",
     "addCuisines": "ジャンルを追加（カンマ区切り）",
     "addTags": "タグを追加（カンマ区切り）",
     "bulkResult": "{{created}} 件追加、{{skipped}} 件スキップ",
@@ -284,6 +308,8 @@
     "deleteFoodCategory": "料理からこのカテゴリーが外れます。",
     "deletePlace": "このお店のおすすめと写真がすべて削除されます。",
     "deletePlaceCategory": "お店からこのカテゴリーが外れます。",
+    "deleteSpot": "このスポットと写真がすべて削除されます。",
+    "deleteSpotCategory": "スポットからこのカテゴリーが外れます。",
     "deleteCuisine": "料理からこのジャンルが外れます。",
     "deleteTag": "おすすめからこのタグが外れます。",
     "searchPlaceholder": "行を検索",
@@ -340,5 +366,15 @@
   "overview": {
     "browseFoodTitle": "料理とお店を探す",
     "browseFoodBody": "料理から食べられるお店を、お店から頼むべき料理を探そう。"
+  },
+  "plans": {
+    "timeline": {
+      "form": {
+        "place": "保存済みスポットまたは飲食店（任意）",
+        "noPlace": "カスタム場所",
+        "spotGroup": "アクティビティスポット",
+        "foodPlaceGroup": "飲食店"
+      }
+    }
   }
 }

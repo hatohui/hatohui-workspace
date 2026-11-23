@@ -17,6 +17,8 @@ export interface TravelActivityDto {
   /** @nullable */
   place?: TravelActivityPlaceDto | null;
   /** @nullable */
+  spot?: TravelActivityPlaceDto | null;
+  /** @nullable */
   location?: string | null;
   /** @nullable */
   mapsUrl?: string | null;

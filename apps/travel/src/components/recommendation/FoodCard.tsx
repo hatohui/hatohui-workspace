@@ -1,27 +1,42 @@
-import type { TravelRecommendationDto } from '@hatohui/models';
+import type {
+  TravelRecommendationDishDto,
+  TravelRecommendationDto,
+} from '@hatohui/models';
 import { cn } from '@hatohui/ui';
 import { useMyAllergies } from '../../hooks/useMyAllergies';
 import { formatPlaceLocation } from '../../lib/formatPlaceLocation';
 import { isOptimisticId } from '../../lib/optimistic';
+import {
+  recommendationAllergenKeys,
+  recommendationDishNames,
+} from '../../lib/recommendationView';
 import ImageFrame from '../shared/ImageFrame';
 import OptimisticBadge from '../shared/OptimisticBadge';
 
 interface Props {
   recommendation: TravelRecommendationDto;
+  line?: TravelRecommendationDishDto;
   labelMode?: 'dish' | 'place' | 'both';
   onOpen: () => void;
 }
 
-function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
+function FoodCard({
+  recommendation: rec,
+  line,
+  labelMode = 'dish',
+  onOpen,
+}: Props) {
   const { cautionFor } = useMyAllergies();
   const isOptimistic = isOptimisticId(rec.id);
-  const title = labelMode === 'place' ? rec.place.name : rec.dish.name;
+  const dishLabel = line?.dish.name ?? recommendationDishNames(rec);
+  const title = labelMode === 'place' ? rec.place.name : dishLabel;
   const sublabel =
     labelMode === 'place'
       ? formatPlaceLocation(rec.place)
       : labelMode === 'both'
         ? rec.place.name
         : '';
+  const dish = line?.dish ?? rec.dishes[0]?.dish;
 
   return (
     <button
@@ -39,13 +54,15 @@ function FoodCard({ recommendation: rec, labelMode = 'dish', onOpen }: Props) {
           src={
             rec.images[0]?.thumbnailUrl ??
             rec.images[0]?.url ??
-            rec.dish.thumbnailUrl ??
-            rec.dish.imageUrl ??
+            dish?.thumbnailUrl ??
+            dish?.imageUrl ??
             null
           }
           alt={title}
           square
-          caution={cautionFor(rec.allergens)}
+          caution={cautionFor(
+            line?.allergens ?? recommendationAllergenKeys(rec),
+          )}
         />
         {isOptimistic && <OptimisticBadge />}
       </div>

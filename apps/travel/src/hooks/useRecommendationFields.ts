@@ -1,56 +1,68 @@
 import { useState } from 'react';
 import type {
-  TravelPriceLevel,
+  TravelDishSummaryDto,
   TravelRecommendationDto,
 } from '@hatohui/models';
-import {
-  DEFAULT_CURRENCY,
-  type Currency,
-  type PriceMode,
-} from '../constants/travel';
+import { sameCatalogName } from '../lib/catalogName';
 
-export interface RecommendationFields {
-  dishName: string;
+export interface DishLine {
+  key: string;
+  name: string;
+  picked: TravelDishSummaryDto | null;
   cuisines: string[];
   foodCategories: string[];
+  allergens: string[];
+}
+
+export interface RecommendationFields {
   placeName: string;
   placeCategories: string[];
   areaId: string;
   mapsUrl: string;
-  priceMode: PriceMode;
-  priceMin: string;
-  priceMax: string;
-  priceLevel: TravelPriceLevel | null;
-  currency: Currency;
   note: string;
   specials: string[];
-  allergens: string[];
   tags: string[];
 }
 
-const amount = (value: number | null | undefined) =>
-  value == null ? '' : String(value);
+export const pickedDishOf = (line: DishLine) =>
+  line.picked && sameCatalogName(line.picked.name, line.name)
+    ? line.picked
+    : null;
+
+export const emptyDishLine = (name = ''): DishLine => ({
+  key: crypto.randomUUID(),
+  name,
+  picked: null,
+  cuisines: [],
+  foodCategories: [],
+  allergens: [],
+});
+
+const linesFrom = (
+  rec?: TravelRecommendationDto,
+  initialDishName?: string,
+): DishLine[] =>
+  rec
+    ? rec.dishes.map((line) => ({
+        key: line.id,
+        name: line.dish.name,
+        picked: line.dish,
+        cuisines: line.dish.cuisines,
+        foodCategories: line.dish.categories,
+        allergens: line.allergens,
+      }))
+    : [emptyDishLine(initialDishName)];
 
 const fieldsFrom = (
   rec?: TravelRecommendationDto,
   defaultAreaId?: string,
-  initialDishName?: string,
 ): RecommendationFields => ({
-  dishName: rec?.dish.name ?? initialDishName ?? '',
-  cuisines: rec?.dish.cuisines ?? [],
-  foodCategories: rec?.dish.categories ?? [],
   placeName: rec?.place.name ?? '',
   placeCategories: rec?.place.categories ?? [],
   areaId: rec?.place.area?.id ?? defaultAreaId ?? '',
   mapsUrl: rec?.place.mapsUrl ?? '',
-  priceMode: rec?.priceLevel && rec.priceMin == null ? 'level' : 'range',
-  priceMin: amount(rec?.priceMin),
-  priceMax: rec?.priceMax === rec?.priceMin ? '' : amount(rec?.priceMax),
-  priceLevel: rec?.priceLevel ?? null,
-  currency: (rec?.currency as Currency | undefined) ?? DEFAULT_CURRENCY,
   note: rec?.note ?? '',
   specials: rec?.specials ?? [],
-  allergens: rec?.allergens ?? [],
   tags: rec?.tags ?? [],
 });
 
@@ -59,23 +71,30 @@ export function useRecommendationFields(
   defaultAreaId?: string,
   initialDishName?: string,
 ) {
-  const [fields, setFields] = useState(() =>
-    fieldsFrom(rec, defaultAreaId, initialDishName),
-  );
+  const [fields, setFields] = useState(() => fieldsFrom(rec, defaultAreaId));
+  const [lines, setLines] = useState(() => linesFrom(rec, initialDishName));
+
   const set = <K extends keyof RecommendationFields>(
     key: K,
     value: RecommendationFields[K],
   ) => setFields((current) => ({ ...current, [key]: value }));
-  const toggle = <K extends 'allergens'>(
-    key: K,
-    tag: RecommendationFields[K][number],
-  ) =>
-    setFields((current) => {
-      const list = current[key] as string[];
-      const next = list.includes(tag)
-        ? list.filter((item) => item !== tag)
-        : [...list, tag];
-      return { ...current, [key]: next };
-    });
-  return { fields, set, toggle };
+
+  const updateLine = (key: string, patch: Partial<DishLine>) =>
+    setLines((current) =>
+      current.map((line) => (line.key === key ? { ...line, ...patch } : line)),
+    );
+
+  return {
+    fields,
+    set,
+    lines,
+    updateLine,
+    addLine: () => setLines((current) => [...current, emptyDishLine()]),
+    removeLine: (key: string) =>
+      setLines((current) =>
+        current.length > 1
+          ? current.filter((line) => line.key !== key)
+          : [emptyDishLine()],
+      ),
+  };
 }

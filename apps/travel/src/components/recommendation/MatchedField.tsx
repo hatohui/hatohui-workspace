@@ -1,4 +1,3 @@
-import { useTranslation } from '@hatohui/i18n';
 import { Input, Label, cn } from '@hatohui/ui';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -6,23 +5,25 @@ import {
   type SearchSuggestion,
 } from '../../hooks/useSearchSuggest';
 import SearchHighlight from '../shared/SearchHighlight';
+import MatchBadge from './MatchBadge';
 
 interface Props {
   id: string;
   label: string;
-  hint: string;
+  hint?: string;
   placeholder: string;
   value: string;
   options: SearchSuggestion[];
   fallbackIcon: LucideIcon;
   isMatched: boolean;
+  isSearching: boolean;
   disabled: boolean;
+  required?: boolean;
   onChange: (value: string) => void;
   onSelect?: (suggestion: SearchSuggestion) => void;
 }
 
 function MatchedField(props: Props) {
-  const { t } = useTranslation();
   const FallbackIcon = props.fallbackIcon;
   const hasValue = props.value.trim() !== '';
   const suggest = useSearchSuggest({
@@ -42,16 +43,10 @@ function MatchedField(props: Props) {
       <div className="flex h-3.5 items-center justify-between gap-2">
         <Label htmlFor={props.id}>{props.label}</Label>
         {hasValue && !props.disabled && (
-          <span
-            className={cn(
-              'rounded-full px-2 py-0.5 text-xs',
-              props.isMatched
-                ? 'bg-secondary text-muted-foreground'
-                : 'bg-primary/15 text-[#8f4429] dark:bg-primary/25 dark:text-[#e9a487]',
-            )}
-          >
-            {t(props.isMatched ? 'form.existing' : 'form.new')}
-          </span>
+          <MatchBadge
+            isMatched={props.isMatched}
+            isSearching={props.isSearching}
+          />
         )}
       </div>
       <div className="relative">
@@ -61,7 +56,7 @@ function MatchedField(props: Props) {
           aria-expanded={suggest.shown}
           aria-controls={suggest.listId}
           aria-autocomplete="list"
-          required
+          required={props.required ?? true}
           value={props.value}
           disabled={props.disabled}
           placeholder={props.placeholder}
@@ -128,7 +123,7 @@ function MatchedField(props: Props) {
           </div>
         )}
       </div>
-      {!props.disabled && (
+      {!props.disabled && props.hint && (
         <p className="text-xs text-muted-foreground">{props.hint}</p>
       )}
     </div>

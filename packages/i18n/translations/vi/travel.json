@@ -2,6 +2,7 @@
   "brand": "Du lịch",
   "nav": {
     "food": "Món ngon",
+    "spots": "Điểm đến",
     "admin": "Quản trị",
     "quickMenu": "Menu nhanh"
   },
@@ -44,7 +45,6 @@
     }
   },
   "recommendation": {
-    "noEstimate": "Chưa có giá",
     "addedBy": "Thêm bởi {{name}}",
     "photos_one": "{{count}} ảnh",
     "photos_other": "{{count}} ảnh",
@@ -55,8 +55,6 @@
     "deleteDescription": "{{dish}} tại {{place}} và ảnh của nó sẽ bị xóa. Món ăn và địa điểm vẫn được giữ lại.",
     "previousPhoto": "Ảnh trước",
     "nextPhoto": "Ảnh sau",
-    "priceSingle": "Khoảng {{price}}",
-    "priceRange": "{{min}} – {{max}}",
     "contains": "Có chứa {{list}}"
   },
   "form": {
@@ -67,10 +65,9 @@
     "dishHint": "Chọn từ danh sách hoặc nhập tên mới.",
     "place": "Địa điểm",
     "placePlaceholder": "21Grams Vegetarian",
-    "placeHint": "Chọn địa điểm đã lưu hoặc nhập địa điểm mới.",
+    "placeHint": "Chọn địa điểm đã lưu, nhập địa điểm mới hoặc dán link Google Maps.",
     "mapsUrl": "Link Google Maps",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "currency": "Tiền tệ",
     "note": "Ghi chú",
     "notePlaceholder": "Nên gọi gì, đi lúc nào, điều gì làm nó ngon",
     "photos": "Ảnh",
@@ -84,6 +81,7 @@
     "optional": "Không bắt buộc",
     "saveShortcut": "{{modifier}} + Enter để lưu",
     "existing": "Đã lưu",
+    "searching": "Đang tìm",
     "new": "Mới",
     "duplicate": "Địa điểm này đã có gợi ý cho món đó.",
     "cuisines": "Ẩm thực",
@@ -91,7 +89,6 @@
     "cuisineCreate": "Thêm \"{{tag}}\"",
     "cuisineRemove": "Xóa {{tag}}",
     "sectionDish": "Món và địa điểm",
-    "sectionPrice": "Giá",
     "sectionTags": "Thẻ",
     "diets": "Chế độ ăn",
     "dietsPlaceholder": "Tìm hoặc thêm chế độ ăn…",
@@ -101,11 +98,6 @@
     "otherTagsPlaceholder": "Bánh mì, thịt, bún…",
     "tagCreate": "Thêm \"{{tag}}\"",
     "tagRemove": "Xóa {{tag}}",
-    "priceRange": "Số tiền",
-    "priceLevel": "Mức giá",
-    "priceFrom": "Từ",
-    "priceTo": "Đến (không bắt buộc)",
-    "priceLevelHint": "Dùng mức giá khi bạn không biết giá chính xác.",
     "dropPhotos": "Thả ảnh vào đây",
     "browsePhotos": "hoặc bấm để chọn",
     "photosHint": "Tối đa {{count}} ảnh. Dán, kéo thả hoặc bấm để chọn. Ảnh đầu tiên là ảnh bìa.",
@@ -126,6 +118,10 @@
     "updatingPick": "Đang cập nhật {{dish}} tại {{place}}…",
     "refreshingCatalog": "Đang cập nhật danh sách…",
     "addedPick": "Đã thêm {{dish}} tại {{place}}",
+    "removeDish": "Xóa {{dish}}",
+    "dishNumber": "Món {{number}}",
+    "dishCount_other": "{{count}} món",
+    "addDish": "Thêm món khác",
     "updatedPick": "Đã cập nhật {{dish}} tại {{place}}",
     "savingItem": "Đang lưu {{name}}…",
     "savedItem": "Đã lưu {{name}}",
@@ -144,6 +140,8 @@
     "foodCategoriesPlaceholder": "Cà phê, món nước, tráng miệng…",
     "placeCategories": "Danh mục địa điểm",
     "placeCategoriesPlaceholder": "Buffet, tự phục vụ, cơm tự chọn…",
+    "spotCategories": "Danh mục hoạt động",
+    "spotCategoriesPlaceholder": "Bảo tàng, công viên, vui chơi đêm, mua sắm…",
     "categoryCreate": "Thêm \"{{tag}}\"",
     "categoryRemove": "Xóa {{tag}}"
   },
@@ -191,14 +189,34 @@
     "deleteDescription": "{{name}} và mọi gợi ý tại đây sẽ bị xóa.",
     "mapTitle": "Bản đồ {{name}}"
   },
+  "spots": {
+    "back": "Tất cả điểm đến",
+    "title": "Điểm vui chơi & hoạt động",
+    "subtitle": "Những địa điểm được gợi ý để tham quan, khám phá và vui chơi.",
+    "searchPlaceholder": "Tìm điểm đến, danh mục, thẻ, thành phố",
+    "add": "Thêm điểm đến",
+    "createTitle": "Thêm điểm hoạt động",
+    "editTitle": "Sửa điểm đến",
+    "name": "Tên điểm đến",
+    "namePlaceholder": "Chợ Bến Thành",
+    "address": "Địa chỉ",
+    "addressPlaceholder": "Địa chỉ đường hoặc mốc nổi bật",
+    "note": "Ghi chú & mẹo",
+    "notePlaceholder": "Thời điểm đẹp nhất, giá vé, nên xem hoặc chơi gì",
+    "empty": "Chưa có điểm hoạt động nào.",
+    "emptyFiltered": "Không có điểm đến nào khớp bộ lọc.",
+    "spotTotal_one": "{{count}} điểm đến",
+    "spotTotal_other": "{{count}} điểm đến",
+    "noLocation": "Chưa có vị trí",
+    "pinnedOnMap": "Đã ghim trên bản đồ",
+    "deleteTitle": "Xóa điểm đến này?",
+    "deleteDescription": "{{name}} và các ảnh của nó sẽ bị xóa.",
+    "mapTitle": "Bản đồ {{name}}",
+    "popular": "Nhiều ảnh nhất"
+  },
   "notFound": {
     "title": "Không tìm thấy trang",
     "back": "Về danh mục món ngon"
-  },
-  "priceLevel": {
-    "LOW": "Giá rẻ",
-    "MID": "Giá vừa",
-    "HIGH": "Giá cao"
   },
   "allergen": {
     "peanuts": "Đậu phộng",
@@ -230,6 +248,7 @@
     "title": "Bộ lọc",
     "foodCategories": "Danh mục món ăn",
     "placeCategories": "Danh mục địa điểm",
+    "spotCategories": "Danh mục hoạt động",
     "special": "Đặc biệt",
     "specialHint": "Bấm để chọn, bấm nữa để loại trừ",
     "stateIncluded": "Đang bao gồm {{label}} — bấm để loại trừ",
@@ -250,6 +269,7 @@
     "code": "Mã",
     "areas": "Khu vực",
     "places": "Địa điểm",
+    "spots": "Điểm đến",
     "dishes": "Món ăn",
     "kind": "Loại",
     "uses": "Lượt dùng",
@@ -261,6 +281,8 @@
       "foodCategories": "Danh mục món",
       "places": "Địa điểm",
       "placeCategories": "Danh mục quán",
+      "spots": "Điểm đến",
+      "spotCategories": "Danh mục điểm đến",
       "cuisines": "Ẩm thực",
       "tags": "Thẻ"
     },
@@ -275,6 +297,8 @@
     "addFoodCategories": "Thêm danh mục món, cách nhau bằng dấu phẩy",
     "addPlaces": "Thêm địa điểm hoặc link Google Maps, cách nhau bằng dấu phẩy",
     "addPlaceCategories": "Thêm danh mục địa điểm, cách nhau bằng dấu phẩy",
+    "addSpots": "Thêm điểm đến hoặc link Google Maps, cách nhau bằng dấu phẩy",
+    "addSpotCategories": "Thêm danh mục điểm đến, cách nhau bằng dấu phẩy",
     "addCuisines": "Thêm ẩm thực, cách nhau bằng dấu phẩy",
     "addTags": "Thêm thẻ, cách nhau bằng dấu phẩy",
     "bulkResult": "Đã thêm {{created}}, bỏ qua {{skipped}}",
@@ -285,6 +309,8 @@
     "deleteFoodCategory": "Các món sẽ mất danh mục này.",
     "deletePlace": "Mọi gợi ý tại địa điểm này và ảnh của chúng sẽ bị xóa.",
     "deletePlaceCategory": "Các địa điểm sẽ mất danh mục này.",
+    "deleteSpot": "Điểm đến này và các ảnh của nó sẽ bị xóa.",
+    "deleteSpotCategory": "Các điểm đến sẽ mất danh mục này.",
     "deleteCuisine": "Các món sẽ mất thẻ ẩm thực này.",
     "deleteTag": "Các gợi ý sẽ mất thẻ này.",
     "searchPlaceholder": "Tìm kiếm hàng",
@@ -341,5 +367,15 @@
   "overview": {
     "browseFoodTitle": "Khám phá món ăn và quán",
     "browseFoodBody": "Tìm món và nơi ăn, hoặc chọn quán để xem nên gọi món gì."
+  },
+  "plans": {
+    "timeline": {
+      "form": {
+        "place": "Điểm đến hoặc quán ăn đã lưu (tùy chọn)",
+        "noPlace": "Vị trí tùy chỉnh",
+        "spotGroup": "Điểm hoạt động",
+        "foodPlaceGroup": "Quán ăn"
+      }
+    }
   }
 }

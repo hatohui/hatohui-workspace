@@ -3,9 +3,9 @@ import { useImageUpload } from '@hatohui/libs';
 import {
   createTravelRecommendation,
   updateTravelRecommendation,
-  type TravelDishDto,
   type TravelPlaceAreaDto,
   type TravelPlaceDto,
+  type TravelRecommendationDishInputDto,
   type TravelRecommendationDto,
 } from '@hatohui/models';
 import { useToast } from '@hatohui/ui';
@@ -13,30 +13,35 @@ import { useErrorMessage } from './useErrorMessage';
 import { useInvalidateTravel } from './useInvalidateTravel';
 import { useOptimisticRecommendation } from './useOptimisticRecommendation';
 import type { PhotoItem } from './usePhotoList';
-import type { RecommendationFields } from './useRecommendationFields';
+import {
+  type DishLine,
+  type RecommendationFields,
+  pickedDishOf,
+} from './useRecommendationFields';
 import { useTravelLocation } from './useTravelLocation';
 
-interface Matches {
-  dish?: TravelDishDto;
-  place?: TravelPlaceDto;
-}
-
-const toAmount = (value: string) => (value === '' ? null : Number(value));
-
-const detailsOf = (fields: RecommendationFields, imageKeys: string[]) => {
-  const isRange = fields.priceMode === 'range';
+const lineInput = (line: DishLine): TravelRecommendationDishInputDto => {
+  const picked = pickedDishOf(line);
   return {
-    note: fields.note,
-    priceMin: isRange ? toAmount(fields.priceMin) : null,
-    priceMax: isRange ? toAmount(fields.priceMax || fields.priceMin) : null,
-    priceLevel: isRange ? null : fields.priceLevel,
-    currency: fields.currency,
-    specials: fields.specials,
-    allergens: fields.allergens,
-    tags: fields.tags,
-    imageKeys,
+    dishId: picked?.id,
+    dishName: picked ? undefined : line.name.trim(),
+    cuisines: picked ? undefined : line.cuisines,
+    foodCategories: picked ? undefined : line.foodCategories,
+    allergens: line.allergens,
   };
 };
+
+const detailsOf = (
+  fields: RecommendationFields,
+  lines: DishLine[],
+  imageKeys: string[],
+) => ({
+  note: fields.note,
+  specials: fields.specials,
+  tags: fields.tags,
+  dishes: lines.map(lineInput),
+  imageKeys,
+});
 
 const revokeBlobUrls = (photos: PhotoItem[]) => {
   for (const photo of photos) {
@@ -58,36 +63,40 @@ export function useSaveRecommendation(
   const toast = useToast();
   const errorMessage = useErrorMessage();
 
-  const save = (
-    fields: RecommendationFields,
-    matches: Matches,
-    photos: PhotoItem[],
-  ) => {
-    const dishLabel = matches.dish?.name ?? fields.dishName.trim();
-    const placeLabel = matches.place?.name ?? fields.placeName.trim();
-
-    let resolvedArea: TravelPlaceAreaDto | null = null;
-    if (fields.areaId) {
-      for (const country of location.countries) {
-        const found = country.areas.find((a) => a.id === fields.areaId);
-        if (found) {
-          resolvedArea = {
-            id: found.id,
-            name: found.name,
-            countryId: country.id,
-            countryName: country.name,
-          };
-          break;
-        }
+  const resolveArea = (areaId: string): TravelPlaceAreaDto | null => {
+    if (!areaId) return null;
+    for (const country of location.countries) {
+      const found = country.areas.find((a) => a.id === areaId);
+      if (found) {
+        return {
+          id: found.id,
+          name: found.name,
+          countryId: country.id,
+          countryName: country.name,
+        };
       }
     }
+    return null;
+  };
+
+  const save = (
+    fields: RecommendationFields,
+    lines: DishLine[],
+    place: TravelPlaceDto | undefined,
+    photos: PhotoItem[],
+  ) => {
+    const placeLabel = place?.name ?? fields.placeName.trim();
+    const dishLabel =
+      lines.length === 1
+        ? (pickedDishOf(lines[0])?.name ?? lines[0].name.trim())
+        : t('form.dishCount', { count: lines.length });
 
     const optimisticTx = optimistic.apply({
       existing,
       fields,
-      dish: matches.dish,
-      place: matches.place,
-      area: resolvedArea,
+      lines,
+      place,
+      area: resolveArea(fields.areaId),
       photos,
     });
 
@@ -138,19 +147,13 @@ export function useSaveRecommendation(
 
         const response = existing
           ? await updateTravelRecommendation(existing.id, {
-              ...detailsOf(fields, imageKeys),
+              ...detailsOf(fields, lines, imageKeys),
               placeAreaId: fields.areaId,
             })
           : await createTravelRecommendation({
-              ...detailsOf(fields, imageKeys),
-              dishId: matches.dish?.id,
-              dishName: matches.dish?.id ? undefined : fields.dishName,
-              cuisines: matches.dish?.id ? undefined : fields.cuisines,
-              foodCategories: matches.dish?.id
-                ? undefined
-                : fields.foodCategories,
-              placeId: matches.place?.id,
-              place: matches.place?.id
+              ...detailsOf(fields, lines, imageKeys),
+              placeId: place?.id,
+              place: place?.id
                 ? undefined
                 : {
                     name: fields.placeName,
@@ -167,7 +170,10 @@ export function useSaveRecommendation(
         toast.update(
           toastId,
           t(existing ? 'form.updatedPick' : 'form.addedPick', {
-            dish: saved.dish.name,
+            dish:
+              saved.dishes.length === 1
+                ? saved.dishes[0].dish.name
+                : t('form.dishCount', { count: saved.dishes.length }),
             place: saved.place.name,
           }),
           'success',

@@ -13,9 +13,11 @@ interface Props {
 
 function PlaceInputs({ form }: Props) {
   const { t } = useTranslation();
-  const { fields, set, matches, pickPlace, isEditing } = form;
+  const { fields, set, place, pickPlace, setPlaceInput, isEditing } = form;
   const isNewPlace =
-    !isEditing && !matches.place && fields.placeName.trim() !== '';
+    !isEditing &&
+    !place.match &&
+    (fields.placeName.trim() !== '' || fields.mapsUrl.trim() !== '');
   const showArea = isNewPlace || isEditing;
 
   return (
@@ -31,11 +33,12 @@ function PlaceInputs({ form }: Props) {
         hint={t('form.placeHint')}
         placeholder={t('form.placePlaceholder')}
         value={fields.placeName}
-        options={matches.placeSuggestions}
+        options={place.suggestions}
         fallbackIcon={MapPin}
-        isMatched={Boolean(matches.place)}
+        isMatched={Boolean(place.match)}
+        isSearching={place.isSearching}
         disabled={isEditing}
-        onChange={(value) => set('placeName', value)}
+        onChange={setPlaceInput}
         onSelect={(item) => pickPlace(item.id)}
       />
       {showArea && (

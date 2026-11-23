@@ -26,7 +26,7 @@ export function toTravelPlaceAreaDto(
 export function travelAreaFilter(query: {
   areaId?: string;
   countryId?: string;
-}): Prisma.TravelPlaceWhereInput | undefined {
+}): { areaId: string } | { area: { countryId: string } } | undefined {
   if (query.areaId) return { areaId: query.areaId };
   if (query.countryId) return { area: { countryId: query.countryId } };
   return undefined;

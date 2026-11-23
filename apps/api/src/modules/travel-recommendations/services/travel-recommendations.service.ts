@@ -12,6 +12,7 @@ import { tagKeyOf } from '@/modules/travel-tags/utils/tag-key';
 import { travelPlaceData } from '@/modules/travel-recommendations/utils/travel-place-data';
 import {
   CreateTravelRecommendationDto,
+  TravelRecommendationDishInputDto,
   UpdateTravelRecommendationDto,
 } from '@/modules/travel-recommendations/dto/travel-recommendation-input.dto';
 import type { TravelRecommendationQueryDto } from '@/modules/travel-recommendations/dto/travel-recommendation-query.dto';
@@ -61,9 +62,11 @@ export class TravelRecommendationsService {
           .filter((row) =>
             matchesSearch(q, [
               row.note,
-              row.dish.name,
-              ...row.dish.cuisines.map((c) => c.name),
-              ...row.dish.categories.map((c) => c.name),
+              ...row.dishes.flatMap((line) => [
+                line.dish.name,
+                ...line.dish.cuisines.map((c) => c.name),
+                ...line.dish.categories.map((c) => c.name),
+              ]),
               row.place.name,
               ...row.place.categories.map((c) => c.name),
               row.place.address,
@@ -89,17 +92,24 @@ export class TravelRecommendationsService {
     userId: string,
   ): Promise<TravelRecommendationDto> {
     const resolvedTags = await this.resolveTagLists(dto);
-    const dishId = await this.resolveDish(dto, userId);
     const placeId = await this.resolvePlace(dto, userId);
+    const lines = await this.resolveDishLines(dto.dishes, userId);
 
     const created = await this.guardUnique(() =>
       this.db.travelRecommendation.create({
         data: {
-          dishId,
           placeId,
           ...travelRecommendationDetails(dto),
           tags: { connect: this.tagRefs(travelTagKeys(resolvedTags, [])) },
           createdById: userId,
+          dishes: {
+            create: lines.map((line, position) => ({
+              ...line,
+              allergens: { connect: this.tagRefs(line.allergens) },
+              placeId,
+              position,
+            })),
+          },
         },
       }),
     );
@@ -116,25 +126,51 @@ export class TravelRecommendationsService {
   ): Promise<TravelRecommendationDto> {
     const resolvedTags = await this.resolveTagLists(dto);
     const current = await this.get(id);
+    const placeId = dto.placeId ?? current.place.id;
     const tagKeys = travelTagKeys(resolvedTags, [
-      ...current.allergens.map((key) => ({ key, kind: 'ALLERGEN' as const })),
       ...current.specials.map((key) => ({ key, kind: 'SPECIAL' as const })),
       ...current.tags.map((key) => ({ key, kind: 'GENERAL' as const })),
     ]);
+    const lines = dto.dishes
+      ? await this.resolveDishLines(dto.dishes, userId)
+      : undefined;
+
     await this.guardUnique(() =>
-      this.db.travelRecommendation.update({
-        where: { id },
-        data: {
-          dishId: dto.dishId,
-          placeId: dto.placeId,
-          ...travelRecommendationDetails(dto),
-          tags: tagKeys ? { set: this.tagRefs(tagKeys) } : undefined,
-        },
+      this.db.$transaction(async (tx) => {
+        await tx.travelRecommendation.update({
+          where: { id },
+          data: {
+            placeId,
+            ...travelRecommendationDetails(dto),
+            tags: tagKeys ? { set: this.tagRefs(tagKeys) } : undefined,
+          },
+        });
+        if (!lines) {
+          await tx.travelRecommendationDish.updateMany({
+            where: { recommendationId: id },
+            data: { placeId },
+          });
+          return;
+        }
+        await tx.travelRecommendationDish.deleteMany({
+          where: { recommendationId: id },
+        });
+        for (const [position, line] of lines.entries()) {
+          await tx.travelRecommendationDish.create({
+            data: {
+              ...line,
+              allergens: { connect: this.tagRefs(line.allergens) },
+              recommendationId: id,
+              placeId,
+              position,
+            },
+          });
+        }
       }),
     );
     if (dto.placeAreaId !== undefined) {
       await this.db.travelPlace.update({
-        where: { id: dto.placeId ?? current.place.id },
+        where: { id: placeId },
         data: { areaId: dto.placeAreaId.trim() || null },
       });
     }
@@ -174,11 +210,28 @@ export class TravelRecommendationsService {
     );
   }
 
+  private async resolveDishLines(
+    inputs: TravelRecommendationDishInputDto[],
+    userId: string,
+  ) {
+    const lines = [];
+    const seen = new Set<string>();
+    for (const input of inputs) {
+      const dishId = await this.resolveDish(input, userId);
+      if (seen.has(dishId)) continue;
+      seen.add(dishId);
+      lines.push({
+        dishId,
+        allergens: await this.resolveTagsOfKind(
+          'ALLERGEN',
+          input.allergens ?? [],
+        ),
+      });
+    }
+    return lines;
+  }
+
   private async resolveTagLists(dto: UpdateTravelRecommendationDto) {
-    const allergens =
-      dto.allergens === undefined
-        ? undefined
-        : await this.resolveTagsOfKind('ALLERGEN', dto.allergens);
     const specials =
       dto.specials === undefined
         ? undefined
@@ -187,7 +240,7 @@ export class TravelRecommendationsService {
       dto.tags === undefined
         ? undefined
         : await this.resolveTagsOfKind('GENERAL', dto.tags);
-    return { allergens, specials, tags };
+    return { specials, tags };
   }
 
   private async resolveTagsOfKind(
@@ -247,7 +300,7 @@ export class TravelRecommendationsService {
   }
 
   private async resolveDish(
-    dto: CreateTravelRecommendationDto,
+    dto: TravelRecommendationDishInputDto,
     userId: string,
   ): Promise<string> {
     if (dto.dishId) {
@@ -324,7 +377,7 @@ export class TravelRecommendationsService {
         error.code === UNIQUE_VIOLATION_CODE
       ) {
         throw new ConflictException(
-          'This place already has a recommendation for that dish',
+          'This place already has a pick for that dish',
         );
       }
       throw error;

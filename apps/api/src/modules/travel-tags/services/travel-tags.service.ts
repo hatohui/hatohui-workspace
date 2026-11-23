@@ -21,7 +21,7 @@ const tagSelect = {
   kind: true,
   name: true,
   createdAt: true,
-  _count: { select: { recommendations: true } },
+  _count: { select: { recommendations: true, spots: true } },
 } satisfies Prisma.TravelTagSelect;
 
 type TagRow = Prisma.TravelTagGetPayload<{ select: typeof tagSelect }>;
@@ -95,7 +95,7 @@ export class TravelTagsService {
       key: row.key,
       kind: row.kind,
       name: row.name,
-      usageCount: row._count.recommendations,
+      usageCount: row._count.recommendations + row._count.spots,
       createdAt: row.createdAt,
     };
   }

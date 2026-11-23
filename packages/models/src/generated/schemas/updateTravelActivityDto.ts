@@ -16,6 +16,8 @@ export interface UpdateTravelActivityDto {
   to?: string;
   /** @nullable */
   placeId?: string | null;
+  /** @nullable */
+  spotId?: string | null;
   /**
      * @maxLength 200
      * @nullable

@@ -33,6 +33,7 @@ function DishPage() {
         <RecommendationGrid
           recommendations={dish.recommendations}
           labelMode="place"
+          focusDishId={dish.id}
           isLoading={false}
           isError={false}
           onRetry={() => void refetch()}

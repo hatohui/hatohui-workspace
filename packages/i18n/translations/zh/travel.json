@@ -2,6 +2,7 @@
   "brand": "旅行",
   "nav": {
     "food": "美食",
+    "spots": "好去处",
     "admin": "管理",
     "quickMenu": "快捷菜单"
   },
@@ -43,7 +44,6 @@
     }
   },
   "recommendation": {
-    "noEstimate": "暂无价格",
     "addedBy": "由 {{name}} 添加",
     "photos_one": "{{count}} 张照片",
     "photos_other": "{{count}} 张照片",
@@ -54,8 +54,6 @@
     "deleteDescription": "{{place}} 的 {{dish}} 及其照片将被删除。菜品和地点会保留。",
     "previousPhoto": "上一张",
     "nextPhoto": "下一张",
-    "priceSingle": "约 {{price}}",
-    "priceRange": "{{min}} – {{max}}",
     "contains": "含有 {{list}}"
   },
   "form": {
@@ -66,10 +64,9 @@
     "dishHint": "从列表中选择或输入新名称。",
     "place": "地点",
     "placePlaceholder": "21Grams Vegetarian",
-    "placeHint": "选择已保存的地点或输入新地点。",
+    "placeHint": "选择已保存的地点、输入新地点，或粘贴 Google 地图链接。",
     "mapsUrl": "Google 地图链接",
     "mapsUrlPlaceholder": "https://maps.google.com/...",
-    "currency": "货币",
     "note": "备注",
     "notePlaceholder": "点什么、什么时候去、好在哪里",
     "photos": "照片",
@@ -83,6 +80,7 @@
     "optional": "可选",
     "saveShortcut": "{{modifier}} + Enter 保存",
     "existing": "已保存",
+    "searching": "搜索中",
     "new": "新的",
     "duplicate": "该地点已有这道菜的推荐。",
     "cuisines": "菜系",
@@ -90,7 +88,6 @@
     "cuisineCreate": "添加“{{tag}}”",
     "cuisineRemove": "移除 {{tag}}",
     "sectionDish": "菜品和地点",
-    "sectionPrice": "价格",
     "sectionTags": "标签",
     "diets": "饮食",
     "dietsPlaceholder": "搜索或添加饮食标签…",
@@ -100,11 +97,6 @@
     "otherTagsPlaceholder": "面包、肉类、面条…",
     "tagCreate": "添加“{{tag}}”",
     "tagRemove": "移除 {{tag}}",
-    "priceRange": "金额",
-    "priceLevel": "价位",
-    "priceFrom": "从",
-    "priceTo": "到（可选）",
-    "priceLevelHint": "不知道确切价格时，选择价位。",
     "dropPhotos": "将照片拖到这里",
     "browsePhotos": "或点击选择",
     "photosHint": "最多 {{count}} 张照片，支持粘贴、拖拽或点击，第一张为封面。",
@@ -125,6 +117,10 @@
     "updatingPick": "正在更新 {{place}} 的 {{dish}}…",
     "refreshingCatalog": "正在更新列表…",
     "addedPick": "已添加 {{place}} 的 {{dish}}",
+    "removeDish": "移除{{dish}}",
+    "dishNumber": "菜品 {{number}}",
+    "dishCount_other": "{{count}}道菜",
+    "addDish": "再添加一道菜",
     "updatedPick": "已更新 {{place}} 的 {{dish}}",
     "savingItem": "正在保存 {{name}}…",
     "savedItem": "已保存 {{name}}",
@@ -143,6 +139,8 @@
     "foodCategoriesPlaceholder": "咖啡、汤面、甜品…",
     "placeCategories": "地点分类",
     "placeCategoriesPlaceholder": "自助餐、自助服务、自选餐…",
+    "spotCategories": "活动分类",
+    "spotCategoriesPlaceholder": "博物馆、公园、夜生活、购物…",
     "categoryCreate": "添加“{{tag}}”",
     "categoryRemove": "移除 {{tag}}"
   },
@@ -190,14 +188,34 @@
     "deleteDescription": "{{name}} 及其所有推荐将被删除。",
     "mapTitle": "{{name}} 的地图"
   },
+  "spots": {
+    "back": "全部好去处",
+    "title": "活动与好去处",
+    "subtitle": "推荐游览、探索与休闲的地点。",
+    "searchPlaceholder": "搜索好去处、分类、标签、城市",
+    "add": "添加好去处",
+    "createTitle": "添加活动地点",
+    "editTitle": "编辑好去处",
+    "name": "地点名称",
+    "namePlaceholder": "滨城市场",
+    "address": "地址",
+    "addressPlaceholder": "街道地址或地标",
+    "note": "备注与贴士",
+    "notePlaceholder": "最佳游览时间、门票信息、看点与玩法",
+    "empty": "还没有活动好去处。",
+    "emptyFiltered": "没有符合筛选条件的好去处。",
+    "spotTotal_one": "{{count}} 个好去处",
+    "spotTotal_other": "{{count}} 个好去处",
+    "noLocation": "暂无位置",
+    "pinnedOnMap": "已在地图标记",
+    "deleteTitle": "删除这个好去处？",
+    "deleteDescription": "{{name}} 及其照片将被删除。",
+    "mapTitle": "{{name}} 的地图",
+    "popular": "照片最多"
+  },
   "notFound": {
     "title": "页面不存在",
     "back": "返回美食目录"
-  },
-  "priceLevel": {
-    "LOW": "低价",
-    "MID": "中等价位",
-    "HIGH": "高价"
   },
   "allergen": {
     "peanuts": "花生",
@@ -229,6 +247,7 @@
     "title": "筛选",
     "foodCategories": "美食分类",
     "placeCategories": "地点分类",
+    "spotCategories": "活动分类",
     "special": "特色",
     "specialHint": "点一次包含，再点排除",
     "stateIncluded": "包含 {{label}} — 点击改为排除",
@@ -249,6 +268,7 @@
     "code": "代码",
     "areas": "地区",
     "places": "地点",
+    "spots": "好去处",
     "dishes": "菜品",
     "kind": "类型",
     "uses": "使用次数",
@@ -260,6 +280,8 @@
       "foodCategories": "美食分类",
       "places": "地点",
       "placeCategories": "地点分类",
+      "spots": "好去处",
+      "spotCategories": "好去处分类",
       "cuisines": "菜系",
       "tags": "标签"
     },
@@ -274,6 +296,8 @@
     "addFoodCategories": "添加美食分类，用逗号分隔",
     "addPlaces": "添加地点或 Google 地图链接，用逗号分隔",
     "addPlaceCategories": "添加地点分类，用逗号分隔",
+    "addSpots": "添加好去处或 Google 地图链接，用逗号分隔",
+    "addSpotCategories": "添加好去处分类，用逗号分隔",
     "addCuisines": "添加菜系，用逗号分隔",
     "addTags": "添加标签，用逗号分隔",
     "bulkResult": "已添加 {{created}}，跳过 {{skipped}}",
@@ -284,6 +308,8 @@
     "deleteFoodCategory": "菜品将失去这个分类。",
     "deletePlace": "该地点的所有推荐及照片都会被删除。",
     "deletePlaceCategory": "地点将失去这个分类。",
+    "deleteSpot": "该好去处及其照片都会被删除。",
+    "deleteSpotCategory": "好去处将失去这个分类。",
     "deleteCuisine": "菜品将失去这个菜系标签。",
     "deleteTag": "推荐将失去这个标签。",
     "searchPlaceholder": "搜索行",
@@ -340,5 +366,15 @@
   "overview": {
     "browseFoodTitle": "浏览美食与店铺",
     "browseFoodBody": "按菜品找店铺，或选一家店看看该点什么。"
+  },
+  "plans": {
+    "timeline": {
+      "form": {
+        "place": "已保存的好去处或餐厅（可选）",
+        "noPlace": "自定义位置",
+        "spotGroup": "活动好去处",
+        "foodPlaceGroup": "美食餐厅"
+      }
+    }
   }
 }

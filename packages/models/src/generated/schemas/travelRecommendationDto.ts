@@ -6,34 +6,19 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { TravelCreatorDto } from './travelCreatorDto';
-import type { TravelDishSummaryDto } from './travelDishSummaryDto';
 import type { TravelImageDto } from './travelImageDto';
 import type { TravelPlaceSummaryDto } from './travelPlaceSummaryDto';
-import type { TravelPriceLevel } from './travelPriceLevel';
+import type { TravelRecommendationDishDto } from './travelRecommendationDishDto';
 
 export interface TravelRecommendationDto {
   id: string;
-  dish: TravelDishSummaryDto;
   place: TravelPlaceSummaryDto;
+  /** Dishes worth ordering at this place, in order */
+  dishes: TravelRecommendationDishDto[];
   /** @nullable */
   note: string | null;
-  /**
-     * Lowest price per person, in currency units
-     * @nullable
-     */
-  priceMin: number | null;
-  /**
-     * Highest price per person; equal to priceMin for one price
-     * @nullable
-     */
-  priceMax: number | null;
-  /** Rough price level when no amount is known */
-  priceLevel: TravelPriceLevel | null;
-  currency: string;
   /** Special tag keys, e.g. spicy, vegetarian, michelin */
   specials: string[];
-  /** Allergen tag keys the dish contains, e.g. peanuts */
-  allergens: string[];
   /** General tag keys, e.g. bread, meat */
   tags: string[];
   images: TravelImageDto[];

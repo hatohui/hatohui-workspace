@@ -7,6 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@hatohui/ui';
+import { recommendationDishNames } from '../../lib/recommendationView';
 import RecommendationDetails from './RecommendationDetails';
 
 interface Props {
@@ -23,7 +24,9 @@ function RecommendationSheet({ recommendation, onClose }: Props) {
     >
       <SheetContent closeLabel={t('common:back')}>
         <SheetHeader className="sr-only">
-          <SheetTitle>{recommendation?.dish.name}</SheetTitle>
+          <SheetTitle>
+            {recommendation ? recommendationDishNames(recommendation) : ''}
+          </SheetTitle>
         </SheetHeader>
         <SheetBody className="pt-12">
           {recommendation && (

@@ -33,6 +33,7 @@ import {
 
 const activityInclude = {
   place: { select: { id: true, name: true, mapsUrl: true } },
+  spot: { select: { id: true, name: true, mapsUrl: true } },
   media: { orderBy: { createdAt: 'desc' as const } },
 } satisfies Prisma.TravelActivityInclude;
 
@@ -103,6 +104,7 @@ export class TravelActivitiesService {
         from,
         to,
         placeId: dto.placeId || null,
+        spotId: dto.spotId || null,
         location: dto.location?.trim() || null,
         mapsUrl,
         latitude: coords?.coordinates?.latitude ?? null,
@@ -208,6 +210,7 @@ export class TravelActivitiesService {
         from,
         to,
         ...(dto.placeId !== undefined ? { placeId: dto.placeId || null } : {}),
+        ...(dto.spotId !== undefined ? { spotId: dto.spotId || null } : {}),
         ...(dto.location !== undefined
           ? { location: dto.location?.trim() || null }
           : {}),
@@ -579,6 +582,13 @@ export class TravelActivitiesService {
             id: row.place.id,
             name: row.place.name,
             mapsUrl: row.place.mapsUrl,
+          }
+        : null,
+      spot: row.spot
+        ? {
+            id: row.spot.id,
+            name: row.spot.name,
+            mapsUrl: row.spot.mapsUrl,
           }
         : null,
       location: row.location,

@@ -10,10 +10,13 @@ import {
 } from '@hatohui/ui';
 import { ArrowUpDown } from 'lucide-react';
 import { FIELD_OUTLINE } from '../../constants/chips';
-import { CATALOG_SORT_OPTIONS, type FoodView } from '../../constants/food';
+import {
+  CATALOG_SORT_OPTIONS,
+  type CatalogSortView,
+} from '../../constants/food';
 
 interface Props {
-  view: FoodView;
+  view: CatalogSortView;
   value: TravelCatalogSort;
   onChange: (sort: TravelCatalogSort) => void;
 }
